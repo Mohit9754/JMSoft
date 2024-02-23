@@ -16,12 +16,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.SavedData.saveFirebaseToken
-import com.jmsoft.basic.UtilityTools.StatusCodeConstant
-import com.jmsoft.basic.UtilityTools.Utils.CustomeToast
 import com.jmsoft.basic.UtilityTools.Utils.E
-import com.jmsoft.basic.UtilityTools.Utils.GetSession
 import com.jmsoft.basic.UtilityTools.Utils.IS_LOGIN
-import com.jmsoft.basic.UtilityTools.Utils.UnAuthorizationToken
 import com.jmsoft.basic.firebase.NotificationUtils.isAppIsInBackground
 import com.jmsoft.R
 import com.google.android.gms.tasks.Task
@@ -29,13 +25,9 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.google.gson.Gson
-import com.jmsoft.main.activity.MainActivity
+import com.jmsoft.main.activity.LoginActivity
 import org.json.JSONException
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.*
 
 class FirebaseService : FirebaseMessagingService() {
@@ -131,7 +123,7 @@ class FirebaseService : FirebaseMessagingService() {
             //    activityClass = DashboardActivity::class.java
             //}
             //E("data.getString(Constants.complaintId)::"+data.getString(Constants.complaintId))
-            activityClass = MainActivity::class.java
+            activityClass = LoginActivity::class.java
             val intent = Intent(this, activityClass)
             intent.putExtras(bundle)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

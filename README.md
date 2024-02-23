@@ -31,7 +31,7 @@ have created your project. You're definitely going to want to open up the
 project and change the settings to match what you plan to build. In particular,
 you're at least going to want to change the following:
 
-- Application Name: "My First App"
+- Application Name: "JM Soft"
 - Company Domain: "example.com"
 
 ### Fastlane files
