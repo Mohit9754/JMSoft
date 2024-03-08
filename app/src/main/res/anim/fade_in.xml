@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /**
+  ~  * Created by Yash Jain on 29/03/23, 6:42 PM
+  ~  * Copyright (c) 2023 . All rights reserved.
+  ~  * Last modified 29/03/23, 5:48 PM
+  ~  * All rights reserved.
+  ~  */
+  -->
+
+<alpha xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/accelerate_interpolator"
+    android:fromAlpha="0.0" android:toAlpha="1.0"
+    android:duration="300" />
