@@ -1,6 +1,7 @@
 package com.jmsoft.main.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
@@ -26,6 +27,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.UtilityTools.Constants
@@ -264,6 +266,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
 
     //Handles All the Clicks
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onClick(v: View?) {
 
         //When login button Click
@@ -278,10 +281,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
             if (lang == english) {
                 Utils.setLocale(activity, arabic)
-                activity.recreate()
+//                binding.ivJewellery?.setImageDrawable(getDrawable(R.drawable.img_jewellery_ar))
+//                activity.recreate()
+
             } else {
                 Utils.setLocale(activity, english)
-                activity.recreate()
+//                binding.ivJewellery?.setImageDrawable(getDrawable(R.drawable.img_jewellery_en))
+//                activity.recreate()
             }
         } else if (v == binding.llSignUp) {
             Utils.I_clear(activity,SignUpActivity::class.java,null)

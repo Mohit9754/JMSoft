@@ -285,18 +285,19 @@
 
     </ScrollView>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1">
+
 
         <ImageView
             android:id="@+id/ivJewellery"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
-            android:src="@drawable/img_jewellery" />
+            android:src="@drawable/img_jewellery_en" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

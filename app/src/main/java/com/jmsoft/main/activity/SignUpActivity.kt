@@ -146,12 +146,10 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
             val lang = Utils.getCurrentLanguage()
 
             if (lang == english) {
-
                 Utils.setLocale(activity, arabic)
-                activity.recreate()
+
             } else {
                 Utils.setLocale(activity, english)
-                activity.recreate()
             }
         } else if (v == binding.llLogin) {
 

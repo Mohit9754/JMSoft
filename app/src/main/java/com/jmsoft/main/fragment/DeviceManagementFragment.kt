@@ -50,6 +50,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentDeviceManagementBinding
     private lateinit var bluetoothAdapter: BluetoothAdapter
     private lateinit var receiver: BroadcastReceiver
+    private var isReceiverRegistered = false
 
     // Bluetooth Intent for turn on the bluetooth
     private var bluetoothIntent: ActivityResultLauncher<Intent> =
@@ -193,7 +194,10 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         }
 
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-        requireContext().registerReceiver(receiver, filter)
+
+        //Register Receiver
+        requireActivity().registerReceiver(receiver, filter)
+        isReceiverRegistered = true
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         bluetoothAdapter.startDiscovery()
 
@@ -282,7 +286,9 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     override fun onDestroy() {
         super.onDestroy()
         // Unregister the BroadcastReceiver when the activity is destroyed
-        requireActivity().unregisterReceiver(receiver)
+        if (isReceiverRegistered) {
+            requireActivity().unregisterReceiver(receiver)
+        }
     }
 
 }
