@@ -125,6 +125,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         Utils.setImageForCurrentLanguage(binding.ivJewellery!!)
 
         // Setting the Selector on Material Card View when edittext has focus
+        binding.ivJewellery?.setImageDrawable(null)
+        binding.ivJewellery?.setImageResource(R.drawable.img_jewellery)
+
         setFocusChangeLis(binding.etEmailAddress!!, binding.mcvEmailAddress!!)
         setFocusChangeLis(binding.etPassword!!, binding.mcvPassword!!)
 
