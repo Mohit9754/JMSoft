@@ -124,6 +124,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun init() {
 
+        binding.ivJewellery?.setImageDrawable(null)
+        binding.ivJewellery?.setImageResource(R.drawable.img_jewellery)
         // Setting the Selector on Material Card View when edittext has focus
         setFocusChangeLis(binding.etEmailAddress!!, binding.mcvEmailAddress!!)
         setFocusChangeLis(binding.etPassword!!, binding.mcvPassword!!)
