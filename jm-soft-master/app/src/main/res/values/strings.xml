@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">JM SOft</string>
+    <string name="please_check_your_connection">Please check your Connection</string>
+    <string name="ok">ok</string>
+    <string name="are_you_sure_want_to_delete_your_account">Are you sure want to delete your account?</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="are_you_sure_want_to_exit">Are you sure want to exit?</string>
+    <string name="cancel">Cancel</string>
+    <string name="empty_error">This field is required.</string>
+    <string name="invalid_email">Please enter valid email id.</string>
+    <string name="enter_ten_digits_number">Enter 10 digits Mobile Number</string>
+    <string name="please_enter_4_digit_mpin">Please enter the 4 digit PIN</string>
+    <string name="valid_number">Enter Valid Mobile Number.</string>
+    <string name="aadhaar_valid">Please enter valid Aadhaar number!!</string>
+    <string name="pan_card_valid">Please enter valid PAN number!!</string>
+    <string name="ifsc_valid">Please enter valid IFSC!!</string>
+    <string name="account_valid">Please enter valid Account Number!!</string>
+    <string name="amount_valid">Please enter valid amount</string>
+    <string name="password_not_match">Password and Confirm Password does not match.</string>
+    <string name="alert">Alert!!</string>
+    <string name="enable_permission">Enable permission Manually</string>
+    <string name="permit_manually">Permit Manually</string>
+    <string name="enter_a_valid_number">Enter a valid number</string>
+    <string name="passwordStrong">The password must contain both lower &amp; upper case characters,one number,one special symbol &amp; at least 8 characters long.</string>
+    <string name="retry">Retry</string>
+    <string name="apply">Apply</string>
+</resources>

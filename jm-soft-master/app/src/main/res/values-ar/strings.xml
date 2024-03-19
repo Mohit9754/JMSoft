@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">JM SOft</string>
+    <string name="please_check_your_connection">يرجى التحقق من الاتصال الخاص بك</string>
+    <string name="ok">نعم</string>
+    <string name="are_you_sure_want_to_delete_your_account">هل أنت متأكد أنك تريد حذف حسابك؟</string>
+    <string name="today">اليوم</string>
+    <string name="yesterday">أمس</string>
+    <string name="are_you_sure_want_to_exit">هل ترغب فعلا بالخروج؟</string>
+    <string name="cancel">يلغي</string>
+    <string name="empty_error">هذه الخانة مطلوبه.</string>
+    <string name="invalid_email">الرجاء إدخال البريد الإلكتروني الصحيح.</string>
+    <string name="enter_ten_digits_number">أدخل رقم الجوال المكون من 10 أرقام</string>
+    <string name="please_enter_4_digit_mpin">الرجاء إدخال رقم التعريف الشخصي المكون من 4 أرقام</string>
+    <string name="valid_number">ادخل رقم هاتف خلوي ساري المفعول.</string>
+    <string name="aadhaar_valid">الرجاء إدخال رقم Aadhaar صالح!!</string>
+    <string name="pan_card_valid">الرجاء إدخال رقم PAN صالح!!</string>
+    <string name="ifsc_valid">الرجاء إدخال IFSC صالح!!</string>
+    <string name="account_valid">الرجاء إدخال رقم حساب صالح!!</string>
+    <string name="amount_valid">الرجاء إدخال مبلغ صالح</string>
+    <string name="password_not_match">كلمة المرور وتأكيد كلمة المرور غير متطابقين.</string>
+    <string name="alert">يُحذًِر!!</string>
+    <string name="enable_permission">تمكين الإذن يدويًا</string>
+    <string name="permit_manually">السماح يدويا</string>
+    <string name="enter_a_valid_number">أدخل رقمًا صالحًا</string>
+    <string name="passwordStrong">يجب أن تحتوي كلمة المرور على كل من السفلى &amp; أحرف كبيرة ورقم واحد ورمز خاص واحد &amp; 8 أحرف على الأقل.</string>
+    <string name="retry">أعد المحاولة</string>
+    <string name="apply">يتقدم</string>
+</resources>

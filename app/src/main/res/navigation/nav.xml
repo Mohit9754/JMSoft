@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@+id/home"
+    android:id="@+id/nav">
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.jmsoft.main.fragment.HomeFragment"
+        android:label="Home"
+        tool:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/setting"
+        android:name="com.jmsoft.main.fragment.SettingFragment"
+        android:label="Setting"
+        tool:layout="@layout/fragment_setting" />
+
+    <fragment
+        android:id="@+id/catalog"
+        android:name="com.jmsoft.main.fragment.CatalogFragment"
+        android:label="Catalog"
+        tool:layout="@layout/fragment_setting" />
+
+  <fragment
+        android:id="@+id/deviceManagement"
+        android:name="com.jmsoft.main.fragment.DeviceManagementFragment"
+        android:label="Device Management"
+        tool:layout="@layout/fragment_device_management" />
+
+
+
+</navigation>

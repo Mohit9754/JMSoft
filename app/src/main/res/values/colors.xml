@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="theme">#E5BB38</color>
+    <color name="selected">#DA8913</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="text_hint">#D9D9D9</color>
+    <color name="light_black">#666666</color>
+    <color name="red">#FA0404</color>
+    <color name="tool_bar">#fafafa</color>
+    <color name="mcv_stroke_color">#CBD3E7</color>
+    <color name="mcv_background_color">#F7F7F7</color>
+    <color name="light_pink">#ffefef</color>
+    <color name="dark_pink">#ffd9d9</color>
+    <color name="dark_red">#FC0005</color>
+    <color name="off_white">#f5f5f5</color>
+    <color name="text_color">#717171</color>
+    <color name="green">#21A400</color>
+    <color name="device_text_color">#777777</color>
+    <color name="bottom_sheet_stroke_color">#e09c39</color>
+    <color name="spotShadowColor">#66000000</color>
+    <color name="ambientShadowColor">#0D141719</color>
+
+</resources>
