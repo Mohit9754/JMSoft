@@ -137,6 +137,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         // Removing the error when text Entered
         setTextChangeLis(binding.etEmailAddress!!, binding.tvEmailAddressError!!)
+
         setTextChangeLis(binding.etPassword!!, binding.tvPasswordError!!)
 
         //Set Click on login Button
