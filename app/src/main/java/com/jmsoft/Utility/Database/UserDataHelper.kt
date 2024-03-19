@@ -8,6 +8,7 @@ import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.UtilityTools.Utils.E
 
 class UserDataHelper(cx: Context) {
+
     private val dm: DataManager
     var cx: Context
     private var db: SQLiteDatabase? = null
@@ -52,8 +53,8 @@ class UserDataHelper(cx: Context) {
     fun delete(userData: UserDataModel) {
         open()
         db!!.delete(
-            UserDataModel.TABLE_NAME, UserDataModel.Key_userId + " = '"
-                    + userData.userId + "'", null
+            UserDataModel.TABLE_NAME, UserDataModel.Key_userType + " = '"
+                    + userData.userType + "'", null
         )
         close()
     }
@@ -76,8 +77,8 @@ class UserDataHelper(cx: Context) {
     private fun isExist(userData: UserDataModel): Boolean {
         read()
         @SuppressLint("Recycle") val cur = db!!.rawQuery(
-            "select * from " + UserDataModel.TABLE_NAME + " where " + UserDataModel.Key_userId + "='"
-                    + userData.userId + "'", null
+            "select * from " + UserDataModel.TABLE_NAME + " where " + UserDataModel.Key_userType + "='"
+                    + userData.userType + "'", null
         )
         return cur.moveToFirst()
     }
@@ -92,18 +93,15 @@ class UserDataHelper(cx: Context) {
         val values = ContentValues()
 
         // values.put(UserData.KEY_ID, userData.userId);
-        values.put(UserDataModel.Key_userId, userData.userId)
-        values.put(UserDataModel.Key_accessToken, userData.accessToken)
+        values.put(UserDataModel.Key_userType, userData.userType)
         values.put(UserDataModel.Key_firstName, userData.firstName)
         values.put(UserDataModel.Key_lastName, userData.lastName)
         values.put(UserDataModel.Key_email, userData.email)
         values.put(UserDataModel.Key_phoneNumber, userData.phoneNumber)
-        values.put(UserDataModel.Key_gender, userData.gender)
-        values.put(UserDataModel.Key_dob, userData.dob)
         values.put(UserDataModel.Key_profilePicture, userData.profilePicture)
-        values.put(UserDataModel.Key_isEmailVerified, userData.isEmailVerified)
-        values.put(UserDataModel.Key_isPhoneVerified, userData.isPhoneVerified)
-        values.put(UserDataModel.Key_userBio, userData.userBio)
+        values.put(UserDataModel.Key_token, userData.token)
+
+
         if (!isExist(userData)) {
             E("insert successfully")
             E("Values::$values")
@@ -114,7 +112,7 @@ class UserDataHelper(cx: Context) {
             db!!.update(
                 UserDataModel.TABLE_NAME,
                 values,
-                UserDataModel.Key_userId + "=" + userData.userId,
+                UserDataModel.Key_userType + "=" + userData.userType,
                 null
             )
         }
@@ -137,11 +135,11 @@ class UserDataHelper(cx: Context) {
                 do {
 
                     val userData = UserDataModel()
-                    // userData.userId = cursor.getString(cursor.getColumnIndex(UserData.KEY_ID));
-                    userData.userId =
-                        cursor.getString(cursor.getColumnIndex(UserDataModel.Key_userId))
-                    userData.accessToken =
-                        cursor.getString(cursor.getColumnIndex(UserDataModel.Key_accessToken))
+
+                    userData.userType =
+                        cursor.getString(cursor.getColumnIndex(UserDataModel.Key_userType))
+                    userData.token =
+                        cursor.getString(cursor.getColumnIndex(UserDataModel.Key_token))
                     userData.firstName =
                         cursor.getString(cursor.getColumnIndex(UserDataModel.Key_firstName))
                     userData.lastName =
@@ -150,18 +148,11 @@ class UserDataHelper(cx: Context) {
                         cursor.getString(cursor.getColumnIndex(UserDataModel.Key_email))
                     userData.phoneNumber =
                         cursor.getString(cursor.getColumnIndex(UserDataModel.Key_phoneNumber))
-                    userData.gender =
-                        cursor.getString(cursor.getColumnIndex(UserDataModel.Key_gender))
-                    userData.dob = cursor.getString(cursor.getColumnIndex(UserDataModel.Key_dob))
                     userData.profilePicture =
                         cursor.getString(cursor.getColumnIndex(UserDataModel.Key_profilePicture))
-                    userData.isEmailVerified =
-                        cursor.getString(cursor.getColumnIndex(UserDataModel.Key_isEmailVerified))
-                    userData.isPhoneVerified =
-                        cursor.getString(cursor.getColumnIndex(UserDataModel.Key_isPhoneVerified))
-                    userData.userBio =
-                        cursor.getString(cursor.getColumnIndex(UserDataModel.Key_userBio))
+
                     userItem.add(userData)
+
                 } while (cursor.moveToPrevious())
                 cursor.close()
             }

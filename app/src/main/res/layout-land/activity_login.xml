@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:weightSum="2"
+    tools:context=".main.activity.SplashActivity">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:src="@drawable/img_line" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ivLine"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_1sdp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="@dimen/_25ssp"
+                            android:src="@drawable/logo_small" />
+
+                        <ImageView
+                            android:id="@+id/ivLanguageSwitcher"
+                            android:layout_width="@dimen/_16sdp"
+                            android:layout_height="@dimen/_16sdp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:padding="@dimen/_3sdp"
+                            android:src="@drawable/img_language_switcher" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/_4sdp"
+                            android:fontFamily="@font/montserrat_arabic_medium"
+                            android:text="@string/welcome_back"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_arabic_medium"
+                            android:text="@string/enter_your_credentials_to_access_your_account"
+                            android:textSize="10sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_18sdp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/montserrat_arabic_medium"
+                                android:text="@string/email_address"
+                                android:textSize="10sp" />
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/mcvEmailAddress"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:textSize="@dimen/_5ssp"
+                                app:cardCornerRadius="@dimen/_3sdp"
+                                app:cardElevation="0dp"
+                                app:strokeColor="@color/text_hint"
+                                app:strokeWidth="1dp">
+
+                                <EditText
+                                    android:id="@+id/etEmailAddress"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:fontFamily="@font/montserrat_arabic_medium"
+                                    android:hint="@string/enter_your_email_address"
+                                    android:inputType="textEmailAddress"
+                                    android:paddingHorizontal="@dimen/_5sdp"
+                                    android:paddingVertical="@dimen/_5sdp"
+                                    android:textSize="10sp"
+                                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/tvEmailAddressError"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_1sdp"
+                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:textColor="@color/red"
+                                    android:textSize="8sp"
+                                    android:visibility="gone" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/montserrat_arabic_medium"
+                                android:text="@string/password"
+                                android:textSize="10sp" />
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/mcvPassword"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:textSize="@dimen/_5ssp"
+                                app:cardCornerRadius="@dimen/_3sdp"
+                                app:cardElevation="0dp"
+                                app:strokeColor="@color/text_hint"
+                                app:strokeWidth="1dp">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <EditText
+                                        android:id="@+id/etPassword"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:background="@null"
+                                        android:fontFamily="@font/montserrat_arabic_medium"
+                                        android:hint="@string/enter_your_password"
+                                        android:inputType="textPassword"
+                                        android:layout_marginEnd="@dimen/_15sdp"
+                                        android:paddingHorizontal="@dimen/_5sdp"
+                                        android:paddingVertical="@dimen/_5sdp"
+                                        android:textSize="10sp"
+                                        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+                                    <ImageView
+                                        android:layout_width="@dimen/_20sdp"
+                                        android:layout_height="@dimen/_20sdp"
+                                        android:padding="@dimen/_5sdp"
+                                        android:id="@+id/ivPasswordVisibility"
+                                        android:layout_alignParentEnd="true"
+                                        android:src="@drawable/icon_show"
+                                        android:layout_centerVertical="true" />
+
+                                </RelativeLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/tvPasswordError"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_1sdp"
+                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:textColor="@color/red"
+                                    android:textSize="8sp"
+                                    android:visibility="gone" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/mcvLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_21sdp"
+                        app:cardBackgroundColor="@color/theme"
+                        app:cardCornerRadius="@dimen/_5sdp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/montserrat_arabic_bold"
+                            android:paddingVertical="@dimen/_5sdp"
+                            android:text="@string/login"
+                            android:textColor="@color/white"
+                            android:textSize="10sp" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:id="@+id/llSignUp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_16sdp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/_2sdp"
+                            android:fontFamily="@font/montserrat_arabic_regular"
+                            android:text="@string/don_t_have_an_account"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/_1sdp"
+                            android:fontFamily="@font/montserrat_arabic_semibold"
+                            android:text="@string/sign_up"
+                            android:textColor="@color/theme"
+                            android:textSize="10sp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginHorizontal="@dimen/_8sdp"
+                        android:layout_marginTop="@dimen/_13sdp"
+                        android:text="@string/powerd_by_jmtools_2023_all_rights_reserved_version_number_v_1_0"
+                        android:textColor="@color/light_black"
+                        android:textSize="10sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/ivJewellery"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/img_jewellery_en" />
+
+    </LinearLayout>
+
+</LinearLayout>

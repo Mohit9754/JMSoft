@@ -2,7 +2,6 @@ package com.jmsoft.basic.UtilityTools
 
 import com.google.android.gms.maps.model.LatLng
 
-
 interface Constants {
     companion object {
         const val cameraZoom: Float = 20f
@@ -71,6 +70,7 @@ interface Constants {
         const val Default_Country_Region = "IN"
         const val Nigeria_Country_Region = "NG"
         const val english = "en"
+        const val arabic = "ar"
         const val forgotPassword = "forgot-password"
         const val Yes = "Yes"
         const val Android = "Android"
@@ -92,6 +92,7 @@ interface Constants {
         const val Mobile = "Mobile"
         const val android = "android"
         const val userType = "userType"
+        const val connected = "Connected"
 
         //String device_type = "device_type";
         const val Take_Photo = "Take Photo"
@@ -199,6 +200,11 @@ interface Constants {
         const val buildingNumber = "buildingNumber"
         const val landMark = "landMark"
         const val webUrl = "webUrl"
+
+        // State
+
+        const val active = "Active"
+        const val inActive = "Inactive"
 
 
     }

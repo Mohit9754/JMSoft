@@ -3,9 +3,17 @@ package com.jmsoft.main.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.jmsoft.R
+import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.UtilityTools.Utils
 
-class SplashActivity: AppCompatActivity() {
+/**
+ * Splash Activity
+ *
+ * Checks if session present or not
+ *
+ */
+
+class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -17,7 +25,15 @@ class SplashActivity: AppCompatActivity() {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 } finally {
-                    Utils.I_clear(this@SplashActivity, LoginActivity::class.java, null)
+
+                    // If Session present then intent to Dashboard Activity
+                    if (Utils.IS_LOGIN()) {
+                        Utils.I_clear(this@SplashActivity, DashboardActivity::class.java, null)
+                    } else {
+
+                        //Intent to login Activity with clear back Stack
+                        Utils.I_clear(this@SplashActivity, LoginActivity::class.java, null)
+                    }
                 }
             }
         }

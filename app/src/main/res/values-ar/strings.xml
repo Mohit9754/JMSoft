@@ -25,4 +25,93 @@
     <string name="passwordStrong">يجب أن تحتوي كلمة المرور على كل من السفلى &amp; أحرف كبيرة ورقم واحد ورمز خاص واحد &amp; 8 أحرف على الأقل.</string>
     <string name="retry">أعد المحاولة</string>
     <string name="apply">يتقدم</string>
+    <string name="welcome_back">مرحبًا بعودتك</string>
+    <string name="enter_your_credentials_to_access_your_account">أدخل بيانات الاعتماد الخاصة بك للوصول إلى حسابك</string>
+    <string name="email_address">عنوان البريد الإلكتروني</string>
+    <string name="enter_your_email_address">أدخل عنوان بريدك الالكتروني</string>
+    <string name="password">كلمة المرور</string>
+    <string name="enter_your_password">ادخل رقمك السري</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="don_t_have_an_account">ليس لديك حساب ؟</string>
+    <string name="sign_up">اشتراك</string>
+    <string name="powerd_by_jmtools_2023_all_rights_reserved_version_number_v_1_0">مشغل بواسطة <b>JMTOOLS 2023</b>. كل الحقوق محفوظة. رقم الإصدار الخامس 1.0</string>
+    <string name="first_name">الاسم الأول</string>
+    <string name="enter_your_first_name">أدخل اسمك الأول</string>
+    <string name="last_name">اسم العائلة</string>
+    <string name="enter_your_last_name">أدخل اسمك الأخير</string>
+    <string name="welcome">مرحباً</string>
+    <string name="phone_number">رقم التليفون</string>
+    <string name="enter_your_phone_number">أدخل رقم هاتفك</string>
+    <string name="already_have_an_account">هل لديك حساب؟</string>
+    <string name="catalog">فهرس</string>
+    <string name="purchasing">شراء</string>
+    <string name="reports">التقارير</string>
+    <string name="audit">مراجعة</string>
+    <string name="inventory">جرد</string>
+    <string name="settings">إعدادات</string>
+    <string name="vendors_and_customers">البائعين والعملاء</string>
+    <string name="device_management">إدارة الجهاز</string>
+    <string name="logout">تسجيل خروج</string>
+    <string name="royal_gold_ring">خاتم الذهب الملكي</string>
+    <string name="weight">وزن :</string>
+    <string name="_2_5_g">2.5 جرام</string>
+    <string name="type">يكتب :</string>
+    <string name="gold">ذهب</string>
+    <string name="cat">فئة</string>
+    <string name="rings">خواتم</string>
+    <string name="carat">قيراط :</string>
+    <string name="_0_75">0.75</string>
+    <string name="_35_000">35.000</string>
+    <string name="dh">درهم</string>
+    <string name="rfid_scanner">ماسح ضوئي RFID</string>
+    <string name="id_number">رقم الهوية -</string>
+    <string name="inactive">غير نشط</string>
+    <string name="add_device">اضف جهاز</string>
+    <string name="_123456">مائة وثلاثة وعشرون ألف وأربعة مائة وستة وخمسون</string>
+    <string name="rfid_tag_printer">طابعة علامات RFID</string>
+    <string name="ticket_printer">طابعة التذاكر</string>
+    <string name="conform_password">مطابقة كلمة المرور</string>
+    <string name="available_devices">الأجهزة المتاحة</string>
+    <string name="connected">متصل</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </resources>

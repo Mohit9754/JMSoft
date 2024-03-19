@@ -15,6 +15,7 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -32,6 +33,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.text.format.DateFormat
 import android.util.Base64
@@ -56,6 +58,7 @@ import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.loadingButton.LoadingButton
 import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.Database.UserDataModel
+import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.databinding.AlertdialogBinding
 import com.jmsoft.databinding.ItemCustomToastBinding
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
@@ -74,6 +77,50 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object Utils {
+
+    // Set the App language
+//    fun setLocale(context: Context, languageCode: String) {
+//        val locale = Locale(languageCode)
+//        Locale.setDefault(locale)
+//        val config = Configuration()
+//        config.locale = locale
+//        context.resources.updateConfiguration(config, context.resources.displayMetrics)
+//    }
+
+    fun setLocale(context: Context, languageCode: String) {
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+        val configuration = context.resources.configuration
+        configuration.setLocale(locale)
+        context.resources.updateConfiguration(configuration, context.resources.displayMetrics)
+
+        // Recreate the current activity
+        if (context is Activity) {
+            context.recreate()
+
+            // Set layout direction after recreation
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                context.window.decorView.layoutDirection = if (isRTL(languageCode)) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
+            }
+        }
+    }
+
+    // Function to check if the language is right-to-left (RTL)
+    fun isRTL(languageCode: String): Boolean {
+        val locale = Locale(languageCode)
+        val directionality = Character.getDirectionality(locale.displayName[0])
+        return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT ||
+                directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC
+    }
+
+
+    // Extract the  current language
+    fun getCurrentLanguage(): String {
+        // Retrieve the default locale
+        val locale = Locale.getDefault()
+        return locale.language
+    }
+
     @JvmStatic
     fun GetSession(): UserDataModel {
         return UserDataHelper.instance.list[0]
@@ -83,6 +130,12 @@ object Utils {
     fun IS_LOGIN(): Boolean {
         return UserDataHelper.instance.list.size > 0
     }
+
+    @JvmStatic
+    fun LOGOUT() {
+        UserDataHelper.instance.deleteAll()
+    }
+
     @JvmStatic
     fun I(cx: Context, startActivity: Class<*>?, data: Bundle?) {
         val i = Intent(cx, startActivity)
@@ -195,7 +248,6 @@ object Utils {
             AnimationUtils.loadAnimation(context, animationID)
         view.startAnimation(animation)
     }
-
 
     @Throws(IOException::class)
     fun createImageFile(c: Context): File {
@@ -615,6 +667,7 @@ object Utils {
         }
         return key
     }
+
     @JvmStatic
     fun I_finish(cx: Context, startActivity: Class<*>?, data: Bundle?) {
         val i = Intent(cx, startActivity)
@@ -622,6 +675,7 @@ object Utils {
         if (data != null) i.putExtras(data)
         cx.startActivity(i)
     }
+
     @JvmStatic
     fun I_clear(cx: Context, startActivity: Class<*>?, data: Bundle?) {
         val i = Intent(cx, startActivity)
@@ -629,6 +683,7 @@ object Utils {
         if (data != null) i.putExtras(data)
         cx.startActivity(i)
     }
+
     @JvmStatic
     fun E(msg: String?) {
         /*if (Const.Development == Constants.Debug) {

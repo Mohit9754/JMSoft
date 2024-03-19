@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="1dp"
+    android:layout_marginBottom="@dimen/_7sdp"
+    app:cardElevation="0dp"
+    android:id="@+id/mcvDevice"
+    app:cardBackgroundColor="@color/mcv_background_color"
+    app:cardCornerRadius="@dimen/_5sdp"
+    tools:ignore="MissingDefaultResource">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/_5sdp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcvIconDevice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            app:cardBackgroundColor="@color/theme"
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/_4sdp">
+
+            <ImageView
+                android:id="@+id/ivDeviceIcon"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_12sdp"
+                android:layout_marginHorizontal="@dimen/_3sdp"
+                android:layout_marginVertical="@dimen/_3sdp"
+                android:src="@drawable/icon_scanner" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/mcvIconDevice"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvDeviceName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_arabic_semibold"
+                android:text="@string/rfid_scanner"
+                android:textSize="10sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/_2sdp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_arabic_regular"
+                    android:text="@string/id_number"
+                    android:textColor="@color/device_text_color"
+                    android:textSize="9sp" />
+
+                <TextView
+                    android:id="@+id/tvMacAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_1sdp"
+                    android:fontFamily="@font/montserrat_arabic_regular"
+                    android:text="@string/_123456"
+                    android:textColor="@color/device_text_color"
+                    android:textSize="9sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_4sdp"
+                android:gravity="center_vertical"
+                android:id="@+id/llStatus"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvIndicator"
+                    android:layout_width="@dimen/_3sdp"
+                    android:layout_height="@dimen/_3sdp"
+                    android:layout_marginEnd="1dp"
+                    app:cardBackgroundColor="@color/dark_red"
+                    app:cardCornerRadius="@dimen/_5sdp" />
+
+                <TextView
+                    android:id="@+id/tvStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_1sdp"
+                    android:fontFamily="@font/montserrat_arabic_regular"
+                    android:text="@string/inactive"
+                    android:textColor="@color/dark_red"
+                    android:textSize="9sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="@dimen/_18sdp"
+            android:layout_height="@dimen/_18sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/_minus3sdp"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:id="@+id/ivDelete"
+            android:padding="@dimen/_3sdp"
+            android:src="@drawable/icon_delete" />
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>
