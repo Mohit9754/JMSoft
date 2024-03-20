@@ -84,6 +84,7 @@ interface Constants {
         const val loginDeviceType = "loginDeviceType"
         const val device_type = "device_type"
         const val user = "user"
+        const val admin = "admin"
         const val loginType = "loginType"
         const val studentName = "studentName"
         const val name = "name"
@@ -93,6 +94,7 @@ interface Constants {
         const val android = "android"
         const val userType = "userType"
         const val connected = "Connected"
+
 
         //String device_type = "device_type";
         const val Take_Photo = "Take Photo"
@@ -205,6 +207,9 @@ interface Constants {
 
         const val active = "Active"
         const val inActive = "Inactive"
+        const val invalid_Credentials = "Invalid Credentials"
+        const val mobile_Number_Already_Exist = "Mobile Number Already Exist"
+        const val email_Already_Exist = "Email Already Exist"
 
 
     }

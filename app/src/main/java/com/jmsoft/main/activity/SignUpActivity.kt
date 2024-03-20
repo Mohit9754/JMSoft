@@ -19,13 +19,18 @@ import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.Database.UserDataModel
+import com.jmsoft.basic.UtilityTools.Constants
+import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
+import com.jmsoft.basic.UtilityTools.Constants.Companion.email_Already_Exist
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
 import com.jmsoft.basic.UtilityTools.Constants.Companion.firstName
 import com.jmsoft.basic.UtilityTools.Constants.Companion.lastName
+import com.jmsoft.basic.UtilityTools.Constants.Companion.mobile_Number_Already_Exist
 import com.jmsoft.basic.UtilityTools.Constants.Companion.password
 import com.jmsoft.basic.UtilityTools.Constants.Companion.phoneNumber
+import com.jmsoft.basic.UtilityTools.Constants.Companion.user
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation
@@ -97,6 +102,9 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun init() {
+
+        //Set Image for current Language
+        Utils.setImageForCurrentLanguage(binding.ivJewellery!!)
 
         //Setting  Click on SignUp Button
         binding.mcvSignUp?.setOnClickListener(activity)
@@ -187,18 +195,42 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     // Store the data in the local database
     private fun signUp() {
 
-        val userDataModel = UserDataModel()
-        userDataModel.userType = "1"
-        userDataModel.firstName = binding.etFirstName?.text.toString()
-        userDataModel.lastName = binding.etLastName?.text.toString()
-        userDataModel.email = binding.etEmailAddress?.text.toString()
-        userDataModel.phoneNumber = binding.etPhoneNumber?.text.toString()
-        userDataModel.profilePicture = ""
-        userDataModel.token = ""
+        val instance = UserDataHelper.instance
 
-        UserDataHelper.instance.insertData(userDataModel)
-        Utils.I_clear(activity,DashboardActivity::class.java,null)
+        if (!instance.isPhoneNumberExist(binding.etPhoneNumber?.text.toString().trim())){
 
+            if (!instance.isEmailExist(binding.etEmailAddress?.text.toString().trim())){
+
+                val userDataModel = UserDataModel()
+
+                userDataModel.userType = if (instance.isUserTableEmpty()) admin  else user
+
+                userDataModel.firstName = binding.etFirstName?.text.toString().trim()
+                userDataModel.lastName = binding.etLastName?.text.toString().trim()
+                userDataModel.email = binding.etEmailAddress?.text.toString().trim()
+                userDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
+                userDataModel.profileName = ""
+                userDataModel.token = ""
+                userDataModel.password = binding.etPassword?.text.toString().trim()
+
+                instance.insetData(userDataModel)
+                Utils.I_clear(activity,LoginActivity::class.java,null)
+
+            }
+            else {
+                showAlreadyExistError(binding.tvEmailAddressError!!, email_Already_Exist)
+            }
+        }
+        else {
+            showAlreadyExistError(binding.tvPhoneNumberError!!, mobile_Number_Already_Exist)
+        }
+    }
+    // Showing email and phone number already exist error
+    fun showAlreadyExistError(textView: TextView,msg:String){
+
+        textView.visibility  = View.VISIBLE
+        textView.text  = msg
+        textView.startAnimation(AnimationUtils.loadAnimation(activity,R.anim.top_to_bottom))
     }
 
     //Validating Sign Up details

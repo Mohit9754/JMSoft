@@ -17,6 +17,7 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -68,6 +69,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileInputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.security.MessageDigest
@@ -75,17 +77,32 @@ import java.security.NoSuchAlgorithmException
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.random.Random
 
 object Utils {
 
-    // Set the App language
-//    fun setLocale(context: Context, languageCode: String) {
-//        val locale = Locale(languageCode)
-//        Locale.setDefault(locale)
-//        val config = Configuration()
-//        config.locale = locale
-//        context.resources.updateConfiguration(config, context.resources.displayMetrics)
-//    }
+    fun getImageFileName():String{
+
+        return Random.nextInt(1, 1001).toString()+Random.nextInt(1,1001).toString()+Random.nextInt(1,1000).toString()+Random.nextInt(1,1000).toString()
+    }
+    fun saveToInternalStorage(context: Context, bitmapImage: Bitmap, imageFileName: String): String {
+        context.openFileOutput(imageFileName, Context.MODE_PRIVATE).use { fos ->
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 25, fos)
+        }
+        return context.filesDir.absolutePath
+    }
+
+    fun getImageFromInternalStorage(context: Context, imageFileName: String): Bitmap? {
+        val directory = context.filesDir
+        val file = File(directory, imageFileName)
+        return BitmapFactory.decodeStream(FileInputStream(file))
+    }
+
+    fun deleteImageFromInternalStorage(context: Context, imageFileName: String): Boolean {
+        val dir = context.filesDir
+        val file = File(dir, imageFileName)
+        return file.delete()
+    }
 
     fun setLocale(context: Context, languageCode: String) {
         val locale = Locale(languageCode)
@@ -103,6 +120,7 @@ object Utils {
                 context.window.decorView.layoutDirection = if (isRTL(languageCode)) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
             }
         }
+
     }
 
     // Function to check if the language is right-to-left (RTL)
@@ -111,6 +129,21 @@ object Utils {
         val directionality = Character.getDirectionality(locale.displayName[0])
         return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT ||
                 directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC
+    }
+
+    // set Images accounding to current language
+    fun setImageForCurrentLanguage(imageView: ImageView){
+
+        val lang = getCurrentLanguage()
+
+        if (lang == arabic){
+            imageView.setImageDrawable(null)
+            imageView.setImageResource(R.drawable.img_jewellery_ar)
+
+        } else {
+            imageView.setImageDrawable(null)
+            imageView.setImageResource(R.drawable.img_jewellery_en)
+        }
     }
 
 
@@ -133,7 +166,7 @@ object Utils {
 
     @JvmStatic
     fun LOGOUT() {
-        UserDataHelper.instance.deleteAll()
+        UserDataHelper.instance.deleteSession()
     }
 
     @JvmStatic
@@ -418,7 +451,7 @@ object Utils {
     }
 
     fun UnAuthorizationToken(cx: Context) {
-        UserDataHelper.instance.deleteAll()
+        UserDataHelper.instance.deleteSession()
         //  I_clear(cx, LoginActivity::class.java, null)
     }
 

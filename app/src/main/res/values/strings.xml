@@ -73,5 +73,14 @@
     <string name="conform_password">Conform Password</string>
     <string name="available_devices">Available Devices</string>
     <string name="connected">Connected</string>
+    <string name="take_photo">Take photo</string>
+    <string name="choose_existing_photo">Choose existing photo</string>
+    <string name="are_you_sure_you_want_to_logout">Are you Sure, you want to LogOut ?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="choose_an_image_source">Choose an Image Source</string>
+    <string name="to_proceed_with_adding_or_updating_your_profile_n_picture_please_select_an_image_source">To proceed with adding or updating your profile \n picture, please select an image source</string>
+    <string name="choose_from_photo_library">Choose from Photo Library</string>
+    <string name="capture_with_camera">Capture with Camera</string>
 
 </resources>

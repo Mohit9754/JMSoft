@@ -42,7 +42,7 @@
 
                         <ImageView
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:src="@drawable/profile" />
 
                     </LinearLayout>
@@ -54,6 +54,7 @@
                     android:layout_height="@dimen/_12sdp"
                     android:layout_marginTop="@dimen/_minus7sdp"
                     android:layout_marginBottom="1dp"
+                    android:id="@+id/mcvEditProfile"
                     app:cardCornerRadius="@dimen/_8sdp">
 
                     <LinearLayout
@@ -77,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_4sdp"
                 android:fontFamily="@font/montserrat_arabic_semibold"
-                android:text="Rashmi Rajput"
+                android:id="@+id/tvfullName"
                 android:textColor="@color/black"
                 android:textSize="11sp" />
 

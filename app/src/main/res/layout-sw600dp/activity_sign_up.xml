@@ -144,9 +144,10 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/_1sdp"
+                                        android:layout_marginTop="@dimen/_1sdp"
                                         android:fontFamily="@font/montserrat_arabic_regular"
                                         android:textColor="@color/red"
-                                        android:textSize="8sp"
+                                        android:textSize="10sp"
                                         android:visibility="gone" />
 
                                 </LinearLayout>
@@ -199,9 +200,10 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/_1sdp"
+                                        android:layout_marginTop="@dimen/_1sdp"
                                         android:fontFamily="@font/montserrat_arabic_regular"
                                         android:textColor="@color/red"
-                                        android:textSize="8sp"
+                                        android:textSize="10sp"
                                         android:visibility="gone" />
 
                                 </LinearLayout>
@@ -257,9 +259,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_1sdp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
-                                    android:textSize="8sp"
+                                    android:textSize="10sp"
                                     android:visibility="gone" />
 
                             </LinearLayout>
@@ -328,6 +331,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_1sdp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
                                     android:textSize="10sp"
@@ -368,8 +372,8 @@
                                         android:id="@+id/etPassword"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:background="@null"
                                         android:layout_marginEnd="@dimen/_15sdp"
+                                        android:background="@null"
                                         android:fontFamily="@font/montserrat_arabic_medium"
                                         android:hint="@string/enter_your_password"
                                         android:inputType="textPassword"
@@ -379,13 +383,13 @@
                                         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
                                     <ImageView
+                                        android:id="@+id/ivPasswordVisibility"
                                         android:layout_width="@dimen/_15sdp"
                                         android:layout_height="@dimen/_15sdp"
-                                        android:padding="@dimen/_5sdp"
-                                        android:id="@+id/ivPasswordVisibility"
                                         android:layout_alignParentEnd="true"
-                                        android:src="@drawable/icon_show"
-                                        android:layout_centerVertical="true" />
+                                        android:layout_centerVertical="true"
+                                        android:padding="@dimen/_4sdp"
+                                        android:src="@drawable/icon_show" />
 
                                 </RelativeLayout>
 
@@ -400,9 +404,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_1sdp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
-                                    android:textSize="8sp"
+                                    android:textSize="10sp"
                                     android:visibility="gone" />
 
                             </LinearLayout>
@@ -440,8 +445,8 @@
                                         android:id="@+id/etConformPassword"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:background="@null"
                                         android:layout_marginEnd="@dimen/_15sdp"
+                                        android:background="@null"
                                         android:fontFamily="@font/montserrat_arabic_medium"
                                         android:hint="@string/enter_your_password"
                                         android:inputType="textPassword"
@@ -451,13 +456,13 @@
                                         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
                                     <ImageView
+                                        android:id="@+id/ivConformPasswordVisibility"
                                         android:layout_width="@dimen/_15sdp"
                                         android:layout_height="@dimen/_15sdp"
-                                        android:padding="@dimen/_5sdp"
-                                        android:id="@+id/ivConformPasswordVisibility"
                                         android:layout_alignParentEnd="true"
-                                        android:src="@drawable/icon_show"
-                                        android:layout_centerVertical="true" />
+                                        android:layout_centerVertical="true"
+                                        android:padding="@dimen/_4sdp"
+                                        android:src="@drawable/icon_show" />
 
                                 </RelativeLayout>
 
@@ -472,9 +477,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_1sdp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
-                                    android:textSize="8sp"
+                                    android:textSize="10sp"
                                     android:visibility="gone" />
 
                             </LinearLayout>

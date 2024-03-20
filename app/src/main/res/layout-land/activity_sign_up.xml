@@ -146,7 +146,8 @@
                                         android:layout_marginStart="@dimen/_1sdp"
                                         android:fontFamily="@font/montserrat_arabic_regular"
                                         android:textColor="@color/red"
-                                        android:textSize="8sp"
+                                        android:layout_marginTop="@dimen/_1sdp"
+                                        android:textSize="10sp"
                                         android:visibility="gone" />
 
                                 </LinearLayout>
@@ -201,7 +202,8 @@
                                         android:layout_marginStart="@dimen/_1sdp"
                                         android:fontFamily="@font/montserrat_arabic_regular"
                                         android:textColor="@color/red"
-                                        android:textSize="8sp"
+                                        android:textSize="10sp"
+                                        android:layout_marginTop="@dimen/_1sdp"
                                         android:visibility="gone" />
 
                                 </LinearLayout>
@@ -259,7 +261,8 @@
                                     android:layout_marginStart="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
-                                    android:textSize="8sp"
+                                    android:textSize="10sp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:visibility="gone" />
 
                             </LinearLayout>
@@ -331,6 +334,7 @@
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
                                     android:textSize="10sp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:visibility="gone" />
 
                             </LinearLayout>
@@ -368,8 +372,8 @@
                                         android:id="@+id/etPassword"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginEnd="@dimen/_15sdp"
                                         android:background="@null"
+                                        android:layout_marginEnd="@dimen/_15sdp"
                                         android:fontFamily="@font/montserrat_arabic_medium"
                                         android:hint="@string/enter_your_password"
                                         android:inputType="textPassword"
@@ -379,8 +383,8 @@
                                         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
                                     <ImageView
-                                        android:layout_width="@dimen/_20sdp"
-                                        android:layout_height="@dimen/_20sdp"
+                                        android:layout_width="@dimen/_15sdp"
+                                        android:layout_height="@dimen/_15sdp"
                                         android:padding="@dimen/_5sdp"
                                         android:id="@+id/ivPasswordVisibility"
                                         android:layout_alignParentEnd="true"
@@ -402,7 +406,8 @@
                                     android:layout_marginStart="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
-                                    android:textSize="8sp"
+                                    android:textSize="10sp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:visibility="gone" />
 
                             </LinearLayout>
@@ -451,8 +456,8 @@
                                         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
                                     <ImageView
-                                        android:layout_width="@dimen/_20sdp"
-                                        android:layout_height="@dimen/_20sdp"
+                                        android:layout_width="@dimen/_15sdp"
+                                        android:layout_height="@dimen/_15sdp"
                                         android:padding="@dimen/_5sdp"
                                         android:id="@+id/ivConformPasswordVisibility"
                                         android:layout_alignParentEnd="true"
@@ -474,12 +479,14 @@
                                     android:layout_marginStart="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
-                                    android:textSize="8sp"
+                                    android:textSize="10sp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:visibility="gone" />
 
                             </LinearLayout>
 
                         </LinearLayout>
+
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/mcvSignUp"

@@ -52,6 +52,8 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     private lateinit var receiver: BroadcastReceiver
     private var isReceiverRegistered = false
 
+
+
     // Bluetooth Intent for turn on the bluetooth
     private var bluetoothIntent: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

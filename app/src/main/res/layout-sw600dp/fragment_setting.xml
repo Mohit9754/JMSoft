@@ -27,33 +27,36 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <com.google.android.material.card.MaterialCardView
+                <LinearLayout
                     android:layout_width="@dimen/_43sdp"
                     android:layout_height="@dimen/_43sdp"
-                    app:cardBackgroundColor="@android:color/transparent"
-                    app:cardCornerRadius="@dimen/_25sdp"
-                    app:cardElevation="0dp">
+                    android:background="@drawable/dotted_stroke"
+                    android:padding="@dimen/_3sdp">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/dotted_stroke"
-                        android:padding="@dimen/_4sdp">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:cardBackgroundColor="@android:color/transparent"
+                        app:cardCornerRadius="@dimen/_25sdp"
+                        app:cardElevation="0dp">
 
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/profile" />
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/ivProfile"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/profile" />
 
-                    </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
-                </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="@dimen/_12sdp"
                     android:layout_height="@dimen/_12sdp"
                     android:layout_marginTop="@dimen/_minus7sdp"
                     android:layout_marginBottom="1dp"
+                    android:id="@+id/mcvEditProfile"
                     app:cardCornerRadius="@dimen/_8sdp">
 
                     <LinearLayout
@@ -77,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_4sdp"
                 android:fontFamily="@font/montserrat_arabic_semibold"
-                android:text="Rashmi Rajput"
+                android:id="@+id/tvfullName"
                 android:textColor="@color/black"
                 android:textSize="11sp" />
 
