@@ -171,7 +171,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
         dialog.setCanceledOnTouchOutside(true)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.item_dialog_profile)
-        dialog.findViewById<LinearLayout>(R.id.llTakePhoto).setOnClickListener {
+        dialog.findViewById<MaterialCardView>(R.id.mcvCamera).setOnClickListener {
 
             //Camera Launcher
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -179,7 +179,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
             dialog.dismiss()
 
         }
-        dialog.findViewById<LinearLayout>(R.id.llChoosePhoto).setOnClickListener {
+        dialog.findViewById<MaterialCardView>(R.id.mcvGallery).setOnClickListener {
 
             //Gallery Launcher
             val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)

@@ -18,37 +18,83 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:gravity="center_horizontal"
             android:id="@+id/llTakePhoto">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_6sdp"
-                android:layout_marginVertical="@dimen/_8sdp"
-                android:fontFamily="@font/montserrat_arabic_regular"
-                android:text="@string/take_photo"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/montserrat_arabic_bold"
+                android:text="@string/choose_an_image_source"
                 android:textSize="12sp"
                 />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_below="@+id/llTakePhoto"
-            android:id="@+id/llChoosePhoto">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_6sdp"
-                android:layout_marginBottom="@dimen/_8sdp"
-                android:fontFamily="@font/montserrat_arabic_regular"
-                android:text="@string/choose_existing_photo"
+                android:layout_marginVertical="@dimen/_8sdp"
+                android:textAlignment="center"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:fontFamily="@font/montserrat_arabic_bold"
+                android:text="@string/to_proceed_with_adding_or_updating_your_profile_n_picture_please_select_an_image_source"
                 android:textSize="12sp" />
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvGallery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:strokeWidth="0.7dp"
+                app:strokeColor="@color/text_color"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/_4sdp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/montserrat_arabic_semibold"
+                    android:paddingHorizontal="@dimen/_35sdp"
+                    android:paddingVertical="@dimen/_6sdp"
+                    android:text="@string/choose_from_photo_library"
+                    android:textColor="@color/black"
+                    android:textSize="10sp" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvCamera"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginBottom="@dimen/_8sdp"
+                app:strokeColor="@color/theme"
+                app:cardBackgroundColor="@color/theme"
+                app:cardCornerRadius="@dimen/_4sdp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/montserrat_arabic_semibold"
+                    android:paddingHorizontal="@dimen/_35sdp"
+                    android:paddingVertical="@dimen/_6sdp"
+                    android:text="@string/capture_with_camera"
+                    android:textColor="@color/white"
+                    android:textSize="10sp" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+
+
+
         </LinearLayout>
+
+
 
     </RelativeLayout>
 
