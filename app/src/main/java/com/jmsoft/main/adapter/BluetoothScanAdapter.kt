@@ -2,9 +2,7 @@ package com.jmsoft.main.adapter
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothProfile
 import android.bluetooth.BluetoothSocket
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -20,9 +18,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.UtilityTools.BluetoothUtils
-import com.jmsoft.basic.UtilityTools.Constants
-import com.jmsoft.basic.UtilityTools.Constants.Companion.active
 import com.jmsoft.basic.UtilityTools.Constants.Companion.connected
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemDeviceListBinding
@@ -61,7 +56,7 @@ class BluetoothScanAdapter(
         val dialog = Dialog(context)
         dialog.setCanceledOnTouchOutside(false)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.item_connecting)
+        dialog.setContentView(R.layout.item_dialog_connecting)
         dialog.findViewById<TextView>(R.id.tvDeviceName).text = deviceName
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.findViewById<MaterialCardView>(R.id.mcvOK).setOnClickListener {

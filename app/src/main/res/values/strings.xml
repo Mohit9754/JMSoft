@@ -73,5 +73,10 @@
     <string name="conform_password">Conform Password</string>
     <string name="available_devices">Available Devices</string>
     <string name="connected">Connected</string>
+    <string name="take_photo">Take photo</string>
+    <string name="choose_existing_photo">Choose existing photo</string>
+    <string name="are_you_sure_you_want_to_logout">Are you Sure, you want to LogOut ?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>

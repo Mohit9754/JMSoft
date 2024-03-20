@@ -30,10 +30,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
+import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
+import com.jmsoft.basic.UtilityTools.Constants.Companion.invalid_Credentials
 import com.jmsoft.basic.UtilityTools.Constants.Companion.password
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.validation.ResultReturn
@@ -52,6 +54,7 @@ import java.util.Locale
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private val activity: Activity = this@LoginActivity
+
     // For Showing the error
     private var errorValidationModels: MutableList<ValidationModel> = ArrayList()
     private lateinit var binding: ActivityLoginBinding
@@ -124,8 +127,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun init() {
 
-        binding.ivJewellery?.setImageDrawable(null)
-        binding.ivJewellery?.setImageResource(R.drawable.img_jewellery)
+        //Set Image for current Language
+        Utils.setImageForCurrentLanguage(binding.ivJewellery!!)
+
         // Setting the Selector on Material Card View when edittext has focus
         setFocusChangeLis(binding.etEmailAddress!!, binding.mcvEmailAddress!!)
         setFocusChangeLis(binding.etPassword!!, binding.mcvPassword!!)
@@ -246,7 +250,23 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             validation?.CheckValidation(activity, errorValidationModels)
         if (resultReturn?.aBoolean == true) {
 
-            Utils.I_clear(activity,DashboardActivity::class.java,null)
+            val instance = UserDataHelper.instance
+
+            if (instance.isVaidUser(
+                    binding.etEmailAddress?.text.toString().trim(),
+                    binding.etPassword?.text.toString().trim()
+                )
+            ) {
+
+                val userDataModel = instance.getUserDetail(
+                    binding.etEmailAddress?.text.toString().trim()
+                )
+                instance.insertDataInSessionTable(userDataModel)
+                Utils.I_clear(activity, DashboardActivity::class.java, null)
+            } else {
+//                Toast.makeText(activity, invalid_Credentials,Toast.LENGTH_SHORT).show()
+                Utils.T(activity, invalid_Credentials)
+            }
 
         } else {
             resultReturn?.errorTextView?.visibility = View.VISIBLE
@@ -265,8 +285,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-
-
     //Handles All the Clicks
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onClick(v: View?) {
@@ -283,31 +301,29 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
             if (lang == english) {
                 Utils.setLocale(activity, arabic)
-//                binding.ivJewellery?.setImageDrawable(getDrawable(R.drawable.img_jewellery_ar))
-//                activity.recreate()
 
             } else {
                 Utils.setLocale(activity, english)
-//                binding.ivJewellery?.setImageDrawable(getDrawable(R.drawable.img_jewellery_en))
-//                activity.recreate()
             }
         } else if (v == binding.llSignUp) {
-            Utils.I_clear(activity,SignUpActivity::class.java,null)
+            Utils.I_clear(activity, SignUpActivity::class.java, null)
         }
 
         //Show or Hide password
-        else if(v == binding.ivPasswordVisibility){
+        else if (v == binding.ivPasswordVisibility) {
 
             if (!isPasswordVisible) {
                 isPasswordVisible = true
                 binding.ivPasswordVisibility?.setImageResource(R.drawable.icon_hide)
-                binding.etPassword?.transformationMethod  = HideReturnsTransformationMethod.getInstance()
+                binding.etPassword?.transformationMethod =
+                    HideReturnsTransformationMethod.getInstance()
                 binding.etPassword?.setSelection(binding.etPassword!!.length())
 
             } else {
                 isPasswordVisible = false
                 binding.ivPasswordVisibility?.setImageResource(R.drawable.icon_show)
-                binding.etPassword?.transformationMethod  = PasswordTransformationMethod.getInstance()
+                binding.etPassword?.transformationMethod =
+                    PasswordTransformationMethod.getInstance()
                 binding.etPassword?.setSelection(binding.etPassword!!.length())
             }
 

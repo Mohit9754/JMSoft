@@ -73,6 +73,11 @@
     <string name="conform_password">مطابقة كلمة المرور</string>
     <string name="available_devices">الأجهزة المتاحة</string>
     <string name="connected">متصل</string>
+    <string name="take_photo">تصوير</string>
+    <string name="choose_existing_photo">اختر الصورة الموجودة</string>
+    <string name="are_you_sure_you_want_to_logout">هل أنت متأكد أنك تريد تسجيل الخروج ؟</string>
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
 
 
 
