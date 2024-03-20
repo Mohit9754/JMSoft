@@ -146,7 +146,8 @@
                                         android:layout_marginStart="@dimen/_1sdp"
                                         android:fontFamily="@font/montserrat_arabic_regular"
                                         android:textColor="@color/red"
-                                        android:textSize="8sp"
+                                        android:layout_marginTop="@dimen/_1sdp"
+                                        android:textSize="10sp"
                                         android:visibility="gone" />
 
                                 </LinearLayout>
@@ -201,7 +202,8 @@
                                         android:layout_marginStart="@dimen/_1sdp"
                                         android:fontFamily="@font/montserrat_arabic_regular"
                                         android:textColor="@color/red"
-                                        android:textSize="8sp"
+                                        android:textSize="10sp"
+                                        android:layout_marginTop="@dimen/_1sdp"
                                         android:visibility="gone" />
 
                                 </LinearLayout>
@@ -259,7 +261,8 @@
                                     android:layout_marginStart="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
-                                    android:textSize="8sp"
+                                    android:textSize="10sp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:visibility="gone" />
 
                             </LinearLayout>
@@ -331,6 +334,7 @@
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
                                     android:textSize="10sp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:visibility="gone" />
 
                             </LinearLayout>
@@ -402,7 +406,8 @@
                                     android:layout_marginStart="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
-                                    android:textSize="8sp"
+                                    android:textSize="10sp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:visibility="gone" />
 
                             </LinearLayout>
@@ -474,7 +479,8 @@
                                     android:layout_marginStart="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
-                                    android:textSize="8sp"
+                                    android:textSize="10sp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:visibility="gone" />
 
                             </LinearLayout>

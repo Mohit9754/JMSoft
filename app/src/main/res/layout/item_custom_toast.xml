@@ -11,14 +11,12 @@
         android:layout_height="@dimen/_12sdp"
         android:background="@android:color/transparent"/>
 
-
-
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:id="@+id/mcvToast"
-        app:cardBackgroundColor="@color/theme"
+        app:cardBackgroundColor="@color/custom_toast_color"
         app:cardCornerRadius="@dimen/_6sdp"
         android:layout_margin="1dp"
         app:cardElevation="1dp">
@@ -45,6 +43,7 @@
                 android:layout_height="@dimen/_16sdp"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/ivCheckBox"
+                android:src="@drawable/logo_small"
                 android:visibility="visible" />
 
 
