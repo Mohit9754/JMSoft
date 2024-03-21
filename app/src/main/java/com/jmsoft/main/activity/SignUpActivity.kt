@@ -23,11 +23,11 @@ import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
-import com.jmsoft.basic.UtilityTools.Constants.Companion.email_Already_Exist
+
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
 import com.jmsoft.basic.UtilityTools.Constants.Companion.firstName
 import com.jmsoft.basic.UtilityTools.Constants.Companion.lastName
-import com.jmsoft.basic.UtilityTools.Constants.Companion.mobile_Number_Already_Exist
+
 import com.jmsoft.basic.UtilityTools.Constants.Companion.password
 import com.jmsoft.basic.UtilityTools.Constants.Companion.phoneNumber
 import com.jmsoft.basic.UtilityTools.Constants.Companion.user
@@ -197,18 +197,16 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     // Store the data in the local database
     private fun signUp() {
 
-        val instance = UserDataHelper.instance
-
         //Checks if Phone Number Already Exist
-        if (!instance.isPhoneNumberExist(binding.etPhoneNumber?.text.toString().trim())){
+        if (!Utils.isPhoneNumberExist(binding.etPhoneNumber?.text.toString().trim())){
 
             //Checks if Email Already Exist
-            if (!instance.isEmailExist(binding.etEmailAddress?.text.toString().trim())){
+            if (!Utils.isEmailExist(binding.etEmailAddress?.text.toString().trim())){
 
                 val userDataModel = UserDataModel()
 
                 //Checks if User Table Empty
-                userDataModel.userType = if (instance.isUserTableEmpty()) admin  else user
+                userDataModel.userType = if (Utils.isUserTableEmpty()) admin  else user
 
                 userDataModel.firstName = binding.etFirstName?.text.toString().trim()
                 userDataModel.lastName = binding.etLastName?.text.toString().trim()
@@ -220,19 +218,21 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
                 userDataModel.password = binding.etPassword?.text.toString().trim()
 
                 //Insert Data in the User Table
-                instance.insetDataInUserTable(userDataModel)
+                Utils.insetDataInUserTable(userDataModel)
                 //Intent to Login Activity
                 Utils.I_clear(activity,LoginActivity::class.java,null)
 
             }
             else {
                 //Showing Email Already Exist Error
-                showAlreadyExistError(binding.tvEmailAddressError!!, email_Already_Exist)
+                showAlreadyExistError(binding.tvEmailAddressError!!,
+                    getString(R.string.email_already_exist))
             }
         }
         else {
             //Showing Mobile Number Already Exist Error
-            showAlreadyExistError(binding.tvPhoneNumberError!!, mobile_Number_Already_Exist)
+            showAlreadyExistError(binding.tvPhoneNumberError!!,
+                getString(R.string.mobile_number_already_exist))
         }
     }
     // Showing email and phone number already exist error

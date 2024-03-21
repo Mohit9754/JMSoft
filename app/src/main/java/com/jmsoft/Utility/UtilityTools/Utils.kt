@@ -173,6 +173,45 @@ object Utils {
     fun IS_LOGIN(): Boolean {
         return UserDataHelper.instance.list.size > 0
     }
+    // Checks if User Table is Empty
+    fun isUserTableEmpty(): Boolean {
+        return UserDataHelper.instance.isUserTableEmpty()
+    }
+
+    // Checks if Email Already Exist in the User Table
+    fun isEmailExist(email:String): Boolean {
+        return UserDataHelper.instance.isEmailExist(email)
+    }
+
+    // Checks if Phone Number Already Exist in the User Table
+    fun isPhoneNumberExist(phoneNumber:String): Boolean {
+        return UserDataHelper.instance.isPhoneNumberExist(phoneNumber)
+    }
+
+    // Insert new user in the User Table
+    fun insetDataInUserTable(userDataModel: UserDataModel) {
+        UserDataHelper.instance.insetDataInUserTable(userDataModel)
+    }
+
+     // Check if User is Valid or not, through User Table
+    fun isValidUser(email: String,password:String): Boolean {
+        return UserDataHelper.instance.isValidUser(email,password)
+    }
+
+    // get User through Email Address from the User Table
+    fun getUserDetailThroughEmail(email: String): UserDataModel {
+        return UserDataHelper.instance.getUserDetailThroughEmail(email)
+    }
+
+    // insert Data in the Session Table
+    fun insertDataInSessionTable(userDataModel: UserDataModel) {
+        UserDataHelper.instance.insertDataInSessionTable(userDataModel)
+    }
+
+    // update profile in the User Table
+    fun updateProfileInUserTable(profileName:String,email: String) {
+        UserDataHelper.instance.updateProfileInUserTable(profileName,email)
+    }
 
     @JvmStatic
     fun LOGOUT() {

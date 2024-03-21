@@ -172,7 +172,7 @@ class UserDataHelper(cx: Context) {
     }
 
     //Updating the User Profile
-    fun updateProfile(profileName: String,email:String):Boolean{
+    fun updateProfileInUserTable(profileName: String,email:String):Boolean{
 
         open()
 

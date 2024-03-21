@@ -31,7 +31,6 @@ import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
-import com.jmsoft.basic.UtilityTools.Constants.Companion.invalid_Credentials
 import com.jmsoft.basic.UtilityTools.Constants.Companion.password
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.validation.ResultReturn
@@ -39,7 +38,6 @@ import com.jmsoft.basic.validation.Validation
 import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.ActivityLoginBinding
 import java.util.Locale
-
 
 /**
  * Login Activity
@@ -248,27 +246,25 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             validation?.CheckValidation(activity, errorValidationModels)
         if (resultReturn?.aBoolean == true) {
 
-            val instance = UserDataHelper.instance
-
             //Check if user is valid
-            if (instance.isValidUser(
+            if (Utils.isValidUser(
                     binding.etEmailAddress?.text.toString().trim().lowercase(Locale.getDefault()),
                     binding.etPassword?.text.toString().trim()
                 )
             ) {
 
                 // Getting User Details through Email
-                val userDataModel = instance.getUserDetailThroughEmail(
+                val userDataModel = Utils.getUserDetailThroughEmail(
                     binding.etEmailAddress?.text.toString().trim().lowercase(Locale.getDefault())
                 )
                 //Store User Details in the Session Table
-                instance.insertDataInSessionTable(userDataModel)
+                Utils.insertDataInSessionTable(userDataModel)
 
                 //Intent to Dashboard Activity
                 Utils.I_clear(activity, DashboardActivity::class.java, null)
             } else {
                 // Invalid user
-                Utils.T(activity, invalid_Credentials)
+                Utils.T(activity, getString(R.string.invalid_credentials))
             }
 
         } else {

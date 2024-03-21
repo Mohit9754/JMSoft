@@ -13,8 +13,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.basic.UtilityTools.Constants.Companion.active
-import com.jmsoft.basic.UtilityTools.Constants.Companion.inActive
+
 import com.jmsoft.databinding.ItemDeviceListBinding
 import com.jmsoft.main.model.DeviceModel
 
@@ -85,12 +84,12 @@ class DeviceListAdapter(
         //Setting the Device Status and Change there Staus Color Accourding to it.
         private fun setDeviceStatus() {
 
-            if (data.status == active) {
+            if (data.status == context.getString(R.string.active)) {
 
                 binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
                 binding.tvStatus.text = data.status
                 binding.tvStatus.setTextColor(context.getColor(R.color.green))
-            } else if (data.status == inActive) {
+            } else if (data.status == context.getString(R.string.inactive)) {
 
                 binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.dark_red))
                 binding.tvStatus.text = data.status

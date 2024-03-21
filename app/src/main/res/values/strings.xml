@@ -91,5 +91,11 @@
     <string name="photo_library_permission_denied">Photo Library Permission Denied</string>
     <string name="we_need_your_permission_to_access_bluetooth_and_location_services_in_order_to_provide_the_full_functionality_of_our_app">We need your permission to access Bluetooth and location services in order to provide the full functionality of our app.Your cooperation is appreciated.</string>
     <string name="permission_request">Permission Request</string>
+    <string name="camera_permission_denied">Camera Permission Denied</string>
+    <string name="camera_access_is_needed_in_order_to_capture_profile_picture_please_enable_it_from_the_settings">Camera Access is needed in order to capture\nprofile picture. Please enable it from the settings.</string>
+    <string name="email_already_exist">Email Already Exist</string>
+    <string name="mobile_number_already_exist">Mobile Number Already Exist</string>
+    <string name="invalid_credentials">Invalid Credentials</string>
+    <string name="active">Active</string>
 
 </resources>

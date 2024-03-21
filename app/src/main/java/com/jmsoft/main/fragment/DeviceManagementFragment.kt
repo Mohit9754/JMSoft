@@ -35,6 +35,7 @@ import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentDeviceManagementBinding
 import com.jmsoft.databinding.ItemAddDeviceBinding
 import com.jmsoft.databinding.ItemBluetoothScanListBinding
@@ -60,7 +61,15 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     private lateinit var receiver: BroadcastReceiver
     private var isReceiverRegistered = false
 
-
+    @RequiresApi(Build.VERSION_CODES.S)
+    val permissionsForVersionAbove11 = arrayOf(
+        Manifest.permission.BLUETOOTH,
+        Manifest.permission.BLUETOOTH_CONNECT,
+        Manifest.permission.BLUETOOTH_SCAN,
+        Manifest.permission.BLUETOOTH_ADMIN,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
 
     // Bluetooth Intent for turn on the bluetooth
     private var bluetoothIntent: ActivityResultLauncher<Intent> =
@@ -72,7 +81,8 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             }
         }
 
-    private val permissionsRequestCodeForBluetooth = 100 // You can use any value for the request code
+    private val permissionsRequestCodeForBluetooth =
+        100 // You can use any value for the request code
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
@@ -138,15 +148,39 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    //Camera Permission Launcher
-    private var locationPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean? ->
-        if (isGranted == true) {
-            bluetoothScanBottomSheet()
-        } else {
-            if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                showOpenSettingDialog()
+    //Checks All the necessery permission related to bluetooth
+    private var customPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        var allPermissionsGranted = true // Flag to track permission status
+        permissions.entries.forEach { entry ->
+            val permission = entry.key
+            val isGranted = entry.value
+            if (!isGranted) {
+                // If any permission is not granted, set the flag to false
+                allPermissionsGranted = false
+                // Permission is not granted
+                // Handle the denied permission accordingly
+                if (!shouldShowRequestPermissionRationale(permission)) {
+                    // Permission denied permanently, show a dialog or take appropriate action
+                    showOpenSettingDialog()
+                }
+            }
+            else {
+                Utils.E(permission)
+            }
+        }
+
+        // Check if all permissions are granted or not
+        if (allPermissionsGranted) {
+
+            if (BluetoothUtils.isEnableBluetooth()) {
+                bluetoothScanBottomSheet()
+
+            } else {
+
+                val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                bluetoothIntent.launch(enableBtIntent)
             }
         }
     }
@@ -157,16 +191,17 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setCanceledOnTouchOutside(true)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_open_setting)
+        val dialogBinding = DialogOpenSettingBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
 
-        dialog.findViewById<TextView>(R.id.tvTitle).text = getString(R.string.permission_request)
-        dialog.findViewById<TextView>(R.id.tvMessage).text =
-            getString(R.string.we_need_your_permission_to_access_bluetooth_and_location_services_in_order_to_provide_the_full_functionality_of_our_app)
-        dialog.findViewById<MaterialCardView>(R.id.mcvCancel).setOnClickListener {
+        dialogBinding.tvTitle.text = getString(R.string.permission_request)
+        dialogBinding.tvMessage.text = getString(R.string.we_need_your_permission_to_access_bluetooth_and_location_services_in_order_to_provide_the_full_functionality_of_our_app)
+
+        dialogBinding.mcvCancel.setOnClickListener {
 
             dialog.dismiss()
         }
-        dialog.findViewById<MaterialCardView>(R.id.mcvOpenSetting).setOnClickListener {
+        dialogBinding.mcvOpenSetting.setOnClickListener {
 
             dialog.dismiss()
             Utils.openAppSettings(requireActivity())
@@ -208,9 +243,9 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         bottomSheetDialog.setContentView(bottomSheetBinding.root)
 
         val bluetoothScanList = ArrayList<BluetoothScanModel>()
-        BluetoothUtils.getConnectedDevice(requireActivity(), object :ConnectedDeviceCallback{
+        BluetoothUtils.getConnectedDevice(requireActivity(), object : ConnectedDeviceCallback {
             override fun onDeviceFound(device: BluetoothDevice) {
-                bluetoothScanList.add(BluetoothScanModel(device,true))
+                bluetoothScanList.add(BluetoothScanModel(device, true))
             }
         })
 
@@ -228,13 +263,18 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
                 val action = intent.action
                 Utils.E("onReceive")
                 if (BluetoothDevice.ACTION_FOUND == action) {
-                    val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-                    Utils.E("BluetoothDevice.ACTION_FOUND::"+BluetoothDevice.ACTION_FOUND)
-                    if (BluetoothUtils.checksForAccessCoarseLocationPermission(requireActivity(),permissionsRequestCodeForBluetooth)){
+                    val device =
+                        intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                    Utils.E("BluetoothDevice.ACTION_FOUND::" + BluetoothDevice.ACTION_FOUND)
+                    if (BluetoothUtils.checksForAccessCoarseLocationPermission(
+                            requireActivity(),
+                            permissionsRequestCodeForBluetooth
+                        )
+                    ) {
                         Utils.E("permissionsRequestCodeForBluetooth")
                         if (device != null && device.name != null) {
-                            Utils.E("device.name::"+device.name)
-                            bluetoothScanList.add(BluetoothScanModel(device,false))
+                            Utils.E("device.name::" + device.name)
+                            bluetoothScanList.add(BluetoothScanModel(device, false))
                             adapter.notifyDataSetChanged()
 
                         }
@@ -256,35 +296,40 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     }
 
     //Handles All the Clicks
+
     override fun onClick(v: View?) {
 
         // Handles Click on Add Device button
         if (v == binding.mcvAddDevice || v == binding.mcvAddFirstDevice) {
 
-            // Check if Bluetooth permission has or not
-
-            if (BluetoothUtils.hasBluetoothPermissions(requireActivity())) {
-
-                //Check if Bluetooth is enable or not
-                if (BluetoothUtils.isEnableBluetooth()) {
-                    locationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-
-                } else {
-                    //Enable the Bluetooth
-                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                    bluetoothIntent.launch(enableBtIntent)
-                }
-            }
-
-            else {
-
-                //Request for permission
-                BluetoothUtils.requestPermissions(
-                    requireActivity(),
-                    permissionsRequestCodeForBluetooth
-                )
+//             Check if Bluetooth permission has or not
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                customPermissionLauncher.launch(permissionsForVersionAbove11)
             }
         }
+
+//            if (BluetoothUtils.hasBluetoothPermissions(requireActivity())) {
+//
+////                Check if Bluetooth is enable or not
+//                if (BluetoothUtils.isEnableBluetooth()) {
+//
+//
+//                } else {
+//                    //Enable the Bluetooth
+//                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+//                    bluetoothIntent.launch(enableBtIntent)
+//                }
+//            }
+//
+//            else {
+//
+//                //Request for permission
+//                BluetoothUtils.requestPermissions(
+//                    requireActivity(),
+//                    permissionsRequestCodeForBluetooth
+//                )
+//            }
+//        }
     }
 
     // Runtime Bluetooth permission result

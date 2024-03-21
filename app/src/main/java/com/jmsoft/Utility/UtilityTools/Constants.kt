@@ -205,15 +205,7 @@ interface Constants {
 
         // State
 
-        const val active = "Active"
-        const val inActive = "Inactive"
-        const val invalid_Credentials = "Invalid Credentials"
-        const val mobile_Number_Already_Exist = "Mobile Number Already Exist"
-        const val email_Already_Exist = "Email Already Exist"
-        const val photo_Library_Permission_Denied = "Photo Library Permission Denied"
-        const val camera_Permission_Denied = "Camera Permission Denied"
-        const val galleryMessage = "Photo Library Access is needed in order to access\nmedia to be used in the app.Please enable it from\nthe settings."
-        const val cameraMessage = "Camera Access is needed in order to capture\nprofile picture. Please enable it from the settings."
+
 
     }
 }
