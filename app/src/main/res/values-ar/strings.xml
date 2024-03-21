@@ -83,46 +83,12 @@
     <string name="choose_from_photo_library">اختر من مكتبة الصور</string>
     <string name="capture_with_camera">التقط بالكاميرا</string>
     <string name="are_you_sure_you_want_to_log_out_of_the_jm_soft_app_n_loggint_out_will_terminate_your_current_session_and_n_require_you_to_log_in_again_to_access_the_app_s_n_features">هل أنت متأكد أنك تريد تسجيل الخروج من تطبيق JM Soft؟ \n سيؤدي تسجيل الخروج إلى إنهاء جلستك الحالية \n ويطلب منك تسجيل الدخول مرة أخرى للوصول إلى ميزات\n التطبيق.</string>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <string name="we_need_your_permission_to_access_bluetooth_and_location_services_in_order_to_provide_the_full_functionality_of_our_app">نحتاج إلى إذنك للوصول إلى خدمات البلوتوث والموقع من أجل توفير الوظائف الكاملة لتطبيقنا. ونقدر تعاونك.</string>
+    <string name="permission_request">طلب اذن</string>
+    <string name="permission_required">الإذن مطلوب</string>
+    <string name="this_app_requires_camera_permission_to_function_properly">يتطلب هذا التطبيق إذن الكاميرا ليعمل بشكل صحيح.</string>
+    <string name="manually_enable_permissions">تمكين الأذونات يدويًا</string>
+    <string name="photo_library_access_is_needed_in_order_to_access_media_to_be_used_in_the_app_please_enable_it_from_the_settings">يلزم الوصول إلى مكتبة الصور حتى تتمكن من الوصول إلى\nالوسائط التي سيتم استخدامها في التطبيق. الرجاء تمكينها من\nالإعدادات.</string>
+    <string name="open_setting">بيئة مفتوحة</string>
+    <string name="photo_library_permission_denied">تم رفض إذن مكتبة الصور</string>
 </resources>

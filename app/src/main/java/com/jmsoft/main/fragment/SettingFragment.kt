@@ -1,5 +1,6 @@
 package com.jmsoft.main.fragment
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
@@ -8,34 +9,29 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.drawable.toBitmap
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.Database.UserDataHelper
-import com.jmsoft.basic.UtilityTools.Utils
-import com.jmsoft.databinding.FragmentSettingBinding
-import com.jmsoft.main.activity.LoginActivity
-import android.Manifest
-import android.app.Activity
-import android.content.pm.PackageManager
-import android.os.Build
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.graphics.drawable.toBitmap
 import com.jmsoft.basic.UtilityTools.Constants.Companion.cameraMessage
 import com.jmsoft.basic.UtilityTools.Constants.Companion.camera_Permission_Denied
 import com.jmsoft.basic.UtilityTools.Constants.Companion.galleryMessage
 import com.jmsoft.basic.UtilityTools.Constants.Companion.photo_Library_Permission_Denied
+import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.databinding.FragmentSettingBinding
+import com.jmsoft.main.activity.LoginActivity
 
 /**
  * Setting Fragment
@@ -75,7 +71,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
                 if (!shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
 
                     editProfileDialog.dismiss()
-                    showOpenSettingDialog(forCameraSettingDialog)
+                    showOpenSettingDialog(forGallerySettingDialog)
                 }
             }
         }
@@ -93,7 +89,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
         } else {
             if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
                 editProfileDialog.dismiss()
-                showOpenSettingDialog(0)
+                showOpenSettingDialog(forCameraSettingDialog)
             }
         }
     }
@@ -147,16 +143,18 @@ class SettingFragment : Fragment(), View.OnClickListener {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_open_setting)
 
-        dialog.findViewById<TextView>(R.id.tvTitle).text = if (dialogCode == forCameraSettingDialog){
-            camera_Permission_Denied
-        }else {
-            photo_Library_Permission_Denied
-        }
-        dialog.findViewById<TextView>(R.id.tvMessage).text = if (dialogCode == forCameraSettingDialog){
-            cameraMessage
-        }else {
-            galleryMessage
-        }
+        dialog.findViewById<TextView>(R.id.tvTitle).text =
+            if (dialogCode == forCameraSettingDialog) {
+                camera_Permission_Denied
+            } else {
+                photo_Library_Permission_Denied
+            }
+        dialog.findViewById<TextView>(R.id.tvMessage).text =
+            if (dialogCode == forCameraSettingDialog) {
+                cameraMessage
+            } else {
+                galleryMessage
+            }
 
         dialog.findViewById<MaterialCardView>(R.id.mcvCancel).setOnClickListener {
 

@@ -35,6 +35,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
 import android.text.Editable
+import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.text.format.DateFormat
@@ -915,6 +916,15 @@ object Utils {
         toast.view = view
         toast.duration = Toast.LENGTH_SHORT
         toast.show()
+    }
+    // Set input type dynamically based on locale
+    fun toSetPasswordAsLanguage(etPassword:EditText?){
+        val currentLocale = getCurrentLanguage()
+        if (currentLocale == Constants.arabic) {
+            etPassword?.inputType = InputType.TYPE_CLASS_TEXT
+        } else {
+            etPassword?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
     }
 
     fun CustomeToast(c: Context?, msg: String?) {

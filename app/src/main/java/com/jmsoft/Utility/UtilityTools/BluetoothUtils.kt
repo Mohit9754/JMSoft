@@ -85,15 +85,7 @@ object BluetoothUtils {
             // Handle this case accordingly
             return false
 
-        return if (bluetoothAdapter.isEnabled) {
-
-            true
-
-        } else {
-            // Bluetooth is already enabled
-            // You can perform further actions here if needed
-            false
-        }
+        return bluetoothAdapter.isEnabled
     }
 
     // Checks if bluetooth permission has or not

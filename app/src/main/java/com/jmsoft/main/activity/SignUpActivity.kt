@@ -106,7 +106,8 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
         //Set Image for current Language
         Utils.setImageForCurrentLanguage(binding.ivJewellery!!)
-
+        Utils.toSetPasswordAsLanguage(binding.etPassword)
+        Utils.toSetPasswordAsLanguage(binding.etConformPassword)
         //Setting  Click on SignUp Button
         binding.mcvSignUp?.setOnClickListener(activity)
 

@@ -89,5 +89,7 @@
     <string name="photo_library_access_is_needed_in_order_to_access_media_to_be_used_in_the_app_please_enable_it_from_the_settings">Photo Library Access is needed in order to access\nmedia to be used in the app.Please enable it from\nthe settings.</string>
     <string name="open_setting">Open Setting</string>
     <string name="photo_library_permission_denied">Photo Library Permission Denied</string>
+    <string name="we_need_your_permission_to_access_bluetooth_and_location_services_in_order_to_provide_the_full_functionality_of_our_app">We need your permission to access Bluetooth and location services in order to provide the full functionality of our app.Your cooperation is appreciated.</string>
+    <string name="permission_request">Permission Request</string>
 
 </resources>
