@@ -78,6 +78,12 @@
     <string name="are_you_sure_you_want_to_logout">هل أنت متأكد أنك تريد تسجيل الخروج ؟</string>
     <string name="yes">نعم</string>
     <string name="no">لا</string>
+    <string name="choose_an_image_source">اختر مصدر صورة اختر مصدر صورة</string>
+    <string name="to_proceed_with_adding_or_updating_your_profile_n_picture_please_select_an_image_source">لمتابعة إضافة أو تحديث صورة ملفك الشخصي \n، الرجاء تحديد مصدر الصورة</string>
+    <string name="choose_from_photo_library">اختر من مكتبة الصور</string>
+    <string name="capture_with_camera">التقط بالكاميرا</string>
+    <string name="are_you_sure_you_want_to_log_out_of_the_jm_soft_app_n_loggint_out_will_terminate_your_current_session_and_n_require_you_to_log_in_again_to_access_the_app_s_n_features">هل أنت متأكد أنك تريد تسجيل الخروج من تطبيق JM Soft؟ \n سيؤدي تسجيل الخروج إلى إنهاء جلستك الحالية \n ويطلب منك تسجيل الدخول مرة أخرى للوصول إلى ميزات\n التطبيق.</string>
+
 
 
 

@@ -82,5 +82,12 @@
     <string name="to_proceed_with_adding_or_updating_your_profile_n_picture_please_select_an_image_source">To proceed with adding or updating your profile \n picture, please select an image source</string>
     <string name="choose_from_photo_library">Choose from Photo Library</string>
     <string name="capture_with_camera">Capture with Camera</string>
+    <string name="are_you_sure_you_want_to_log_out_of_the_jm_soft_app_n_loggint_out_will_terminate_your_current_session_and_n_require_you_to_log_in_again_to_access_the_app_s_n_features">Are you sure you want to log out of the JM Soft App ? \n Loggint out will terminate your current session and \n require you to log in again to access the app\'s\n features.</string>
+    <string name="permission_required">Permission Required</string>
+    <string name="this_app_requires_camera_permission_to_function_properly">This app requires camera permission to function properly.</string>
+    <string name="manually_enable_permissions">Manually enable permissions</string>
+    <string name="photo_library_access_is_needed_in_order_to_access_media_to_be_used_in_the_app_please_enable_it_from_the_settings">Photo Library Access is needed in order to access\nmedia to be used in the app.Please enable it from\nthe settings.</string>
+    <string name="open_setting">Open Setting</string>
+    <string name="photo_library_permission_denied">Photo Library Permission Denied</string>
 
 </resources>

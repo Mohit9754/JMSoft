@@ -64,7 +64,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             }
         }
 
-    private val permissionsRequestCode = 100 // You can use any value for the request code
+    private val permissionsRequestCodeForBluetooth = 100 // You can use any value for the request code
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
@@ -183,7 +183,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
                 if (BluetoothDevice.ACTION_FOUND == action) {
                     val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
 
-                    if (BluetoothUtils.checksForAccessCoarseLocationPermission(requireActivity(),permissionsRequestCode)){
+                    if (BluetoothUtils.checksForAccessCoarseLocationPermission(requireActivity(),permissionsRequestCodeForBluetooth)){
 
                         if (device != null && device.name != null) {
                             bluetoothScanList.add(BluetoothScanModel(device,false))
@@ -234,56 +234,50 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
                 //Request for permission
                 BluetoothUtils.requestPermissions(
                     requireActivity(),
-                    permissionsRequestCode
+                    permissionsRequestCodeForBluetooth
                 )
             }
         }
     }
 
-//    private fun goToBluetoothSettings() {
-//        val bluetoothSettings = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
-//        bluetoothSettings.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//        startActivity(bluetoothSettings)
-//    }
-
     // Runtime Bluetooth permission result
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray,
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == permissionsRequestCode) {
-            // Check if all permissions are granted
-            var allPermissionsGranted = true
-            for (result in grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    allPermissionsGranted = false
-                    break
-                }
-            }
-            if (allPermissionsGranted) {
-                // All permissions are granted, proceed with your logic
-                // For example, start Bluetooth functionality
-
-                if (BluetoothUtils.isEnableBluetooth()) {
-
-                    addDeviceBottomSheet()
-
-
-                } else {
-                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                    bluetoothIntent.launch(enableBtIntent)
-                }
-            } else {
-
-                Utils.T(activity, "Please allow the Permission To connect with your Device")
-                // Permissions are not granted, handle the scenario
-                // For example, show a message to the user or disable Bluetooth functionality
-            }
-        }
-    }
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray,
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//
+//        if (requestCode == permissionsRequestCode) {
+//            // Check if all permissions are granted
+//            var allPermissionsGranted = true
+//            for (result in grantResults) {
+//                if (result != PackageManager.PERMISSION_GRANTED) {
+//                    allPermissionsGranted = false
+//                    break
+//                }
+//            }
+//            if (allPermissionsGranted) {
+//                // All permissions are granted, proceed with your logic
+//                // For example, start Bluetooth functionality
+//
+//                if (BluetoothUtils.isEnableBluetooth()) {
+//
+//                    addDeviceBottomSheet()
+//
+//
+//                } else {
+//                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+//                    bluetoothIntent.launch(enableBtIntent)
+//                }
+//            } else {
+//
+//                Utils.T(activity, "Please allow the Permission To connect with your Device")
+//                // Permissions are not granted, handle the scenario
+//                // For example, show a message to the user or disable Bluetooth functionality
+//            }
+//        }
+//    }
 
     override fun onDestroy() {
         super.onDestroy()

@@ -196,7 +196,7 @@
                                         android:layout_height="@dimen/_15sdp"
                                         android:layout_alignParentEnd="true"
                                         android:layout_centerVertical="true"
-                                        android:padding="@dimen/_5sdp"
+                                        android:padding="@dimen/_4sdp"
                                         android:src="@drawable/icon_show" />
 
                                 </RelativeLayout>
@@ -288,19 +288,16 @@
 
     </ScrollView>
 
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+
 
 
         <ImageView
             android:id="@+id/ivJewellery"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:scaleType="fitXY"
             android:src="@drawable/img_jewellery_en" />
 
-    </RelativeLayout>
 
 </LinearLayout>

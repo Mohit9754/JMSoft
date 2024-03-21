@@ -252,19 +252,24 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
             val instance = UserDataHelper.instance
 
-            if (instance.isVaidUser(
-                    binding.etEmailAddress?.text.toString().trim(),
+            //Check if user is valid
+            if (instance.isValidUser(
+                    binding.etEmailAddress?.text.toString().trim().toLowerCase(),
                     binding.etPassword?.text.toString().trim()
                 )
             ) {
 
-                val userDataModel = instance.getUserDetail(
-                    binding.etEmailAddress?.text.toString().trim()
+                // Getting User Details through Email
+                val userDataModel = instance.getUserDetailThroughEmail(
+                    binding.etEmailAddress?.text.toString().trim().toLowerCase()
                 )
+                //Store User Details in the Session Table
                 instance.insertDataInSessionTable(userDataModel)
+
+                //Intent to Dashboard Activity
                 Utils.I_clear(activity, DashboardActivity::class.java, null)
             } else {
-//                Toast.makeText(activity, invalid_Credentials,Toast.LENGTH_SHORT).show()
+                // Invalid user
                 Utils.T(activity, invalid_Credentials)
             }
 
