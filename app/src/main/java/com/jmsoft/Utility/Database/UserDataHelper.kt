@@ -85,7 +85,7 @@ class UserDataHelper(cx: Context) {
     }
 
     // Check if User is valid or not
-    fun isVaidUser(email:String,password:String): Boolean {
+    fun isValidUser(email:String,password:String): Boolean {
         read()
         val selection = "${UserDataModel.Key_email} = ? AND ${UserDataModel.Key_password} = ?"
         val selectionArgs = arrayOf(email, password)
@@ -126,9 +126,9 @@ class UserDataHelper(cx: Context) {
     }
 
 
-    // get User Details through email and password
+    // get User Details through email from the User table
     @SuppressLint("Range")
-    fun getUserDetail(email:String): UserDataModel {
+    fun getUserDetailThroughEmail(email:String): UserDataModel {
         read()
         @SuppressLint("Recycle") val cursor = db!!.rawQuery(
             "select * from " + UserDataModel.TABLE_NAME_USER + " where " + UserDataModel.Key_email + "='"
@@ -171,6 +171,7 @@ class UserDataHelper(cx: Context) {
         return !cur.moveToFirst()
     }
 
+    //Updating the User Profile
     fun updateProfile(profileName: String,email:String):Boolean{
 
         open()
@@ -192,7 +193,8 @@ class UserDataHelper(cx: Context) {
         }
     }
 
-    fun insetData(userData: UserDataModel){
+    //Insert and Update  data of User in the User table
+    fun insetDataInUserTable(userData: UserDataModel){
 
         open()
         val values = ContentValues()
@@ -213,7 +215,7 @@ class UserDataHelper(cx: Context) {
 
     }
     /**
-     * insert Data in table
+     * insert Data in Session table
      *
      * @param userData //
      */
@@ -249,7 +251,7 @@ class UserDataHelper(cx: Context) {
     }// userData.userId = cursor.getString(cursor.getColumnIndex(UserData.KEY_ID));
 
     /**
-     * Return User Array List
+     * Return User Array List From Session Table
      *
      * @return //
      */

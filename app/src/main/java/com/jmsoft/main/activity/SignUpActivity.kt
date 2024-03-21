@@ -42,7 +42,8 @@ import java.util.ArrayList
  * SignUp Activity
  *
  *  Validating the signUp details
- *  send signUp details to server
+ *  Store signUp details in the database
+ *  intent to login activity
  */
 
 class SignUpActivity : AppCompatActivity(), View.OnClickListener {
@@ -105,7 +106,8 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
         //Set Image for current Language
         Utils.setImageForCurrentLanguage(binding.ivJewellery!!)
-
+        Utils.toSetPasswordAsLanguage(binding.etPassword)
+        Utils.toSetPasswordAsLanguage(binding.etConformPassword)
         //Setting  Click on SignUp Button
         binding.mcvSignUp?.setOnClickListener(activity)
 
@@ -197,31 +199,39 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
         val instance = UserDataHelper.instance
 
+        //Checks if Phone Number Already Exist
         if (!instance.isPhoneNumberExist(binding.etPhoneNumber?.text.toString().trim())){
 
+            //Checks if Email Already Exist
             if (!instance.isEmailExist(binding.etEmailAddress?.text.toString().trim())){
 
                 val userDataModel = UserDataModel()
 
+                //Checks if User Table Empty
                 userDataModel.userType = if (instance.isUserTableEmpty()) admin  else user
 
                 userDataModel.firstName = binding.etFirstName?.text.toString().trim()
                 userDataModel.lastName = binding.etLastName?.text.toString().trim()
-                userDataModel.email = binding.etEmailAddress?.text.toString().trim()
+                //Store Email in the lower Case letter
+                userDataModel.email = binding.etEmailAddress?.text.toString().trim().toLowerCase()
                 userDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
                 userDataModel.profileName = ""
                 userDataModel.token = ""
                 userDataModel.password = binding.etPassword?.text.toString().trim()
 
-                instance.insetData(userDataModel)
+                //Insert Data in the User Table
+                instance.insetDataInUserTable(userDataModel)
+                //Intent to Login Activity
                 Utils.I_clear(activity,LoginActivity::class.java,null)
 
             }
             else {
+                //Showing Email Already Exist Error
                 showAlreadyExistError(binding.tvEmailAddressError!!, email_Already_Exist)
             }
         }
         else {
+            //Showing Mobile Number Already Exist Error
             showAlreadyExistError(binding.tvPhoneNumberError!!, mobile_Number_Already_Exist)
         }
     }
@@ -312,7 +322,6 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     // Close the Keyboard when you touch the Screen
-
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
 
         if (currentFocus != null) {

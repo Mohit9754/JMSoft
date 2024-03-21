@@ -27,7 +27,7 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:fontFamily="@font/montserrat_arabic_bold"
                 android:text="@string/choose_an_image_source"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 />
 
             <TextView
@@ -35,8 +35,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/_8sdp"
                 android:textAlignment="center"
+                android:textColor="@color/device_text_color"
                 android:layout_marginHorizontal="@dimen/_20sdp"
-                android:fontFamily="@font/montserrat_arabic_bold"
+                android:fontFamily="@font/montserrat_arabic_medium"
                 android:text="@string/to_proceed_with_adding_or_updating_your_profile_n_picture_please_select_an_image_source"
                 android:textSize="12sp" />
 
@@ -47,7 +48,7 @@
                 android:layout_marginHorizontal="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 app:strokeWidth="0.7dp"
-                app:strokeColor="@color/text_color"
+                app:strokeColor="@color/theme"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/_4sdp">
 
@@ -55,7 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/montserrat_arabic_semibold"
+                    android:fontFamily="@font/montserrat_arabic_medium"
                     android:paddingHorizontal="@dimen/_35sdp"
                     android:paddingVertical="@dimen/_6sdp"
                     android:text="@string/choose_from_photo_library"
@@ -79,7 +80,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/montserrat_arabic_semibold"
+                    android:fontFamily="@font/montserrat_arabic_medium"
                     android:paddingHorizontal="@dimen/_35sdp"
                     android:paddingVertical="@dimen/_6sdp"
                     android:text="@string/capture_with_camera"
@@ -87,8 +88,6 @@
                     android:textSize="10sp" />
 
             </com.google.android.material.card.MaterialCardView>
-
-
 
 
 

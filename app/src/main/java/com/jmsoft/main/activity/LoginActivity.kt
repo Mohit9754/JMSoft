@@ -7,7 +7,6 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -20,18 +19,15 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.Database.UserDataHelper
-import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
@@ -42,8 +38,8 @@ import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation
 import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.ActivityLoginBinding
-import java.util.ArrayList
 import java.util.Locale
+
 
 /**
  * Login Activity
@@ -133,6 +129,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         // Setting the Selector on Material Card View when edittext has focus
         setFocusChangeLis(binding.etEmailAddress!!, binding.mcvEmailAddress!!)
         setFocusChangeLis(binding.etPassword!!, binding.mcvPassword!!)
+        Utils.toSetPasswordAsLanguage(binding.etPassword)
+
 
         // Removing the error when text Entered
         setTextChangeLis(binding.etEmailAddress!!, binding.tvEmailAddressError!!)
@@ -252,19 +250,24 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
             val instance = UserDataHelper.instance
 
-            if (instance.isVaidUser(
-                    binding.etEmailAddress?.text.toString().trim(),
+            //Check if user is valid
+            if (instance.isValidUser(
+                    binding.etEmailAddress?.text.toString().trim().lowercase(Locale.getDefault()),
                     binding.etPassword?.text.toString().trim()
                 )
             ) {
 
-                val userDataModel = instance.getUserDetail(
-                    binding.etEmailAddress?.text.toString().trim()
+                // Getting User Details through Email
+                val userDataModel = instance.getUserDetailThroughEmail(
+                    binding.etEmailAddress?.text.toString().trim().lowercase(Locale.getDefault())
                 )
+                //Store User Details in the Session Table
                 instance.insertDataInSessionTable(userDataModel)
+
+                //Intent to Dashboard Activity
                 Utils.I_clear(activity, DashboardActivity::class.java, null)
             } else {
-//                Toast.makeText(activity, invalid_Credentials,Toast.LENGTH_SHORT).show()
+                // Invalid user
                 Utils.T(activity, invalid_Credentials)
             }
 

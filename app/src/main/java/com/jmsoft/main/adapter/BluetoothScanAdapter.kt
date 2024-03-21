@@ -56,7 +56,7 @@ class BluetoothScanAdapter(
         val dialog = Dialog(context)
         dialog.setCanceledOnTouchOutside(false)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.item_dialog_connecting)
+        dialog.setContentView(R.layout.dialog_connecting)
         dialog.findViewById<TextView>(R.id.tvDeviceName).text = deviceName
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.findViewById<MaterialCardView>(R.id.mcvOK).setOnClickListener {
