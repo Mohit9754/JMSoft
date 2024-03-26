@@ -127,6 +127,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         // Setting the Selector on Material Card View when edittext has focus
         setFocusChangeLis(binding.etEmailAddress!!, binding.mcvEmailAddress!!)
         setFocusChangeLis(binding.etPassword!!, binding.mcvPassword!!)
+
+        //set Password for  current Language
         Utils.toSetPasswordAsLanguage(binding.etPassword)
 
 

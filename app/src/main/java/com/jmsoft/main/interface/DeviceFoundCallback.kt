@@ -2,7 +2,8 @@ package com.jmsoft.main.`interface`
 
 import android.bluetooth.BluetoothDevice
 
-interface ConnectedDeviceCallback {
+interface DeviceFoundCallback {
+
     fun onDeviceFound(device: BluetoothDevice)
-    fun onDeviceNotFound()
+
 }

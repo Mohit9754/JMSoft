@@ -220,6 +220,8 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
                 //Insert Data in the User Table
                 Utils.insetDataInUserTable(userDataModel)
                 //Intent to Login Activity
+                Utils.T(activity, getString(R.string.signup_successfully))
+
                 Utils.I_clear(activity,LoginActivity::class.java,null)
 
             }

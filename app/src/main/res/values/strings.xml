@@ -97,5 +97,7 @@
     <string name="mobile_number_already_exist">Mobile Number Already Exist</string>
     <string name="invalid_credentials">Invalid Credentials</string>
     <string name="active">Active</string>
+    <string name="signup_successfully">SignUp Successfully</string>
+    <string name="already_connected">Already Connected</string>
 
 </resources>

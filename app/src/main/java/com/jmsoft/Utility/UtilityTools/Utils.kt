@@ -65,6 +65,7 @@ import com.jmsoft.basic.Database.UserDataModel
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.databinding.AlertdialogBinding
 import com.jmsoft.databinding.ItemCustomToastBinding
+import com.jmsoft.main.model.DeviceModel
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
@@ -80,6 +81,7 @@ import java.security.NoSuchAlgorithmException
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 object Utils {
@@ -211,6 +213,26 @@ object Utils {
     // update profile in the User Table
     fun updateProfileInUserTable(profileName:String,email: String) {
         UserDataHelper.instance.updateProfileInUserTable(profileName,email)
+    }
+
+    // Checks if no device Available for perticular user through email
+    fun isNoDeviceForUser(email: String): Boolean {
+        return UserDataHelper.instance.isNoDeviceForUser(email)
+    }
+
+    //get All Devices of perticular user through email
+    fun getDevicesThroughEmail(email: String): ArrayList<DeviceModel> {
+        return UserDataHelper.instance.getDevicesThroughEmail(email)
+    }
+
+    // Insert New Device in the device table
+    fun insertNewDeviceData(deviceModel: DeviceModel) {
+        UserDataHelper.instance.insertNewDeviceData(deviceModel)
+    }
+
+    //Delete Device from Device table through Device id
+    fun deleteDeviceThoughDeviceId(deviceId: Int) {
+        UserDataHelper.instance.deleteDeviceThoughDeviceId(deviceId)
     }
 
     @JvmStatic

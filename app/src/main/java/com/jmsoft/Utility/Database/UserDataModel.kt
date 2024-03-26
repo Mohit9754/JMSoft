@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteDatabase
 import com.jmsoft.basic.UtilityTools.Utils.E
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.jmsoft.basic.UtilityTools.Utils
 import java.sql.Blob
 
 class UserDataModel {
@@ -44,8 +45,9 @@ class UserDataModel {
 
         const val TABLE_NAME_USER_SESSION = "User_session"
         const val TABLE_NAME_USER = "User"
+        const val TABLE_NAME_DEVICE = "Device"
 
-        //    All Key
+        //All Key of User Table
         const val KEY_ID = "_id"
         const val Key_userType = "userType"
         const val Key_firstName = "firstName"
@@ -55,6 +57,10 @@ class UserDataModel {
         const val Key_profileName = "profileName"
         const val Key_token = "token"
         const val Key_password = "password"
+
+        //All keys of Device table
+        const val Key_deviceName = "deviceName"
+        const val Key_deviceAddress = "deviceAddress"
 
         @JvmStatic
         fun CreateTable(db: SQLiteDatabase) {
@@ -82,9 +88,21 @@ class UserDataModel {
                     Key_password + " text"  +
                     " )")
 
+            val CreateTableDeviceQuery = ("create table " + TABLE_NAME_DEVICE + " ("
+                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    Key_deviceName + " text," +
+                    Key_deviceAddress + " text," +
+                    Key_email + " text," +
+                    " FOREIGN KEY ("+Key_email+") REFERENCES "+ TABLE_NAME_USER+"("+ Key_email+")"+
+                    " )")
+
             E("CreateTableQuery::$CreateTableUserSessionQuery")
+
             db.execSQL(CreateTableUserSessionQuery)
             db.execSQL(CreateTableUserQuery)
+            db.execSQL(CreateTableDeviceQuery)
+
+            Utils.E("#####################Table is created")
         }
 
         /**
@@ -92,8 +110,10 @@ class UserDataModel {
          */
         @JvmStatic
         fun dropTable(db: SQLiteDatabase) {
+
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_USER_SESSION)
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_USER)
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_DEVICE)
         }
     }
 

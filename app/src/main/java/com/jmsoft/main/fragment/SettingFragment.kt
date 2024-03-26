@@ -28,6 +28,7 @@ import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentSettingBinding
+import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.activity.LoginActivity
 
 /**
@@ -285,8 +286,8 @@ class SettingFragment : Fragment(), View.OnClickListener {
         //Navigate to Device Management Fragment
         if (v == binding.mcvDeviceManagement) {
 
-            val navController = findNavController()
-            navController.navigate(R.id.deviceManagement)
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.deviceManagement)
+
         }
         // When LogOut button Clicked
         else if (v == binding.mcvLogOut) {

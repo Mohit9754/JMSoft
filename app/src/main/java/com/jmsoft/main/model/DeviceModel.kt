@@ -1,10 +1,13 @@
 package com.jmsoft.main.model
 
-import android.graphics.drawable.Drawable
+class DeviceModel {
 
-data class DeviceModel(
-    val deviceIcon: Drawable,
-    val deviceName: String,
-    val idNumber: String,
-    val status: String,
-)
+    var deviceId: Int? = null
+
+    var deviceName: String? = null
+
+    var deviceAddress: String? = null
+
+    var email: String? = null
+
+}

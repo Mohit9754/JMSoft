@@ -91,4 +91,15 @@
     <string name="photo_library_access_is_needed_in_order_to_access_media_to_be_used_in_the_app_please_enable_it_from_the_settings">يلزم الوصول إلى مكتبة الصور حتى تتمكن من الوصول إلى\nالوسائط التي سيتم استخدامها في التطبيق. الرجاء تمكينها من\nالإعدادات.</string>
     <string name="open_setting">بيئة مفتوحة</string>
     <string name="photo_library_permission_denied">تم رفض إذن مكتبة الصور</string>
+    <string name="camera_permission_denied">تم رفض إذن الكاميرا</string>
+    <string name="camera_access_is_needed_in_order_to_capture_profile_picture_please_enable_it_from_the_settings">يلزم الوصول إلى الكاميرا حتى تتمكن من التقاط\nصورة الملف الشخصي. يرجى تمكينه من الإعدادات.</string>
+    <string name="email_already_exist">البريد الالكتروني موجود مسبقا</string>
+    <string name="mobile_number_already_exist">رقم الجوال موجود بالفعل</string>
+    <string name="invalid_credentials">بيانات الاعتماد غير صالحة</string>
+    <string name="active">نشيط</string>
+    <string name="signup_successfully">تم التسجيل بنجاح</string>
+    <string name="already_connected">متصل بالفعل</string>
+
+
+
 </resources>

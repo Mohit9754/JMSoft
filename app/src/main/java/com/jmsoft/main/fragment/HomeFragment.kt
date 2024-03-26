@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.jmsoft.R
 import com.jmsoft.databinding.FragmentHomeBinding
+import com.jmsoft.main.activity.DashboardActivity
 
 /**
  * Home Fragment
@@ -45,8 +47,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
         // Navigate to Catalog Fragment
         if (v == binding.mcvCatalog) {
 
-            val navController = findNavController()
-            navController.navigate(R.id.catalog)
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.catalog)
+
         }
 
     }

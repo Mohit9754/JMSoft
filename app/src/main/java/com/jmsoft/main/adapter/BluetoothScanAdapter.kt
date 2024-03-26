@@ -4,10 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
@@ -18,10 +15,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
+import com.jmsoft.Utility.UtilityTools.BluetoothUtils
+import com.jmsoft.basic.UtilityTools.Constants.Companion.bluetoothUuid
 import com.jmsoft.basic.UtilityTools.Constants.Companion.connected
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemDeviceListBinding
+import com.jmsoft.main.`interface`.PairStatusCallback
 import com.jmsoft.main.model.BluetoothScanModel
+import com.jmsoft.main.model.DeviceModel
 import java.io.IOException
 import java.util.UUID
 
@@ -35,7 +36,8 @@ import java.util.UUID
 
 class BluetoothScanAdapter(
     private val context: Context,
-    private val bluetoothScanList: ArrayList<BluetoothScanModel>
+    private val bluetoothScanList: ArrayList<BluetoothScanModel>,
+    private val deviceType: String?
 ) :
     RecyclerView.Adapter<BluetoothScanAdapter.MyViewHolder>() {
 
@@ -48,10 +50,10 @@ class BluetoothScanAdapter(
     override fun getItemCount() = bluetoothScanList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(bluetoothScanList[position])
+        holder.bind(bluetoothScanList[position], position)
     }
 
-    fun connectingDialog(deviceName:String) {
+    fun connectingDialog(deviceName: String) {
 
         val dialog = Dialog(context)
         dialog.setCanceledOnTouchOutside(false)
@@ -67,13 +69,18 @@ class BluetoothScanAdapter(
         dialog.show()
     }
 
+    @SuppressLint("MissingPermission")
     inner class MyViewHolder(private val binding: ItemDeviceListBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         private lateinit var deviceModel: BluetoothScanModel
+        private var position: Int = -1
+        private var connectedDevice: BluetoothDevice? = null
 
-        fun bind(deviceModel: BluetoothScanModel) {
+
+        fun bind(deviceModel: BluetoothScanModel, position: Int) {
             this.deviceModel = deviceModel
+            this.position = position
 
             //setting the Name of the Scanned Device
             setName()
@@ -91,27 +98,45 @@ class BluetoothScanAdapter(
             binding.mcvDevice.setOnClickListener(this)
         }
 
-        private fun setConnectedStatus(){
+        // Method to move the Connected to the first position
+        private fun moveToFirstPosition() {
+
+//            if (position != 0) {
+//
+//                bluetoothScanList.remove(bluetoothScanList[position])
+//                bluetoothScanList.add(
+//                    0,
+//                    bluetoothScanList[position]
+//                ) // Add item to the beginning of the list
+//                notifyItemMoved(position, 0) // Notify adapter about the move
+//
+//            }
+        }
+
+        //Setting the Status of the Connected Device
+        private fun setConnectedStatus() {
+            deviceModel.isConnected = true
             binding.llStatus.visibility = View.VISIBLE
             binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
             binding.tvStatus.text = connected
             binding.tvStatus.setTextColor(context.getColor(R.color.green))
+
+
         }
 
         //Check if Device is already Connected or Not
-        private fun checkTheDeviceConnection(){
+        private fun checkTheDeviceConnection() {
 
-            if (deviceModel.isConnected){
+            if (deviceModel.isConnected) {
                 setConnectedStatus()
 
             } else {
                 binding.llStatus.visibility = View.GONE
             }
-
         }
 
         //Hide the Bin
-        private fun hideBin(){
+        private fun hideBin() {
             binding.ivDelete.visibility = View.GONE
         }
 
@@ -123,57 +148,43 @@ class BluetoothScanAdapter(
         }
 
         //setting the Mac Address of the Scanned Device
-        private fun setMacAddress(){
+        private fun setMacAddress() {
             binding.tvMacAddress.text = deviceModel.device.address.toString()
         }
 
-        // Method to initiate pairing with a Bluetooth device
-        @SuppressLint("MissingPermission")
-        fun pairDevice() {
-            // Register for bond state changes
-            val filter = IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
-            context.registerReceiver(bondStateReceiver, filter)
+        private fun onConnectSuccess(mmSocket: BluetoothSocket) {
 
-            // Start pairing process
-            val pairingStarted = deviceModel.device.createBond()
-            if (!pairingStarted) {
-                Utils.E("Failed to initiate pairing process.")
-            }
+            connectingDialog(deviceModel.device.name)
+            setConnectedStatus()
+            connectedDevice = deviceModel.device
+            // Move the Connected Device to First Position
+            moveToFirstPosition()
+
+            Utils.E("Connected to device: ${deviceModel.device.getName()}")
+
+            val email = Utils.GetSession().email
+
+            val deviceMode = DeviceModel()
+
+            deviceMode.deviceName = deviceType
+            deviceMode.deviceAddress = deviceModel.device.address
+            deviceMode.email = email
+
+            //Insert Data in the device table
+            Utils.insertNewDeviceData(deviceMode)
+
         }
 
-        // BroadcastReceiver to handle bond state changes
-        private val bondStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-            @SuppressLint("MissingPermission")
-            override fun onReceive(context: Context, intent: Intent) {
-                val action = intent.action
-                if (BluetoothDevice.ACTION_BOND_STATE_CHANGED == action) {
-                    val device =
-                        intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-                    val bondState =
-                        intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)
-                    if (device != null && bondState == BluetoothDevice.BOND_BONDED) {
-                        // Device successfully paired
-                        Utils.E("Device paired successfully:  ${device.getName()}")
-                        // Pairing successful, now connect
+        private fun onConnectFailed() {
 
-                        val connectToDeviceThread = ConnectToDeviceThread()
-                        connectToDeviceThread.start()
-                        context.unregisterReceiver(this)
-                    } else if (bondState == BluetoothDevice.BOND_NONE) {
-                        // Pairing failed or was cancelled
-                        Utils.E("Pairing failed or was cancelled. ")
-
-                        context.unregisterReceiver(this)
-                    }
-                }
-            }
+            Utils.T(context, "Failed to Connect")
         }
 
         // Establish a connection with a Bluetooth device
-        @SuppressLint("MissingPermission")
-        private inner class ConnectToDeviceThread() : Thread() {
 
-            val SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+        private inner class ConnectToDeviceThread : Thread() {
+
+            private val SERIAL_UUID = UUID.fromString(bluetoothUuid)
 
             private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
                 deviceModel.device.createRfcommSocketToServiceRecord(SERIAL_UUID)
@@ -184,19 +195,26 @@ class BluetoothScanAdapter(
 //                bluetoothAdapter?.cancelDiscovery()
 
                 mmSocket?.let { socket ->
-                    // Connect to the remote device through the socket. This call blocks
-                    // until it succeeds or throws an exception.
-                    socket.connect()
 
-                    binding.root.post {
-                        // Update the UI here
-                        // For example, show a dialog
-                        connectingDialog(deviceModel.device.name)
-                        setConnectedStatus()
+                    try {
 
+                        // Connect to the remote device through the socket. This call blocks
+                        // until it succeeds or throws an exception.
+                        socket.connect()
+
+                        binding.root.post {
+                            // Update the UI here
+                            // For example, show a dialog
+                            if (mmSocket != null)
+                            onConnectSuccess(mmSocket!!)
+
+                        }
+                    } catch (e: IOException) {
+                        // Connection attempt failed
+                        // You can handle the error here
+                        e.printStackTrace()
+                        onConnectFailed()
                     }
-
-                    Utils.E("Connected to device: ${deviceModel.device.getName()}")
 
                     // The connection attempt succeeded. Perform work associated with
                     // the connection in a separate thread.
@@ -209,10 +227,41 @@ class BluetoothScanAdapter(
                 try {
                     mmSocket?.close()
                 } catch (e: IOException) {
-
-                    Utils.E("Could not close the client socket\"")
-
+                    Utils.E("Could not close the client socket")
                 }
+            }
+        }
+
+        //Checks Device is paired or not and connect it
+        @SuppressLint("MissingPermission")
+        private fun checkPairAndConnectDevice() {
+
+            // Check if the device is paired
+            if (BluetoothUtils.isDevicePaired(deviceModel.device)) {
+                // Device is paired, you can establish a connection here
+
+                val connectToDeviceThread = ConnectToDeviceThread()
+                connectToDeviceThread.start()
+
+                Utils.E("Device is already paired")
+
+            } else {
+
+                //Make Pair Device
+
+                BluetoothUtils.pairDevice(context, deviceModel.device, object : PairStatusCallback {
+
+                    override fun pairSuccess() {
+
+                        val connectToDeviceThread = ConnectToDeviceThread()
+                        connectToDeviceThread.start()
+                    }
+                    override fun pairFail() {
+                        Utils.T(context, "Paired Failed")
+                    }
+
+                })
+
             }
         }
 
@@ -222,19 +271,28 @@ class BluetoothScanAdapter(
 
             if (v == binding.mcvDevice) {
 
-                // Check if the device is paired
+                //Checks if device is already Connected or not
+                if (!deviceModel.isConnected) {
 
-                if (deviceModel.device.getBondState() == BluetoothDevice.BOND_BONDED) {
-                    // Device is paired, you can establish a connection here
-                    val connectToDeviceThread = ConnectToDeviceThread()
-                    connectToDeviceThread.start()
+                    if (connectedDevice == null) {
 
+                        checkPairAndConnectDevice()
+
+                    } else {
+
+//                        var connectToDeviceThread = ConnectToDeviceThread()
+////                        connectToDeviceThread.start()
+//                        connectToDeviceThread.disconnectDevice()
+//                        connectedDevice = null
+                        Utils.T(context, "fount $connectedDevice")
+
+                    }
                 } else {
-                    pairDevice()
+
+                    Utils.T(context, context.getString(R.string.already_connected))
                 }
 
             }
         }
-
     }
 }

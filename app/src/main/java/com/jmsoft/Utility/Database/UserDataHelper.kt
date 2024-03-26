@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.UtilityTools.Utils.E
+import com.jmsoft.main.model.DeviceModel
 
 class UserDataHelper(cx: Context) {
 
@@ -214,7 +215,76 @@ class UserDataHelper(cx: Context) {
         close()
 
     }
-    /**
+
+    //Insert Device Data in the Device Table
+    fun insertNewDeviceData(deviceModel: DeviceModel){
+
+        open()
+        val values = ContentValues()
+
+        // values.put(UserData.KEY_ID, userData.userId);
+        values.put(UserDataModel.Key_deviceName, deviceModel.deviceName)
+        values.put(UserDataModel.Key_deviceAddress, deviceModel.deviceAddress)
+        values.put(UserDataModel.Key_email, deviceModel.email)
+
+        db!!.insert(UserDataModel.TABLE_NAME_DEVICE, null, values)
+
+        close()
+    }
+
+    //Delete Device from Device table through Device id
+    fun deleteDeviceThoughDeviceId(deviceId: Int){
+        open()
+        db?.delete(
+            UserDataModel.TABLE_NAME_DEVICE,
+            "${UserDataModel.KEY_ID} = ?",
+            arrayOf(deviceId.toString())
+        )
+        close()
+    }
+
+    @SuppressLint("Recycle", "Range")
+    fun getDevicesThroughEmail(email: String): ArrayList<DeviceModel> {
+
+        read()
+
+        val cursor = db?.rawQuery("SELECT * FROM ${UserDataModel.TABLE_NAME_DEVICE} WHERE ${UserDataModel.Key_email} = '$email'",null)
+
+        val deviceItem = ArrayList<DeviceModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val deviceData = DeviceModel()
+
+                deviceData.deviceId = cursor.getInt(cursor.getColumnIndex(UserDataModel.KEY_ID))
+                deviceData.deviceName = cursor.getString(cursor.getColumnIndex(UserDataModel.Key_deviceName))
+                deviceData.deviceAddress = cursor.getString(cursor.getColumnIndex(UserDataModel.Key_deviceAddress))
+
+                deviceItem.add(deviceData)
+
+            } while (cursor.moveToPrevious())
+            cursor.close()
+        }
+        close()
+        return deviceItem
+    }
+
+    // Check if no device for perticular user
+    @SuppressLint("Recycle")
+    fun isNoDeviceForUser(email: String):Boolean {
+        read()
+
+        val cursor = db?.rawQuery("SELECT * FROM ${UserDataModel.TABLE_NAME_DEVICE} WHERE ${UserDataModel.Key_email} = '$email'" ,null)
+        val result = cursor!!.moveToFirst()
+        close()
+        return  !result
+    }
+
+        /**
      * insert Data in Session table
      *
      * @param userData //
