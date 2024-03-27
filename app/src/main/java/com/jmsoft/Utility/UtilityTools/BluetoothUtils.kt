@@ -111,6 +111,7 @@ object BluetoothUtils {
         bluetoothAdapter.startDiscovery()
     }
 
+
     fun unRegisterBroadCastReceiver(context: Context){
         context.unregisterReceiver(receiver)
     }
