@@ -53,7 +53,11 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
         // set the Recycler View of User List
         setRecyclerView()
 
+        //set Click on add user btn
         binding.mcvAddUser?.setOnClickListener(this)
+
+        //set Click on Back Btn
+        binding.mcvBackBtn?.setOnClickListener(this)
 
     }
 
@@ -61,6 +65,11 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
 
         if (v == binding.mcvAddUser) {
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.editProfile)
+        }
+
+        else if(v == binding.mcvBackBtn){
+
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.setting)
         }
 
     }

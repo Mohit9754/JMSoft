@@ -146,7 +146,6 @@
                 android:layout_width="@dimen/_12sdp"
                 android:layout_height="@dimen/_12sdp"
                 android:layout_marginHorizontal="@dimen/_3sdp"
-
                 android:layout_marginVertical="@dimen/_3sdp"
                 android:src="@drawable/reconnect"
                 app:tint="@color/white" />

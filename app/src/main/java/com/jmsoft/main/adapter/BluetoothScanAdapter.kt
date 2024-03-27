@@ -21,6 +21,7 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.bluetoothUuid
 import com.jmsoft.basic.UtilityTools.Constants.Companion.connected
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemDeviceListBinding
+import com.jmsoft.main.`interface`.DeviceConnectedCallback
 import com.jmsoft.main.`interface`.PairStatusCallback
 import com.jmsoft.main.model.BluetoothScanModel
 import com.jmsoft.main.model.DeviceModel
@@ -41,6 +42,7 @@ class BluetoothScanAdapter(
     private val deviceType: String?
 ) : RecyclerView.Adapter<BluetoothScanAdapter.MyViewHolder>() {
 
+    private var connectedDevice: BluetoothDevice? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemDeviceListBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -53,6 +55,7 @@ class BluetoothScanAdapter(
         holder.bind(bluetoothScanList[position], position)
     }
 
+    //Connecting Dialog
     fun connectingDialog(deviceName: String) {
 
         val dialog = Dialog(context)
@@ -75,7 +78,6 @@ class BluetoothScanAdapter(
 
         private lateinit var deviceModel: BluetoothScanModel
         private var position: Int = -1
-        private var connectedDevice: BluetoothDevice? = null
 
 
         fun bind(deviceModel: BluetoothScanModel, position: Int) {
@@ -88,6 +90,9 @@ class BluetoothScanAdapter(
             //setting the Mac Address of the Scanned Device
             setMacAddress()
 
+            //Setting Device Icon
+            setDeviceIcon()
+
             //Hide the Bin
             hideBin()
 
@@ -96,21 +101,42 @@ class BluetoothScanAdapter(
 
             //Setting Click on Device
             binding.mcvDevice.setOnClickListener(this)
+
+        }
+
+        //Setting Device Icon
+        private fun setDeviceIcon() {
+
+            when (deviceType) {
+
+                context.getString(R.string.rfid_scanner) -> {
+
+                    binding.ivDeviceIcon.setImageResource(R.drawable.icon_scanner)
+                }
+                context.getString(R.string.rfid_tag_printer) -> {
+
+                    binding.ivDeviceIcon.setImageResource(R.drawable.icon_tag_printer)
+                }
+                context.getString(R.string.ticket_printer) -> {
+
+                    binding.ivDeviceIcon.setImageResource(R.drawable.icon_ticket_printer)
+                }
+            }
         }
 
         // Method to move the Connected to the first position
         private fun moveToFirstPosition() {
 
-//            if (position != 0) {
-//
-//                bluetoothScanList.remove(bluetoothScanList[position])
-//                bluetoothScanList.add(
-//                    0,
-//                    bluetoothScanList[position]
-//                ) // Add item to the beginning of the list
-//                notifyItemMoved(position, 0) // Notify adapter about the move
-//
-//            }
+            if (position != 0) {
+
+                bluetoothScanList.remove(bluetoothScanList[position])
+                bluetoothScanList.add(
+                    0,
+                    bluetoothScanList[position]
+                ) // Add item to the beginning of the list
+                notifyItemMoved(position, 0) // Notify adapter about the move
+
+            }
         }
 
         //Setting the Status of the Connected Device
@@ -120,8 +146,6 @@ class BluetoothScanAdapter(
             binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
             binding.tvStatus.text = connected
             binding.tvStatus.setTextColor(context.getColor(R.color.green))
-
-
         }
 
         //Check if Device is already Connected or Not
@@ -154,16 +178,23 @@ class BluetoothScanAdapter(
             binding.tvMacAddress.text = deviceModel.device.address.toString()
         }
 
+        //This method is called when the device is connected
         private fun onConnectSuccess() {
 
+            //showing connected dialog
             connectingDialog(deviceModel.device.name)
+
+            //setting the connected status
             setConnectedStatus()
+
             connectedDevice = deviceModel.device
+
             // Move the Connected Device to First Position
             moveToFirstPosition()
 
             Utils.E("Connected to device: ${deviceModel.device.name}")
 
+            //get user id
             val userId = Utils.GetSession().userId
 
             val deviceMode = DeviceModel()
@@ -173,88 +204,13 @@ class BluetoothScanAdapter(
             deviceMode.deviceAddress = deviceModel.device.address
             deviceMode.userId = userId
 
-
-           val addedDeviceList = Utils.getDevicesThroughUserId(Utils.GetSession().userId!!)
+            val addedDeviceList = Utils.getDevicesThroughUserId(Utils.GetSession().userId!!)
             if (addedDeviceList.firstOrNull { it.deviceAddress == deviceModel.device.address } != null) {
 
             }
             else{
+                //Insert Data in the device table
                 Utils.insertNewDeviceData(deviceMode)
-
-            }
-
-            //Insert Data in the device table
-
-        }
-
-        private fun onConnectFailed() {
-
-//            Utils.T(context, "Failed to Connect")
-        }
-
-        // Establish a connection with a Bluetooth device
-
-        private inner class ConnectToDeviceThread : Thread() {
-
-            private val SERIAL_UUID = UUID.fromString(bluetoothUuid)
-
-            private val mmSocket: BluetoothSocket? =
-                deviceModel.device.createRfcommSocketToServiceRecord(SERIAL_UUID)
-
-
-            override fun run() {
-                // Cancel discovery because it otherwise slows down the connection.
-//                bluetoothAdapter?.cancelDiscovery()
-
-                mmSocket?.let { socket ->
-                    try {
-
-                        // Connect to the remote device through the socket. This call blocks
-                        // until it succeeds or throws an exception.
-                        socket.connect()
-                        binding.root.post {
-                            // Update the UI here
-                            // For example, show a dialog
-                            onConnectSuccess()
-
-                        }
-                    } catch (e: IOException) {
-                        // Connection attempt failed
-                        // You can handle the error here
-                        e.printStackTrace()
-                        binding.root.post {
-                            // Update the UI here
-                            // For example, show a dialog
-                            onConnectSuccess()
-
-                        }
-                        onConnectFailed()
-                    }
-
-                    // The connection attempt succeeded. Perform work associated with
-                    // the connection in a separate thread.
-//                    manageMyConnectedSocket(socket)
-                }
-            }
-
-            // Closes the client socket and causes the thread to finish.
-            fun cancel() {
-                try {
-                    mmSocket?.close()
-                } catch (e: IOException) {
-                    Utils.E("Could not close the client socket")
-                }
-            }
-        }
-
-        @SuppressLint("MissingPermission")
-        private fun unpairDevice(device: BluetoothDevice) {
-            try {
-                val method = device.javaClass.getMethod("removeBond")
-                method.invoke(device)
-                Utils.E("Device unpaired successfully: ${device.name}")
-            } catch (e: Exception) {
-                Utils.E("Failed to unpair device: ${e.message}")
             }
         }
 
@@ -264,10 +220,10 @@ class BluetoothScanAdapter(
 
             // Check if the device is paired
             if (BluetoothUtils.isDevicePaired(deviceModel.device)) {
-                // Device is paired, you can establish a connection here
 
-                unpairDevice(deviceModel.device)
-//
+                //Unpair the device
+                BluetoothUtils.unpairDevice(deviceModel.device)
+
                 val countDownTimer = object : CountDownTimer(2000, 1000) {
                     override fun onTick(millisUntilFinished: Long) {
                         // This method will be called every 1 second (1000 milliseconds) until the countdown is finished
@@ -279,8 +235,21 @@ class BluetoothScanAdapter(
 
                         // Execute your Bluetooth pairing code here
                         BluetoothUtils.pairDevice(context, deviceModel.device, object : PairStatusCallback {
+
                             override fun pairSuccess() {
-                                val connectToDeviceThread = ConnectToDeviceThread()
+
+                                // Device is paired, you can establish a connection here
+                                val connectToDeviceThread = BluetoothUtils.ConnectToDeviceThread(deviceModel.device,binding.root,object:DeviceConnectedCallback{
+
+                                    override fun onDeviceConnected(device: BluetoothDevice) {
+                                        onConnectSuccess()
+                                    }
+
+                                    override fun onDeviceNotConnected() {
+
+                                    }
+
+                                })
                                 connectToDeviceThread.start()
                             }
 
@@ -290,30 +259,34 @@ class BluetoothScanAdapter(
                         })
                     }
                 }
-
                 countDownTimer.start()
-
 
                 Utils.E("Device is already paired")
 
             } else {
 
                 //Make Pair Device
-
                 BluetoothUtils.pairDevice(context, deviceModel.device, object : PairStatusCallback {
 
                     override fun pairSuccess() {
 
-                        val connectToDeviceThread = ConnectToDeviceThread()
+                        // Device is paired, you can establish a connection here
+                        val connectToDeviceThread = BluetoothUtils.ConnectToDeviceThread(deviceModel.device,binding.root,object:DeviceConnectedCallback{
+
+                            override fun onDeviceConnected(device: BluetoothDevice) {
+                                onConnectSuccess()
+                            }
+
+                            override fun onDeviceNotConnected() {
+
+                            }
+                        })
                         connectToDeviceThread.start()
                     }
-
                     override fun pairFail() {
                         Utils.T(context, "Paired Failed")
                     }
-
                 })
-
             }
         }
 
@@ -326,23 +299,15 @@ class BluetoothScanAdapter(
                 //Checks if device is already Connected or not
                 if (!deviceModel.isConnected) {
 
-                    if (connectedDevice == null) {
+                    //Checks Device is paired or not and connect it
+                    checkPairAndConnectDevice()
 
-                        checkPairAndConnectDevice()
-
-                    } else {
-
-//                        var connectToDeviceThread = ConnectToDeviceThread()
-////                        connectToDeviceThread.start()
-//                        connectToDeviceThread.disconnectDevice()
-//                        connectedDevice = null
-                        Utils.T(context, "fount $connectedDevice")
-
-                    }
                 } else {
 
                     Utils.T(context, context.getString(R.string.already_connected))
-                    onConnectSuccess()
+                    //showing connected dialog
+                    connectingDialog(deviceModel.device.name)
+//                    onConnectSuccess()
 
                 }
 
