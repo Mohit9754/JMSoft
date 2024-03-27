@@ -185,6 +185,17 @@ object Utils {
         return UserDataHelper.instance.isEmailExist(email)
     }
 
+    //this method checks if any user has this phone number
+    fun isAnyUserHasThisPhoneNumber(phoneNumber: String,userId: Int): Boolean {
+        return UserDataHelper.instance.isAnyUserHasThisPhoneNumber(phoneNumber,userId)
+    }
+
+    //this method checks if any user has this email
+    fun isAnyUserHasThisEmail(email: String,userId: Int): Boolean {
+        return UserDataHelper.instance.isAnyUserHasThisEmail(email,userId)
+
+    }
+
     // Checks if Phone Number Already Exist in the User Table
     fun isPhoneNumberExist(phoneNumber:String): Boolean {
         return UserDataHelper.instance.isPhoneNumberExist(phoneNumber)
@@ -200,9 +211,14 @@ object Utils {
         return UserDataHelper.instance.isValidUser(email,password)
     }
 
-    // get User through Email Address from the User Table
-    fun getUserDetailThroughEmail(email: String): UserDataModel {
-        return UserDataHelper.instance.getUserDetailThroughEmail(email)
+    //Get User details through email and password from the user table
+    fun getUserThroughEmailAndPassword(email: String,password: String): UserDataModel {
+        return UserDataHelper.instance.getUserThroughEmailAndPassword(email,password)
+    }
+
+    // get User through User id from the User Table
+    fun getUserDetailsThroughUserId(userId: Int): UserDataModel {
+        return UserDataHelper.instance.getUserDetailsThroughUserId(userId)
     }
 
     // insert Data in the Session Table
@@ -210,19 +226,19 @@ object Utils {
         UserDataHelper.instance.insertDataInSessionTable(userDataModel)
     }
 
-    // update profile in the User Table
-    fun updateProfileInUserTable(profileName:String,email: String) {
-        UserDataHelper.instance.updateProfileInUserTable(profileName,email)
+    // update user profile in the User Table
+    fun updateProfileInUserTable(profileName:String,userId: Int) {
+        UserDataHelper.instance.updateProfileInUserTable(profileName,userId)
     }
 
-    // Checks if no device Available for perticular user through email
-    fun isNoDeviceForUser(email: String): Boolean {
-        return UserDataHelper.instance.isNoDeviceForUser(email)
+    // Checks if no device Available for particular user through user id
+    fun isNoDeviceForUser(userId: Int): Boolean {
+        return UserDataHelper.instance.isNoDeviceForUser(userId)
     }
 
-    //get All Devices of perticular user through email
-    fun getDevicesThroughEmail(email: String): ArrayList<DeviceModel> {
-        return UserDataHelper.instance.getDevicesThroughEmail(email)
+    //get All Devices of particular user through userId
+    fun getDevicesThroughUserId(userId: Int): ArrayList<DeviceModel> {
+        return UserDataHelper.instance.getDevicesThroughUserId(userId)
     }
 
     // Insert New Device in the device table
@@ -233,6 +249,21 @@ object Utils {
     //Delete Device from Device table through Device id
     fun deleteDeviceThoughDeviceId(deviceId: Int) {
         UserDataHelper.instance.deleteDeviceThoughDeviceId(deviceId)
+    }
+
+    // getting All User Details Accept Admin
+    fun getAllUserDetails(): ArrayList<UserDataModel> {
+        return UserDataHelper.instance.getAllUserDetails()
+    }
+
+    //Deleting the User through the User id from the user table
+    fun deleteUserThroughUserId(userId: Int){
+        UserDataHelper.instance.deleteUserThroughUserId(userId)
+    }
+
+    //Update User Details in the User Table
+    fun updateUserDetails(userDataModel: UserDataModel){
+        UserDataHelper.instance.updateUserDetails(userDataModel)
     }
 
     @JvmStatic

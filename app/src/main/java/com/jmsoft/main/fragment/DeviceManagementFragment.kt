@@ -100,7 +100,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentDeviceManagementBinding.inflate(layoutInflater)
 
-        //set the Clicks And initalize
+        //set the Clicks And initialization
         init()
         return binding.root
     }
@@ -108,19 +108,19 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     // Setting the Device list through Recycler View
     private fun setRecyclerOfDeviceList() {
 
-        //get User Email Address
-        val email = Utils.GetSession().email
+        //get User User id
+        val userId = Utils.GetSession().userId
 
-        //Checks if devices data for this email
-        if (Utils.isNoDeviceForUser(email!!)) {
+        //Checks if no devices data for this userId
+        if (Utils.isNoDeviceForUser(userId!!)) {
 
             binding.rlNoDevice!!.visibility = View.VISIBLE
             binding.llDevicePresent!!.visibility = View.GONE
         } else {
 
-            //Devics list for perticular user
+            //Device list for particular user
             val deviceList: ArrayList<DeviceModel> =
-                Utils.getDevicesThroughEmail(Utils.GetSession().email!!)
+                Utils.getDevicesThroughUserId(Utils.GetSession().userId!!)
 
             binding.rlNoDevice!!.visibility = View.GONE
             binding.llDevicePresent!!.visibility = View.VISIBLE
@@ -136,7 +136,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    //Checks All the necessery permission related to bluetooth
+    //Checks All the necessary permission related to bluetooth
     private var customPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -162,7 +162,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         // Check if all permissions are granted or not
         if (allPermissionsGranted) {
 
-            //Checks Continuesly Bluetooth is on or off
+            //Checks Continuously Bluetooth is on or off
             BluetoothUtils.registerBluetoothStateReceiver(requireActivity(),
                 object : BluetoothOffCallback {
 
@@ -218,8 +218,8 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         binding.mcvAddFirstDevice?.setOnClickListener(this)
     }
 
-    //Checks the Android Version And  Launch Custom Prmission ,Accourding to Version
-    private fun checkAndroidVerionAndLaunchPermission() {
+    //Checks the Android Version And  Launch Custom Permission ,according to Version
+    private fun checkAndroidVersionAndLaunchPermission() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
 
@@ -239,16 +239,16 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         bottomSheetAddDevice.behavior.maxWidth = LayoutParams.MATCH_PARENT
 
         addDeviceBottomSheetBinding.mcvRfidScanner.setOnClickListener {
-            //Checks the Android Version And  Launch Custom Prmission ,Accourding to Version
+            //Checks the Android Version And  Launch Custom Permission ,according to Version
             deviceType = getString(R.string.rfid_scanner)
-            checkAndroidVerionAndLaunchPermission()
+            checkAndroidVersionAndLaunchPermission()
             bottomSheetAddDevice.dismiss()
         }
 
         addDeviceBottomSheetBinding.mcvRfidTagPrinter.setOnClickListener {
 
             deviceType = getString(R.string.rfid_tag_printer)
-            checkAndroidVerionAndLaunchPermission()
+            checkAndroidVersionAndLaunchPermission()
             bottomSheetAddDevice.dismiss()
 
         }
@@ -256,7 +256,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         addDeviceBottomSheetBinding.mcvTicketPrinter.setOnClickListener {
 
             deviceType = getString(R.string.ticket_printer)
-            checkAndroidVerionAndLaunchPermission()
+            checkAndroidVersionAndLaunchPermission()
             bottomSheetAddDevice.dismiss()
 
         }
@@ -303,6 +303,8 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
             @SuppressLint("NotifyDataSetChanged")
             override fun onDeviceFound(device: BluetoothDevice) {
+
+                Utils.E("${device.name }")
 
               if (!bluetoothScanList.contains(BluetoothScanModel(device, false))) {
                     bluetoothScanList.add(BluetoothScanModel(device, false))

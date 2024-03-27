@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tool="http://schemas.android.com/tools"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:startDestination="@+id/home"
-    android:id="@+id/nav">
+    xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/nav"
+    app:startDestination="@+id/home">
 
     <fragment
         android:id="@+id/home"
@@ -25,12 +24,28 @@
         android:label="Catalog"
         tool:layout="@layout/fragment_setting" />
 
-  <fragment
+    <fragment
         android:id="@+id/deviceManagement"
         android:name="com.jmsoft.main.fragment.DeviceManagementFragment"
         android:label="Device Management"
         tool:layout="@layout/fragment_device_management" />
 
+    <fragment
+        android:id="@+id/userManagement"
+        android:name="com.jmsoft.main.fragment.UserManagementFragment"
+        android:label="User Management"
+        tool:layout="@layout/fragment_user_management" />
 
+    <fragment
+        android:id="@+id/editProfile"
+        android:name="com.jmsoft.main.fragment.EditProfileFragment"
+        android:label="Edit Profile"
+        tool:layout="@layout/fragment_edit_profile">
+
+        <argument
+            android:name="email"
+            app:argType="string" />
+
+    </fragment>
 
 </navigation>

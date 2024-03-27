@@ -83,7 +83,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 //            }
 //        }
 
-        //set the Clicks And initalize
+        //set the Clicks And initialization
         init()
     }
 
@@ -255,9 +255,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 )
             ) {
 
-                // Getting User Details through Email
-                val userDataModel = Utils.getUserDetailThroughEmail(
-                    binding.etEmailAddress?.text.toString().trim().lowercase(Locale.getDefault())
+                // Getting User Details through email and password
+                val userDataModel = Utils.getUserThroughEmailAndPassword(
+                    binding.etEmailAddress?.text.toString().trim().lowercase(Locale.getDefault()),
+                    binding.etPassword?.text.toString().trim()
                 )
                 //Store User Details in the Session Table
                 Utils.insertDataInSessionTable(userDataModel)
@@ -295,7 +296,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             validate()
         }
 
-        // Switching language accourding to current language
+        // Switching language according to current language
         else if (v == binding.ivLanguageSwitcher) {
 
             val lang = Utils.getCurrentLanguage()

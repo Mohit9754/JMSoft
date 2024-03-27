@@ -25,6 +25,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.Database.UserDataHelper
+import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentSettingBinding
@@ -127,7 +128,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentSettingBinding.inflate(layoutInflater)
 
-        //set the Clicks And initalize
+        //set the Clicks And initialization
         init()
 
         return binding.root
@@ -191,9 +192,9 @@ class SettingFragment : Fragment(), View.OnClickListener {
             Utils.saveToInternalStorage(requireActivity(), profile, imageFileName)
 
             //Update the profile
-            Utils.updateProfileInUserTable(imageFileName, Utils.GetSession().email!!)
+            Utils.updateProfileInUserTable(imageFileName, Utils.GetSession().userId!!)
 
-            val userDataModel = Utils.getUserDetailThroughEmail(Utils.GetSession().email!!)
+            val userDataModel = Utils.getUserDetailsThroughUserId(Utils.GetSession().userId!!)
             //Update the Session Data
             Utils.insertDataInSessionTable(userDataModel)
 
@@ -212,7 +213,18 @@ class SettingFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    //Check if the User is admin or not. if not then hide the user Management option
+    private fun checkUserTypeAndHideUserManagement(){
+
+        if (Utils.GetSession().userType != admin){
+            binding.mcvUserManagement?.visibility  = View.GONE
+        }
+    }
+
     private fun init() {
+
+        //Check if the User is admin or not. if not then hide the user Management option
+        checkUserTypeAndHideUserManagement()
 
         //setFullName from the local Database
         setFullName()
@@ -227,6 +239,9 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
         //Set Click on Edit Profile Button
         binding.mcvEditProfile?.setOnClickListener(this)
+
+        //Set Click on User Management
+        binding.mcvUserManagement?.setOnClickListener(this)
 
     }
 
@@ -266,6 +281,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
         dialog.setContentView(R.layout.dialog_logout)
         dialog.findViewById<MaterialCardView>(R.id.mcvYes).setOnClickListener {
 
+            dialog.dismiss()
             // Remove the session
             Utils.LOGOUT()
             //intent to login activity with Clear back stack
@@ -289,6 +305,12 @@ class SettingFragment : Fragment(), View.OnClickListener {
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.deviceManagement)
 
         }
+
+        else if(v == binding.mcvUserManagement){
+
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
+        }
+
         // When LogOut button Clicked
         else if (v == binding.mcvLogOut) {
 

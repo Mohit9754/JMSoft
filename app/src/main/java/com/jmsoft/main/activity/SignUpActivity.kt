@@ -65,13 +65,12 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         binding.etEmailAddress!!.setText(savedInstanceState?.getString(email) ?: "")
         binding.etPassword!!.setText(savedInstanceState?.getString(password) ?: "")
 
-        //set the Clicks And initalize
+        //set the Clicks And initialization
         init()
         setContentView(binding.root)
     }
 
     // Removing Error when text entered
-
     private fun setTextChangeLis(editText: EditText, textView: TextView) {
 
         editText.addTextChangedListener(object : TextWatcher {
@@ -150,7 +149,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
             validate()
         }
 
-        // Switching language accourding to current language
+        // Switching language according to current language
         else if (v == binding.ivLanguageSwitcher) {
 
             val lang = Utils.getCurrentLanguage()
@@ -214,7 +213,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
                 userDataModel.email = binding.etEmailAddress?.text.toString().trim().toLowerCase()
                 userDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
                 userDataModel.profileName = ""
-                userDataModel.token = ""
+
                 userDataModel.password = binding.etPassword?.text.toString().trim()
 
                 //Insert Data in the User Table

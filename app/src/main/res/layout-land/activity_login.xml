@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:orientation="horizontal"
     android:weightSum="2"
     tools:context=".main.activity.SplashActivity">
 
@@ -139,7 +140,8 @@
                                     android:layout_marginStart="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
-                                    android:textSize="8sp"
+                                    android:textSize="10sp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:visibility="gone" />
 
                             </LinearLayout>
@@ -178,24 +180,25 @@
                                         android:id="@+id/etPassword"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
+                                        android:layout_marginEnd="@dimen/_15sdp"
                                         android:background="@null"
                                         android:fontFamily="@font/montserrat_arabic_medium"
                                         android:hint="@string/enter_your_password"
                                         android:inputType="textPassword"
-                                        android:layout_marginEnd="@dimen/_15sdp"
                                         android:paddingHorizontal="@dimen/_5sdp"
                                         android:paddingVertical="@dimen/_5sdp"
                                         android:textSize="10sp"
                                         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
                                     <ImageView
-                                        android:layout_width="@dimen/_20sdp"
-                                        android:layout_height="@dimen/_20sdp"
-                                        android:padding="@dimen/_5sdp"
                                         android:id="@+id/ivPasswordVisibility"
+                                        android:layout_width="@dimen/_15sdp"
+                                        android:layout_height="@dimen/_15sdp"
+
                                         android:layout_alignParentEnd="true"
-                                        android:src="@drawable/icon_show"
-                                        android:layout_centerVertical="true" />
+                                        android:layout_centerVertical="true"
+                                        android:padding="@dimen/_4sdp"
+                                        android:src="@drawable/icon_show" />
 
                                 </RelativeLayout>
 
@@ -212,7 +215,8 @@
                                     android:layout_marginStart="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:textColor="@color/red"
-                                    android:textSize="8sp"
+                                    android:textSize="10sp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:visibility="gone" />
 
                             </LinearLayout>
@@ -285,18 +289,16 @@
 
     </ScrollView>
 
-    <LinearLayout
+
+
+
+    <ImageView
+        android:id="@+id/ivJewellery"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:scaleType="fitXY"
+        android:src="@drawable/img_jewellery_en" />
 
-        <ImageView
-            android:id="@+id/ivJewellery"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/img_jewellery_en" />
-
-    </LinearLayout>
 
 </LinearLayout>

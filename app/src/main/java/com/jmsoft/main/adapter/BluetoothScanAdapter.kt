@@ -77,7 +77,6 @@ class BluetoothScanAdapter(
         private var position: Int = -1
         private var connectedDevice: BluetoothDevice? = null
 
-
         fun bind(deviceModel: BluetoothScanModel, position: Int) {
             this.deviceModel = deviceModel
             this.position = position
@@ -152,7 +151,7 @@ class BluetoothScanAdapter(
             binding.tvMacAddress.text = deviceModel.device.address.toString()
         }
 
-        private fun onConnectSuccess(mmSocket: BluetoothSocket) {
+        private fun onConnectSuccess() {
 
             connectingDialog(deviceModel.device.name)
             setConnectedStatus()
@@ -162,13 +161,13 @@ class BluetoothScanAdapter(
 
             Utils.E("Connected to device: ${deviceModel.device.getName()}")
 
-            val email = Utils.GetSession().email
+            val userId = Utils.GetSession().userId
 
             val deviceMode = DeviceModel()
 
             deviceMode.deviceName = deviceType
             deviceMode.deviceAddress = deviceModel.device.address
-            deviceMode.email = email
+            deviceMode.userId = userId
 
             //Insert Data in the device table
             Utils.insertNewDeviceData(deviceMode)
@@ -205,8 +204,8 @@ class BluetoothScanAdapter(
                         binding.root.post {
                             // Update the UI here
                             // For example, show a dialog
-                            if (mmSocket != null)
-                            onConnectSuccess(mmSocket!!)
+                            onConnectSuccess()
+
 
                         }
                     } catch (e: IOException) {
@@ -248,7 +247,6 @@ class BluetoothScanAdapter(
             } else {
 
                 //Make Pair Device
-
                 BluetoothUtils.pairDevice(context, deviceModel.device, object : PairStatusCallback {
 
                     override fun pairSuccess() {
@@ -256,6 +254,7 @@ class BluetoothScanAdapter(
                         val connectToDeviceThread = ConnectToDeviceThread()
                         connectToDeviceThread.start()
                     }
+
                     override fun pairFail() {
                         Utils.T(context, "Paired Failed")
                     }

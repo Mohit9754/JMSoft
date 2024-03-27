@@ -28,7 +28,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentHomeBinding.inflate(layoutInflater)
 
-        //set the Clicks And initalize
+        //set the Clicks And initialization
         init()
 
         return binding.root
@@ -38,6 +38,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         // Set Click on Catalog option
         binding.mcvCatalog?.setOnClickListener(this)
+
+        // Set Click on Settings option
+        binding.mcvSettings?.setOnClickListener(this)
     }
 
     //Handles All the Clicks
@@ -48,6 +51,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
         if (v == binding.mcvCatalog) {
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.catalog)
+        }
+
+        // Navigate to Setting Fragment
+        else if (v == binding.mcvSettings) {
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.setting)
 
         }
 

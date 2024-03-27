@@ -6,8 +6,10 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.view.Window
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
@@ -37,7 +39,7 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
 
         navController = findNavController(R.id.fragmentContainerView)
 
-        //set the Clicks And initalize
+        //set the Clicks And initialization
         init()
     }
 
@@ -56,7 +58,7 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
     //Handles All the Clicks
     override fun onClick(v: View?) {
 
-        // Switching language accourding to current language
+        // Switching language according to current language
         if (v == binding.ivLanguageSwitcher) {
 
             val lang = Utils.getCurrentLanguage()
@@ -79,5 +81,17 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
             navController?.navigate(R.id.home)
         }
     }
+
+
+    // Close the Keyboard when you touch the Screen
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+
+        if (currentFocus != null) {
+            val imm = getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
 
 }

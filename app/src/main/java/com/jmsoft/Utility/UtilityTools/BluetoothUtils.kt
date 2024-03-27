@@ -16,7 +16,6 @@ import com.jmsoft.main.`interface`.ConnectedDeviceCallback
 import com.jmsoft.main.`interface`.DeviceFoundCallback
 import com.jmsoft.main.`interface`.PairStatusCallback
 
-
 object BluetoothUtils {
 
     private lateinit var bluetoothAdapter: BluetoothAdapter
@@ -88,7 +87,6 @@ object BluetoothUtils {
 
         // Create a BroadcastReceiver for ACTION_FOUND.
         receiver = object : BroadcastReceiver() {
-            @SuppressLint("NotifyDataSetChanged", "MissingPermission", "SuspiciousIndentation")
             override fun onReceive(context: Context, intent: Intent) {
                 val action = intent.action
 

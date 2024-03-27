@@ -99,5 +99,15 @@
     <string name="active">Active</string>
     <string name="signup_successfully">SignUp Successfully</string>
     <string name="already_connected">Already Connected</string>
+    <string name="user_management">User Management</string>
+    <string name="add_user">Add User</string>
+    <string name="jenny_wilson">Jenny Wilson</string>
+    <string name="jenny_123gmail_com">jenny@123gmail.com</string>
+    <string name="_21_987654321">+21 987654321</string>
+    <string name="delete">Delete</string>
+    <string name="are_you_sure_you_want_to_delete_the_user">Are you Sure you want to delete the user ?</string>
+    <string name="save">Save</string>
+    <string name="updated_successfully">Updated Successfully</string>
+    <string name="new_user_registered_successfully">New User Registered Successfully</string>
 
 </resources>

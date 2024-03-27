@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/_10sdp"
+    app:cardCornerRadius="@dimen/_5sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="MissingDefaultResource">
 
@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
-        android:layout_marginStart="@dimen/_5sdp"
         tools:ignore="MissingDefaultResource">
 
         <TextView
@@ -23,26 +22,30 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginBottom="@dimen/_6sdp"
             android:id="@+id/tvConnected"
+            android:layout_marginStart="@dimen/_5sdp"
             android:fontFamily="@font/montserrat_arabic_medium"
             android:text="@string/connected"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvConnected"
             android:id="@+id/tvDeviceName"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_5sdp"
             android:textSize="12dp"
             android:fontFamily="@font/montserrat_arabic_regular" />
 
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/tvDeviceName"
             app:cardBackgroundColor="@color/theme"
-            android:layout_margin="@dimen/_10sdp"
-            app:cardCornerRadius="@dimen/_6sdp"
+            android:layout_marginVertical="@dimen/_5sdp"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            app:cardCornerRadius="@dimen/_4sdp"
             android:id="@+id/mcvOK"
             android:layout_height="wrap_content">
 
@@ -50,9 +53,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ok"
-                android:paddingHorizontal="@dimen/_5sdp"
-                android:paddingVertical="@dimen/_3sdp"
+                android:fontFamily="@font/montserrat_arabic_medium"
+                android:textColor="@color/white"
                 android:textSize="12sp"
+                android:layout_gravity="center"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_6sdp"
                 />
 
         </com.google.android.material.card.MaterialCardView>

@@ -101,7 +101,7 @@ class DeviceListAdapter(
             binding.tvMacAddress.text  = deviceModel.deviceAddress
         }
 
-        //Setting the Device Status and Change there Staus Color Accourding to it.
+        //Setting the Device Status and Change there Status Color according to it.
         private fun setDeviceStatus() {
 
             BluetoothUtils.getConnectedDevice(context, object : ConnectedDeviceCallback {

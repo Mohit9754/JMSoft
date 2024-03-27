@@ -8,6 +8,6 @@ class DeviceModel {
 
     var deviceAddress: String? = null
 
-    var email: String? = null
+    var userId: Int? = null
 
 }
