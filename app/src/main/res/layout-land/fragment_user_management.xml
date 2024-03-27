@@ -19,11 +19,10 @@
             android:layout_marginTop="@dimen/_12sdp">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/mcvBack"
+                android:id="@+id/mcvBackBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginHorizontal="@dimen/_5sdp"
                 android:layout_marginBottom="@dimen/_5sdp"
                 app:cardBackgroundColor="@color/white"
                 app:strokeWidth="1dp"
@@ -44,8 +43,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/mcvBack"
-                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_toEndOf="@+id/mcvBackBtn"
+                android:layout_marginStart="@dimen/_6sdp"
                 android:id="@+id/tvUserManagement"
                 android:fontFamily="@font/montserrat_arabic_semibold"
                 android:text="@string/user_management"
@@ -93,10 +92,10 @@
             android:id="@+id/rvUserList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_26sdp"
+            android:layout_marginHorizontal="@dimen/_24sdp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"
-            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             tools:listitem="@layout/item_user_management" />
 
     </LinearLayout>

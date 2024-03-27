@@ -22,6 +22,7 @@
             android:id="@+id/mcvIconDevice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_3sdp"
             android:layout_marginHorizontal="@dimen/_5sdp"
             app:cardBackgroundColor="@color/theme"
             app:cardCornerRadius="@dimen/_4sdp"

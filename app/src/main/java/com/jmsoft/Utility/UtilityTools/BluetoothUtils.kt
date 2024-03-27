@@ -6,15 +6,22 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothDevice.ACTION_FOUND
 import android.bluetooth.BluetoothProfile
+import android.bluetooth.BluetoothSocket
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.provider.DocumentsContract.Root
+import android.view.View
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.main.`interface`.BluetoothOffCallback
 import com.jmsoft.main.`interface`.ConnectedDeviceCallback
+import com.jmsoft.main.`interface`.DeviceConnectedCallback
 import com.jmsoft.main.`interface`.DeviceFoundCallback
 import com.jmsoft.main.`interface`.PairStatusCallback
+import java.io.IOException
+import java.util.UUID
 
 
 object BluetoothUtils {
@@ -23,6 +30,7 @@ object BluetoothUtils {
     private lateinit var bluetoothStateReceiver: BroadcastReceiver
     private lateinit var receiver: BroadcastReceiver
 
+    //Checks if device is paired or not
     @SuppressLint("MissingPermission")
     fun isDevicePaired(device: BluetoothDevice): Boolean {
         return device.bondState == BluetoothDevice.BOND_BONDED
@@ -74,6 +82,57 @@ object BluetoothUtils {
         }
     }
 
+    // Establish a connection with a Bluetooth device
+    class ConnectToDeviceThread(val device:BluetoothDevice,val root:View,val deviceConnectedCallback: DeviceConnectedCallback) : Thread() {
+
+        private val SERIAL_UUID = UUID.fromString(Constants.bluetoothUuid)
+
+        @SuppressLint("MissingPermission")
+        private val mmSocket: BluetoothSocket? =
+            device.createRfcommSocketToServiceRecord(SERIAL_UUID)
+
+        @SuppressLint("MissingPermission")
+        override fun run() {
+            // Cancel discovery because it otherwise slows down the connection.
+//                bluetoothAdapter?.cancelDiscovery()
+
+            mmSocket?.let { socket ->
+                try {
+
+                    // Connect to the remote device through the socket. This call blocks
+                    // until it succeeds or throws an exception.
+                    socket.connect()
+
+                    root.post {
+                        // Update the UI here
+                        // For example, show a dialog
+                        deviceConnectedCallback.onDeviceConnected(device)
+
+                    }
+                } catch (e: IOException) {
+                    // Connection attempt failed
+                    // You can handle the error here
+                    e.printStackTrace()
+                    root.post {
+                        // Update the UI here
+                        // For example, show a dialog
+                        deviceConnectedCallback.onDeviceConnected(device)
+
+                    }
+                }
+            }
+        }
+
+        // Closes the client socket and causes the thread to finish.
+        fun cancel() {
+            try {
+                mmSocket?.close()
+            } catch (e: IOException) {
+                Utils.E("Could not close the client socket")
+            }
+        }
+    }
+
     //Checks if Bluetooth is on or off
     fun isEnableBluetooth(
     ): Boolean {
@@ -84,6 +143,18 @@ object BluetoothUtils {
             return false
 
         return bluetoothAdapter.isEnabled
+    }
+
+    //Unpair the device
+    @SuppressLint("MissingPermission")
+    fun unpairDevice(device: BluetoothDevice) {
+        try {
+            val method = device.javaClass.getMethod("removeBond")
+            method.invoke(device)
+            Utils.E("Device unpaired successfully: ${device.name}")
+        } catch (e: Exception) {
+            Utils.E("Failed to unpair device: ${e.message}")
+        }
     }
 
     // Register BroadcastReceiver for Bluetooth device discovery
@@ -117,10 +188,12 @@ object BluetoothUtils {
         bluetoothAdapter.startDiscovery()
     }
 
+    //Unregister Broadcast Receiver
     fun unRegisterBroadCastReceiver(context: Context) {
         context.unregisterReceiver(receiver)
     }
 
+    //Register Bluetooth State Receiver
     fun registerBluetoothStateReceiver(
         context: Context, bluetoothOffCallback: BluetoothOffCallback
     ) {
@@ -149,10 +222,12 @@ object BluetoothUtils {
         context.registerReceiver(bluetoothStateReceiver, filter)
     }
 
+    //Unregister Bluetooth State Receiver
     fun unRegisterBluetoothStateReceiver(context: Context) {
         context.unregisterReceiver(bluetoothStateReceiver)
     }
 
+    //get all connected Device
     fun getConnectedDevice(context: Context?, callback: ConnectedDeviceCallback) {
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {

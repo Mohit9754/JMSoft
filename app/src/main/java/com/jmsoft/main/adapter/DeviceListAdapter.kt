@@ -19,9 +19,11 @@ import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.basic.UtilityTools.Constants
+import com.jmsoft.basic.UtilityTools.Constants.Companion.rotation
 import com.jmsoft.basic.UtilityTools.Utils
 
 import com.jmsoft.databinding.ItemDeviceListBinding
+import com.jmsoft.main.`interface`.DeviceConnectedCallback
 import com.jmsoft.main.`interface`.PairStatusCallback
 import com.jmsoft.main.model.DeviceModel
 import java.io.IOException
@@ -61,25 +63,37 @@ class DeviceListAdapter(
 
         // Store DeviceModel data
         private lateinit var deviceModel: DeviceModel
-        val rotateAnimator = ObjectAnimator.ofFloat(binding.ivReconnect, "rotation", 360f, 0f)
+        private val rotateAnimator = ObjectAnimator.ofFloat(binding.ivReconnect, rotation, 360f, 0f)
 
-
-        //postion of DeviceModel
+        //position of DeviceModel
         private var position: Int = 0
+
+        //Device for reconnecting
         lateinit var device: BluetoothDevice
 
         fun bind(data: DeviceModel, position: Int) {
             this.deviceModel = data
             this.position = position
+
+            //Getting device through MAC Address so that we can reconnect it.
             device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceModel.deviceAddress)
 
+            //Setting Device Icon
             setDeviceIcon()
+
+            //Setting the Device Name
             setDeviceName()
+
+            //Setting the Device MAC Address
             setDeviceMacAddress()
-            setDeviceStatus(data)
+
+            //Setting the Device Status and Change there Status Color according to it.
+            setDeviceStatus()
 
             //set click on delete icon
             binding.ivDelete.setOnClickListener(this)
+
+            //set click on reconnect button
             binding.mcvReconnect.setOnClickListener(this)
         }
 
@@ -97,7 +111,6 @@ class DeviceListAdapter(
                 binding.ivDeviceIcon.setImageResource(R.drawable.icon_ticket_printer)
             }
 
-//            binding.ivDeviceIcon.setImageDrawable(data.deviceIcon)
         }
 
         //Setting the Device Name
@@ -108,9 +121,6 @@ class DeviceListAdapter(
                 append(deviceModel.deviceName)
                 append(")")
             }
-
-
-//            binding.tvDeviceName.text = "${deviceModel.deviceType} (${deviceModel.deviceName})"
         }
 
         //Setting the Device MAC Address
@@ -118,10 +128,11 @@ class DeviceListAdapter(
             binding.tvMacAddress.text = deviceModel.deviceAddress
         }
 
-        //Setting the Device Status and Change there Staus Color Accourding to it.
-        private fun setDeviceStatus(data: DeviceModel) {
+        //Setting the Device Status and Change there Status Color according to it.
+        private fun setDeviceStatus() {
 
-            if (data.isConnected) {
+            //Check if device is connected or not
+            if (deviceModel.isConnected) {
                 binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
                 binding.tvStatus.text = context.getString(R.string.active)
                 binding.tvStatus.setTextColor(context.getColor(R.color.green))
@@ -145,34 +156,43 @@ class DeviceListAdapter(
 
                 //Deleting the device from the  device table
                 Utils.deleteDeviceThoughDeviceId(deviceModel.deviceId!!)
+
+                //Remove the device from the device list
                 deviceList.removeAt(position)
+
                 notifyDataSetChanged()
 
+                // if the device list is empty then Show No device Status
                 if (deviceList.isEmpty()) {
 
                     rlNoDevice.visibility = View.VISIBLE
                     llDevicePresent.visibility = View.GONE
                 }
+
+            // When reconnect button Clicks
             } else if (v == binding.mcvReconnect) {
+
                 rotateAnimator.duration = 1000 // Duration in milliseconds
                 rotateAnimator.repeatCount = ObjectAnimator.INFINITE // Repeat indefinitely
                 rotateAnimator.interpolator = LinearInterpolator() // Linear interpolation
                 rotateAnimator.start()
-                checkPairAndConnectDevice()
+
+                //First UnPair the device then connect
+                unPairDeviceAndConnect()
             }
 
         }
 
+        //First UnPair the device then connect
         @SuppressLint("MissingPermission")
-        private fun checkPairAndConnectDevice() {
-            // Device is paired, you can establish a connection here
+        private fun unPairDeviceAndConnect() {
 
-            unpairDevice(device)
+            //UnPair the device
+            BluetoothUtils.unpairDevice(device)
 //
             val countDownTimer = object : CountDownTimer(2000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
                     // This method will be called every 1 second (1000 milliseconds) until the countdown is finished
-
                 }
 
                 override fun onFinish() {
@@ -181,79 +201,42 @@ class DeviceListAdapter(
                     // Execute your Bluetooth pairing code here
                     BluetoothUtils.pairDevice(context, device, object : PairStatusCallback {
                         override fun pairSuccess() {
-                            val connectToDeviceThread = ConnectToDeviceThread()
+
+                            // Device is paired, you can establish a connection here
+                            val connectToDeviceThread = BluetoothUtils.ConnectToDeviceThread(device,binding.root, object:
+
+                                DeviceConnectedCallback {
+
+                                override fun onDeviceConnected(device: BluetoothDevice) {
+                                    onConnectSuccess()
+                                    rotateAnimator.cancel()
+
+                                }
+
+                                override fun onDeviceNotConnected() {
+
+                                }
+                            })
                             connectToDeviceThread.start()
                         }
 
                         override fun pairFail() {
+
                             rotateAnimator.cancel()
 
-                            Utils.T(context, "Paired Failed")
+                            Utils.T(context, context.getString(R.string.paired_failed))
                         }
                     })
                 }
             }
-
             countDownTimer.start()
-
-
-            Utils.E("Device is already paired")
-
+            
         }
 
-        @SuppressLint("MissingPermission")
-
-        private inner class ConnectToDeviceThread : Thread() {
-
-            private val SERIAL_UUID = UUID.fromString(Constants.bluetoothUuid)
-
-            private val mmSocket: BluetoothSocket? =
-                device.createRfcommSocketToServiceRecord(SERIAL_UUID)
-
-
-            override fun run() {
-                // Cancel discovery because it otherwise slows down the connection.
-//                bluetoothAdapter?.cancelDiscovery()
-
-                mmSocket?.let { socket ->
-                    try {
-                        // Connect to the remote device through the socket. This call blocks
-                        // until it succeeds or throws an exception.
-                        socket.connect()
-                        binding.root.post {
-                            // Update the UI here
-                            // For example, show a dialog
-                            onConnectSuccess()
-                        }
-                    } catch (e: IOException) {
-                        // Connection attempt failed
-                        // You can handle the error here
-                        e.printStackTrace()
-                        binding.root.post {
-                            rotateAnimator.cancel()
-                            // Update the UI here
-                            // For example, show a dialog
-                        }
-                    }
-                    // The connection attempt succeeded. Perform work associated with
-                    // the connection in a separate thread.
-//                    manageMyConnectedSocket(socket)
-                }
-            }
-
-            // Closes the client socket and causes the thread to finish.
-            fun cancel() {
-                rotateAnimator.cancel()
-                try {
-                    mmSocket?.close()
-                } catch (e: IOException) {
-                    Utils.E("Could not close the client socket")
-                }
-            }
-        }
-
+        //This method is called when the device is reconnected
         @SuppressLint("MissingPermission")
         private fun onConnectSuccess() {
+
             Utils.E("Connected to Device ::::: ${device.name}")
 
             rotateAnimator.cancel()
@@ -264,15 +247,4 @@ class DeviceListAdapter(
         }
     }
 
-
-    @SuppressLint("MissingPermission")
-    private fun unpairDevice(device: BluetoothDevice) {
-        try {
-            val method = device.javaClass.getMethod("removeBond")
-            method.invoke(device)
-            Utils.E("Device unpaired successfully: ${device.name}")
-        } catch (e: Exception) {
-            Utils.E("Failed to unpair device: ${e.message}")
-        }
-    }
 }

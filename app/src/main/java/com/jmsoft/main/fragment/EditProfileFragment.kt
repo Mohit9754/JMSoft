@@ -26,6 +26,7 @@ import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.FragmentEditProfileBinding
 import java.util.ArrayList
 import com.jmsoft.basic.UtilityTools.Constants.Companion.userId
+import com.jmsoft.main.activity.DashboardActivity
 import java.util.Locale
 
 class EditProfileFragment : Fragment(), View.OnClickListener {
@@ -119,6 +120,9 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
         //Setting Click on password Visibility icon
         binding.ivPasswordVisibility?.setOnClickListener(this)
+
+        //set Click on Back Btn
+        binding.mcvBackBtn?.setOnClickListener(this)
 
     }
 
@@ -224,6 +228,9 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 Utils.updateUserDetails(userDataModel)
                 Utils.T(activity, getString(R.string.updated_successfully))
 
+                //Navigate to user management
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
+
             } else {
                 //Showing Email Already Exist Error
                 showAlreadyExistError(
@@ -256,6 +263,11 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         else if (v == binding.ivPasswordVisibility) {
 
             showAndHidePassword(binding.etPassword!!, binding.ivPasswordVisibility!!)
+        }
+
+        else if(v == binding.mcvBackBtn){
+
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
         }
     }
 
@@ -306,6 +318,10 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 binding.etPassword?.setText("")
 
                 Utils.T(activity, getString(R.string.new_user_registered_successfully))
+
+                //Navigate to user management
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
+
 
             } else {
                 //Showing Email Already Exist Error
