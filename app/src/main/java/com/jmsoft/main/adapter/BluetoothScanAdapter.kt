@@ -209,7 +209,6 @@ class BluetoothScanAdapter(
 
             }
             else{
-
                 //Insert Data in the device table
                 Utils.insertNewDeviceData(deviceMode)
             }
