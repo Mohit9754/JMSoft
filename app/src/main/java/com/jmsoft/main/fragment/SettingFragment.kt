@@ -16,16 +16,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.Database.UserDataHelper
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
+import com.jmsoft.basic.UtilityTools.Constants.Companion.updateInSession
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentSettingBinding
@@ -214,10 +214,10 @@ class SettingFragment : Fragment(), View.OnClickListener {
     }
 
     //Check if the User is admin or not. if not then hide the user Management option
-    private fun checkUserTypeAndHideUserManagement(){
+    private fun checkUserTypeAndHideUserManagement() {
 
-        if (Utils.GetSession().userType != admin){
-            binding.mcvUserManagement?.visibility  = View.GONE
+        if (Utils.GetSession().userType != admin) {
+            binding.mcvUserManagement?.visibility = View.GONE
         }
     }
 
@@ -242,6 +242,12 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
         //Set Click on User Management
         binding.mcvUserManagement?.setOnClickListener(this)
+
+        //Set Click on Back Button
+        binding.mcvBackBtn?.setOnClickListener(this)
+
+        //Set Click on Back Button
+        binding.mcvUserName?.setOnClickListener(this)
 
     }
 
@@ -304,11 +310,20 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.deviceManagement)
 
-        }
-
-        else if(v == binding.mcvUserManagement){
+        } else if (v == binding.mcvUserManagement) {
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
+        } else if (v == binding.mcvBackBtn) {
+
+            (requireActivity() as DashboardActivity).navController?.popBackStack()
+        }else if (v == binding.mcvUserName) {
+
+            //Navigate to Edit Profile
+            val bundle = Bundle()
+            Utils.GetSession().userId?.let { bundle.putInt(Constants.userId, it) }
+            bundle.putBoolean(updateInSession,true)
+
+            (context as DashboardActivity).navController?.navigate(R.id.editProfile,bundle)
         }
 
         // When LogOut button Clicked

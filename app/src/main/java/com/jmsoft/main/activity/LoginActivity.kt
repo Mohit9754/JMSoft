@@ -312,7 +312,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 Utils.setLocale(activity, english)
             }
         } else if (v == binding.llSignUp) {
-            Utils.I_clear(activity, SignUpActivity::class.java, null)
+            Utils.I(activity, SignUpActivity::class.java, null)
         }
 
         //Show or Hide password

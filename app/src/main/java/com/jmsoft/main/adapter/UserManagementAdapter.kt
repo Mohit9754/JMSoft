@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.Database.UserDataModel
-import com.jmsoft.basic.UtilityTools.Constants.Companion.email
 import com.jmsoft.basic.UtilityTools.Constants.Companion.userId
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemUserManagementBinding
 import com.jmsoft.main.activity.DashboardActivity
+import com.jmsoft.main.fragment.UserManagementFragment
 
 
 /**
@@ -28,7 +28,11 @@ import com.jmsoft.main.activity.DashboardActivity
  *
  */
 
-class UserManagementAdapter(private val context: Context, private val userList: ArrayList<UserDataModel>) :
+class UserManagementAdapter(
+    private val context: Context,
+    private val userList: ArrayList<UserDataModel>,
+    private val userManagementFragment: UserManagementFragment
+) :
     RecyclerView.Adapter<UserManagementAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -49,13 +53,18 @@ class UserManagementAdapter(private val context: Context, private val userList: 
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setCanceledOnTouchOutside(true)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_delete)
+        dialog.setContentView(R.layout.dialog_delete_user)
         dialog.findViewById<MaterialCardView>(R.id.mcvYes).setOnClickListener {
 
             dialog.dismiss()
             // Deleting the user from the user Table
             Utils.deleteUserThroughUserId(userId)
             userList.removeAt(position)
+            if (userList.size == 0) {
+                userManagementFragment.binding.ivNoUser?.visibility = View.VISIBLE
+            }else{
+                userManagementFragment.binding.ivNoUser?.visibility = View.GONE
+            }
             notifyDataSetChanged()
         }
         dialog.findViewById<MaterialCardView>(R.id.mcvNo).setOnClickListener {
@@ -123,6 +132,8 @@ class UserManagementAdapter(private val context: Context, private val userList: 
 
                 //Navigate to Edit Profile
                 val bundle = Bundle()
+
+                //Giving the userId
                 bundle.putInt(userId, userDataModel.userId!!)
 
                 (context as DashboardActivity).navController?.navigate(R.id.editProfile,bundle)

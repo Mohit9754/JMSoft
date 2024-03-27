@@ -109,6 +109,7 @@
     <string name="save">يحفظ</string>
     <string name="updated_successfully">تم التحديث بنجاح</string>
     <string name="new_user_registered_successfully">تم تسجيل مستخدم جديد بنجاح</string>
-
+    <string name="paired_failed">فشل الاقتران</string>
+    <string name="are_you_sure_you_want_to_delete_this_user_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.</string>
 
 </resources>

@@ -150,11 +150,11 @@ object Utils {
 
         if (lang == arabic){
             imageView.setImageDrawable(null)
-            imageView.setImageResource(R.drawable.img_jewellery_ar)
+            imageView.setImageResource(R.drawable.img_jewellery)
 
         } else {
             imageView.setImageDrawable(null)
-            imageView.setImageResource(R.drawable.img_jewellery_en)
+            imageView.setImageResource(R.drawable.img_jewellery)
         }
     }
 

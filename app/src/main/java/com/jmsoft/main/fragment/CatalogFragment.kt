@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
+import com.jmsoft.basic.UtilityTools.IOnBackPressed
 import com.jmsoft.databinding.FragmentCatalogBinding
+import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CatalogAdapter
 
 /**
@@ -57,5 +59,9 @@ class CatalogFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
 
     }
+
+
+
+
 
 }

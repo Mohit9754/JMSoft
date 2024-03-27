@@ -162,7 +162,8 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
             }
         } else if (v == binding.llLogin) {
 
-            Utils.I_clear(activity,LoginActivity::class.java,null)
+         //   Utils.I_clear(activity,LoginActivity::class.java,null)
+            finish()
         }
 
         //show And hide Password
@@ -302,7 +303,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
                 val animation =
                     AnimationUtils.loadAnimation(applicationContext, R.anim.top_to_bottom)
                 resultReturn?.errorTextView?.startAnimation(animation)
-//                validation?.EditTextPointer?.requestFocus()
+                validation?.EditTextPointer?.requestFocus()
 
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(validation?.EditTextPointer, InputMethodManager.SHOW_IMPLICIT)

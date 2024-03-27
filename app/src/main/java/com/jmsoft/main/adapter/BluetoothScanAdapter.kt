@@ -190,7 +190,7 @@ class BluetoothScanAdapter(
             connectedDevice = deviceModel.device
 
             // Move the Connected Device to First Position
-            moveToFirstPosition()
+          //  moveToFirstPosition()
 
             Utils.E("Connected to device: ${deviceModel.device.name}")
 

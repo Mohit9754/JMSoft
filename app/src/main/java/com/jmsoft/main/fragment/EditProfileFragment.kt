@@ -19,6 +19,7 @@ import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.Database.UserDataModel
 import com.jmsoft.basic.UtilityTools.Constants
+import com.jmsoft.basic.UtilityTools.Constants.Companion.updateInSession
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation
@@ -173,8 +174,8 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
             if (userId != null && userId != 0) {
                 updateUserDetails(userId)
             }
-            //if userId is 0 then we have to register new user
-            else if (userId == 0) {
+            //Register new user
+            else {
                 registerNewUser()
             }
 
@@ -187,7 +188,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 val animation =
                     AnimationUtils.loadAnimation(requireActivity(), R.anim.top_to_bottom)
                 resultReturn?.errorTextView?.startAnimation(animation)
-//                validation?.EditTextPointer?.requestFocus()
+                validation?.EditTextPointer?.requestFocus()
 
                 val imm =
                     requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -228,8 +229,19 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 Utils.updateUserDetails(userDataModel)
                 Utils.T(activity, getString(R.string.updated_successfully))
 
-                //Navigate to user management
-                (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
+                val updateInSession = arguments?.getBoolean(updateInSession)
+
+                if (updateInSession != null){
+
+                    if (updateInSession){
+
+                        //Updating user details in the session table
+                        val userDataModel = Utils.getUserDetailsThroughUserId(userId)
+                        Utils.insertDataInSessionTable(userDataModel)
+                    }
+                }
+                (context as DashboardActivity).navController?.popBackStack()
+
 
             } else {
                 //Showing Email Already Exist Error
@@ -267,7 +279,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
         else if(v == binding.mcvBackBtn){
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
+            (requireActivity() as DashboardActivity).navController?.popBackStack()
         }
     }
 
@@ -320,7 +332,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 Utils.T(activity, getString(R.string.new_user_registered_successfully))
 
                 //Navigate to user management
-                (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
+                (requireActivity() as DashboardActivity).navController?.popBackStack()
 
 
             } else {

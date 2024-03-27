@@ -209,6 +209,7 @@ interface Constants {
 
         const val bluetoothUuid = "00001101-0000-1000-8000-00805F9B34FB"
         const val rotation = "rotation"
+        const val updateInSession = "updateInSession"
 
 
          // values have to be globally unique

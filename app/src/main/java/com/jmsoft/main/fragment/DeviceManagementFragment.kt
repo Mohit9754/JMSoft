@@ -32,6 +32,7 @@ import com.jmsoft.databinding.BottomSheetAddDeviceBinding
 import com.jmsoft.databinding.BottomSheetBluetoothScanListBinding
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentDeviceManagementBinding
+import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.BluetoothScanAdapter
 import com.jmsoft.main.adapter.DeviceListAdapter
 import com.jmsoft.main.`interface`.BluetoothOffCallback
@@ -253,6 +254,8 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         binding.mcvAddDevice?.setOnClickListener(this)
         //set click on add device button when no device is there
         binding.mcvAddFirstDevice?.setOnClickListener(this)
+        binding.mcvNoDeviceBackBtn?.setOnClickListener(this)
+        binding.mcvBackBtn?.setOnClickListener(this)
     }
 
     //Checks the Android Version And  Launch Custom Permission ,according to Version
@@ -372,6 +375,9 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             isAddDeviceClicked = true
             //Checks the Android Version And  Launch Custom Permission ,according to Version
             checkAndroidVersionAndLaunchPermission()
+        }else if (v == binding.mcvBackBtn || v == binding.mcvNoDeviceBackBtn) {
+
+            (requireActivity() as DashboardActivity).navController?.popBackStack()
         }
     }
 
