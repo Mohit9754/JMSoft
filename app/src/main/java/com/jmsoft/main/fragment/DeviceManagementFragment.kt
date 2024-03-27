@@ -115,7 +115,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         } else {
 
             //Devics list for perticular user
-            addedDeviceList = Utils.getDevicesThroughEmail(Utils.GetSession().userId!!)
+            addedDeviceList = Utils.getDevicesThroughUserId(Utils.GetSession().userId!!)
             //Device list for particular user
 
             binding.rlNoDevice!!.visibility = View.GONE

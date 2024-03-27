@@ -384,7 +384,7 @@ class UserDataHelper(cx: Context) {
         values.put(UserDataModel.Key_lastName, userDataModel.lastName)
         values.put(UserDataModel.Key_email, userDataModel.email)
         values.put(UserDataModel.Key_phoneNumber, userDataModel.phoneNumber)
-        values.put(UserDataModel.Key_profileName, userDataModel.password)
+        values.put(UserDataModel.Key_password, userDataModel.password)
 
         db!!.update(
             UserDataModel.TABLE_NAME_USER,

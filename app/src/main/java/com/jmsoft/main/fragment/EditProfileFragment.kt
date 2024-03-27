@@ -26,15 +26,15 @@ import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.FragmentEditProfileBinding
 import java.util.ArrayList
 import com.jmsoft.basic.UtilityTools.Constants.Companion.userId
+import java.util.Locale
 
-class EditProfileFragment : Fragment(),View.OnClickListener {
+class EditProfileFragment : Fragment(), View.OnClickListener {
 
-    lateinit var binding:FragmentEditProfileBinding
+    lateinit var binding: FragmentEditProfileBinding
     private var errorValidationModels: MutableList<ValidationModel> = ArrayList()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
         // Inflate the layout for this fragment
@@ -95,7 +95,7 @@ class EditProfileFragment : Fragment(),View.OnClickListener {
         val userId = arguments?.getInt(userId)
 
         //if userId is not null and not 0 then we have to update the user details
-        if (userId != null && userId != 0){
+        if (userId != null && userId != 0) {
             // Setting the user details
             setUserDetails(userId)
         }
@@ -166,11 +166,11 @@ class EditProfileFragment : Fragment(),View.OnClickListener {
             val userId = arguments?.getInt(userId)
 
             //if userId is not null and not 0 then we have to update the user details
-            if (userId != null && userId != 0){
+            if (userId != null && userId != 0) {
                 updateUserDetails(userId)
             }
             //if userId is 0 then we have to register new user
-            else if (userId == 0){
+            else if (userId == 0) {
                 registerNewUser()
             }
 
@@ -185,22 +185,28 @@ class EditProfileFragment : Fragment(),View.OnClickListener {
                 resultReturn?.errorTextView?.startAnimation(animation)
 //                validation?.EditTextPointer?.requestFocus()
 
-                val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(validation?.EditTextPointer, InputMethodManager.SHOW_IMPLICIT)
             }
         }
     }
 
     // Updating the data in the local database
-    private fun updateUserDetails(userId:Int) {
+    private fun updateUserDetails(userId: Int) {
 
         //this method checks if any user has this phone number
-        if (!Utils.isAnyUserHasThisPhoneNumber(binding.etPhoneNumber?.text.toString().trim(),
-                userId
-            )){
+        if (!Utils.isAnyUserHasThisPhoneNumber(
+                binding.etPhoneNumber?.text.toString().trim(), userId
+            )
+        ) {
 
             //this method checks if any user has this email
-            if (!Utils.isAnyUserHasThisEmail(binding.etEmailAddress?.text.toString().trim(),userId)){
+            if (!Utils.isAnyUserHasThisEmail(
+                    binding.etEmailAddress?.text.toString().trim(),
+                    userId
+                )
+            ) {
 
                 val userDataModel = UserDataModel()
 
@@ -208,36 +214,36 @@ class EditProfileFragment : Fragment(),View.OnClickListener {
                 userDataModel.firstName = binding.etFirstName?.text.toString().trim()
                 userDataModel.lastName = binding.etLastName?.text.toString().trim()
                 //Store Email in the lower Case letter
-                userDataModel.email = binding.etEmailAddress?.text.toString().trim().toLowerCase()
+                userDataModel.email = binding.etEmailAddress?.text.toString().trim()
+                    .lowercase(Locale.getDefault())
                 userDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
 
                 userDataModel.password = binding.etPassword?.text.toString().trim()
 
                 //Update user details in the User Table
                 Utils.updateUserDetails(userDataModel)
-
                 Utils.T(activity, getString(R.string.updated_successfully))
 
-            }
-            else {
+            } else {
                 //Showing Email Already Exist Error
-                showAlreadyExistError(binding.tvEmailAddressError!!,
-                    getString(R.string.email_already_exist))
+                showAlreadyExistError(
+                    binding.tvEmailAddressError!!, getString(R.string.email_already_exist)
+                )
             }
-        }
-        else {
+        } else {
             //Showing Mobile Number Already Exist Error
-            showAlreadyExistError(binding.tvPhoneNumberError!!,
-                getString(R.string.mobile_number_already_exist))
+            showAlreadyExistError(
+                binding.tvPhoneNumberError!!, getString(R.string.mobile_number_already_exist)
+            )
         }
     }
 
     // Showing email and phone number already exist error
-    fun showAlreadyExistError(textView: TextView,msg:String){
+    fun showAlreadyExistError(textView: TextView, msg: String) {
 
-        textView.visibility  = View.VISIBLE
-        textView.text  = msg
-        textView.startAnimation(AnimationUtils.loadAnimation(activity,R.anim.top_to_bottom))
+        textView.visibility = View.VISIBLE
+        textView.text = msg
+        textView.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.top_to_bottom))
     }
 
     override fun onClick(v: View?) {
@@ -269,13 +275,13 @@ class EditProfileFragment : Fragment(),View.OnClickListener {
     }
 
     //Register New User in the User Table
-    private fun registerNewUser(){
+    private fun registerNewUser() {
 
         //Check if phone Number exist
-        if (!Utils.isPhoneNumberExist(binding.etPhoneNumber?.text.toString().trim())){
+        if (!Utils.isPhoneNumberExist(binding.etPhoneNumber?.text.toString().trim())) {
 
             //Checks if Email Already Exist
-            if (!Utils.isEmailExist(binding.etEmailAddress?.text.toString().trim())){
+            if (!Utils.isEmailExist(binding.etEmailAddress?.text.toString().trim())) {
 
                 val userDataModel = UserDataModel()
 
@@ -283,7 +289,8 @@ class EditProfileFragment : Fragment(),View.OnClickListener {
                 userDataModel.firstName = binding.etFirstName?.text.toString().trim()
                 userDataModel.lastName = binding.etLastName?.text.toString().trim()
                 //Store Email in the lower Case letter
-                userDataModel.email = binding.etEmailAddress?.text.toString().trim().toLowerCase()
+                userDataModel.email = binding.etEmailAddress?.text.toString().trim()
+                    .lowercase(Locale.getDefault())
                 userDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
                 userDataModel.password = binding.etPassword?.text.toString().trim()
                 userDataModel.profileName = ""
@@ -300,17 +307,17 @@ class EditProfileFragment : Fragment(),View.OnClickListener {
 
                 Utils.T(activity, getString(R.string.new_user_registered_successfully))
 
-            }
-            else {
+            } else {
                 //Showing Email Already Exist Error
-                showAlreadyExistError(binding.tvEmailAddressError!!,
-                    getString(R.string.email_already_exist))
+                showAlreadyExistError(
+                    binding.tvEmailAddressError!!, getString(R.string.email_already_exist)
+                )
             }
-        }
-        else {
+        } else {
             //Showing Mobile Number Already Exist Error
-            showAlreadyExistError(binding.tvPhoneNumberError!!,
-                getString(R.string.mobile_number_already_exist))
+            showAlreadyExistError(
+                binding.tvPhoneNumberError!!, getString(R.string.mobile_number_already_exist)
+            )
         }
 
     }

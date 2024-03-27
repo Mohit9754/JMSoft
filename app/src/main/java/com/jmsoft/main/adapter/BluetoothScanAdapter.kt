@@ -174,7 +174,7 @@ class BluetoothScanAdapter(
             deviceMode.userId = userId
 
 
-           val addedDeviceList = Utils.getDevicesThroughEmail(Utils.GetSession().email!!)
+           val addedDeviceList = Utils.getDevicesThroughUserId(Utils.GetSession().userId!!)
             if (addedDeviceList.firstOrNull { it.deviceAddress == deviceModel.device.address } != null) {
 
             }

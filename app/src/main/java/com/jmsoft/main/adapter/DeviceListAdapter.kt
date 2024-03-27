@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.Context
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -102,7 +103,11 @@ class DeviceListAdapter(
         //Setting the Device Name
         private fun setDeviceName() {
             binding.tvDeviceType.text = deviceModel.deviceType
-            binding.tvDeviceName.text = " (${deviceModel.deviceName})"
+            binding.tvDeviceName.text = buildString {
+                append(" (")
+                append(deviceModel.deviceName)
+                append(")")
+            }
 
 
 //            binding.tvDeviceName.text = "${deviceModel.deviceType} (${deviceModel.deviceName})"
@@ -149,7 +154,7 @@ class DeviceListAdapter(
                     llDevicePresent.visibility = View.GONE
                 }
             } else if (v == binding.mcvReconnect) {
-                rotateAnimator.duration = 2000 // Duration in milliseconds
+                rotateAnimator.duration = 1000 // Duration in milliseconds
                 rotateAnimator.repeatCount = ObjectAnimator.INFINITE // Repeat indefinitely
                 rotateAnimator.interpolator = LinearInterpolator() // Linear interpolation
                 rotateAnimator.start()
@@ -160,27 +165,39 @@ class DeviceListAdapter(
 
         @SuppressLint("MissingPermission")
         private fun checkPairAndConnectDevice() {
+            // Device is paired, you can establish a connection here
 
+            unpairDevice(device)
+//
+            val countDownTimer = object : CountDownTimer(2000, 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    // This method will be called every 1 second (1000 milliseconds) until the countdown is finished
 
-            device.let { unpairDevice(it) }
+                }
 
-            //Make Pair Device
-            device.let {
-                BluetoothUtils.pairDevice(context, it, object : PairStatusCallback {
+                override fun onFinish() {
+                    // This method will be called when the countdown is finished
 
-                    override fun pairSuccess() {
+                    // Execute your Bluetooth pairing code here
+                    BluetoothUtils.pairDevice(context, device, object : PairStatusCallback {
+                        override fun pairSuccess() {
+                            val connectToDeviceThread = ConnectToDeviceThread()
+                            connectToDeviceThread.start()
+                        }
 
-                        val connectToDeviceThread = ConnectToDeviceThread()
-                        connectToDeviceThread.start()
-                    }
+                        override fun pairFail() {
+                            rotateAnimator.cancel()
 
-                    override fun pairFail() {
-                        rotateAnimator.cancel()
-                        Utils.T(context, "Paired Failed")
-                    }
-
-                })
+                            Utils.T(context, "Paired Failed")
+                        }
+                    })
+                }
             }
+
+            countDownTimer.start()
+
+
+            Utils.E("Device is already paired")
 
         }
 
@@ -199,24 +216,14 @@ class DeviceListAdapter(
 //                bluetoothAdapter?.cancelDiscovery()
 
                 mmSocket?.let { socket ->
-
                     try {
-
-
                         // Connect to the remote device through the socket. This call blocks
                         // until it succeeds or throws an exception.
                         socket.connect()
                         binding.root.post {
-                            rotateAnimator.cancel()
-                            binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
-                            binding.tvStatus.text = context.getString(R.string.active)
-                            binding.tvStatus.setTextColor(context.getColor(R.color.green))
-                            binding.mcvReconnect.visibility = View.GONE
-
                             // Update the UI here
                             // For example, show a dialog
-
-
+                            onConnectSuccess()
                         }
                     } catch (e: IOException) {
                         // Connection attempt failed
@@ -224,14 +231,10 @@ class DeviceListAdapter(
                         e.printStackTrace()
                         binding.root.post {
                             rotateAnimator.cancel()
-
                             // Update the UI here
                             // For example, show a dialog
-
                         }
-
                     }
-
                     // The connection attempt succeeded. Perform work associated with
                     // the connection in a separate thread.
 //                    manageMyConnectedSocket(socket)
@@ -241,7 +244,6 @@ class DeviceListAdapter(
             // Closes the client socket and causes the thread to finish.
             fun cancel() {
                 rotateAnimator.cancel()
-
                 try {
                     mmSocket?.close()
                 } catch (e: IOException) {
@@ -250,9 +252,15 @@ class DeviceListAdapter(
             }
         }
 
+        @SuppressLint("MissingPermission")
         private fun onConnectSuccess() {
-            binding.mcvReconnect.visibility = View.GONE
+            Utils.E("Connected to Device ::::: ${device.name}")
 
+            rotateAnimator.cancel()
+            binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
+            binding.tvStatus.text = context.getString(R.string.active)
+            binding.tvStatus.setTextColor(context.getColor(R.color.green))
+            binding.mcvReconnect.visibility = View.GONE
         }
     }
 
