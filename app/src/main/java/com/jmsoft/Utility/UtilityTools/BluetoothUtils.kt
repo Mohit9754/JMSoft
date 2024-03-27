@@ -1,111 +1,156 @@
 package com.jmsoft.Utility.UtilityTools
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.bluetooth.BluetoothA2dp
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothDevice.ACTION_FOUND
 import android.bluetooth.BluetoothProfile
+import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import android.content.Intent
+import android.content.IntentFilter
 import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.main.`interface`.BluetoothOffCallback
 import com.jmsoft.main.`interface`.ConnectedDeviceCallback
+import com.jmsoft.main.`interface`.DeviceFoundCallback
+import com.jmsoft.main.`interface`.PairStatusCallback
 
 
 object BluetoothUtils {
 
-    @RequiresApi(Build.VERSION_CODES.S)
-    private val permissionsForVersionAbove11 = arrayOf(
-        Manifest.permission.BLUETOOTH,
-        Manifest.permission.BLUETOOTH_CONNECT,
-        Manifest.permission.BLUETOOTH_SCAN,
-        Manifest.permission.BLUETOOTH_ADMIN
-//        Manifest.permission.ACCESS_FINE_LOCATION,
-//        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
+    private lateinit var bluetoothAdapter: BluetoothAdapter
+    private lateinit var bluetoothStateReceiver: BroadcastReceiver
+    private lateinit var receiver: BroadcastReceiver
 
-    private val permissionsForVersionBelow12 = arrayOf(
-
-        Manifest.permission.BLUETOOTH,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.BLUETOOTH_ADMIN
-    )
-
-    // Requesting Run time permission for bluetooth
-    fun requestPermissions(
-        context: Context,
-        permissionsRequestCode: Int
-    ) {
-
-        // For versions above Android 11
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                permissionsForVersionAbove11,
-                permissionsRequestCode
-            )
-        } else {
-            // For versions below Android 12, you should request location permissions normally
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                permissionsForVersionBelow12,
-                permissionsRequestCode
-            )
-        }
-
+    @SuppressLint("MissingPermission")
+    fun isDevicePaired(device: BluetoothDevice): Boolean {
+        return device.bondState == BluetoothDevice.BOND_BONDED
     }
 
-    // Bluetooth Intent for turn on the bluetooth And Show Bottom Sheet
-    fun checksForAccessCoarseLocationPermission(context: Context,permissionsRequestCode: Int):Boolean {
+    // Method to initiate pairing with a Bluetooth device
+    @SuppressLint("MissingPermission")
+    fun pairDevice(
+        context: Context,
+        device: BluetoothDevice,
+        pairStatusCallback: PairStatusCallback
+    ) {
 
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        // BroadcastReceiver to handle bond state changes
+        val bondStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+            @SuppressLint("MissingPermission")
+            override fun onReceive(context: Context, intent: Intent) {
+                val action = intent.action
+                if (BluetoothDevice.ACTION_BOND_STATE_CHANGED == action) {
+                    val device =
+                        intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                    val bondState =
+                        intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)
+                    if (device != null && bondState == BluetoothDevice.BOND_BONDED) {
+                        // Device successfully paired
+                        Utils.E("Device paired successfully:  ${device.name}")
+                        // Pairing successful, now connect
+                        pairStatusCallback.pairSuccess()
 
-            requestPermissions(context,permissionsRequestCode)
-            return false
+                        context.unregisterReceiver(this)
+                    } else if (bondState == BluetoothDevice.BOND_NONE) {
+                        // Pairing failed or was cancelled
+                        Utils.E("Pairing failed or was cancelled. ")
+                        pairStatusCallback.pairFail()
+
+                        context.unregisterReceiver(this)
+                    }
+                }
+            }
         }
-        return true
+        // Register for bond state changes
+        val filter = IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
+        context.registerReceiver(bondStateReceiver, filter)
+
+        // Start pairing process
+        val pairingStarted = device.createBond()
+        if (!pairingStarted) {
+            Utils.E("Failed to initiate pairing process.")
+        }
     }
 
     //Checks if Bluetooth is on or off
     fun isEnableBluetooth(
     ): Boolean {
 
-        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-            ?: // Device doesn't support Bluetooth
+        val bluetoothAdapter =
+            BluetoothAdapter.getDefaultAdapter() ?: // Device doesn't support Bluetooth
             // Handle this case accordingly
             return false
 
         return bluetoothAdapter.isEnabled
     }
 
-    // Checks if bluetooth permission has or not
-    fun hasBluetoothPermissions(context: Context): Boolean {
+    // Register BroadcastReceiver for Bluetooth device discovery
+    @SuppressLint("MissingPermission")
+    fun registerBroadCastReceiver(contexts: Context, deviceFoundCallback: DeviceFoundCallback) {
 
-        val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-            permissionsForVersionAbove11
-        else
-            permissionsForVersionBelow12
+        // Create a BroadcastReceiver for ACTION_FOUND.
+        receiver = object : BroadcastReceiver() {
+            @SuppressLint("NotifyDataSetChanged", "MissingPermission", "SuspiciousIndentation")
+            override fun onReceive(context: Context, intent: Intent) {
+                val action = intent.action
 
-        for (permission in permissions) {
-            if (ContextCompat.checkSelfPermission(
-                    context,
-                    permission
-                ) == PackageManager.PERMISSION_DENIED
-            ) {
-                return false
+                if (ACTION_FOUND == action) {
+                    val device =
+                        intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+
+                    if (device != null && device.name != null) {
+
+                        deviceFoundCallback.onDeviceFound(device)
+
+                    }
+                }
             }
         }
-        return true
+
+        val filter = IntentFilter(ACTION_FOUND)
+
+        //Register Receiver
+        contexts.registerReceiver(receiver, filter)
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        bluetoothAdapter.startDiscovery()
+    }
+
+    fun unRegisterBroadCastReceiver(context: Context) {
+        context.unregisterReceiver(receiver)
+    }
+
+    fun registerBluetoothStateReceiver(
+        context: Context, bluetoothOffCallback: BluetoothOffCallback
+    ) {
+
+        bluetoothStateReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val action = intent?.action
+                if (action == BluetoothAdapter.ACTION_STATE_CHANGED) {
+                    val state =
+                        intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)
+                    when (state) {
+                        BluetoothAdapter.STATE_OFF -> {
+                            // Bluetooth turned off
+                            bluetoothOffCallback.onBluetoothOff()
+                        }
+
+                        BluetoothAdapter.STATE_ON -> {
+                            // Bluetooth turned on
+                            println("Bluetooth turned on")
+                        }
+                    }
+                }
+            }
+        }
+        val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+        context.registerReceiver(bluetoothStateReceiver, filter)
+    }
+
+    fun unRegisterBluetoothStateReceiver(context: Context) {
+        context.unregisterReceiver(bluetoothStateReceiver)
     }
 
     fun getConnectedDevice(context: Context?, callback: ConnectedDeviceCallback) {
@@ -124,10 +169,10 @@ object BluetoothUtils {
                         val connectedDevices = a2dp.connectedDevices
                         if (connectedDevices.isNotEmpty()) {
                             // Get the first connected device (you may handle multiple devices if needed)
-                            val connectedDevice = connectedDevices[0]
+                            val connectedDevice =  ArrayList(connectedDevices)
                             callback.onDeviceFound(connectedDevice)
                         } else {
-//                            callback.onError("No connected device found")
+                            callback.onDeviceNotFound()
                         }
                     }
                 }
@@ -138,7 +183,5 @@ object BluetoothUtils {
             }
         bluetoothAdapter.getProfileProxy(context, serviceListener, BluetoothProfile.A2DP)
     }
-
-
 
 }

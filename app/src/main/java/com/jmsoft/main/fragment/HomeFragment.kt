@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.jmsoft.R
 import com.jmsoft.databinding.FragmentHomeBinding
+import com.jmsoft.main.activity.DashboardActivity
 
 /**
  * Home Fragment
@@ -26,7 +28,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentHomeBinding.inflate(layoutInflater)
 
-        //set the Clicks And initalize
+        //set the Clicks And initialization
         init()
 
         return binding.root
@@ -36,6 +38,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         // Set Click on Catalog option
         binding.mcvCatalog?.setOnClickListener(this)
+
+        // Set Click on Settings option
+        binding.mcvSettings?.setOnClickListener(this)
     }
 
     //Handles All the Clicks
@@ -45,8 +50,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
         // Navigate to Catalog Fragment
         if (v == binding.mcvCatalog) {
 
-            val navController = findNavController()
-            navController.navigate(R.id.catalog)
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.catalog)
+        }
+
+        // Navigate to Setting Fragment
+        else if (v == binding.mcvSettings) {
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.setting)
+
         }
 
     }

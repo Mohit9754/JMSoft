@@ -65,6 +65,7 @@ import com.jmsoft.basic.Database.UserDataModel
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.databinding.AlertdialogBinding
 import com.jmsoft.databinding.ItemCustomToastBinding
+import com.jmsoft.main.model.DeviceModel
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
@@ -80,6 +81,7 @@ import java.security.NoSuchAlgorithmException
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 object Utils {
@@ -172,6 +174,96 @@ object Utils {
     @JvmStatic
     fun IS_LOGIN(): Boolean {
         return UserDataHelper.instance.list.size > 0
+    }
+    // Checks if User Table is Empty
+    fun isUserTableEmpty(): Boolean {
+        return UserDataHelper.instance.isUserTableEmpty()
+    }
+
+    // Checks if Email Already Exist in the User Table
+    fun isEmailExist(email:String): Boolean {
+        return UserDataHelper.instance.isEmailExist(email)
+    }
+
+    //this method checks if any user has this phone number
+    fun isAnyUserHasThisPhoneNumber(phoneNumber: String,userId: Int): Boolean {
+        return UserDataHelper.instance.isAnyUserHasThisPhoneNumber(phoneNumber,userId)
+    }
+
+    //this method checks if any user has this email
+    fun isAnyUserHasThisEmail(email: String,userId: Int): Boolean {
+        return UserDataHelper.instance.isAnyUserHasThisEmail(email,userId)
+
+    }
+
+    // Checks if Phone Number Already Exist in the User Table
+    fun isPhoneNumberExist(phoneNumber:String): Boolean {
+        return UserDataHelper.instance.isPhoneNumberExist(phoneNumber)
+    }
+
+    // Insert new user in the User Table
+    fun insetDataInUserTable(userDataModel: UserDataModel) {
+        UserDataHelper.instance.insetDataInUserTable(userDataModel)
+    }
+
+     // Check if User is Valid or not, through User Table
+    fun isValidUser(email: String,password:String): Boolean {
+        return UserDataHelper.instance.isValidUser(email,password)
+    }
+
+    //Get User details through email and password from the user table
+    fun getUserThroughEmailAndPassword(email: String,password: String): UserDataModel {
+        return UserDataHelper.instance.getUserThroughEmailAndPassword(email,password)
+    }
+
+    // get User through User id from the User Table
+    fun getUserDetailsThroughUserId(userId: Int): UserDataModel {
+        return UserDataHelper.instance.getUserDetailsThroughUserId(userId)
+    }
+
+    // insert Data in the Session Table
+    fun insertDataInSessionTable(userDataModel: UserDataModel) {
+        UserDataHelper.instance.insertDataInSessionTable(userDataModel)
+    }
+
+    // update user profile in the User Table
+    fun updateProfileInUserTable(profileName:String,userId: Int) {
+        UserDataHelper.instance.updateProfileInUserTable(profileName,userId)
+    }
+
+    // Checks if no device Available for particular user through user id
+    fun isNoDeviceForUser(userId: Int): Boolean {
+        return UserDataHelper.instance.isNoDeviceForUser(userId)
+    }
+
+    //get All Devices of particular user through userId
+    fun getDevicesThroughUserId(userId: Int): ArrayList<DeviceModel> {
+        return UserDataHelper.instance.getDevicesThroughUserId(userId)
+    }
+
+    // Insert New Device in the device table
+    fun insertNewDeviceData(deviceModel: DeviceModel) {
+        UserDataHelper.instance.insertNewDeviceData(deviceModel)
+    }
+
+    //Delete Device from Device table through Device id
+    fun deleteDeviceThoughDeviceId(deviceId: Int) {
+        UserDataHelper.instance.deleteDeviceThoughDeviceId(deviceId)
+    }
+
+    // getting All User Details Accept Admin
+    fun getAllUserDetails(): ArrayList<UserDataModel> {
+        return UserDataHelper.instance.getAllUserDetails()
+    }
+
+    //Deleting the User through the User id from the user table
+    fun deleteUserThroughUserId(userId: Int){
+        UserDataHelper.instance.deleteUserThroughUserId(userId)
+    }
+
+    //Update User Details in the User Table
+    fun updateUserDetails(userDataModel: UserDataModel){
+        UserDataHelper.instance.updateUserDetails(userDataModel)
     }
 
     @JvmStatic

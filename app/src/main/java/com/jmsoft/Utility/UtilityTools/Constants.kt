@@ -1,5 +1,6 @@
 package com.jmsoft.basic.UtilityTools
 
+import com.google.android.datatransport.BuildConfig
 import com.google.android.gms.maps.model.LatLng
 
 interface Constants {
@@ -84,6 +85,7 @@ interface Constants {
         const val loginDeviceType = "loginDeviceType"
         const val device_type = "device_type"
         const val user = "user"
+        const val userId = "userId"
         const val admin = "admin"
         const val loginType = "loginType"
         const val studentName = "studentName"
@@ -205,15 +207,18 @@ interface Constants {
 
         // State
 
-        const val active = "Active"
-        const val inActive = "Inactive"
-        const val invalid_Credentials = "Invalid Credentials"
-        const val mobile_Number_Already_Exist = "Mobile Number Already Exist"
-        const val email_Already_Exist = "Email Already Exist"
-        const val photo_Library_Permission_Denied = "Photo Library Permission Denied"
-        const val camera_Permission_Denied = "Camera Permission Denied"
-        const val galleryMessage = "Photo Library Access is needed in order to access\nmedia to be used in the app.Please enable it from\nthe settings."
-        const val cameraMessage = "Camera Access is needed in order to capture\nprofile picture. Please enable it from the settings."
+        const val bluetoothUuid = "00001101-0000-1000-8000-00805F9B34FB"
+
+
+        // values have to be globally unique
+      const val INTENT_ACTION_DISCONNECT: String = BuildConfig.APPLICATION_ID + ".Disconnect"
+      const val NOTIFICATION_CHANNEL: String = BuildConfig.APPLICATION_ID + ".Channel"
+      const val INTENT_CLASS_MAIN_ACTIVITY: String = BuildConfig.APPLICATION_ID + ".MainActivity"
+
+        // values have to be unique within each app
+        const val NOTIFY_MANAGER_START_FOREGROUND_SERVICE = 1001
+
+        private fun Constants() {}
 
     }
 }

@@ -94,8 +94,64 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="1dp"
+                    android:layout_marginBottom="@dimen/_11sdp"
                     app:cardCornerRadius="@dimen/_5sdp"
-                    app:strokeColor="@color/mcv_stroke_color"
+                    android:id="@+id/mcvUserManagement"
+                    app:strokeColor="@color/stroke_color"
+                    app:strokeWidth="0.7dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/mcvUserManagementIcon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/_4sdp"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            app:cardBackgroundColor="@color/mcv_background_color"
+                            app:cardCornerRadius="@dimen/_4sdp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_9sdp"
+                                android:layout_height="@dimen/_9sdp"
+                                android:layout_marginHorizontal="@dimen/_3sdp"
+                                android:layout_marginVertical="@dimen/_3sdp"
+                                android:src="@drawable/icon_vendors" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:layout_toEndOf="@+id/mcvUserManagementIcon"
+                            android:fontFamily="@font/montserrat_arabic_regular"
+                            android:text="@string/user_management"
+                            android:textColor="@color/black"
+                            android:textSize="11sp" />
+
+                        <ImageView
+                            android:layout_width="@dimen/_11sdp"
+                            android:layout_height="@dimen/_11sdp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="@dimen/_4sdp"
+                            android:src="@drawable/icon_tabler_circle" />
+
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="1dp"
+                    app:cardCornerRadius="@dimen/_5sdp"
+                    android:id="@+id/mcvVendorsAndCustomers"
+                    app:strokeColor="@color/stroke_color"
                     app:strokeWidth="0.7dp">
 
                     <RelativeLayout
@@ -150,7 +206,7 @@
                     android:layout_marginHorizontal="1dp"
                     android:layout_marginVertical="@dimen/_11sdp"
                     app:cardCornerRadius="@dimen/_5sdp"
-                    app:strokeColor="@color/mcv_stroke_color"
+                    app:strokeColor="@color/stroke_color"
                     app:strokeWidth="0.7dp">
 
                     <RelativeLayout
@@ -205,7 +261,7 @@
                     app:cardBackgroundColor="@color/light_pink"
                     app:cardCornerRadius="@dimen/_5sdp"
                     android:id="@+id/mcvLogOut"
-                    app:strokeColor="@color/mcv_stroke_color"
+                    app:strokeColor="@color/stroke_color"
                     app:strokeWidth="0.7dp">
 
                     <RelativeLayout

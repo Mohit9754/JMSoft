@@ -25,12 +25,11 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.Database.UserDataHelper
-import com.jmsoft.basic.UtilityTools.Constants.Companion.cameraMessage
-import com.jmsoft.basic.UtilityTools.Constants.Companion.camera_Permission_Denied
-import com.jmsoft.basic.UtilityTools.Constants.Companion.galleryMessage
-import com.jmsoft.basic.UtilityTools.Constants.Companion.photo_Library_Permission_Denied
+import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
 import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentSettingBinding
+import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.activity.LoginActivity
 
 /**
@@ -129,7 +128,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentSettingBinding.inflate(layoutInflater)
 
-        //set the Clicks And initalize
+        //set the Clicks And initialization
         init()
 
         return binding.root
@@ -141,26 +140,29 @@ class SettingFragment : Fragment(), View.OnClickListener {
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setCanceledOnTouchOutside(true)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_open_setting)
+        val dialogBinding = DialogOpenSettingBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
 
-        dialog.findViewById<TextView>(R.id.tvTitle).text =
+        dialogBinding.tvTitle.text =
             if (dialogCode == forCameraSettingDialog) {
-                camera_Permission_Denied
+
+                getString(R.string.camera_permission_denied)
             } else {
-                photo_Library_Permission_Denied
+                getString(R.string.photo_library_permission_denied)
             }
-        dialog.findViewById<TextView>(R.id.tvMessage).text =
+        dialogBinding.tvMessage.text =
             if (dialogCode == forCameraSettingDialog) {
-                cameraMessage
+
+                getString(R.string.camera_access_is_needed_in_order_to_capture_profile_picture_please_enable_it_from_the_settings)
             } else {
-                galleryMessage
+                getString(R.string.photo_library_access_is_needed_in_order_to_access_media_to_be_used_in_the_app_please_enable_it_from_the_settings)
             }
 
-        dialog.findViewById<MaterialCardView>(R.id.mcvCancel).setOnClickListener {
+        dialogBinding.mcvCancel.setOnClickListener {
 
             dialog.dismiss()
         }
-        dialog.findViewById<MaterialCardView>(R.id.mcvOpenSetting).setOnClickListener {
+        dialogBinding.mcvOpenSetting.setOnClickListener {
 
             dialog.dismiss()
             Utils.openAppSettings(requireActivity())
@@ -180,7 +182,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
         if (profile != null) {
 
-            val instance = UserDataHelper.instance
+//            val instance = UserDataHelper.instance
 
             //get the Random Image File Name
 
@@ -190,11 +192,11 @@ class SettingFragment : Fragment(), View.OnClickListener {
             Utils.saveToInternalStorage(requireActivity(), profile, imageFileName)
 
             //Update the profile
-            instance.updateProfile(imageFileName, instance.list[0].email!!)
+            Utils.updateProfileInUserTable(imageFileName, Utils.GetSession().userId!!)
 
-            val userDataModel = instance.getUserDetailThroughEmail(instance.list[0].email!!)
+            val userDataModel = Utils.getUserDetailsThroughUserId(Utils.GetSession().userId!!)
             //Update the Session Data
-            instance.insertDataInSessionTable(userDataModel)
+            Utils.insertDataInSessionTable(userDataModel)
 
         }
     }
@@ -211,7 +213,18 @@ class SettingFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    //Check if the User is admin or not. if not then hide the user Management option
+    private fun checkUserTypeAndHideUserManagement(){
+
+        if (Utils.GetSession().userType != admin){
+            binding.mcvUserManagement?.visibility  = View.GONE
+        }
+    }
+
     private fun init() {
+
+        //Check if the User is admin or not. if not then hide the user Management option
+        checkUserTypeAndHideUserManagement()
 
         //setFullName from the local Database
         setFullName()
@@ -226,6 +239,9 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
         //Set Click on Edit Profile Button
         binding.mcvEditProfile?.setOnClickListener(this)
+
+        //Set Click on User Management
+        binding.mcvUserManagement?.setOnClickListener(this)
 
     }
 
@@ -265,6 +281,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
         dialog.setContentView(R.layout.dialog_logout)
         dialog.findViewById<MaterialCardView>(R.id.mcvYes).setOnClickListener {
 
+            dialog.dismiss()
             // Remove the session
             Utils.LOGOUT()
             //intent to login activity with Clear back stack
@@ -285,9 +302,15 @@ class SettingFragment : Fragment(), View.OnClickListener {
         //Navigate to Device Management Fragment
         if (v == binding.mcvDeviceManagement) {
 
-            val navController = findNavController()
-            navController.navigate(R.id.deviceManagement)
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.deviceManagement)
+
         }
+
+        else if(v == binding.mcvUserManagement){
+
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
+        }
+
         // When LogOut button Clicked
         else if (v == binding.mcvLogOut) {
 

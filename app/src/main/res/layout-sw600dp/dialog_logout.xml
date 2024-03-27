@@ -93,10 +93,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/montserrat_arabic_medium"
                     android:paddingHorizontal="@dimen/_5sdp"
                     android:paddingVertical="@dimen/_6sdp"
                     android:text="@string/yes"
+                    android:fontFamily="@font/montserrat_arabic_medium"
                     android:textColor="@color/white"
                     android:textSize="12sp" />
 

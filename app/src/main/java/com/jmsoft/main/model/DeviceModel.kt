@@ -1,10 +1,19 @@
 package com.jmsoft.main.model
 
-import android.graphics.drawable.Drawable
+import android.bluetooth.BluetoothDevice
 
-data class DeviceModel(
-    val deviceIcon: Drawable,
-    val deviceName: String,
-    val idNumber: String,
-    val status: String,
-)
+class DeviceModel {
+
+    var deviceId: Int? = null
+
+    var deviceType: String? = null
+    var deviceName: String? = null
+
+    var deviceAddress: String? = null
+
+    var email: String? = null
+    var isConnected = false
+
+    var userId: Int? = null
+
+}

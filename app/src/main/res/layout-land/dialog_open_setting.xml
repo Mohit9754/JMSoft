@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/_10sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="MissingDefaultResource">
 
     <RelativeLayout
@@ -15,8 +16,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:gravity="center_horizontal"
             tools:ignore="UselessParent">
 
             <ImageView
@@ -24,44 +25,29 @@
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="@dimen/_100sdp"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:src="@drawable/bluetoothconnected" />
+                android:src="@drawable/img_open_setting" />
 
             <TextView
-                android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
+                android:id="@+id/tvTitle"
                 android:fontFamily="@font/montserrat_arabic_bold"
-                android:text="@string/connected"
-                android:textSize="13sp" />
+                android:text="@string/photo_library_permission_denied"
+                android:textSize="13sp"
+                />
 
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/_5sdp"
-
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_2sdp"
-                    android:fontFamily="@font/montserrat_arabic_medium"
-                    android:text="Device Connection Established With"
-                    android:textAlignment="center"
-                    android:textColor="@color/device_text_color"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tvDeviceName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_arabic_bold"
-                    android:text="Zeb-Evolve"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_color"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                android:textAlignment="center"
+                android:id="@+id/tvMessage"
+                android:textColor="@color/device_text_color"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:fontFamily="@font/montserrat_arabic_medium"
+                android:text="@string/photo_library_access_is_needed_in_order_to_access_media_to_be_used_in_the_app_please_enable_it_from_the_settings"
+                android:textSize="12sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,11 +56,34 @@
                 android:layout_marginBottom="@dimen/_5sdp"
                 android:gravity="bottom"
                 android:orientation="horizontal"
-                android:weightSum="1">
-
+                android:weightSum="2">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/mcvOK"
+                    android:id="@+id/mcvCancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_4sdp"
+                    app:strokeColor="@color/theme"
+                    app:strokeWidth="0.7dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/montserrat_arabic_medium"
+                        android:paddingHorizontal="@dimen/_5sdp"
+                        android:paddingVertical="@dimen/_6sdp"
+                        android:text="@string/cancel"
+                        android:textColor="@color/theme"
+                        android:textSize="12sp" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvOpenSetting"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
@@ -89,7 +98,7 @@
                         android:fontFamily="@font/montserrat_arabic_medium"
                         android:paddingHorizontal="@dimen/_5sdp"
                         android:paddingVertical="@dimen/_6sdp"
-                        android:text="@string/ok"
+                        android:text="@string/open_setting"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
 

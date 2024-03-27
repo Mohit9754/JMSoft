@@ -3,14 +3,14 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mcvDevice"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="1dp"
     android:layout_marginBottom="@dimen/_7sdp"
-    app:cardElevation="0dp"
-    android:id="@+id/mcvDevice"
     app:cardBackgroundColor="@color/mcv_background_color"
     app:cardCornerRadius="@dimen/_5sdp"
+    app:cardElevation="0dp"
     tools:ignore="MissingDefaultResource">
 
     <RelativeLayout
@@ -23,16 +23,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
             app:cardBackgroundColor="@color/theme"
-            app:cardElevation="0dp"
-            app:cardCornerRadius="@dimen/_4sdp">
+            app:cardCornerRadius="@dimen/_4sdp"
+            app:cardElevation="0dp">
 
             <ImageView
                 android:id="@+id/ivDeviceIcon"
                 android:layout_width="@dimen/_12sdp"
                 android:layout_height="@dimen/_12sdp"
-                android:layout_marginHorizontal="@dimen/_3sdp"
-                android:layout_marginVertical="@dimen/_3sdp"
+                android:layout_margin="@dimen/_3sdp"
                 android:src="@drawable/icon_scanner" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -43,13 +43,28 @@
             android:layout_toEndOf="@+id/mcvIconDevice"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvDeviceName"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_arabic_semibold"
-                android:text="@string/rfid_scanner"
-                android:textSize="10sp" />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvDeviceType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_arabic_semibold"
+                    android:text="@string/rfid_scanner"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/tvDeviceName"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_arabic_regular"
+                    android:text="@string/rfid_scanner"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -78,11 +93,11 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_4sdp"
                 android:gravity="center_vertical"
-                android:id="@+id/llStatus"
                 android:orientation="horizontal">
 
                 <com.google.android.material.card.MaterialCardView
@@ -108,14 +123,35 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/ivDelete"
             android:layout_width="@dimen/_18sdp"
             android:layout_height="@dimen/_18sdp"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/_minus3sdp"
             android:layout_marginEnd="@dimen/_2sdp"
-            android:id="@+id/ivDelete"
             android:padding="@dimen/_3sdp"
             android:src="@drawable/icon_delete" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcvReconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_toStartOf="@id/ivDelete"
+            app:cardBackgroundColor="@color/theme"
+            app:cardCornerRadius="@dimen/_4sdp"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:id="@+id/ivReconnect"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_12sdp"
+                android:layout_marginHorizontal="@dimen/_3sdp"
+
+                android:layout_marginVertical="@dimen/_3sdp"
+                android:src="@drawable/reconnect"
+                app:tint="@color/white" />
+
+        </com.google.android.material.card.MaterialCardView>
 
     </RelativeLayout>
 

@@ -9,9 +9,9 @@
     android:layout_marginVertical="@dimen/_8sdp"
     app:cardBackgroundColor="@color/off_white"
     app:cardElevation="@dimen/_4sdp"
-    app:cardCornerRadius="@dimen/_7sdp"
     android:outlineAmbientShadowColor="@color/ambientShadowColor"
     android:outlineSpotShadowColor="@color/spotShadowColor"
+    app:cardCornerRadius="@dimen/_7sdp"
     tools:ignore="MissingDefaultResource">
 
     <LinearLayout

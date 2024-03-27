@@ -91,5 +91,23 @@
     <string name="photo_library_permission_denied">Photo Library Permission Denied</string>
     <string name="we_need_your_permission_to_access_bluetooth_and_location_services_in_order_to_provide_the_full_functionality_of_our_app">We need your permission to access Bluetooth and location services in order to provide the full functionality of our app.Your cooperation is appreciated.</string>
     <string name="permission_request">Permission Request</string>
+    <string name="camera_permission_denied">Camera Permission Denied</string>
+    <string name="camera_access_is_needed_in_order_to_capture_profile_picture_please_enable_it_from_the_settings">Camera Access is needed in order to capture\nprofile picture. Please enable it from the settings.</string>
+    <string name="email_already_exist">Email Already Exist</string>
+    <string name="mobile_number_already_exist">Mobile Number Already Exist</string>
+    <string name="invalid_credentials">Invalid Credentials</string>
+    <string name="active">Active</string>
+    <string name="signup_successfully">SignUp Successfully</string>
+    <string name="already_connected">Already Connected</string>
+    <string name="user_management">User Management</string>
+    <string name="add_user">Add User</string>
+    <string name="jenny_wilson">Jenny Wilson</string>
+    <string name="jenny_123gmail_com">jenny@123gmail.com</string>
+    <string name="_21_987654321">+21 987654321</string>
+    <string name="delete">Delete</string>
+    <string name="are_you_sure_you_want_to_delete_the_user">Are you Sure you want to delete the user ?</string>
+    <string name="save">Save</string>
+    <string name="updated_successfully">Updated Successfully</string>
+    <string name="new_user_registered_successfully">New User Registered Successfully</string>
 
 </resources>
