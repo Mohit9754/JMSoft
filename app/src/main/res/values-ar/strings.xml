@@ -99,7 +99,16 @@
     <string name="active">نشيط</string>
     <string name="signup_successfully">تم التسجيل بنجاح</string>
     <string name="already_connected">متصل بالفعل</string>
-
+    <string name="user_management">إدارةالمستخدم</string>
+    <string name="add_user">إضافة مستخدم</string>
+    <string name="jenny_wilson">Jenny Wilson</string>
+    <string name="jenny_123gmail_com">jenny@123gmail.com</string>
+    <string name="_21_987654321">+21 987654321</string>
+    <string name="delete">يمسح</string>
+    <string name="are_you_sure_you_want_to_delete_the_user">هل أنت متأكد أنك تريد حذف المستخدم؟</string>
+    <string name="save">يحفظ</string>
+    <string name="updated_successfully">تم التحديث بنجاح</string>
+    <string name="new_user_registered_successfully">تم تسجيل مستخدم جديد بنجاح</string>
 
 
 </resources>

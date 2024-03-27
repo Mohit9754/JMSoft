@@ -31,7 +31,7 @@ class CatalogFragment : Fragment(), View.OnClickListener {
         // Inflate the layout for this fragment
         binding = FragmentCatalogBinding.inflate(layoutInflater)
 
-        //set the Clicks And initalize
+        //set the Clicks And initialization
         init()
 
         return binding.root

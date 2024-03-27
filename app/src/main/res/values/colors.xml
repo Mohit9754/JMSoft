@@ -10,7 +10,7 @@
     <color name="light_black">#666666</color>
     <color name="red">#FA0404</color>
     <color name="tool_bar">#fafafa</color>
-    <color name="mcv_stroke_color">#CBD3E7</color>
+    <color name="stroke_color">#CBD3E7</color>
     <color name="mcv_background_color">#F7F7F7</color>
     <color name="light_pink">#ffefef</color>
     <color name="dark_pink">#ffd9d9</color>

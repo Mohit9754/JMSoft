@@ -96,7 +96,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentDeviceManagementBinding.inflate(layoutInflater)
 
-        //set the Clicks And initalize
+        //set the Clicks And initialization
         init()
         return binding.root
     }
@@ -104,18 +104,19 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     // Setting the Device list through Recycler View
     private fun setRecyclerOfDeviceList() {
 
-        //get User Email Address
-        val email = Utils.GetSession().email
+        //get User User id
+        val userId = Utils.GetSession().userId
 
-        //Checks if devices data for this email
-        if (Utils.isNoDeviceForUser(email!!)) {
+        //Checks if no devices data for this userId
+        if (Utils.isNoDeviceForUser(userId!!)) {
 
             binding.rlNoDevice!!.visibility = View.VISIBLE
             binding.llDevicePresent!!.visibility = View.GONE
         } else {
 
             //Devics list for perticular user
-            addedDeviceList = Utils.getDevicesThroughEmail(Utils.GetSession().email!!)
+            addedDeviceList = Utils.getDevicesThroughEmail(Utils.GetSession().userId!!)
+            //Device list for particular user
 
             binding.rlNoDevice!!.visibility = View.GONE
             binding.llDevicePresent!!.visibility = View.VISIBLE
@@ -130,7 +131,6 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
         }
     }
-
     private fun  setDeviceStatus() {
 
         BluetoothUtils.getConnectedDevice(context, object : ConnectedDeviceCallback {
@@ -183,8 +183,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         if (allPermissionsGranted) {
 
             //Checks Continuesly Bluetooth is on or off
-            BluetoothUtils.registerBluetoothStateReceiver(
-                requireActivity(),
+            BluetoothUtils.registerBluetoothStateReceiver(requireActivity(),
                 object : BluetoothOffCallback {
 
                     override fun onBluetoothOff() {

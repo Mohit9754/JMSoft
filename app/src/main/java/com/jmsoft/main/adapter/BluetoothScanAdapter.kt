@@ -164,14 +164,14 @@ class BluetoothScanAdapter(
 
             Utils.E("Connected to device: ${deviceModel.device.name}")
 
-            val email = Utils.GetSession().email
+            val userId = Utils.GetSession().userId
 
             val deviceMode = DeviceModel()
 
             deviceMode.deviceType = deviceType
             deviceMode.deviceName = deviceModel.device.name
             deviceMode.deviceAddress = deviceModel.device.address
-            deviceMode.email = email
+            deviceMode.userId = userId
 
 
            val addedDeviceList = Utils.getDevicesThroughEmail(Utils.GetSession().email!!)

@@ -85,6 +85,7 @@ interface Constants {
         const val loginDeviceType = "loginDeviceType"
         const val device_type = "device_type"
         const val user = "user"
+        const val userId = "userId"
         const val admin = "admin"
         const val loginType = "loginType"
         const val studentName = "studentName"
