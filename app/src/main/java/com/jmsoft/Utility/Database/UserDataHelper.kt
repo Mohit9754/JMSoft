@@ -224,6 +224,7 @@ class UserDataHelper(cx: Context) {
 
         // values.put(UserData.KEY_ID, userData.userId);
         values.put(UserDataModel.Key_deviceName, deviceModel.deviceName)
+        values.put(UserDataModel.Key_deviceType, deviceModel.deviceType)
         values.put(UserDataModel.Key_deviceAddress, deviceModel.deviceAddress)
         values.put(UserDataModel.Key_email, deviceModel.email)
 
@@ -262,6 +263,7 @@ class UserDataHelper(cx: Context) {
 
                 deviceData.deviceId = cursor.getInt(cursor.getColumnIndex(UserDataModel.KEY_ID))
                 deviceData.deviceName = cursor.getString(cursor.getColumnIndex(UserDataModel.Key_deviceName))
+                deviceData.deviceType = cursor.getString(cursor.getColumnIndex(UserDataModel.Key_deviceType))
                 deviceData.deviceAddress = cursor.getString(cursor.getColumnIndex(UserDataModel.Key_deviceAddress))
 
                 deviceItem.add(deviceData)

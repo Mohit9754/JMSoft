@@ -24,13 +24,17 @@ object BluetoothUtils {
     private lateinit var receiver: BroadcastReceiver
 
     @SuppressLint("MissingPermission")
-    fun isDevicePaired(device: BluetoothDevice):Boolean{
-        return device.getBondState() == BluetoothDevice.BOND_BONDED
+    fun isDevicePaired(device: BluetoothDevice): Boolean {
+        return device.bondState == BluetoothDevice.BOND_BONDED
     }
 
     // Method to initiate pairing with a Bluetooth device
     @SuppressLint("MissingPermission")
-    fun pairDevice(context: Context,device:BluetoothDevice,pairStatusCallback: PairStatusCallback) {
+    fun pairDevice(
+        context: Context,
+        device: BluetoothDevice,
+        pairStatusCallback: PairStatusCallback
+    ) {
 
         // BroadcastReceiver to handle bond state changes
         val bondStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -44,7 +48,7 @@ object BluetoothUtils {
                         intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)
                     if (device != null && bondState == BluetoothDevice.BOND_BONDED) {
                         // Device successfully paired
-                        Utils.E("Device paired successfully:  ${device.getName()}")
+                        Utils.E("Device paired successfully:  ${device.name}")
                         // Pairing successful, now connect
                         pairStatusCallback.pairSuccess()
 
@@ -74,8 +78,8 @@ object BluetoothUtils {
     fun isEnableBluetooth(
     ): Boolean {
 
-        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-            ?: // Device doesn't support Bluetooth
+        val bluetoothAdapter =
+            BluetoothAdapter.getDefaultAdapter() ?: // Device doesn't support Bluetooth
             // Handle this case accordingly
             return false
 
@@ -113,13 +117,12 @@ object BluetoothUtils {
         bluetoothAdapter.startDiscovery()
     }
 
-    fun unRegisterBroadCastReceiver(context: Context){
+    fun unRegisterBroadCastReceiver(context: Context) {
         context.unregisterReceiver(receiver)
     }
 
     fun registerBluetoothStateReceiver(
-        context: Context,
-        bluetoothOffCallback: BluetoothOffCallback
+        context: Context, bluetoothOffCallback: BluetoothOffCallback
     ) {
 
         bluetoothStateReceiver = object : BroadcastReceiver() {
@@ -166,7 +169,7 @@ object BluetoothUtils {
                         val connectedDevices = a2dp.connectedDevices
                         if (connectedDevices.isNotEmpty()) {
                             // Get the first connected device (you may handle multiple devices if needed)
-                            val connectedDevice = connectedDevices[0]
+                            val connectedDevice =  ArrayList(connectedDevices)
                             callback.onDeviceFound(connectedDevice)
                         } else {
                             callback.onDeviceNotFound()

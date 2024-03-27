@@ -1,27 +1,28 @@
 package com.jmsoft.main.adapter
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.app.Dialog
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
+import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
-
 import com.jmsoft.databinding.ItemDeviceListBinding
-import com.jmsoft.main.`interface`.ConnectedDeviceCallback
-import com.jmsoft.main.model.BluetoothScanModel
+import com.jmsoft.main.`interface`.PairStatusCallback
 import com.jmsoft.main.model.DeviceModel
-import okio.Utf8
+import java.io.IOException
+import java.util.UUID
+
 
 /**
  * Device List Adapter
@@ -51,39 +52,43 @@ class DeviceListAdapter(
     }
 
 
-    inner class MyViewHolder(private val binding: ItemDeviceListBinding) :
+    inner class MyViewHolder(private var binding: ItemDeviceListBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         // Store DeviceModel data
         private lateinit var deviceModel: DeviceModel
+        val rotateAnimator = ObjectAnimator.ofFloat(binding.ivReconnect, "rotation", 360f, 0f)
+
+
         //postion of DeviceModel
         private var position: Int = 0
+        lateinit var device: BluetoothDevice
 
         fun bind(data: DeviceModel, position: Int) {
             this.deviceModel = data
             this.position = position
+            device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceModel.deviceAddress)
 
             setDeviceIcon()
             setDeviceName()
             setDeviceMacAddress()
-            setDeviceStatus()
+            setDeviceStatus(data)
 
             //set click on delete icon
             binding.ivDelete.setOnClickListener(this)
+            binding.mcvReconnect.setOnClickListener(this)
         }
 
         //Setting Device Icon
         private fun setDeviceIcon() {
 
-            if (deviceModel.deviceName == context.getString(R.string.rfid_scanner)){
+            if (deviceModel.deviceType == context.getString(R.string.rfid_scanner)) {
 
                 binding.ivDeviceIcon.setImageResource(R.drawable.icon_scanner)
-            }
-            else if(deviceModel.deviceName == context.getString(R.string.rfid_tag_printer)){
+            } else if (deviceModel.deviceType == context.getString(R.string.rfid_tag_printer)) {
 
                 binding.ivDeviceIcon.setImageResource(R.drawable.icon_tag_printer)
-            }
-            else if(deviceModel.deviceName == context.getString(R.string.ticket_printer)){
+            } else if (deviceModel.deviceType == context.getString(R.string.ticket_printer)) {
 
                 binding.ivDeviceIcon.setImageResource(R.drawable.icon_ticket_printer)
             }
@@ -93,35 +98,34 @@ class DeviceListAdapter(
 
         //Setting the Device Name
         private fun setDeviceName() {
-            binding.tvDeviceName.text = deviceModel.deviceName
+            binding.tvDeviceType.text = deviceModel.deviceType
+            binding.tvDeviceName.text = " (${deviceModel.deviceName})"
+
+
+//            binding.tvDeviceName.text = "${deviceModel.deviceType} (${deviceModel.deviceName})"
         }
 
         //Setting the Device MAC Address
         private fun setDeviceMacAddress() {
-            binding.tvMacAddress.text  = deviceModel.deviceAddress
+            binding.tvMacAddress.text = deviceModel.deviceAddress
         }
 
         //Setting the Device Status and Change there Staus Color Accourding to it.
-        private fun setDeviceStatus() {
+        private fun setDeviceStatus(data: DeviceModel) {
 
-            BluetoothUtils.getConnectedDevice(context, object : ConnectedDeviceCallback {
+            if (data.isConnected) {
+                binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
+                binding.tvStatus.text = context.getString(R.string.active)
+                binding.tvStatus.setTextColor(context.getColor(R.color.green))
+                binding.mcvReconnect.visibility = View.GONE
+            } else {
 
-                override fun onDeviceFound(device: BluetoothDevice) {
+                binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.dark_red))
+                binding.tvStatus.text = context.getString(R.string.inactive)
+                binding.tvStatus.setTextColor(context.getColor(R.color.dark_red))
+                binding.mcvReconnect.visibility = View.VISIBLE
 
-                    binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
-                    binding.tvStatus.text = context.getString(R.string.active)
-                    binding.tvStatus.setTextColor(context.getColor(R.color.green))
-
-                }
-
-                override fun onDeviceNotFound() {
-
-                  binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.dark_red))
-                  binding.tvStatus.text = context.getString(R.string.inactive)
-                  binding.tvStatus.setTextColor(context.getColor(R.color.dark_red))
-
-                }
-            })
+            }
         }
 
         //Handles All the Clicks
@@ -141,9 +145,123 @@ class DeviceListAdapter(
                     rlNoDevice.visibility = View.VISIBLE
                     llDevicePresent.visibility = View.GONE
                 }
+            } else if (v == binding.mcvReconnect) {
+                rotateAnimator.duration = 2000 // Duration in milliseconds
+                rotateAnimator.repeatCount = ObjectAnimator.INFINITE // Repeat indefinitely
+                rotateAnimator.interpolator = LinearInterpolator() // Linear interpolation
+                rotateAnimator.start()
+                checkPairAndConnectDevice()
             }
 
         }
 
+        @SuppressLint("MissingPermission")
+        private fun checkPairAndConnectDevice() {
+
+
+            device.let { unpairDevice(it) }
+
+            //Make Pair Device
+            device.let {
+                BluetoothUtils.pairDevice(context, it, object : PairStatusCallback {
+
+                    override fun pairSuccess() {
+
+                        val connectToDeviceThread = ConnectToDeviceThread()
+                        connectToDeviceThread.start()
+                    }
+
+                    override fun pairFail() {
+                        rotateAnimator.cancel()
+                        Utils.T(context, "Paired Failed")
+                    }
+
+                })
+            }
+
+        }
+
+        @SuppressLint("MissingPermission")
+
+        private inner class ConnectToDeviceThread : Thread() {
+
+            private val SERIAL_UUID = UUID.fromString(Constants.bluetoothUuid)
+
+            private val mmSocket: BluetoothSocket? =
+                device.createRfcommSocketToServiceRecord(SERIAL_UUID)
+
+
+            override fun run() {
+                // Cancel discovery because it otherwise slows down the connection.
+//                bluetoothAdapter?.cancelDiscovery()
+
+                mmSocket?.let { socket ->
+
+                    try {
+
+
+                        // Connect to the remote device through the socket. This call blocks
+                        // until it succeeds or throws an exception.
+                        socket.connect()
+                        binding.root.post {
+                            rotateAnimator.cancel()
+                            binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
+                            binding.tvStatus.text = context.getString(R.string.active)
+                            binding.tvStatus.setTextColor(context.getColor(R.color.green))
+                            binding.mcvReconnect.visibility = View.GONE
+
+                            // Update the UI here
+                            // For example, show a dialog
+
+
+                        }
+                    } catch (e: IOException) {
+                        // Connection attempt failed
+                        // You can handle the error here
+                        e.printStackTrace()
+                        binding.root.post {
+                            rotateAnimator.cancel()
+
+                            // Update the UI here
+                            // For example, show a dialog
+
+                        }
+
+                    }
+
+                    // The connection attempt succeeded. Perform work associated with
+                    // the connection in a separate thread.
+//                    manageMyConnectedSocket(socket)
+                }
+            }
+
+            // Closes the client socket and causes the thread to finish.
+            fun cancel() {
+                rotateAnimator.cancel()
+
+                try {
+                    mmSocket?.close()
+                } catch (e: IOException) {
+                    Utils.E("Could not close the client socket")
+                }
+            }
+        }
+
+        private fun onConnectSuccess() {
+            binding.mcvReconnect.visibility = View.GONE
+
+        }
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun unpairDevice(device: BluetoothDevice) {
+        try {
+            val method = device.javaClass.getMethod("removeBond")
+            method.invoke(device)
+            Utils.E("Device unpaired successfully: ${device.name}")
+        } catch (e: Exception) {
+            Utils.E("Failed to unpair device: ${e.message}")
+        }
     }
 }

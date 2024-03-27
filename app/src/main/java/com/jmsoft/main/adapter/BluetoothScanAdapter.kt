@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,8 +39,7 @@ class BluetoothScanAdapter(
     private val context: Context,
     private val bluetoothScanList: ArrayList<BluetoothScanModel>,
     private val deviceType: String?
-) :
-    RecyclerView.Adapter<BluetoothScanAdapter.MyViewHolder>() {
+) : RecyclerView.Adapter<BluetoothScanAdapter.MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -144,7 +144,9 @@ class BluetoothScanAdapter(
         @SuppressLint("MissingPermission")
         private fun setName() {
             Utils.E(deviceModel.device.name.toString())
-            binding.tvDeviceName.text = deviceModel.device.name.toString()
+            binding.tvDeviceName.visibility = View.GONE
+            binding.mcvReconnect.visibility = View.GONE
+            binding.tvDeviceType.text = deviceModel.device.name.toString()
         }
 
         //setting the Mac Address of the Scanned Device
@@ -152,7 +154,7 @@ class BluetoothScanAdapter(
             binding.tvMacAddress.text = deviceModel.device.address.toString()
         }
 
-        private fun onConnectSuccess(mmSocket: BluetoothSocket) {
+        private fun onConnectSuccess() {
 
             connectingDialog(deviceModel.device.name)
             setConnectedStatus()
@@ -160,24 +162,34 @@ class BluetoothScanAdapter(
             // Move the Connected Device to First Position
             moveToFirstPosition()
 
-            Utils.E("Connected to device: ${deviceModel.device.getName()}")
+            Utils.E("Connected to device: ${deviceModel.device.name}")
 
             val email = Utils.GetSession().email
 
             val deviceMode = DeviceModel()
 
-            deviceMode.deviceName = deviceType
+            deviceMode.deviceType = deviceType
+            deviceMode.deviceName = deviceModel.device.name
             deviceMode.deviceAddress = deviceModel.device.address
             deviceMode.email = email
 
+
+           val addedDeviceList = Utils.getDevicesThroughEmail(Utils.GetSession().email!!)
+            if (addedDeviceList.firstOrNull { it.deviceAddress == deviceModel.device.address } != null) {
+
+            }
+            else{
+                Utils.insertNewDeviceData(deviceMode)
+
+            }
+
             //Insert Data in the device table
-            Utils.insertNewDeviceData(deviceMode)
 
         }
 
         private fun onConnectFailed() {
 
-            Utils.T(context, "Failed to Connect")
+//            Utils.T(context, "Failed to Connect")
         }
 
         // Establish a connection with a Bluetooth device
@@ -186,33 +198,36 @@ class BluetoothScanAdapter(
 
             private val SERIAL_UUID = UUID.fromString(bluetoothUuid)
 
-            private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
+            private val mmSocket: BluetoothSocket? =
                 deviceModel.device.createRfcommSocketToServiceRecord(SERIAL_UUID)
-            }
+
 
             override fun run() {
                 // Cancel discovery because it otherwise slows down the connection.
 //                bluetoothAdapter?.cancelDiscovery()
 
                 mmSocket?.let { socket ->
-
                     try {
 
                         // Connect to the remote device through the socket. This call blocks
                         // until it succeeds or throws an exception.
                         socket.connect()
-
                         binding.root.post {
                             // Update the UI here
                             // For example, show a dialog
-                            if (mmSocket != null)
-                            onConnectSuccess(mmSocket!!)
+                            onConnectSuccess()
 
                         }
                     } catch (e: IOException) {
                         // Connection attempt failed
                         // You can handle the error here
                         e.printStackTrace()
+                        binding.root.post {
+                            // Update the UI here
+                            // For example, show a dialog
+                            onConnectSuccess()
+
+                        }
                         onConnectFailed()
                     }
 
@@ -232,6 +247,17 @@ class BluetoothScanAdapter(
             }
         }
 
+        @SuppressLint("MissingPermission")
+        private fun unpairDevice(device: BluetoothDevice) {
+            try {
+                val method = device.javaClass.getMethod("removeBond")
+                method.invoke(device)
+                Utils.E("Device unpaired successfully: ${device.name}")
+            } catch (e: Exception) {
+                Utils.E("Failed to unpair device: ${e.message}")
+            }
+        }
+
         //Checks Device is paired or not and connect it
         @SuppressLint("MissingPermission")
         private fun checkPairAndConnectDevice() {
@@ -240,8 +266,33 @@ class BluetoothScanAdapter(
             if (BluetoothUtils.isDevicePaired(deviceModel.device)) {
                 // Device is paired, you can establish a connection here
 
-                val connectToDeviceThread = ConnectToDeviceThread()
-                connectToDeviceThread.start()
+                unpairDevice(deviceModel.device)
+//
+                val countDownTimer = object : CountDownTimer(2000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        // This method will be called every 1 second (1000 milliseconds) until the countdown is finished
+
+                    }
+
+                    override fun onFinish() {
+                        // This method will be called when the countdown is finished
+
+                        // Execute your Bluetooth pairing code here
+                        BluetoothUtils.pairDevice(context, deviceModel.device, object : PairStatusCallback {
+                            override fun pairSuccess() {
+                                val connectToDeviceThread = ConnectToDeviceThread()
+                                connectToDeviceThread.start()
+                            }
+
+                            override fun pairFail() {
+                                Utils.T(context, "Paired Failed")
+                            }
+                        })
+                    }
+                }
+
+                countDownTimer.start()
+
 
                 Utils.E("Device is already paired")
 
@@ -256,6 +307,7 @@ class BluetoothScanAdapter(
                         val connectToDeviceThread = ConnectToDeviceThread()
                         connectToDeviceThread.start()
                     }
+
                     override fun pairFail() {
                         Utils.T(context, "Paired Failed")
                     }
@@ -290,6 +342,8 @@ class BluetoothScanAdapter(
                 } else {
 
                     Utils.T(context, context.getString(R.string.already_connected))
+                    onConnectSuccess()
+
                 }
 
             }

@@ -60,7 +60,7 @@
                     android:paddingHorizontal="@dimen/_35sdp"
                     android:paddingVertical="@dimen/_6sdp"
                     android:text="@string/choose_from_photo_library"
-                    android:textColor="@color/black"
+                    android:textColor="@color/theme"
                     android:textSize="10sp" />
 
             </com.google.android.material.card.MaterialCardView>

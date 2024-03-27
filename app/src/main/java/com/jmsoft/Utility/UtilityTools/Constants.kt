@@ -1,5 +1,6 @@
 package com.jmsoft.basic.UtilityTools
 
+import com.google.android.datatransport.BuildConfig
 import com.google.android.gms.maps.model.LatLng
 
 interface Constants {
@@ -208,9 +209,15 @@ interface Constants {
         const val bluetoothUuid = "00001101-0000-1000-8000-00805F9B34FB"
 
 
+        // values have to be globally unique
+      const val INTENT_ACTION_DISCONNECT: String = BuildConfig.APPLICATION_ID + ".Disconnect"
+      const val NOTIFICATION_CHANNEL: String = BuildConfig.APPLICATION_ID + ".Channel"
+      const val INTENT_CLASS_MAIN_ACTIVITY: String = BuildConfig.APPLICATION_ID + ".MainActivity"
 
+        // values have to be unique within each app
+        const val NOTIFY_MANAGER_START_FOREGROUND_SERVICE = 1001
 
-
+        private fun Constants() {}
 
     }
 }

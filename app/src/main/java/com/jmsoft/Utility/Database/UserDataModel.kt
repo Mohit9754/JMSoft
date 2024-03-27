@@ -60,6 +60,7 @@ class UserDataModel {
 
         //All keys of Device table
         const val Key_deviceName = "deviceName"
+        const val Key_deviceType = "deviceType"
         const val Key_deviceAddress = "deviceAddress"
 
         @JvmStatic
@@ -91,6 +92,7 @@ class UserDataModel {
             val CreateTableDeviceQuery = ("create table " + TABLE_NAME_DEVICE + " ("
                     + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     Key_deviceName + " text," +
+                    Key_deviceType + " text," +
                     Key_deviceAddress + " text," +
                     Key_email + " text," +
                     " FOREIGN KEY ("+Key_email+") REFERENCES "+ TABLE_NAME_USER+"("+ Key_email+")"+

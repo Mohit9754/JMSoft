@@ -6,10 +6,7 @@ import android.app.Dialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -55,11 +52,10 @@ import com.jmsoft.main.model.DeviceModel
 class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentDeviceManagementBinding
-    private lateinit var bluetoothAdapter: BluetoothAdapter
-    private lateinit var receiver: BroadcastReceiver
     private var isReceiverRegistered = false
     private lateinit var bottomSheetBluetoothScan: BottomSheetDialog
     private var deviceType: String? = null
+    var addedDeviceList: ArrayList<DeviceModel> = ArrayList()
 
     @RequiresApi(Build.VERSION_CODES.S)
     val permissionsForVersionAbove11 = arrayOf(
@@ -119,21 +115,45 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         } else {
 
             //Devics list for perticular user
-            val deviceList: ArrayList<DeviceModel> =
-                Utils.getDevicesThroughEmail(Utils.GetSession().email!!)
+            addedDeviceList = Utils.getDevicesThroughEmail(Utils.GetSession().email!!)
 
             binding.rlNoDevice!!.visibility = View.GONE
             binding.llDevicePresent!!.visibility = View.VISIBLE
 
             val deviceListAdapter = DeviceListAdapter(
-                requireActivity(), deviceList,
-                binding.rlNoDevice!!, binding.llDevicePresent!!
+                requireActivity(), addedDeviceList, binding.rlNoDevice!!, binding.llDevicePresent!!
             )
             binding.rvDeviceList?.layoutManager =
                 LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
             binding.rvDeviceList?.adapter = deviceListAdapter
+            setDeviceStatus()
 
         }
+    }
+
+    private fun  setDeviceStatus() {
+
+        BluetoothUtils.getConnectedDevice(context, object : ConnectedDeviceCallback {
+
+            override fun onDeviceFound(device: ArrayList<BluetoothDevice>) {
+                addedDeviceList.forEach { data ->
+                    if (device.firstOrNull { it.address == data.deviceAddress } != null) {
+                        data.isConnected = true
+
+
+                    }
+
+                }
+                binding.rvDeviceList?.adapter?.notifyDataSetChanged()
+
+
+            }
+
+            override fun onDeviceNotFound() {
+
+
+            }
+        })
     }
 
     //Checks All the necessery permission related to bluetooth
@@ -163,7 +183,8 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         if (allPermissionsGranted) {
 
             //Checks Continuesly Bluetooth is on or off
-            BluetoothUtils.registerBluetoothStateReceiver(requireActivity(),
+            BluetoothUtils.registerBluetoothStateReceiver(
+                requireActivity(),
                 object : BluetoothOffCallback {
 
                     override fun onBluetoothOff() {
@@ -219,7 +240,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     }
 
     //Checks the Android Version And  Launch Custom Prmission ,Accourding to Version
-    private fun checkAndroidVerionAndLaunchPermission() {
+    private fun checkAndroidVersionAndLaunchPermission() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
 
@@ -241,14 +262,14 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         addDeviceBottomSheetBinding.mcvRfidScanner.setOnClickListener {
             //Checks the Android Version And  Launch Custom Prmission ,Accourding to Version
             deviceType = getString(R.string.rfid_scanner)
-            checkAndroidVerionAndLaunchPermission()
+            checkAndroidVersionAndLaunchPermission()
             bottomSheetAddDevice.dismiss()
         }
 
         addDeviceBottomSheetBinding.mcvRfidTagPrinter.setOnClickListener {
 
             deviceType = getString(R.string.rfid_tag_printer)
-            checkAndroidVerionAndLaunchPermission()
+            checkAndroidVersionAndLaunchPermission()
             bottomSheetAddDevice.dismiss()
 
         }
@@ -256,7 +277,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         addDeviceBottomSheetBinding.mcvTicketPrinter.setOnClickListener {
 
             deviceType = getString(R.string.ticket_printer)
-            checkAndroidVerionAndLaunchPermission()
+            checkAndroidVersionAndLaunchPermission()
             bottomSheetAddDevice.dismiss()
 
         }
@@ -281,10 +302,23 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             setRecyclerOfDeviceList()
         }
 
+
         val bluetoothScanList = ArrayList<BluetoothScanModel>()
+        val adapter = BluetoothScanAdapter(requireActivity(), bluetoothScanList, deviceType)
+        bottomSheetBinding.rvBtScanList.layoutManager =
+            LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+        bottomSheetBinding.rvBtScanList.adapter = adapter
         BluetoothUtils.getConnectedDevice(requireActivity(), object : ConnectedDeviceCallback {
-            override fun onDeviceFound(device: BluetoothDevice) {
-                bluetoothScanList.add(BluetoothScanModel(device, true))
+
+
+            override fun onDeviceFound(device: ArrayList<BluetoothDevice>) {
+                device.forEach {
+
+                    bluetoothScanList.add(BluetoothScanModel(it, true))
+
+                }
+                adapter.notifyDataSetChanged()
+
             }
 
             override fun onDeviceNotFound() {
@@ -292,22 +326,17 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             }
         })
 
-        val adapter = BluetoothScanAdapter(requireActivity(), bluetoothScanList, deviceType)
-        bottomSheetBinding.rvBtScanList.layoutManager =
-            LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
-        bottomSheetBinding.rvBtScanList.adapter = adapter
-
         //Set Up BroadCast Receiver For Bluetooth Scan
 
-        BluetoothUtils.registerBroadCastReceiver(requireActivity(),object :DeviceFoundCallback {
+        BluetoothUtils.registerBroadCastReceiver(requireActivity(), object : DeviceFoundCallback {
 
-            @SuppressLint("NotifyDataSetChanged")
             override fun onDeviceFound(device: BluetoothDevice) {
 
-              if (!bluetoothScanList.contains(BluetoothScanModel(device, false))) {
+                if (!bluetoothScanList.contains(BluetoothScanModel(device, false))) {
                     bluetoothScanList.add(BluetoothScanModel(device, false))
+//                    adapter.notifyItemRangeInserted(0,bluetoothScanList.size)
                     adapter.notifyDataSetChanged()
-              }
+                }
             }
         })
         // flag for unregister the Receiver
