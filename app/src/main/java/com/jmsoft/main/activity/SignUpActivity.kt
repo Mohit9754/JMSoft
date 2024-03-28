@@ -324,7 +324,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         super.onSaveInstanceState(outState)
     }
 
-    // Close the Keyboard when you touch the Screen
+
     // Close the Keyboard when you touch the Screen
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_DOWN) {
