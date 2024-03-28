@@ -5,12 +5,14 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -51,7 +53,11 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun init() {
+
+
+        //For Managing Back press
         this.onBackPressedDispatcher.addCallback(onBackPressedCallback)
+
         // Set Click on language switcher
         binding.ivLanguageSwitcher?.setOnClickListener(this)
 
@@ -91,30 +97,39 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
 
 
     // Close the Keyboard when you touch the Screen
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-
-        if (currentFocus != null) {
-            val imm = getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            // remove focus from edit text on click outside
+            val v = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
         }
-        return super.dispatchTouchEvent(ev)
+        return super.dispatchTouchEvent(event)
     }
 
+    //Managing Back press
     val onBackPressedCallback = object: OnBackPressedCallback(true) {
+
         override fun handleOnBackPressed() {
-            Utils.E("Back")
+
             if (navController?.currentDestination?.id  == R.id.home){
                 finish()
             }else{
                 navController?.popBackStack()
 
             }
-
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return navController?.navigateUp() ?: false || super.onSupportNavigateUp()
-    }
+
+//    override fun onSupportNavigateUp(): Boolean {
+//        return navController?.navigateUp() ?: false || super.onSupportNavigateUp()
+//    }
 
 }

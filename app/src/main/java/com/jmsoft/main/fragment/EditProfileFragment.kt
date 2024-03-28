@@ -258,7 +258,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     }
 
     // Showing email and phone number already exist error
-    fun showAlreadyExistError(textView: TextView, msg: String) {
+    private fun showAlreadyExistError(textView: TextView, msg: String) {
 
         textView.visibility = View.VISIBLE
         textView.text = msg

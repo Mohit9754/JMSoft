@@ -43,7 +43,6 @@
         tool:layout="@layout/fragment_edit_profile">
 
 
-
     </fragment>
 
 </navigation>

@@ -2,6 +2,7 @@ package com.jmsoft.main.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -324,13 +325,22 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     // Close the Keyboard when you touch the Screen
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-
-        if (currentFocus != null) {
-            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+    // Close the Keyboard when you touch the Screen
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            // remove focus from edit text on click outside
+            val v = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
         }
-        return super.dispatchTouchEvent(ev)
+        return super.dispatchTouchEvent(event)
     }
+
 
 }
