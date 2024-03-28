@@ -192,9 +192,9 @@ class SettingFragment : Fragment(), View.OnClickListener {
             Utils.saveToInternalStorage(requireActivity(), profile, imageFileName)
 
             //Update the profile
-            Utils.updateProfileInUserTable(imageFileName, Utils.GetSession().userId!!)
+            Utils.updateProfileInUserTable(imageFileName, Utils.GetSession().userUUID!!)
 
-            val userDataModel = Utils.getUserDetailsThroughUserId(Utils.GetSession().userId!!)
+            val userDataModel = Utils.getUserDetailsThroughUserUUID(Utils.GetSession().userUUID!!)
             //Update the Session Data
             Utils.insertDataInSessionTable(userDataModel)
 
@@ -205,7 +205,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
     // Setting the profile picture
     private fun setProfilePicture() {
 
-        val profileName = UserDataHelper.instance.list[0].profileName.toString()
+        val profileName = UserDataHelper.instance.list[0].profileUri.toString()
 
         if (profileName != "") {
             val profile = Utils.getImageFromInternalStorage(requireActivity(), profileName)
@@ -315,12 +315,12 @@ class SettingFragment : Fragment(), View.OnClickListener {
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
         } else if (v == binding.mcvBackBtn) {
 
-            (requireActivity() as DashboardActivity).navController?.popBackStack()
+            (requireActivity() as DashboardActivity).navController?.popBackStack(R.id.home,false)
         }else if (v == binding.mcvUserName) {
 
             //Navigate to Edit Profile
             val bundle = Bundle()
-            Utils.GetSession().userId?.let { bundle.putInt(Constants.userId, it) }
+            Utils.GetSession().userUUID?.let { bundle.putString(Constants.userUUID, it) }
             bundle.putBoolean(updateInSession,true)
 
             (context as DashboardActivity).navController?.navigate(R.id.editProfile,bundle)

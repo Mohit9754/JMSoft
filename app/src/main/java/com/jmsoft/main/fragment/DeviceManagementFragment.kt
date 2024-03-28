@@ -27,6 +27,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
+import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_Scanner
+import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_tag_Printer
+import com.jmsoft.basic.UtilityTools.Constants.Companion.ticket_Printer
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.BottomSheetAddDeviceBinding
 import com.jmsoft.databinding.BottomSheetBluetoothScanListBinding
@@ -117,9 +120,9 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     private fun setRecyclerOfDeviceList() {
 
         //get User UserId
-        val userId = Utils.GetSession().userId
+        val userId = Utils.GetSession().userUUID
 
-        //Checks if no devices data for this userId
+        //Checks if no devices data for this userUUID
         if (Utils.isNoDeviceForUser(userId!!)) {
 
             binding.rlNoDevice!!.visibility = View.VISIBLE
@@ -131,7 +134,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             binding.llDevicePresent!!.visibility = View.VISIBLE
 
             //Devices list for particular user
-            addedDeviceList = Utils.getDevicesThroughUserId(Utils.GetSession().userId!!)
+            addedDeviceList = Utils.getDevicesThroughUserUUID(Utils.GetSession().userUUID!!)
 
             val deviceListAdapter = DeviceListAdapter(
                 requireActivity(), addedDeviceList, binding.rlNoDevice!!, binding.llDevicePresent!!
@@ -280,21 +283,21 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         bottomSheetAddDevice.behavior.maxWidth = LayoutParams.MATCH_PARENT
 
         addDeviceBottomSheetBinding.mcvRfidScanner.setOnClickListener {
-            deviceType = getString(R.string.rfid_scanner)
+            deviceType = rfid_Scanner
             bottomSheetAddDevice.dismiss()
             bluetoothScanBottomSheet()
         }
 
         addDeviceBottomSheetBinding.mcvRfidTagPrinter.setOnClickListener {
 
-            deviceType = getString(R.string.rfid_tag_printer)
+            deviceType = rfid_tag_Printer
             bottomSheetAddDevice.dismiss()
             bluetoothScanBottomSheet()
         }
 
         addDeviceBottomSheetBinding.mcvTicketPrinter.setOnClickListener {
 
-            deviceType = getString(R.string.ticket_printer)
+            deviceType = ticket_Printer
             bottomSheetAddDevice.dismiss()
             bluetoothScanBottomSheet()
         }
@@ -321,7 +324,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
 
         val bluetoothScanList = ArrayList<BluetoothScanModel>()
-        val adapter = BluetoothScanAdapter(requireActivity(), bluetoothScanList, deviceType)
+        val adapter = BluetoothScanAdapter(requireActivity(), bluetoothScanList, deviceType,bottomSheetBluetoothScan)
         bottomSheetBinding.rvBtScanList.layoutManager =
             LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         bottomSheetBinding.rvBtScanList.adapter = adapter

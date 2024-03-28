@@ -50,20 +50,18 @@
                 app:cardCornerRadius="@dimen/_5sdp"
                 app:cardElevation="0dp">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:paddingVertical="@dimen/_8sdp"
-                    android:weightSum="1">
-
+                    android:paddingVertical="@dimen/_8sdp">
 
                     <TextView
                         android:id="@+id/tvfullName"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_5sdp"
-                        android:layout_weight="1"
+                        android:layout_centerVertical="true"
                         android:fontFamily="@font/montserrat_arabic_semibold"
                         android:textColor="@color/black"
                         android:textSize="11sp" />
@@ -73,9 +71,10 @@
                         android:layout_height="@dimen/_11sdp"
                         android:layout_marginEnd="@dimen/_4sdp"
                         android:src="@drawable/icon_edit"
+                        android:layout_alignParentEnd="true"
                         app:tint="@color/theme" />
 
-                </LinearLayout>
+                </RelativeLayout>
 
             </com.google.android.material.card.MaterialCardView>
 

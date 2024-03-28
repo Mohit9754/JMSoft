@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothDevice
 
 class DeviceModel {
 
-    var deviceId: Int? = null
+    var deviceUUID: String? = null
 
     var deviceType: String? = null
     var deviceName: String? = null
@@ -13,6 +13,6 @@ class DeviceModel {
 
     var isConnected = false
 
-    var userId: Int? = null
+    var userUUID: String? = null
 
 }

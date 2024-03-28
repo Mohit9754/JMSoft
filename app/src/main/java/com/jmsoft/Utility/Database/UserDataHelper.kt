@@ -9,6 +9,7 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.user
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.UtilityTools.Utils.E
 import com.jmsoft.main.model.DeviceModel
+import java.util.UUID
 
 class UserDataHelper(cx: Context) {
 
@@ -56,8 +57,8 @@ class UserDataHelper(cx: Context) {
     fun delete(userData: UserDataModel) {
         open()
         db!!.delete(
-            UserDataModel.TABLE_NAME_USER_SESSION, UserDataModel.KEY_userId + " = '"
-                    + userData.userId + "'", null
+            UserDataModel.TABLE_NAME_USER_SESSION, UserDataModel.Key_userUUID + " = '"
+                    + userData.userUUID + "'", null
         )
         close()
     }
@@ -71,11 +72,11 @@ class UserDataHelper(cx: Context) {
         close()
     }
 
-    //Deleting the User through the User id from the user table
-    fun deleteUserThroughUserId(userId: Int) {
+    //Deleting the User through the UserUUId from the user table
+    fun deleteUserThroughUserUUID(userUUID: String) {
         open()
-        val selection = "${UserDataModel.KEY_userId} = ?"
-        val selectionArgs = arrayOf(userId.toString())
+        val selection = "${UserDataModel.Key_userUUID} = ?"
+        val selectionArgs = arrayOf(userUUID)
         db!!.delete(UserDataModel.TABLE_NAME_USER, selection, selectionArgs)
         close()
     }
@@ -83,15 +84,15 @@ class UserDataHelper(cx: Context) {
     /**
      * is Exist in table
      *
-     * Checks if userid is same or not in the Session table
+     * Checks if userUUID is same or not in the Session table
      * @param userData //
      * @return //
      */
     private fun isExist(userData: UserDataModel): Boolean {
         read()
         @SuppressLint("Recycle")val cur = db!!.rawQuery(
-            "SELECT * FROM ${UserDataModel.TABLE_NAME_USER_SESSION} WHERE ${UserDataModel.KEY_userId} = ?",
-            arrayOf(userData.userId.toString())
+            "SELECT * FROM ${UserDataModel.TABLE_NAME_USER_SESSION} WHERE ${UserDataModel.Key_userUUID} = ?",
+            arrayOf(userData.userUUID)
         )
         return cur.moveToFirst()
     }
@@ -102,7 +103,7 @@ class UserDataHelper(cx: Context) {
 
         read()
         val selection = "${UserDataModel.Key_email} = ? AND ${UserDataModel.Key_password} = ?"
-        val selectionArgs = arrayOf(email, password)
+        val selectionArgs = arrayOf(email, Utils.encodeText(password)) // match the password after encode it
 
         val cursor: Cursor? = db?.query(
             UserDataModel.TABLE_NAME_USER,
@@ -120,7 +121,7 @@ class UserDataHelper(cx: Context) {
 
         if (cursor != null) {
 
-            userData.userId = cursor.getInt(cursor.getColumnIndex(UserDataModel.KEY_userId))
+            userData.userUUID = cursor.getString(cursor.getColumnIndex(UserDataModel.Key_userUUID))
 
             userData.userType =
                 cursor.getString(cursor.getColumnIndex(UserDataModel.Key_userType))
@@ -133,8 +134,8 @@ class UserDataHelper(cx: Context) {
                 cursor.getString(cursor.getColumnIndex(UserDataModel.Key_email))
             userData.phoneNumber =
                 cursor.getString(cursor.getColumnIndex(UserDataModel.Key_phoneNumber))
-            userData.profileName =
-                cursor.getString(cursor.getColumnIndex(UserDataModel.Key_profileName))
+            userData.profileUri =
+                cursor.getString(cursor.getColumnIndex(UserDataModel.Key_profileUri))
             userData.password =
                 cursor.getString(cursor.getColumnIndex(UserDataModel.Key_password))
 
@@ -149,7 +150,8 @@ class UserDataHelper(cx: Context) {
     fun isValidUser(email:String,password:String): Boolean {
         read()
         val selection = "${UserDataModel.Key_email} = ? AND ${UserDataModel.Key_password} = ?"
-        val selectionArgs = arrayOf(email, password)
+
+        val selectionArgs = arrayOf(email, Utils.encodeText(password)) // match the password after encode it
 
         val cursor: Cursor = db?.query(
             UserDataModel.TABLE_NAME_USER,
@@ -168,10 +170,10 @@ class UserDataHelper(cx: Context) {
 
     //this method checks if any user has this phone number
     @SuppressLint("Recycle")
-    fun isAnyUserHasThisPhoneNumber(phoneNumber: String, userId: Int): Boolean {
+    fun isAnyUserHasThisPhoneNumber(phoneNumber: String, userUUID: String): Boolean {
 
         read()
-        val cursor = db!!.rawQuery("SELECT * From ${UserDataModel.TABLE_NAME_USER} where ${UserDataModel.Key_phoneNumber} = '$phoneNumber' And ${UserDataModel.KEY_userId} != $userId ",null)
+        val cursor = db!!.rawQuery("SELECT * From ${UserDataModel.TABLE_NAME_USER} where ${UserDataModel.Key_phoneNumber} = '$phoneNumber' And ${UserDataModel.Key_userUUID} != '$userUUID' ",null)
 
         return cursor.moveToFirst()
 
@@ -179,10 +181,10 @@ class UserDataHelper(cx: Context) {
 
     //this method checks if any user has this email
     @SuppressLint("Recycle")
-    fun isAnyUserHasThisEmail(email: String, userId: Int): Boolean {
+    fun isAnyUserHasThisEmail(email: String, userUUID: String): Boolean {
 
         read()
-        val cursor = db!!.rawQuery("SELECT * From ${UserDataModel.TABLE_NAME_USER} where ${UserDataModel.Key_email} = '$email' And ${UserDataModel.KEY_userId} != $userId ",null)
+        val cursor = db!!.rawQuery("SELECT * From ${UserDataModel.TABLE_NAME_USER} where ${UserDataModel.Key_email} = '$email' And ${UserDataModel.Key_userUUID} != '$userUUID'",null)
 
         return cursor.moveToFirst()
     }
@@ -229,7 +231,7 @@ class UserDataHelper(cx: Context) {
 
                 val userData = UserDataModel()
 
-                userData.userId = cursor.getInt(cursor.getColumnIndex(UserDataModel.KEY_userId))
+                userData.userUUID = cursor.getString(cursor.getColumnIndex(UserDataModel.Key_userUUID))
 
                 userData.userType =
                     cursor.getString(cursor.getColumnIndex(UserDataModel.Key_userType))
@@ -242,8 +244,8 @@ class UserDataHelper(cx: Context) {
                     cursor.getString(cursor.getColumnIndex(UserDataModel.Key_email))
                 userData.phoneNumber =
                     cursor.getString(cursor.getColumnIndex(UserDataModel.Key_phoneNumber))
-                userData.profileName =
-                    cursor.getString(cursor.getColumnIndex(UserDataModel.Key_profileName))
+                userData.profileUri =
+                    cursor.getString(cursor.getColumnIndex(UserDataModel.Key_profileUri))
 
                 userList.add(userData)
 
@@ -255,20 +257,20 @@ class UserDataHelper(cx: Context) {
         return userList
     }
 
-    // get User Details through userId from the User table
+    // get User Details through userUUID from the User table
     @SuppressLint("Range")
-    fun getUserDetailsThroughUserId(userId:Int): UserDataModel {
+    fun getUserDetailsThroughUserUUID(userUUID: String): UserDataModel {
         read()
         @SuppressLint("Recycle") val cursor = db?.rawQuery(
-            "SELECT * FROM ${UserDataModel.TABLE_NAME_USER} WHERE ${UserDataModel.KEY_userId} = ?",
-            arrayOf(userId.toString())
+            "SELECT * FROM ${UserDataModel.TABLE_NAME_USER} WHERE ${UserDataModel.Key_userUUID} = ?",
+            arrayOf(userUUID)
         )
         cursor?.moveToFirst()
         val userData = UserDataModel()
 
         if (cursor != null && cursor.count > 0) {
 
-                userData.userId = cursor.getInt(cursor.getColumnIndex(UserDataModel.KEY_userId))
+                userData.userUUID = cursor.getString(cursor.getColumnIndex(UserDataModel.Key_userUUID))
 
                 userData.userType =
                     cursor.getString(cursor.getColumnIndex(UserDataModel.Key_userType))
@@ -281,8 +283,8 @@ class UserDataHelper(cx: Context) {
                     cursor.getString(cursor.getColumnIndex(UserDataModel.Key_email))
                 userData.phoneNumber =
                     cursor.getString(cursor.getColumnIndex(UserDataModel.Key_phoneNumber))
-                userData.profileName =
-                    cursor.getString(cursor.getColumnIndex(UserDataModel.Key_profileName))
+                userData.profileUri =
+                    cursor.getString(cursor.getColumnIndex(UserDataModel.Key_profileUri))
 
                 userData.password =
                     cursor.getString(cursor.getColumnIndex(UserDataModel.Key_password))
@@ -304,16 +306,16 @@ class UserDataHelper(cx: Context) {
     }
 
     //Updating the User Profile in the User Table
-    fun updateProfileInUserTable(profileName: String,userId:Int):Boolean{
+    fun updateProfileInUserTable(profileName: String,userUUID: String):Boolean{
 
         open()
 
         val contentValues = ContentValues().apply {
-            put(UserDataModel.Key_profileName, profileName)
+            put(UserDataModel.Key_profileUri, profileName)
         }
 
-        val whereClause = "${UserDataModel.KEY_userId} = ?"
-        val whereArgs = arrayOf(userId.toString())
+        val whereClause = "${UserDataModel.Key_userUUID} = ?"
+        val whereArgs = arrayOf(userUUID)
 
         val rowsAffected =
             db?.update(UserDataModel.TABLE_NAME_USER, contentValues, whereClause, whereArgs)
@@ -333,11 +335,12 @@ class UserDataHelper(cx: Context) {
 
         // values.put(UserData.KEY_ID, userData.userId);
         values.put(UserDataModel.Key_userType, userData.userType)
+        values.put(UserDataModel.Key_userUUID, userData.userUUID)
         values.put(UserDataModel.Key_firstName, userData.firstName)
         values.put(UserDataModel.Key_lastName, userData.lastName)
         values.put(UserDataModel.Key_email, userData.email)
         values.put(UserDataModel.Key_phoneNumber, userData.phoneNumber)
-        values.put(UserDataModel.Key_profileName, userData.profileName)
+        values.put(UserDataModel.Key_profileUri, userData.profileUri)
         values.put(UserDataModel.Key_password, userData.password)
 
         db!!.insert(UserDataModel.TABLE_NAME_USER, null, values)
@@ -352,24 +355,24 @@ class UserDataHelper(cx: Context) {
         open()
         val values = ContentValues()
 
-        // values.put(UserData.KEY_ID, userData.userId);
+        values.put(UserDataModel.Key_deviceUUID, deviceModel.deviceUUID)
         values.put(UserDataModel.Key_deviceName, deviceModel.deviceName)
         values.put(UserDataModel.Key_deviceType, deviceModel.deviceType)
         values.put(UserDataModel.Key_deviceAddress, deviceModel.deviceAddress)
-        values.put(UserDataModel.KEY_userId, deviceModel.userId)
+        values.put(UserDataModel.Key_userUUID, deviceModel.userUUID)
 
         db!!.insert(UserDataModel.TABLE_NAME_DEVICE, null, values)
 
         close()
     }
 
-    //Delete Device from Device table through Device id
-    fun deleteDeviceThoughDeviceId(deviceId: Int){
+    //Delete Device from Device table through DeviceUUID
+    fun deleteDeviceThoughDeviceUUID(deviceUUID: String){
         open()
         db?.delete(
             UserDataModel.TABLE_NAME_DEVICE,
-            "${UserDataModel.KEY_deviceId} = ?",
-            arrayOf(deviceId.toString())
+            "${UserDataModel.Key_deviceUUID} = ?",
+            arrayOf(deviceUUID)
         )
         close()
     }
@@ -389,20 +392,20 @@ class UserDataHelper(cx: Context) {
         db!!.update(
             UserDataModel.TABLE_NAME_USER,
             values,
-            "${UserDataModel.KEY_userId} = '${userDataModel.userId}'",
+            "${UserDataModel.Key_userUUID} = '${userDataModel.userUUID}'",
             null
         )
 
         close()
     }
 
-    //getting All the Devices of particular from the device table through user id
+    //getting All the Devices of particular from the device table through userUUID
     @SuppressLint("Recycle", "Range")
-    fun getDevicesThroughUserId(userId: Int): ArrayList<DeviceModel> {
+    fun getDevicesThroughUserUUID(userUUID: String): ArrayList<DeviceModel> {
 
         read()
 
-        val cursor = db?.rawQuery("SELECT * FROM ${UserDataModel.TABLE_NAME_DEVICE} WHERE ${UserDataModel.KEY_userId} = ?", arrayOf(userId.toString()))
+        val cursor = db?.rawQuery("SELECT * FROM ${UserDataModel.TABLE_NAME_DEVICE} WHERE ${UserDataModel.Key_userUUID} = ?", arrayOf(userUUID))
 
         val deviceItem = ArrayList<DeviceModel>()
 
@@ -414,7 +417,7 @@ class UserDataHelper(cx: Context) {
 
                 val deviceData = DeviceModel()
 
-                deviceData.deviceId = cursor.getInt(cursor.getColumnIndex(UserDataModel.KEY_userId))
+                deviceData.deviceUUID = cursor.getString(cursor.getColumnIndex(UserDataModel.Key_deviceUUID))
                 deviceData.deviceName = cursor.getString(cursor.getColumnIndex(UserDataModel.Key_deviceName))
                 deviceData.deviceType = cursor.getString(cursor.getColumnIndex(UserDataModel.Key_deviceType))
                 deviceData.deviceAddress = cursor.getString(cursor.getColumnIndex(UserDataModel.Key_deviceAddress))
@@ -430,10 +433,10 @@ class UserDataHelper(cx: Context) {
 
     // Check if no device for particular user in the Device Table
     @SuppressLint("Recycle")
-    fun isNoDeviceForUser(userId: Int):Boolean {
+    fun isNoDeviceForUser(userUUID: String):Boolean {
         read()
 
-        val cursor = db?.rawQuery("SELECT * FROM ${UserDataModel.TABLE_NAME_DEVICE} WHERE ${UserDataModel.KEY_userId} = ?", arrayOf(userId.toString()))
+        val cursor = db?.rawQuery("SELECT * FROM ${UserDataModel.TABLE_NAME_DEVICE} WHERE ${UserDataModel.Key_userUUID} = ?", arrayOf(userUUID))
         val result = cursor!!.moveToFirst()
         close()
         return  !result
@@ -449,13 +452,13 @@ class UserDataHelper(cx: Context) {
         open()
         val values = ContentValues()
 
-        values.put(UserDataModel.KEY_userId, userData.userId);
+        values.put(UserDataModel.Key_userUUID, userData.userUUID)
         values.put(UserDataModel.Key_userType, userData.userType)
         values.put(UserDataModel.Key_firstName, userData.firstName)
         values.put(UserDataModel.Key_lastName, userData.lastName)
         values.put(UserDataModel.Key_email, userData.email)
         values.put(UserDataModel.Key_phoneNumber, userData.phoneNumber)
-        values.put(UserDataModel.Key_profileName, userData.profileName)
+        values.put(UserDataModel.Key_profileUri, userData.profileUri)
 
         if (!isExist(userData)) {
             E("insert successfully")
@@ -467,7 +470,7 @@ class UserDataHelper(cx: Context) {
             db!!.update(
                 UserDataModel.TABLE_NAME_USER_SESSION,
                 values,
-                "${UserDataModel.KEY_userId} = '${userData.userId}'",
+                "${UserDataModel.Key_userUUID} = '${userData.userUUID}'",
                 null
             )
         }
@@ -491,8 +494,8 @@ class UserDataHelper(cx: Context) {
 
                     val userData = UserDataModel()
 
-                    userData.userId =
-                        cursor.getInt(cursor.getColumnIndex(UserDataModel.KEY_userId))
+                    userData.userUUID =
+                        cursor.getString(cursor.getColumnIndex(UserDataModel.Key_userUUID))
 
                     userData.userType =
                         cursor.getString(cursor.getColumnIndex(UserDataModel.Key_userType))
@@ -505,8 +508,8 @@ class UserDataHelper(cx: Context) {
                         cursor.getString(cursor.getColumnIndex(UserDataModel.Key_email))
                     userData.phoneNumber =
                         cursor.getString(cursor.getColumnIndex(UserDataModel.Key_phoneNumber))
-                    userData.profileName =
-                        cursor.getString(cursor.getColumnIndex(UserDataModel.Key_profileName))
+                    userData.profileUri =
+                        cursor.getString(cursor.getColumnIndex(UserDataModel.Key_profileUri))
 
                     userItem.add(userData)
 

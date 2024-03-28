@@ -1,5 +1,6 @@
 package com.jmsoft.main.adapter
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.bluetooth.BluetoothDevice
@@ -12,11 +13,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.bluetoothUuid
 import com.jmsoft.basic.UtilityTools.Constants.Companion.connected
 import com.jmsoft.basic.UtilityTools.Utils
@@ -39,7 +43,8 @@ import java.util.UUID
 class BluetoothScanAdapter(
     private val context: Context,
     private val bluetoothScanList: ArrayList<BluetoothScanModel>,
-    private val deviceType: String?
+    private val deviceType: String?,
+    private val bottomSheetBluetoothScan:BottomSheetDialog
 ) : RecyclerView.Adapter<BluetoothScanAdapter.MyViewHolder>() {
 
     private var connectedDevice: BluetoothDevice? = null
@@ -78,7 +83,8 @@ class BluetoothScanAdapter(
 
         private lateinit var deviceModel: BluetoothScanModel
         private var position: Int = -1
-
+        private val rotateAnimator = ObjectAnimator.ofFloat(binding.ivReconnect,
+            Constants.rotation, 360f, 0f)
 
         fun bind(deviceModel: BluetoothScanModel, position: Int) {
             this.deviceModel = deviceModel
@@ -194,24 +200,31 @@ class BluetoothScanAdapter(
 
             Utils.E("Connected to device: ${deviceModel.device.name}")
 
-            //get user id
-            val userId = Utils.GetSession().userId
+            //get userUUID
+            val userUUID = Utils.GetSession().userUUID
 
             val deviceMode = DeviceModel()
 
+            deviceMode.deviceUUID = Utils.generateUUId() //Generating the UUID for device
             deviceMode.deviceType = deviceType
             deviceMode.deviceName = deviceModel.device.name
             deviceMode.deviceAddress = deviceModel.device.address
-            deviceMode.userId = userId
+            deviceMode.userUUID = userUUID
 
-            val addedDeviceList = Utils.getDevicesThroughUserId(Utils.GetSession().userId!!)
+            val addedDeviceList = Utils.getDevicesThroughUserUUID(Utils.GetSession().userUUID!!)
             if (addedDeviceList.firstOrNull { it.deviceAddress == deviceModel.device.address } != null) {
 
             }
-            else{
+            else {
                 //Insert Data in the device table
                 Utils.insertNewDeviceData(deviceMode)
             }
+
+            rotateAnimator.cancel()
+            binding.mcvReconnect.visibility = View.GONE
+
+            //Dismiss Bluetooth Scan Bottom Sheet
+            bottomSheetBluetoothScan.dismiss()
         }
 
         //Checks Device is paired or not and connect it
@@ -254,6 +267,10 @@ class BluetoothScanAdapter(
                             }
 
                             override fun pairFail() {
+
+                                rotateAnimator.cancel()
+                                binding.mcvReconnect.visibility = View.GONE
+
                                 Utils.T(context, "Paired Failed")
                             }
                         })
@@ -285,6 +302,10 @@ class BluetoothScanAdapter(
                     }
                     override fun pairFail() {
                         Utils.T(context, "Paired Failed")
+
+                        rotateAnimator.cancel()
+                        binding.mcvReconnect.visibility = View.GONE
+
                     }
                 })
             }
@@ -298,6 +319,12 @@ class BluetoothScanAdapter(
 
                 //Checks if device is already Connected or not
                 if (!deviceModel.isConnected) {
+
+                    binding.mcvReconnect.visibility = View.VISIBLE
+                    rotateAnimator.duration = 1000 // Duration in milliseconds
+                    rotateAnimator.repeatCount = ObjectAnimator.INFINITE // Repeat indefinitely
+                    rotateAnimator.interpolator = LinearInterpolator() // Linear interpolation
+                    rotateAnimator.start()
 
                     //Checks Device is paired or not and connect it
                     checkPairAndConnectDevice()

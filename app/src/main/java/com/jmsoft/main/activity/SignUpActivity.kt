@@ -3,6 +3,7 @@ package com.jmsoft.main.activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -12,10 +13,12 @@ import android.text.method.PasswordTransformationMethod
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.Database.UserDataHelper
@@ -102,7 +105,23 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    // Set up editor action listener on etFirstName so that after pressing enter it will move etLastName
+    private fun setOnEditorActionListener(){
+
+        // Set up editor action listener for editText1
+        binding.etFirstName?.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                binding.etLastName?.requestFocus() // Move focus to etLastName
+                return@setOnEditorActionListener true
+            }
+            false
+        }
+    }
+
     private fun init() {
+
+        // Set up editor action listener on etFirstName so that after pressing enter it will move etLastName
+        setOnEditorActionListener()
 
         //Set Image for current Language
         Utils.setImageForCurrentLanguage(binding.ivJewellery!!)
@@ -202,21 +221,24 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         if (!Utils.isPhoneNumberExist(binding.etPhoneNumber?.text.toString().trim())){
 
             //Checks if Email Already Exist
-            if (!Utils.isEmailExist(binding.etEmailAddress?.text.toString().trim())){
+            if (!Utils.isEmailExist(binding.etEmailAddress?.text.toString().trim().toLowerCase())){
 
                 val userDataModel = UserDataModel()
 
                 //Checks if User Table Empty
                 userDataModel.userType = if (Utils.isUserTableEmpty()) admin  else user
 
+                //Generating UUID
+                userDataModel.userUUID = Utils.generateUUId()
+
                 userDataModel.firstName = binding.etFirstName?.text.toString().trim()
                 userDataModel.lastName = binding.etLastName?.text.toString().trim()
                 //Store Email in the lower Case letter
                 userDataModel.email = binding.etEmailAddress?.text.toString().trim().toLowerCase()
                 userDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
-                userDataModel.profileName = ""
+                userDataModel.profileUri = ""
 
-                userDataModel.password = binding.etPassword?.text.toString().trim()
+                userDataModel.password = Utils.encodeText(binding.etPassword?.text.toString().trim())
 
                 //Insert Data in the User Table
                 Utils.insetDataInUserTable(userDataModel)
@@ -293,6 +315,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         val resultReturn: ResultReturn? =
             validation?.CheckValidation(activity, errorValidationModels)
         if (resultReturn?.aBoolean == true) {
+
             signUp()
 
         } else {
