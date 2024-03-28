@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.Database.UserDataModel
-import com.jmsoft.basic.UtilityTools.Constants.Companion.email
-import com.jmsoft.basic.UtilityTools.Constants.Companion.userId
+import com.jmsoft.basic.UtilityTools.Constants.Companion.userUUID
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemUserManagementBinding
 import com.jmsoft.main.activity.DashboardActivity
+import com.jmsoft.main.fragment.UserManagementFragment
 
 
 /**
@@ -28,7 +28,11 @@ import com.jmsoft.main.activity.DashboardActivity
  *
  */
 
-class UserManagementAdapter(private val context: Context, private val userList: ArrayList<UserDataModel>) :
+class UserManagementAdapter(
+    private val context: Context,
+    private val userList: ArrayList<UserDataModel>,
+    private val userManagementFragment: UserManagementFragment
+) :
     RecyclerView.Adapter<UserManagementAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -43,19 +47,24 @@ class UserManagementAdapter(private val context: Context, private val userList: 
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun showDeleteDialog(userId:Int,position: Int){
+    private fun showDeleteDialog(userUUID:String,position: Int){
 
         val dialog = Dialog(context)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setCanceledOnTouchOutside(true)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_delete)
+        dialog.setContentView(R.layout.dialog_delete_user)
         dialog.findViewById<MaterialCardView>(R.id.mcvYes).setOnClickListener {
 
             dialog.dismiss()
             // Deleting the user from the user Table
-            Utils.deleteUserThroughUserId(userId)
+            Utils.deleteUserThroughUserUUID(userUUID)
             userList.removeAt(position)
+            if (userList.size == 0) {
+                userManagementFragment.binding.ivNoUser?.visibility = View.VISIBLE
+            }else{
+                userManagementFragment.binding.ivNoUser?.visibility = View.GONE
+            }
             notifyDataSetChanged()
         }
         dialog.findViewById<MaterialCardView>(R.id.mcvNo).setOnClickListener {
@@ -116,15 +125,17 @@ class UserManagementAdapter(private val context: Context, private val userList: 
             if (v == binding.ivDelete) {
 
                 //Showing Delete Dialog
-                showDeleteDialog(userDataModel.userId!!,position)
+                showDeleteDialog(userDataModel.userUUID!!,position)
             }
 
             else if(v == binding.ivEditProfile){
 
-                //Navigate to Edit Profile
                 val bundle = Bundle()
-                bundle.putInt(userId, userDataModel.userId!!)
 
+                //Giving the userUUID
+                bundle.putString(userUUID, userDataModel.userUUID!!)
+
+                //Navigate to Edit Profile
                 (context as DashboardActivity).navController?.navigate(R.id.editProfile,bundle)
             }
 

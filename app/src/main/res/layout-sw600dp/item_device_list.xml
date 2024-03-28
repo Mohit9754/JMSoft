@@ -123,13 +123,17 @@
 
         </LinearLayout>
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/ivDelete"
             android:layout_width="@dimen/_18sdp"
             android:layout_height="@dimen/_18sdp"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/_2sdp"
-
             android:padding="@dimen/_3sdp"
             android:src="@drawable/icon_delete" />
 
@@ -145,16 +149,16 @@
 
             <ImageView
                 android:id="@+id/ivReconnect"
-
                 android:layout_width="@dimen/_12sdp"
                 android:layout_height="@dimen/_12sdp"
                 android:layout_marginHorizontal="@dimen/_3sdp"
-
                 android:layout_marginVertical="@dimen/_3sdp"
                 android:src="@drawable/reconnect"
                 app:tint="@color/white" />
 
         </com.google.android.material.card.MaterialCardView>
+
+    </RelativeLayout>
 
     </RelativeLayout>
 

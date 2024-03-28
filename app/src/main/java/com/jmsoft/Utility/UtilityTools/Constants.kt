@@ -85,7 +85,7 @@ interface Constants {
         const val loginDeviceType = "loginDeviceType"
         const val device_type = "device_type"
         const val user = "user"
-        const val userId = "userId"
+        const val userUUID = "userUUID"
         const val admin = "admin"
         const val loginType = "loginType"
         const val studentName = "studentName"
@@ -209,6 +209,10 @@ interface Constants {
 
         const val bluetoothUuid = "00001101-0000-1000-8000-00805F9B34FB"
         const val rotation = "rotation"
+        const val updateInSession = "updateInSession"
+        const val rfid_Scanner = "RFID scanner"
+        const val rfid_tag_Printer = "RFID tag printer"
+        const val ticket_Printer = "Ticket printer"
 
 
          // values have to be globally unique

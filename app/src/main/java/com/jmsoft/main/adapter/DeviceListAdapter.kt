@@ -78,7 +78,7 @@ class DeviceListAdapter(
             //Getting device through MAC Address so that we can reconnect it.
             device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceModel.deviceAddress)
 
-            //Setting Device Icon
+            //Setting Device Icon And Device Type
             setDeviceIcon()
 
             //Setting the Device Name
@@ -97,25 +97,32 @@ class DeviceListAdapter(
             binding.mcvReconnect.setOnClickListener(this)
         }
 
-        //Setting Device Icon
+        //Setting Device Icon And Device Type
         private fun setDeviceIcon() {
 
             if (deviceModel.deviceType == context.getString(R.string.rfid_scanner)) {
 
                 binding.ivDeviceIcon.setImageResource(R.drawable.icon_scanner)
+                binding.tvDeviceType.text = context.getString(R.string.rfid_scanner)
+
             } else if (deviceModel.deviceType == context.getString(R.string.rfid_tag_printer)) {
 
                 binding.ivDeviceIcon.setImageResource(R.drawable.icon_tag_printer)
+                binding.tvDeviceType.text = context.getString(R.string.rfid_tag_printer)
+
+
             } else if (deviceModel.deviceType == context.getString(R.string.ticket_printer)) {
 
                 binding.ivDeviceIcon.setImageResource(R.drawable.icon_ticket_printer)
+                binding.tvDeviceType.text = context.getString(R.string.ticket_printer)
+
             }
 
         }
 
         //Setting the Device Name
         private fun setDeviceName() {
-            binding.tvDeviceType.text = deviceModel.deviceType
+
             binding.tvDeviceName.text = buildString {
                 append(" (")
                 append(deviceModel.deviceName)
@@ -155,7 +162,7 @@ class DeviceListAdapter(
             if (v == binding.ivDelete) {
 
                 //Deleting the device from the  device table
-                Utils.deleteDeviceThoughDeviceId(deviceModel.deviceId!!)
+                Utils.deleteDeviceThoughDeviceUUID(deviceModel.deviceUUID!!)
 
                 //Remove the device from the device list
                 deviceList.removeAt(position)

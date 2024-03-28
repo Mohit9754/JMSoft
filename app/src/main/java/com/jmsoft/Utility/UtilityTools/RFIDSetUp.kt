@@ -44,7 +44,7 @@ class RFIDSetUp {
         initRFID()
     }
 
-    protected fun onPause() {
+    public fun onPause() {
         // Stop RFID scanning
         stopRFIDScan()
     }

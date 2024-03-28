@@ -1,22 +1,29 @@
 package com.jmsoft.main.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.jmsoft.R
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
+import com.jmsoft.basic.UtilityTools.IOnBackPressed
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ActivityDashboardBinding
 
@@ -43,7 +50,13 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
         init()
     }
 
+
+
     private fun init() {
+
+
+        //For Managing Back press
+        this.onBackPressedDispatcher.addCallback(onBackPressedCallback)
 
         // Set Click on language switcher
         binding.ivLanguageSwitcher?.setOnClickListener(this)
@@ -52,7 +65,7 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
         binding.ivSetting?.setOnClickListener(this)
 
         // set Click on Bag Icon for navigating to Home fragment
-        binding.ivBag?.setOnClickListener(this)
+        binding.ivLogo?.setOnClickListener(this)
     }
 
     //Handles All the Clicks
@@ -77,21 +90,46 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         // navigate to home fragment
-        else if (v == binding.ivBag) {
-            navController?.navigate(R.id.home)
+        else if (v == binding.ivLogo) {
+            navController?.popBackStack(R.id.home,false)
         }
     }
 
 
     // Close the Keyboard when you touch the Screen
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-
-        if (currentFocus != null) {
-            val imm = getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            // remove focus from edit text on click outside
+            val v = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
         }
-        return super.dispatchTouchEvent(ev)
+        return super.dispatchTouchEvent(event)
     }
 
+    //Managing Back press
+    val onBackPressedCallback = object: OnBackPressedCallback(true) {
+
+        override fun handleOnBackPressed() {
+
+            if (navController?.currentDestination?.id  == R.id.home){
+                finish()
+            }else{
+                navController?.popBackStack()
+
+            }
+        }
+    }
+
+
+//    override fun onSupportNavigateUp(): Boolean {
+//        return navController?.navigateUp() ?: false || super.onSupportNavigateUp()
+//    }
 
 }

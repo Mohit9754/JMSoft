@@ -27,11 +27,15 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
+import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_Scanner
+import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_tag_Printer
+import com.jmsoft.basic.UtilityTools.Constants.Companion.ticket_Printer
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.BottomSheetAddDeviceBinding
 import com.jmsoft.databinding.BottomSheetBluetoothScanListBinding
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentDeviceManagementBinding
+import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.BluetoothScanAdapter
 import com.jmsoft.main.adapter.DeviceListAdapter
 import com.jmsoft.main.`interface`.BluetoothOffCallback
@@ -116,9 +120,9 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     private fun setRecyclerOfDeviceList() {
 
         //get User UserId
-        val userId = Utils.GetSession().userId
+        val userId = Utils.GetSession().userUUID
 
-        //Checks if no devices data for this userId
+        //Checks if no devices data for this userUUID
         if (Utils.isNoDeviceForUser(userId!!)) {
 
             binding.rlNoDevice!!.visibility = View.VISIBLE
@@ -130,7 +134,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             binding.llDevicePresent!!.visibility = View.VISIBLE
 
             //Devices list for particular user
-            addedDeviceList = Utils.getDevicesThroughUserId(Utils.GetSession().userId!!)
+            addedDeviceList = Utils.getDevicesThroughUserUUID(Utils.GetSession().userUUID!!)
 
             val deviceListAdapter = DeviceListAdapter(
                 requireActivity(), addedDeviceList, binding.rlNoDevice!!, binding.llDevicePresent!!
@@ -253,6 +257,8 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         binding.mcvAddDevice?.setOnClickListener(this)
         //set click on add device button when no device is there
         binding.mcvAddFirstDevice?.setOnClickListener(this)
+        binding.mcvNoDeviceBackBtn?.setOnClickListener(this)
+        binding.mcvBackBtn?.setOnClickListener(this)
     }
 
     //Checks the Android Version And  Launch Custom Permission ,according to Version
@@ -277,21 +283,21 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         bottomSheetAddDevice.behavior.maxWidth = LayoutParams.MATCH_PARENT
 
         addDeviceBottomSheetBinding.mcvRfidScanner.setOnClickListener {
-            deviceType = getString(R.string.rfid_scanner)
+            deviceType = rfid_Scanner
             bottomSheetAddDevice.dismiss()
             bluetoothScanBottomSheet()
         }
 
         addDeviceBottomSheetBinding.mcvRfidTagPrinter.setOnClickListener {
 
-            deviceType = getString(R.string.rfid_tag_printer)
+            deviceType = rfid_tag_Printer
             bottomSheetAddDevice.dismiss()
             bluetoothScanBottomSheet()
         }
 
         addDeviceBottomSheetBinding.mcvTicketPrinter.setOnClickListener {
 
-            deviceType = getString(R.string.ticket_printer)
+            deviceType = ticket_Printer
             bottomSheetAddDevice.dismiss()
             bluetoothScanBottomSheet()
         }
@@ -318,7 +324,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
 
         val bluetoothScanList = ArrayList<BluetoothScanModel>()
-        val adapter = BluetoothScanAdapter(requireActivity(), bluetoothScanList, deviceType)
+        val adapter = BluetoothScanAdapter(requireActivity(), bluetoothScanList, deviceType,bottomSheetBluetoothScan)
         bottomSheetBinding.rvBtScanList.layoutManager =
             LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         bottomSheetBinding.rvBtScanList.adapter = adapter
@@ -372,6 +378,9 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             isAddDeviceClicked = true
             //Checks the Android Version And  Launch Custom Permission ,according to Version
             checkAndroidVersionAndLaunchPermission()
+        }else if (v == binding.mcvBackBtn || v == binding.mcvNoDeviceBackBtn) {
+
+            (requireActivity() as DashboardActivity).navController?.popBackStack()
         }
     }
 

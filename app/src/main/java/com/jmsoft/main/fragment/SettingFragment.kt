@@ -16,16 +16,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.Database.UserDataHelper
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
+import com.jmsoft.basic.UtilityTools.Constants.Companion.updateInSession
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentSettingBinding
@@ -192,9 +192,9 @@ class SettingFragment : Fragment(), View.OnClickListener {
             Utils.saveToInternalStorage(requireActivity(), profile, imageFileName)
 
             //Update the profile
-            Utils.updateProfileInUserTable(imageFileName, Utils.GetSession().userId!!)
+            Utils.updateProfileInUserTable(imageFileName, Utils.GetSession().userUUID!!)
 
-            val userDataModel = Utils.getUserDetailsThroughUserId(Utils.GetSession().userId!!)
+            val userDataModel = Utils.getUserDetailsThroughUserUUID(Utils.GetSession().userUUID!!)
             //Update the Session Data
             Utils.insertDataInSessionTable(userDataModel)
 
@@ -205,7 +205,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
     // Setting the profile picture
     private fun setProfilePicture() {
 
-        val profileName = UserDataHelper.instance.list[0].profileName.toString()
+        val profileName = UserDataHelper.instance.list[0].profileUri.toString()
 
         if (profileName != "") {
             val profile = Utils.getImageFromInternalStorage(requireActivity(), profileName)
@@ -214,10 +214,10 @@ class SettingFragment : Fragment(), View.OnClickListener {
     }
 
     //Check if the User is admin or not. if not then hide the user Management option
-    private fun checkUserTypeAndHideUserManagement(){
+    private fun checkUserTypeAndHideUserManagement() {
 
-        if (Utils.GetSession().userType != admin){
-            binding.mcvUserManagement?.visibility  = View.GONE
+        if (Utils.GetSession().userType != admin) {
+            binding.mcvUserManagement?.visibility = View.GONE
         }
     }
 
@@ -242,6 +242,12 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
         //Set Click on User Management
         binding.mcvUserManagement?.setOnClickListener(this)
+
+        //Set Click on Back Button
+        binding.mcvBackBtn?.setOnClickListener(this)
+
+        //Set Click on Back Button
+        binding.mcvUserName?.setOnClickListener(this)
 
     }
 
@@ -304,11 +310,20 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.deviceManagement)
 
-        }
-
-        else if(v == binding.mcvUserManagement){
+        } else if (v == binding.mcvUserManagement) {
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
+        } else if (v == binding.mcvBackBtn) {
+
+            (requireActivity() as DashboardActivity).navController?.popBackStack(R.id.home,false)
+        }else if (v == binding.mcvUserName) {
+
+            //Navigate to Edit Profile
+            val bundle = Bundle()
+            Utils.GetSession().userUUID?.let { bundle.putString(Constants.userUUID, it) }
+            bundle.putBoolean(updateInSession,true)
+
+            (context as DashboardActivity).navController?.navigate(R.id.editProfile,bundle)
         }
 
         // When LogOut button Clicked

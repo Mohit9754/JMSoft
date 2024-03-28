@@ -42,9 +42,6 @@
         android:label="Edit Profile"
         tool:layout="@layout/fragment_edit_profile">
 
-        <argument
-            android:name="email"
-            app:argType="string" />
 
     </fragment>
 

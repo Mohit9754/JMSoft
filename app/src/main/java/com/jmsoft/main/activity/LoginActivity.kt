@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -125,6 +126,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         Utils.setImageForCurrentLanguage(binding.ivJewellery!!)
 
         // Setting the Selector on Material Card View when edittext has focus
+        binding.ivJewellery?.setImageDrawable(null)
+        binding.ivJewellery?.setImageResource(R.drawable.img_jewellery)
+
         setFocusChangeLis(binding.etEmailAddress!!, binding.mcvEmailAddress!!)
         setFocusChangeLis(binding.etPassword!!, binding.mcvPassword!!)
 
@@ -134,6 +138,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         // Removing the error when text Entered
         setTextChangeLis(binding.etEmailAddress!!, binding.tvEmailAddressError!!)
+
         setTextChangeLis(binding.etPassword!!, binding.tvPasswordError!!)
 
         //Set Click on login Button
@@ -308,7 +313,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 Utils.setLocale(activity, english)
             }
         } else if (v == binding.llSignUp) {
-            Utils.I_clear(activity, SignUpActivity::class.java, null)
+            Utils.I(activity, SignUpActivity::class.java, null)
         }
 
         //Show or Hide password
@@ -341,12 +346,21 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     // Close the Keyboard when you touch the Screen
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-
-        if (currentFocus != null) {
-            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+    // Close the Keyboard when you touch the Screen
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            // remove focus from edit text on click outside
+            val v = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
         }
-        return super.dispatchTouchEvent(ev)
+        return super.dispatchTouchEvent(event)
     }
+
 }

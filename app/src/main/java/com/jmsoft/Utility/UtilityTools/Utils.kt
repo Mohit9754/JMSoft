@@ -12,10 +12,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -36,7 +33,6 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.text.Editable
 import android.text.InputType
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.text.format.DateFormat
 import android.util.Base64
@@ -54,7 +50,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.model.LatLng
@@ -76,16 +71,32 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.OutputStream
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.random.Random
+
 
 object Utils {
 
+//    generate UUIDs (Universally Unique Identifiers) using the UUID
+    fun generateUUId(): String {
+        return UUID.randomUUID().toString()
+    }
+
+    //encode the text
+    fun encodeText(text: String): String {
+        val bytes = text.toByteArray(Charsets.UTF_8)
+        return Base64.encodeToString(bytes, Base64.DEFAULT)
+    }
+
+    //decode the text
+    fun decodeText(encodedText: String): String {
+        val bytes = Base64.decode(encodedText, Base64.DEFAULT)
+        return String(bytes, Charsets.UTF_8)
+    }
+
+    //the function opens the setting
     fun openAppSettings(context: Context) {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri = Uri.fromParts("package", context.packageName, null)
@@ -93,10 +104,13 @@ object Utils {
         context.startActivity(intent)
     }
 
+    //get Image Name
     fun getImageFileName():String{
 
         return Random.nextInt(1, 1001).toString()+Random.nextInt(1,1001).toString()+Random.nextInt(1,1000).toString()+Random.nextInt(1,1000).toString()
     }
+
+    // this function save the image into internal storage
     fun saveToInternalStorage(context: Context, bitmapImage: Bitmap, imageFileName: String): String {
         context.openFileOutput(imageFileName, Context.MODE_PRIVATE).use { fos ->
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 25, fos)
@@ -104,12 +118,14 @@ object Utils {
         return context.filesDir.absolutePath
     }
 
+    //get the image from the internal storage
     fun getImageFromInternalStorage(context: Context, imageFileName: String): Bitmap? {
         val directory = context.filesDir
         val file = File(directory, imageFileName)
         return BitmapFactory.decodeStream(FileInputStream(file))
     }
 
+    //delete image from the internal storage
     fun deleteImageFromInternalStorage(context: Context, imageFileName: String): Boolean {
         val dir = context.filesDir
         val file = File(dir, imageFileName)
@@ -143,18 +159,18 @@ object Utils {
                 directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC
     }
 
-    // set Images accounding to current language
+    // set Images according to current language
     fun setImageForCurrentLanguage(imageView: ImageView){
 
         val lang = getCurrentLanguage()
 
         if (lang == arabic){
             imageView.setImageDrawable(null)
-            imageView.setImageResource(R.drawable.img_jewellery_ar)
+            imageView.setImageResource(R.drawable.img_jewellery)
 
         } else {
             imageView.setImageDrawable(null)
-            imageView.setImageResource(R.drawable.img_jewellery_en)
+            imageView.setImageResource(R.drawable.img_jewellery)
         }
     }
 
@@ -186,13 +202,13 @@ object Utils {
     }
 
     //this method checks if any user has this phone number
-    fun isAnyUserHasThisPhoneNumber(phoneNumber: String,userId: Int): Boolean {
-        return UserDataHelper.instance.isAnyUserHasThisPhoneNumber(phoneNumber,userId)
+    fun isAnyUserHasThisPhoneNumber(phoneNumber: String,userUUID: String): Boolean {
+        return UserDataHelper.instance.isAnyUserHasThisPhoneNumber(phoneNumber,userUUID)
     }
 
     //this method checks if any user has this email
-    fun isAnyUserHasThisEmail(email: String,userId: Int): Boolean {
-        return UserDataHelper.instance.isAnyUserHasThisEmail(email,userId)
+    fun isAnyUserHasThisEmail(email: String,userUUID: String): Boolean {
+        return UserDataHelper.instance.isAnyUserHasThisEmail(email,userUUID)
 
     }
 
@@ -216,9 +232,9 @@ object Utils {
         return UserDataHelper.instance.getUserThroughEmailAndPassword(email,password)
     }
 
-    // get User through User id from the User Table
-    fun getUserDetailsThroughUserId(userId: Int): UserDataModel {
-        return UserDataHelper.instance.getUserDetailsThroughUserId(userId)
+    // get User through UserUUID from the User Table
+    fun getUserDetailsThroughUserUUID(userUUID: String): UserDataModel {
+        return UserDataHelper.instance.getUserDetailsThroughUserUUID(userUUID)
     }
 
     // insert Data in the Session Table
@@ -227,18 +243,18 @@ object Utils {
     }
 
     // update user profile in the User Table
-    fun updateProfileInUserTable(profileName:String,userId: Int) {
-        UserDataHelper.instance.updateProfileInUserTable(profileName,userId)
+    fun updateProfileInUserTable(profileName:String,userUUID: String) {
+        UserDataHelper.instance.updateProfileInUserTable(profileName,userUUID)
     }
 
-    // Checks if no device Available for particular user through user id
-    fun isNoDeviceForUser(userId: Int): Boolean {
-        return UserDataHelper.instance.isNoDeviceForUser(userId)
+    // Checks if no device Available for particular user through userUUID
+    fun isNoDeviceForUser(userUUID: String): Boolean {
+        return UserDataHelper.instance.isNoDeviceForUser(userUUID)
     }
 
-    //get All Devices of particular user through userId
-    fun getDevicesThroughUserId(userId: Int): ArrayList<DeviceModel> {
-        return UserDataHelper.instance.getDevicesThroughUserId(userId)
+    //get All Devices of particular user through userUUID
+    fun getDevicesThroughUserUUID(userUUID: String): ArrayList<DeviceModel> {
+        return UserDataHelper.instance.getDevicesThroughUserUUID(userUUID)
     }
 
     // Insert New Device in the device table
@@ -246,9 +262,9 @@ object Utils {
         UserDataHelper.instance.insertNewDeviceData(deviceModel)
     }
 
-    //Delete Device from Device table through Device id
-    fun deleteDeviceThoughDeviceId(deviceId: Int) {
-        UserDataHelper.instance.deleteDeviceThoughDeviceId(deviceId)
+    //Delete Device from Device table through DeviceUUID
+    fun deleteDeviceThoughDeviceUUID(deviceUUID: String) {
+        UserDataHelper.instance.deleteDeviceThoughDeviceUUID(deviceUUID)
     }
 
     // getting All User Details Accept Admin
@@ -256,9 +272,9 @@ object Utils {
         return UserDataHelper.instance.getAllUserDetails()
     }
 
-    //Deleting the User through the User id from the user table
-    fun deleteUserThroughUserId(userId: Int){
-        UserDataHelper.instance.deleteUserThroughUserId(userId)
+    //Deleting the User through the UserUUID from the user table
+    fun deleteUserThroughUserUUID(userUUID: String){
+        UserDataHelper.instance.deleteUserThroughUserUUID(userUUID)
     }
 
     //Update User Details in the User Table
@@ -774,34 +790,34 @@ object Utils {
         window.statusBarColor = ContextCompat.getColor(activity, color)
     }
 
-    fun printKeyHash(context: Activity): String? {
-        val packageInfo: PackageInfo
-        var key: String? = null
-        try {
-//getting application package name, as defined in manifest
-            val packageName = context.applicationContext.packageName
-
-//Retriving package info
-            packageInfo = context.packageManager.getPackageInfo(
-                packageName,
-                PackageManager.GET_SIGNATURES
-            )
-            E("Package Name=" + context.packageName)
-            for (signature in packageInfo.signatures) {
-                val md = MessageDigest.getInstance("SHA")
-                md.update(signature.toByteArray())
-                key = String(Base64.encode(md.digest(), 0))
-                E("Key Hash=$key")
-            }
-        } catch (e1: PackageManager.NameNotFoundException) {
-            E("Name not found$e1")
-        } catch (e: NoSuchAlgorithmException) {
-            E("No such an algorithm$e")
-        } catch (e: Exception) {
-            E("Exception$e")
-        }
-        return key
-    }
+//    fun printKeyHash(context: Activity): String? {
+//        val packageInfo: PackageInfo
+//        var key: String? = null
+//        try {
+////getting application package name, as defined in manifest
+//            val packageName = context.applicationContext.packageName
+//
+////Retriving package info
+//            packageInfo = context.packageManager.getPackageInfo(
+//                packageName,
+//                PackageManager.GET_SIGNATURES
+//            )
+//            E("Package Name=" + context.packageName)
+//            for (signature in packageInfo.signatures) {
+//                val md = MessageDigest.getInstance("SHA")
+//                md.update(signature.toByteArray())
+//                key = String(Base64.encode(md.digest(), 0))
+//                E("Key Hash=$key")
+//            }
+//        } catch (e1: PackageManager.NameNotFoundException) {
+//            E("Name not found$e1")
+//        } catch (e: NoSuchAlgorithmException) {
+//            E("No such an algorithm$e")
+//        } catch (e: Exception) {
+//            E("Exception$e")
+//        }
+//        return key
+//    }
 
     @JvmStatic
     fun I_finish(cx: Context, startActivity: Class<*>?, data: Bundle?) {

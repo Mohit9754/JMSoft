@@ -7,11 +7,12 @@
     android:background="@color/white"
     tools:context=".main.activity.SplashActivity">
 
-    <ImageView
-        android:layout_width="@dimen/_160sdp"
-        android:layout_height="@dimen/_160sdp"
-        android:src="@drawable/logo"
-        android:layout_centerInParent="true"
-        />
+<!--    <ImageView-->
+<!--        android:layout_width="@dimen/_160sdp"-->
+<!--        android:layout_height="@dimen/_160sdp"-->
+<!--        android:src="@drawable/logo"-->
+
+<!--        android:layout_centerInParent="true"-->
+<!--        />-->
 
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.jmsoft.main.fragment
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -19,16 +21,19 @@ import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.Database.UserDataModel
 import com.jmsoft.basic.UtilityTools.Constants
+import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
+import com.jmsoft.basic.UtilityTools.Constants.Companion.updateInSession
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation
 import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.FragmentEditProfileBinding
 import java.util.ArrayList
-import com.jmsoft.basic.UtilityTools.Constants.Companion.userId
+import com.jmsoft.basic.UtilityTools.Constants.Companion.userUUID
 import com.jmsoft.main.activity.DashboardActivity
 import java.util.Locale
 
+@Suppress("LABEL_NAME_CLASH")
 class EditProfileFragment : Fragment(), View.OnClickListener {
 
     lateinit var binding: FragmentEditProfileBinding
@@ -80,25 +85,55 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     }
 
     // Setting the User Details through the Database
-    private fun setUserDetails(userId: Int) {
+    private fun setUserDetails(userUUID: String) {
 
-        val userDataModel = Utils.getUserDetailsThroughUserId(userId)
+        val userDataModel = Utils.getUserDetailsThroughUserUUID(userUUID)
         binding.etFirstName?.setText(userDataModel.firstName)
         binding.etLastName?.setText(userDataModel.lastName)
         binding.etPhoneNumber?.setText(userDataModel.phoneNumber)
         binding.etEmailAddress?.setText(userDataModel.email)
-        binding.etPassword?.setText(userDataModel.password)
+        binding.etPassword?.setText(userDataModel.password?.let { Utils.decodeText(it) })
+    }
+
+    // Set up editor action listener on etFirstName so that after pressing enter it will move etLastName
+    private fun setOnEditorActionListener(){
+
+        // Set up editor action listener for editText1
+        binding.etFirstName?.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                binding.etLastName?.requestFocus() // Move focus to etLastName
+                return@setOnEditorActionListener true
+            }
+            false
+        }
+    }
+
+    // Disable Email and Phone Number if user is not admin
+    private fun disableEmailAndPhoneNumber(){
+
+        if(Utils.GetSession().userType != admin) {
+
+            binding.etPhoneNumber?.isFocusable = false
+            binding.etEmailAddress?.isFocusable = false
+
+        }
     }
 
     private fun init() {
 
-        // getting the userId
-        val userId = arguments?.getInt(userId)
+        // Disable Email and Phone Number if user is not admin
+        disableEmailAndPhoneNumber()
+
+        // Set up editor action listener on etFirstName so that after pressing enter it will move etLastName
+        setOnEditorActionListener()
+
+        // getting the userUUID
+        val userUUID = arguments?.getString(Constants.userUUID)
 
         //if userId is not null and not 0 then we have to update the user details
-        if (userId != null && userId != 0) {
+        if (userUUID != null) {
             // Setting the user details
-            setUserDetails(userId)
+            setUserDetails(userUUID)
         }
 
         //Setting  Click on Save Button
@@ -167,14 +202,15 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
             validation?.CheckValidation(requireActivity(), errorValidationModels)
         if (resultReturn?.aBoolean == true) {
 
-            val userId = arguments?.getInt(userId)
+            val userUUID = arguments?.getString(userUUID)
 
-            //if userId is not null and not 0 then we have to update the user details
-            if (userId != null && userId != 0) {
-                updateUserDetails(userId)
+            //if userUUID is not null , then we have to update the user details
+
+            if (userUUID != null) {
+                updateUserDetails(userUUID)
             }
-            //if userId is 0 then we have to register new user
-            else if (userId == 0) {
+            //Register new user
+            else {
                 registerNewUser()
             }
 
@@ -187,7 +223,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 val animation =
                     AnimationUtils.loadAnimation(requireActivity(), R.anim.top_to_bottom)
                 resultReturn?.errorTextView?.startAnimation(animation)
-//                validation?.EditTextPointer?.requestFocus()
+                validation?.EditTextPointer?.requestFocus()
 
                 val imm =
                     requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -197,24 +233,24 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     }
 
     // Updating the data in the local database
-    private fun updateUserDetails(userId: Int) {
+    private fun updateUserDetails(userUUID: String) {
 
         //this method checks if any user has this phone number
         if (!Utils.isAnyUserHasThisPhoneNumber(
-                binding.etPhoneNumber?.text.toString().trim(), userId
+                binding.etPhoneNumber?.text.toString().trim(), userUUID
             )
         ) {
 
             //this method checks if any user has this email
             if (!Utils.isAnyUserHasThisEmail(
-                    binding.etEmailAddress?.text.toString().trim(),
-                    userId
+                    binding.etEmailAddress?.text.toString().trim().toLowerCase(),
+                    userUUID
                 )
             ) {
 
                 val userDataModel = UserDataModel()
 
-                userDataModel.userId = userId // userId is necessary for updating the details
+                userDataModel.userUUID = userUUID // userUUID is necessary for updating the details
                 userDataModel.firstName = binding.etFirstName?.text.toString().trim()
                 userDataModel.lastName = binding.etLastName?.text.toString().trim()
                 //Store Email in the lower Case letter
@@ -222,14 +258,25 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                     .lowercase(Locale.getDefault())
                 userDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
 
-                userDataModel.password = binding.etPassword?.text.toString().trim()
+                userDataModel.password = Utils.encodeText(binding.etPassword?.text.toString().trim())
 
                 //Update user details in the User Table
                 Utils.updateUserDetails(userDataModel)
                 Utils.T(activity, getString(R.string.updated_successfully))
 
-                //Navigate to user management
-                (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
+                val updateInSession = arguments?.getBoolean(updateInSession)
+
+                if (updateInSession != null){
+
+                    if (updateInSession){
+
+                        //Updating user details in the session table
+                        val userDataModel = Utils.getUserDetailsThroughUserUUID(userUUID)
+                        Utils.insertDataInSessionTable(userDataModel)
+                    }
+                }
+                (context as DashboardActivity).navController?.popBackStack()
+
 
             } else {
                 //Showing Email Already Exist Error
@@ -246,7 +293,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     }
 
     // Showing email and phone number already exist error
-    fun showAlreadyExistError(textView: TextView, msg: String) {
+    private fun showAlreadyExistError(textView: TextView, msg: String) {
 
         textView.visibility = View.VISIBLE
         textView.text = msg
@@ -267,7 +314,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
         else if(v == binding.mcvBackBtn){
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
+            (requireActivity() as DashboardActivity).navController?.popBackStack()
         }
     }
 
@@ -293,10 +340,11 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         if (!Utils.isPhoneNumberExist(binding.etPhoneNumber?.text.toString().trim())) {
 
             //Checks if Email Already Exist
-            if (!Utils.isEmailExist(binding.etEmailAddress?.text.toString().trim())) {
+            if (!Utils.isEmailExist(binding.etEmailAddress?.text.toString().trim().toLowerCase())) {
 
                 val userDataModel = UserDataModel()
 
+                userDataModel.userUUID = Utils.generateUUId() // Generating the UUID
                 userDataModel.userType = Constants.user
                 userDataModel.firstName = binding.etFirstName?.text.toString().trim()
                 userDataModel.lastName = binding.etLastName?.text.toString().trim()
@@ -304,8 +352,8 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 userDataModel.email = binding.etEmailAddress?.text.toString().trim()
                     .lowercase(Locale.getDefault())
                 userDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
-                userDataModel.password = binding.etPassword?.text.toString().trim()
-                userDataModel.profileName = ""
+                userDataModel.password = Utils.encodeText(binding.etPassword?.text.toString().trim())
+                userDataModel.profileUri = ""
 
                 //insert new user in the User Table
                 Utils.insetDataInUserTable(userDataModel)
@@ -320,7 +368,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 Utils.T(activity, getString(R.string.new_user_registered_successfully))
 
                 //Navigate to user management
-                (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
+                (requireActivity() as DashboardActivity).navController?.popBackStack()
 
 
             } else {

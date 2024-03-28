@@ -298,7 +298,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:scaleType="fitXY"
-        android:src="@drawable/img_jewellery_en" />
+        android:src="@drawable/img_jewellery" />
 
 
 </LinearLayout>

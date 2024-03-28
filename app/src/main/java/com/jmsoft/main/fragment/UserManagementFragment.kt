@@ -39,12 +39,15 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
         val userList = Utils.getAllUserDetails()
 
         if (userList.size != 0) {
+            binding.ivNoUser?.visibility = View.GONE
 
-            val userManagementAdapter = UserManagementAdapter(requireActivity(), userList)
+            val userManagementAdapter = UserManagementAdapter(requireActivity(), userList,this)
 
             binding.rvUserList?.layoutManager = GridLayoutManager(requireActivity(), 2) // Span Count is set to 3
             binding.rvUserList?.adapter = userManagementAdapter
 
+        }else{
+            binding.ivNoUser?.visibility = View.VISIBLE
         }
     }
 
@@ -69,7 +72,7 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
 
         else if(v == binding.mcvBackBtn){
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.setting)
+            (requireActivity() as DashboardActivity).navController?.popBackStack()
         }
 
     }
