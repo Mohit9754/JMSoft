@@ -23,11 +23,16 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
-            )
+            )         // Other release configurations
+
+
         }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -37,6 +42,8 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+
 }
 
 kotlin {
