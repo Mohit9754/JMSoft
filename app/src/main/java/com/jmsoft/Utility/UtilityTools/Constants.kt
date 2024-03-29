@@ -5,6 +5,7 @@ import com.google.android.gms.maps.model.LatLng
 
 interface Constants {
     companion object {
+
         const val cameraZoom: Float = 20f
         const val distanceInDegree = 111320.00
         val defaultCoordinates: LatLng = LatLng(9.0820, 8.6753)
