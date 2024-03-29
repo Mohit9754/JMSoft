@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -19,17 +18,79 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvBackBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/stroke_color"
+                app:strokeWidth="1dp">
+
+                <ImageView
+                    android:id="@+id/ivDeviceIcon"
+                    android:layout_width="@dimen/_9sdp"
+                    android:layout_height="@dimen/_9sdp"
+                    android:layout_margin="@dimen/_4sdp"
+                    android:src="@drawable/icon_back_arrow" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="1dp"
+                android:layout_marginVertical="@dimen/_20sdp"
+                app:cardBackgroundColor="@color/light_theme"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:cardElevation="0dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="@dimen/_8sdp">
+
+                    <TextView
+                        android:id="@+id/tvfullName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
+                        android:textColor="@color/black"
+                        android:textSize="11sp" />
+
+                    <ImageView
+                        android:layout_width="@dimen/_11sdp"
+                        android:layout_height="@dimen/_11sdp"
+                        android:layout_marginEnd="@dimen/_4sdp"
+                        android:src="@drawable/icon_edit"
+                        android:layout_alignParentEnd="true"
+                        app:tint="@color/theme" />
+
+                </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/_14sdp"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="@dimen/_43sdp"
                     android:layout_height="@dimen/_43sdp"
+
                     android:background="@drawable/dotted_stroke"
                     android:padding="@dimen/_3sdp">
 
@@ -41,9 +102,9 @@
                         app:cardElevation="0dp">
 
                         <ImageView
+                            android:id="@+id/ivProfile"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:id="@+id/ivProfile"
                             android:scaleType="centerCrop"
                             android:src="@drawable/img_default_profile" />
 
@@ -52,11 +113,11 @@
                 </LinearLayout>
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvEditProfile"
                     android:layout_width="@dimen/_12sdp"
                     android:layout_height="@dimen/_12sdp"
                     android:layout_marginTop="@dimen/_minus7sdp"
                     android:layout_marginBottom="1dp"
-                    android:id="@+id/mcvEditProfile"
                     app:cardCornerRadius="@dimen/_8sdp">
 
                     <LinearLayout
@@ -75,28 +136,20 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_4sdp"
-                android:fontFamily="@font/montserrat_arabic_semibold"
-                android:id="@+id/tvfullName"
-                android:textColor="@color/black"
-                android:textSize="11sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_21sdp"
                 android:orientation="vertical">
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvUserManagement"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="1dp"
                     android:layout_marginBottom="@dimen/_11sdp"
                     app:cardCornerRadius="@dimen/_5sdp"
-                    android:id="@+id/mcvUserManagement"
+                    app:cardElevation="0dp"
                     app:strokeColor="@color/stroke_color"
                     app:strokeWidth="0.7dp">
 
@@ -111,14 +164,15 @@
                             android:layout_marginVertical="@dimen/_4sdp"
                             android:layout_marginStart="@dimen/_5sdp"
                             app:cardBackgroundColor="@color/mcv_background_color"
-                            app:cardCornerRadius="@dimen/_4sdp">
+                            app:cardCornerRadius="@dimen/_4sdp"
+                            app:cardElevation="0dp">
 
                             <ImageView
                                 android:layout_width="@dimen/_9sdp"
                                 android:layout_height="@dimen/_9sdp"
                                 android:layout_marginHorizontal="@dimen/_3sdp"
                                 android:layout_marginVertical="@dimen/_3sdp"
-                                android:src="@drawable/icon_vendors" />
+                                android:src="@drawable/user_management" />
 
                         </com.google.android.material.card.MaterialCardView>
 
@@ -146,11 +200,12 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvVendorsAndCustomers"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="1dp"
                     app:cardCornerRadius="@dimen/_5sdp"
-                    android:id="@+id/mcvVendorsAndCustomers"
+                    app:cardElevation="0dp"
                     app:strokeColor="@color/stroke_color"
                     app:strokeWidth="0.7dp">
 
@@ -165,7 +220,8 @@
                             android:layout_marginVertical="@dimen/_4sdp"
                             android:layout_marginStart="@dimen/_5sdp"
                             app:cardBackgroundColor="@color/mcv_background_color"
-                            app:cardCornerRadius="@dimen/_4sdp">
+                            app:cardCornerRadius="@dimen/_4sdp"
+                            app:cardElevation="0dp">
 
                             <ImageView
                                 android:layout_width="@dimen/_9sdp"
@@ -206,6 +262,7 @@
                     android:layout_marginHorizontal="1dp"
                     android:layout_marginVertical="@dimen/_11sdp"
                     app:cardCornerRadius="@dimen/_5sdp"
+                    app:cardElevation="0dp"
                     app:strokeColor="@color/stroke_color"
                     app:strokeWidth="0.7dp">
 
@@ -220,7 +277,8 @@
                             android:layout_marginVertical="@dimen/_4sdp"
                             android:layout_marginStart="@dimen/_5sdp"
                             app:cardBackgroundColor="@color/mcv_background_color"
-                            app:cardCornerRadius="@dimen/_4sdp">
+                            app:cardCornerRadius="@dimen/_4sdp"
+                            app:cardElevation="0dp">
 
                             <ImageView
                                 android:layout_width="@dimen/_9sdp"
@@ -255,12 +313,13 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvLogOut"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="1dp"
                     app:cardBackgroundColor="@color/light_pink"
                     app:cardCornerRadius="@dimen/_5sdp"
-                    android:id="@+id/mcvLogOut"
+                    app:cardElevation="0dp"
                     app:strokeColor="@color/stroke_color"
                     app:strokeWidth="0.7dp">
 
@@ -275,7 +334,8 @@
                             android:layout_marginVertical="@dimen/_4sdp"
                             android:layout_marginStart="@dimen/_5sdp"
                             app:cardBackgroundColor="@color/dark_pink"
-                            app:cardCornerRadius="@dimen/_4sdp">
+                            app:cardCornerRadius="@dimen/_4sdp"
+                            app:cardElevation="0dp">
 
                             <ImageView
                                 android:layout_width="@dimen/_9sdp"

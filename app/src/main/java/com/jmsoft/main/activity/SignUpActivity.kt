@@ -225,8 +225,8 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
                 val userDataModel = UserDataModel()
 
-                //Checks if User Table Empty
-                userDataModel.userType = if (Utils.isUserTableEmpty()) admin  else user
+                //User will be the admin
+                userDataModel.userType = admin
 
                 //Generating UUID
                 userDataModel.userUUID = Utils.generateUUId()

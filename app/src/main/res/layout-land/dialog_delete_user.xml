@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/_10sdp"
-
     tools:ignore="MissingConstraints,MissingDefaultResource">
 
     <RelativeLayout
@@ -20,7 +19,7 @@
             android:layout_height="@dimen/_100sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/img_logout" />
+            android:src="@drawable/delete_user" />
 
         <TextView
             android:id="@+id/tvLogout"
@@ -43,7 +42,7 @@
             android:textColor="@color/device_text_color"
             android:layout_marginTop="@dimen/_6sdp"
             android:fontFamily="@font/montserrat_arabic_medium"
-            android:text="@string/are_you_sure_you_want_to_delete_the_user"
+            android:text="@string/are_you_sure_you_want_to_delete_this_user_this_action_cannot_be_undone"
             android:textAlignment="center"
             android:textSize="12sp" />
 

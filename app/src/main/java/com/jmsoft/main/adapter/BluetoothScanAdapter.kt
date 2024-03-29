@@ -47,8 +47,6 @@ class BluetoothScanAdapter(
     private val bottomSheetBluetoothScan:BottomSheetDialog
 ) : RecyclerView.Adapter<BluetoothScanAdapter.MyViewHolder>() {
 
-    private var connectedDevice: BluetoothDevice? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemDeviceListBinding.inflate(LayoutInflater.from(context), parent, false)
         return MyViewHolder(view)
@@ -193,10 +191,8 @@ class BluetoothScanAdapter(
             //setting the connected status
             setConnectedStatus()
 
-            connectedDevice = deviceModel.device
-
             // Move the Connected Device to First Position
-          //  moveToFirstPosition()
+            //  moveToFirstPosition()
 
             Utils.E("Connected to device: ${deviceModel.device.name}")
 
@@ -334,7 +330,8 @@ class BluetoothScanAdapter(
                     Utils.T(context, context.getString(R.string.already_connected))
                     //showing connected dialog
                     connectingDialog(deviceModel.device.name)
-//                    onConnectSuccess()
+                    //Dismiss the Bottom Sheet
+                    bottomSheetBluetoothScan.dismiss()
 
                 }
 

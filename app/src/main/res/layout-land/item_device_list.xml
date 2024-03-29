@@ -22,8 +22,8 @@
             android:id="@+id/mcvIconDevice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_3sdp"
             android:layout_marginHorizontal="@dimen/_5sdp"
-            android:layout_marginBottom="@dimen/_5sdp"
             app:cardBackgroundColor="@color/theme"
             app:cardCornerRadius="@dimen/_4sdp"
             app:cardElevation="0dp">
@@ -32,7 +32,8 @@
                 android:id="@+id/ivDeviceIcon"
                 android:layout_width="@dimen/_12sdp"
                 android:layout_height="@dimen/_12sdp"
-                android:layout_margin="@dimen/_3sdp"
+                android:layout_marginHorizontal="@dimen/_3sdp"
+                android:layout_marginVertical="@dimen/_3sdp"
                 android:src="@drawable/icon_scanner" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -122,35 +123,42 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/ivDelete"
-            android:layout_width="@dimen/_18sdp"
-            android:layout_height="@dimen/_18sdp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/_2sdp"
-            android:padding="@dimen/_3sdp"
-            android:src="@drawable/icon_delete" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/mcvReconnect"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_5sdp"
-            android:layout_toStartOf="@id/ivDelete"
-            app:cardBackgroundColor="@color/theme"
-            app:cardCornerRadius="@dimen/_4sdp"
-            app:cardElevation="0dp">
+            android:layout_alignParentEnd="true"
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/ivReconnect"
-                android:layout_width="@dimen/_12sdp"
-                android:layout_height="@dimen/_12sdp"
-                android:layout_marginHorizontal="@dimen/_3sdp"
-                android:layout_marginVertical="@dimen/_3sdp"
-                android:src="@drawable/reconnect"
-                app:tint="@color/white" />
+                android:id="@+id/ivDelete"
+                android:layout_width="@dimen/_18sdp"
+                android:layout_height="@dimen/_18sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/_2sdp"
+                android:padding="@dimen/_3sdp"
+                android:src="@drawable/icon_delete" />
 
-        </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvReconnect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_toStartOf="@id/ivDelete"
+                app:cardBackgroundColor="@color/theme"
+                app:cardCornerRadius="@dimen/_4sdp"
+                app:cardElevation="0dp">
+
+                <ImageView
+                    android:id="@+id/ivReconnect"
+                    android:layout_width="@dimen/_12sdp"
+                    android:layout_height="@dimen/_12sdp"
+                    android:layout_marginHorizontal="@dimen/_3sdp"
+                    android:layout_marginVertical="@dimen/_3sdp"
+                    android:src="@drawable/reconnect"
+                    app:tint="@color/white" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

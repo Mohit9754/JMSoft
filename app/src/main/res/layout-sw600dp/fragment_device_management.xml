@@ -12,7 +12,7 @@
         android:id="@+id/rlNoDevice"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcvNoDeviceBackBtn"
@@ -92,7 +92,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/_28sdp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
