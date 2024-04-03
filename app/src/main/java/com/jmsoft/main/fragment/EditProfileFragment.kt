@@ -116,10 +116,17 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
             binding.etPhoneNumber?.isFocusable = false
             binding.etEmailAddress?.isFocusable = false
 
+            //Set Click on Phone number and Email Address
+            binding.etPhoneNumber?.setOnClickListener(this)
+            binding.etEmailAddress?.setOnClickListener(this)
+
         }
     }
 
     private fun init() {
+
+        //set Password for  current Language
+        Utils.toSetPasswordAsLanguage(binding.etPassword,requireActivity())
 
         // Disable Email and Phone Number if user is not admin
         disableEmailAndPhoneNumber()
@@ -130,7 +137,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         // getting the userUUID
         val userUUID = arguments?.getString(Constants.userUUID)
 
-        //if userId is not null and not 0 then we have to update the user details
+        //if userId is not null then we have to update the user details
         if (userUUID != null) {
             // Setting the user details
             setUserDetails(userUUID)
@@ -243,7 +250,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
             //this method checks if any user has this email
             if (!Utils.isAnyUserHasThisEmail(
-                    binding.etEmailAddress?.text.toString().trim().toLowerCase(),
+                    binding.etEmailAddress?.text.toString().trim().lowercase(),
                     userUUID
                 )
             ) {
@@ -255,7 +262,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 userDataModel.lastName = binding.etLastName?.text.toString().trim()
                 //Store Email in the lower Case letter
                 userDataModel.email = binding.etEmailAddress?.text.toString().trim()
-                    .lowercase(Locale.getDefault())
+                    .lowercase()
                 userDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
 
                 userDataModel.password = Utils.encodeText(binding.etPassword?.text.toString().trim())
@@ -271,10 +278,11 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                     if (updateInSession){
 
                         //Updating user details in the session table
-                        val userDataModel = Utils.getUserDetailsThroughUserUUID(userUUID)
-                        Utils.insertDataInSessionTable(userDataModel)
+                        val updatedUserData = Utils.getUserDetailsThroughUserUUID(userUUID)
+                        Utils.insertDataInSessionTable(updatedUserData)
                     }
                 }
+                //Back to Setting fragment
                 (context as DashboardActivity).navController?.popBackStack()
 
 
@@ -312,9 +320,18 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
             showAndHidePassword(binding.etPassword!!, binding.ivPasswordVisibility!!)
         }
 
+        //Back Button pressed
         else if(v == binding.mcvBackBtn){
 
             (requireActivity() as DashboardActivity).navController?.popBackStack()
+        }
+
+        else if (v == binding.etPhoneNumber){
+            Utils.T(requireActivity(), getString(R.string.only_admin_can_edit_phone_number))
+        }
+
+        else if (v == binding.etEmailAddress){
+            Utils.T(requireActivity(), getString(R.string.only_admin_can_edit_email_address))
         }
     }
 
@@ -340,7 +357,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         if (!Utils.isPhoneNumberExist(binding.etPhoneNumber?.text.toString().trim())) {
 
             //Checks if Email Already Exist
-            if (!Utils.isEmailExist(binding.etEmailAddress?.text.toString().trim().toLowerCase())) {
+            if (!Utils.isEmailExist(binding.etEmailAddress?.text.toString().trim().lowercase())) {
 
                 val userDataModel = UserDataModel()
 
@@ -350,7 +367,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 userDataModel.lastName = binding.etLastName?.text.toString().trim()
                 //Store Email in the lower Case letter
                 userDataModel.email = binding.etEmailAddress?.text.toString().trim()
-                    .lowercase(Locale.getDefault())
+                    .lowercase()
                 userDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
                 userDataModel.password = Utils.encodeText(binding.etPassword?.text.toString().trim())
                 userDataModel.profileUri = ""

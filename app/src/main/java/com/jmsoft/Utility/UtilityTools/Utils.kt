@@ -50,6 +50,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.model.LatLng
@@ -57,7 +58,11 @@ import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.loadingButton.LoadingButton
 import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.Database.UserDataModel
+import com.jmsoft.basic.UtilityTools.Constants.Companion.CONFIG_FILE
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
+import com.jmsoft.basic.UtilityTools.Constants.Companion.email
+import com.jmsoft.basic.UtilityTools.Constants.Companion.name
+import com.jmsoft.basic.UtilityTools.Constants.Companion.password
 import com.jmsoft.databinding.AlertdialogBinding
 import com.jmsoft.databinding.ItemCustomToastBinding
 import com.jmsoft.main.model.DeviceModel
@@ -76,8 +81,49 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.random.Random
 
-
 object Utils {
+
+    //Getting Name of the Admin from the config.properties file
+    fun getName(context: Context): String? {
+        val properties = Properties()
+        return try {
+            val inputStream = context.assets.open(CONFIG_FILE)
+            properties.load(inputStream)
+            inputStream.close()
+            properties.getProperty(name)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    //Getting Password of the Admin from the config.properties file
+    fun getPassword(context: Context): String? {
+        val properties = Properties()
+        return try {
+            val inputStream = context.assets.open(CONFIG_FILE)
+            properties.load(inputStream)
+            inputStream.close()
+            properties.getProperty(password)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    //Getting Email of the Admin from the config.properties file
+    fun getEmail(context: Context): String? {
+        val properties = Properties()
+        return try {
+            val inputStream = context.assets.open(CONFIG_FILE)
+            properties.load(inputStream)
+            inputStream.close()
+            properties.getProperty(email)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
 
 //    generate UUIDs (Universally Unique Identifiers) using the UUID
     fun generateUUId(): String {
@@ -131,13 +177,14 @@ object Utils {
         val file = File(dir, imageFileName)
         return file.delete()
     }
-
     fun setLocale(context: Context, languageCode: String) {
         val locale = Locale(languageCode)
         Locale.setDefault(locale)
         val configuration = context.resources.configuration
         configuration.setLocale(locale)
         context.resources.updateConfiguration(configuration, context.resources.displayMetrics)
+
+//        context.createConfigurationContext(configuration)
 
         // Recreate the current activity
         if (context is Activity) {
@@ -1026,13 +1073,15 @@ object Utils {
         toast.show()
     }
     // Set input type dynamically based on locale
-    fun toSetPasswordAsLanguage(etPassword:EditText?){
+    fun toSetPasswordAsLanguage(etPassword:EditText?,context: Context){
         val currentLocale = getCurrentLanguage()
-        if (currentLocale == Constants.arabic) {
+        if (currentLocale == arabic) {
             etPassword?.inputType = InputType.TYPE_CLASS_TEXT
         } else {
             etPassword?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
+        //Setting font family
+        etPassword?.typeface = ResourcesCompat.getFont(context, R.font.montserrat_arabic_medium)
     }
 
     fun CustomeToast(c: Context?, msg: String?) {

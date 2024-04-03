@@ -90,7 +90,7 @@ class Validation {
                         "(?=.*[a-z])" +  //at least 1 lower case letter
                         "(?=.*[A-Z])" +  //at least 1 upper case letter
                         "(?=.*[a-zA-Z])" +  //any letter
-                        "(?=.*[@#$%^&+=])" +  //at least 1 special character
+                        "(?=.*[@#$%^&+=!()\\-_*\\[\\]{}|\\\\;:'\",<.>/?])" + // at least 1 special character
                         "(?=\\S+$)" +  //no white spaces
                         ".{8,}" +  //at least 8 characters
                         "$"
@@ -158,7 +158,7 @@ class Validation {
      * @return true/false
      */
     private fun isValidPhoneNumber(context: Context, editText: EditText?): Boolean {
-        return if (editText?.text == null || TextUtils.isEmpty(editText?.text)) {
+        return if (editText?.text == null || TextUtils.isEmpty(editText.text)) {
             errorMessage = context.getString(R.string.empty_error)
             EditTextPointer = editText
             false
@@ -238,7 +238,7 @@ class Validation {
      * @return true/false
      */
     private fun isPasswordMatch(context: Context, pass: EditText?, confirm_pass: EditText?): Boolean {
-        return if (pass?.text == null || TextUtils.isEmpty(pass?.text)) {
+        return if (pass?.text == null || TextUtils.isEmpty(pass.text)) {
             errorMessage = context.getString(R.string.empty_error)
             EditTextPointer = pass
             false
@@ -264,7 +264,7 @@ class Validation {
      * @return true/false
      */
     private fun isValidAmount(context: Context, editText: EditText?): Boolean {
-        return if (editText?.text == null || TextUtils.isEmpty(editText?.text)) {
+        return if (editText?.text == null || TextUtils.isEmpty(editText.text)) {
             errorMessage = context.getString(R.string.empty_error)
             EditTextPointer = editText
             false
@@ -290,7 +290,7 @@ class Validation {
      * @return true/false
      */
     private fun isValidAadhaarNumber(context: Context, editText: EditText?): Boolean {
-        return if (editText?.text == null || TextUtils.isEmpty(editText?.text)) {
+        return if (editText?.text == null || TextUtils.isEmpty(editText.text)) {
             errorMessage = context.getString(R.string.empty_error)
             EditTextPointer = editText
             false

@@ -5,14 +5,18 @@ import android.bluetooth.BluetoothA2dp
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothDevice.ACTION_FOUND
+import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
 import android.bluetooth.BluetoothSocket
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
+import android.os.Bundle
 import android.provider.DocumentsContract.Root
 import android.view.View
+import androidx.core.content.IntentCompat
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.main.`interface`.BluetoothOffCallback
@@ -50,8 +54,9 @@ object BluetoothUtils {
             override fun onReceive(context: Context, intent: Intent) {
                 val action = intent.action
                 if (BluetoothDevice.ACTION_BOND_STATE_CHANGED == action) {
-                    val device =
-                        intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+
+                    val device = IntentCompat.getParcelableExtra(intent, BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
+
                     val bondState =
                         intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)
                     if (device != null && bondState == BluetoothDevice.BOND_BONDED) {
@@ -135,12 +140,12 @@ object BluetoothUtils {
 
     //Checks if Bluetooth is on or off
     fun isEnableBluetooth(
+        context: Context
     ): Boolean {
 
-        val bluetoothAdapter =
-            BluetoothAdapter.getDefaultAdapter() ?: // Device doesn't support Bluetooth
-            // Handle this case accordingly
-            return false
+        val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val bluetoothAdapter = bluetoothManager.adapter ?: // Device doesn't support Bluetooth
+        return  false
 
         return bluetoothAdapter.isEnabled
     }
@@ -159,23 +164,22 @@ object BluetoothUtils {
 
     // Register BroadcastReceiver for Bluetooth device discovery
     @SuppressLint("MissingPermission")
-    fun registerBroadCastReceiver(contexts: Context, deviceFoundCallback: DeviceFoundCallback) {
+    fun registerBroadCastReceiver(context: Context, deviceFoundCallback: DeviceFoundCallback) {
 
-        // Create a BroadcastReceiver for ACTION_FOUND.
+        // Create a Broadcast Receiver for ACTION_FOUND.
         receiver = object : BroadcastReceiver() {
             @SuppressLint("NotifyDataSetChanged", "MissingPermission", "SuspiciousIndentation")
             override fun onReceive(context: Context, intent: Intent) {
                 val action = intent.action
 
                 if (ACTION_FOUND == action) {
-                    val device =
-                        intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+
+                    val device = IntentCompat.getParcelableExtra(intent, BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
 
                     if (device != null && device.name != null) {
+                    deviceFoundCallback.onDeviceFound(device)
 
-                        deviceFoundCallback.onDeviceFound(device)
-
-                    }
+                  }
                 }
             }
         }
@@ -183,9 +187,9 @@ object BluetoothUtils {
         val filter = IntentFilter(ACTION_FOUND)
 
         //Register Receiver
-        contexts.registerReceiver(receiver, filter)
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        bluetoothAdapter.startDiscovery()
+        context.registerReceiver(receiver, filter)
+        val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        bluetoothManager.adapter.startDiscovery()
     }
 
     //Unregister Broadcast Receiver
@@ -228,8 +232,11 @@ object BluetoothUtils {
     }
 
     //get all connected Device
-    fun getConnectedDevice(context: Context?, callback: ConnectedDeviceCallback) {
-        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+    fun getConnectedDevice(context: Context, callback: ConnectedDeviceCallback) {
+
+        val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val bluetoothAdapter = bluetoothManager.adapter
+
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
 //            callback.onError("Bluetooth is either not supported or disabled")
             return

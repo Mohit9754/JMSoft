@@ -4,8 +4,8 @@ import android.content.Context
 import com.jmsoft.basic.Database.UserDataModel.Companion.CreateTable
 import com.jmsoft.basic.Database.UserDataModel.Companion.dropTable
 import android.database.sqlite.SQLiteDatabase.CursorFactory
-import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 
 /**
  * Created by Hritik on 2/10/2023.
@@ -37,6 +37,7 @@ class DataManager
     }
 
     companion object {
+
         const val DATABASE_VERSION = 4
         const val DATABASE_NAME = "JM_Soft"
     }

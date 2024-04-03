@@ -38,6 +38,8 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
 
         val userList = Utils.getAllUserDetails()
 
+        Utils.E("##################### -> ${userList.size}")
+
         if (userList.size != 0) {
             binding.ivNoUser?.visibility = View.GONE
 

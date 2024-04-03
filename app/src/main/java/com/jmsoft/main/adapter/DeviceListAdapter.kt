@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.os.CountDownTimer
@@ -45,6 +46,9 @@ class DeviceListAdapter(
 
     ) : RecyclerView.Adapter<DeviceListAdapter.MyViewHolder>() {
 
+    //Bluetooth Manager for getting adapter
+    val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemDeviceListBinding.inflate(LayoutInflater.from(context), parent, false)
         return MyViewHolder(view)
@@ -56,7 +60,6 @@ class DeviceListAdapter(
 
         holder.bind(deviceList[position], position)
     }
-
 
     inner class MyViewHolder(private var binding: ItemDeviceListBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
@@ -76,7 +79,8 @@ class DeviceListAdapter(
             this.position = position
 
             //Getting device through MAC Address so that we can reconnect it.
-            device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceModel.deviceAddress)
+            device = bluetoothManager.adapter.getRemoteDevice(deviceModel.deviceAddress)
+//            device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceModel.deviceAddress)
 
             //Setting Device Icon And Device Type
             setDeviceIcon()
@@ -196,7 +200,7 @@ class DeviceListAdapter(
 
             //UnPair the device
             BluetoothUtils.unpairDevice(device)
-//
+
             val countDownTimer = object : CountDownTimer(2000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
                     // This method will be called every 1 second (1000 milliseconds) until the countdown is finished

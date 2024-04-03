@@ -20,10 +20,12 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginBottom="@dimen/_4sdp"
-            android:orientation="vertical">
+            android:layout_marginEnd="@dimen/_40sdp"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:orientation="vertical"
+            tools:ignore="RelativeOverlap">
 
             <TextView
                 android:id="@+id/tvUserName"
@@ -60,15 +62,15 @@
             android:layout_height="@dimen/_14sdp"
             android:layout_alignParentEnd="true"
             android:id="@+id/ivDelete"
-            android:layout_marginTop="@dimen/_1sdp"
-            android:layout_marginEnd="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginEnd="@dimen/_3sdp"
             android:padding="@dimen/_2sdp"
             android:src="@drawable/icon_delete" />
 
         <ImageView
             android:layout_width="@dimen/_14sdp"
             android:layout_height="@dimen/_14sdp"
-            android:layout_marginTop="@dimen/_1sdp"
+            android:layout_marginTop="@dimen/_2sdp"
             android:id="@+id/ivEditProfile"
             android:layout_toStartOf="@+id/ivDelete"
             android:padding="@dimen/_2sdp"

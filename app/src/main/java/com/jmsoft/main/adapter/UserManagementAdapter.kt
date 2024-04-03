@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.basic.Database.UserDataModel
+import com.jmsoft.basic.UtilityTools.Constants.Companion.Default_Country_Code
+import com.jmsoft.basic.UtilityTools.Constants.Companion.Default_Country_Region
+import com.jmsoft.basic.UtilityTools.Constants.Companion.defaultCoordinates
 import com.jmsoft.basic.UtilityTools.Constants.Companion.userUUID
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemUserManagementBinding
@@ -114,8 +117,9 @@ class UserManagementAdapter(
         }
 
         //Setting Phone Number of the User
+        @SuppressLint("SetTextI18n")
         private fun setPhoneNumber(){
-            binding.tvPhoneNumber.text = "+91 ${userDataModel.phoneNumber}"
+            binding.tvPhoneNumber.text = "$Default_Country_Code ${userDataModel.phoneNumber}"
         }
 
         //Handles All the Clicks

@@ -70,7 +70,7 @@
     <string name="_123456">مائة وثلاثة وعشرون ألف وأربعة مائة وستة وخمسون</string>
     <string name="rfid_tag_printer">طابعة علامات RFID</string>
     <string name="ticket_printer">طابعة التذاكر</string>
-    <string name="conform_password">مطابقة كلمة المرور</string>
+    <string name="confirm_password">تأكيد كلمة المرور</string>
     <string name="available_devices">الأجهزة المتاحة</string>
     <string name="connected">متصل</string>
     <string name="take_photo">تصوير</string>
@@ -111,5 +111,7 @@
     <string name="new_user_registered_successfully">تم تسجيل مستخدم جديد بنجاح</string>
     <string name="paired_failed">فشل الاقتران</string>
     <string name="are_you_sure_you_want_to_delete_this_user_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="only_admin_can_edit_phone_number">يمكن للمسؤول فقط تعديل رقم الهاتف</string>
+    <string name="only_admin_can_edit_email_address">يمكن للمسؤول فقط تعديل عنوان البريد الإلكتروني</string>
 
 </resources>
