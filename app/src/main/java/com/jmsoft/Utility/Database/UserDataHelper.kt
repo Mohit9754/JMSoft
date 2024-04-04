@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.user
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.UtilityTools.Utils.E
@@ -28,6 +29,8 @@ class UserDataHelper(cx: Context) {
         dm = DataManager(cx, DataManager.DATABASE_NAME, null, DataManager.DATABASE_VERSION)
     }
 
+
+
     /**
      * open db
      */
@@ -47,6 +50,23 @@ class UserDataHelper(cx: Context) {
      */
     fun read() {
         db = dm.readableDatabase
+    }
+
+    //Inserting the Admin in the user table at the time of table creation
+    fun insertAdmin(db:SQLiteDatabase){
+
+        val adminUserValues = ContentValues().apply {
+
+            put(UserDataModel.Key_userType, Constants.admin)
+            put(UserDataModel.Key_userUUID, Utils.generateUUId())
+            put(UserDataModel.Key_firstName, Utils.getName(cx))
+            put(UserDataModel.Key_lastName, Utils.getName(cx))
+            put(UserDataModel.Key_email, Utils.getEmail(cx)?.lowercase())
+            put(UserDataModel.Key_phoneNumber, "")
+            put(UserDataModel.Key_profileUri, "")
+            put(UserDataModel.Key_password, Utils.encodeText(Utils.getPassword(cx).toString()))
+        }
+        db.insert(UserDataModel.TABLE_NAME_USER, null, adminUserValues)
     }
 
     /**

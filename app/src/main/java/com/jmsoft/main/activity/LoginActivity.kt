@@ -1,34 +1,22 @@
 package com.jmsoft.main.activity
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.bluetooth.BluetoothAdapter
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
@@ -38,15 +26,14 @@ import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation
 import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.ActivityLoginBinding
-import java.util.Locale
 
 /**
  * Login Activity
  *
  *  Validating the login details
- *  Store the login respone to local database
+ *  Store the login response to local database
  */
-class LoginActivity : AppCompatActivity(), View.OnClickListener {
+class LoginActivity : BaseActivity(), View.OnClickListener {
 
     private val activity: Activity = this@LoginActivity
 
@@ -56,33 +43,15 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private var isPasswordVisible = false
 
     @RequiresApi(Build.VERSION_CODES.S)
-    private val permissions = arrayOf(
-        Manifest.permission.BLUETOOTH,
-        Manifest.permission.BLUETOOTH_CONNECT,
-        Manifest.permission.BLUETOOTH_SCAN,
-        Manifest.permission.BLUETOOTH_ADMIN
-    )
-    private val permissionsRequestCode = 100 // You can use any value for the request code
-
-
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
 
         // Setting the savedInstanceState Data when language switches
-        binding.etEmailAddress!!.setText(savedInstanceState?.getString(email) ?: "")
-        binding.etPassword!!.setText(savedInstanceState?.getString(password) ?: "")
+//        binding.etEmailAddress?.setText(savedInstanceState?.getString(email) ?: "")
+//        binding.etPassword?.setText(savedInstanceState?.getString(password) ?: "")
 
         setContentView(binding.root)
-
-//        binding.btnBluetoothOn?.setOnClickListener {
-//            if (hasBluetoothPermissions()) {
-//                enableBluetooth(activity, 1000)
-//            } else {
-//                requestPermissions()
-//            }
-//        }
 
         //set the Clicks And initialization
         init()
@@ -123,23 +92,30 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private fun init() {
 
         //Set Image for current Language
-        Utils.setImageForCurrentLanguage(binding.ivJewellery!!)
+        binding.ivJewellery?.let { Utils.setImageForCurrentLanguage(it) }
 
         // Setting the Selector on Material Card View when edittext has focus
         binding.ivJewellery?.setImageDrawable(null)
         binding.ivJewellery?.setImageResource(R.drawable.img_jewellery)
 
-        setFocusChangeLis(binding.etEmailAddress!!, binding.mcvEmailAddress!!)
-        setFocusChangeLis(binding.etPassword!!, binding.mcvPassword!!)
+        binding.etEmailAddress?.let { binding.mcvEmailAddress?.let { it1 ->
+            setFocusChangeLis(it,
+                it1
+            )
+        } }
+        binding.etPassword?.let { binding.mcvPassword?.let { it1 -> setFocusChangeLis(it, it1) } }
 
         //set Password for  current Language
-        Utils.toSetPasswordAsLanguage(binding.etPassword)
-
+        Utils.toSetPasswordAsLanguage(binding.etPassword,activity)
 
         // Removing the error when text Entered
-        setTextChangeLis(binding.etEmailAddress!!, binding.tvEmailAddressError!!)
+        binding.etEmailAddress?.let { binding.tvEmailAddressError?.let { it1 ->
+            setTextChangeLis(it,
+                it1
+            )
+        } }
 
-        setTextChangeLis(binding.etPassword!!, binding.tvPasswordError!!)
+        binding.etPassword?.let { binding.tvPasswordError?.let { it1 -> setTextChangeLis(it, it1) } }
 
         //Set Click on login Button
         binding.mcvLogin?.setOnClickListener(this)
@@ -153,80 +129,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         //Set Click on password Visibility icon
         binding.ivPasswordVisibility?.setOnClickListener(this)
 
-    }
-
-    private var bluetoothIntent: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-
-            }
-        }
-
-    private fun enableBluetooth(activity: Activity, requestCode: Int) {
-        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        if (bluetoothAdapter == null) {
-            // Device doesn't support Bluetooth
-            // Handle this case accordingly
-            return
-        }
-
-        if (!bluetoothAdapter.isEnabled) {
-            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            bluetoothIntent.launch(enableBtIntent)
-        } else {
-
-            // Bluetooth is already enabled
-            // You can perform further actions here if needed
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    private fun requestPermissions() {
-        ActivityCompat.requestPermissions(this, permissions, permissionsRequestCode)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray,
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == permissionsRequestCode) {
-            // Check if all permissions are granted
-            var allPermissionsGranted = true
-            for (result in grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    allPermissionsGranted = false
-                    break
-                }
-            }
-            if (allPermissionsGranted) {
-                // All permissions are granted, proceed with your logic
-                // For example, start Bluetooth functionality
-                enableBluetooth(activity, 1000)
-            } else {
-                Utils.T(activity, "Please allow the Permission To connect with your Device")
-                // Permissions are not granted, handle the scenario
-                // For example, show a message to the user or disable Bluetooth functionality
-            }
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    fun Context.hasBluetoothPermissions(): Boolean {
-        val bluetoothPermission =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH)
-        val bluetoothAdminPermission =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN)
-        val bluetoothScanPermission =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
-        val bluetoothConnectPermission =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
-
-        return bluetoothPermission == PackageManager.PERMISSION_GRANTED &&
-                bluetoothAdminPermission == PackageManager.PERMISSION_GRANTED &&
-                bluetoothScanPermission == PackageManager.PERMISSION_GRANTED &&
-                bluetoothConnectPermission == PackageManager.PERMISSION_GRANTED
     }
 
     //Validating Login details
@@ -255,14 +157,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
             //Check if user is valid
             if (Utils.isValidUser(
-                    binding.etEmailAddress?.text.toString().trim().lowercase(Locale.getDefault()),
+                    binding.etEmailAddress?.text.toString().trim().lowercase(),
                     binding.etPassword?.text.toString().trim()
                 )
             ) {
 
                 // Getting User Details through email and password
                 val userDataModel = Utils.getUserThroughEmailAndPassword(
-                    binding.etEmailAddress?.text.toString().trim().lowercase(Locale.getDefault()),
+                    binding.etEmailAddress?.text.toString().trim().lowercase(),
                     binding.etPassword?.text.toString().trim()
                 )
                 //Store User Details in the Session Table
@@ -345,22 +247,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         super.onSaveInstanceState(outState)
     }
 
-    // Close the Keyboard when you touch the Screen
-    // Close the Keyboard when you touch the Screen
-    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            // remove focus from edit text on click outside
-            val v = currentFocus
-            if (v is EditText) {
-                val outRect = Rect()
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    v.clearFocus()
-                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
-                }
-            }
-        }
-        return super.dispatchTouchEvent(event)
-    }
+
 
 }

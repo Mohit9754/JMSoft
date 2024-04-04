@@ -107,7 +107,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
             }
         }
 
-    //Camera Launcer
+    //Camera Launcher
     private var cameraActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->

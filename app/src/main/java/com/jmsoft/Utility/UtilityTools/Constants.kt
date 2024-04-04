@@ -67,8 +67,8 @@ interface Constants {
 
         // Language
         const val blank = ""
-        const val Default_Country_Code = "+91"
-        const val Default_Country_Region = "IN"
+        const val Default_Country_Code = "+212"
+        const val Default_Country_Region = "MA"
         const val Nigeria_Country_Region = "NG"
         const val english = "en"
         const val arabic = "ar"
@@ -213,12 +213,14 @@ interface Constants {
         const val rfid_Scanner = "RFID scanner"
         const val rfid_tag_Printer = "RFID tag printer"
         const val ticket_Printer = "Ticket printer"
+        const val ENCRYPTION_KEY = "Ticket printer"
+        const val CONFIG_FILE = "config.properties"
 
 
          // values have to be globally unique
-        const val INTENT_ACTION_DISCONNECT: String = BuildConfig.APPLICATION_ID + ".Disconnect"
-        const val NOTIFICATION_CHANNEL: String = BuildConfig.APPLICATION_ID + ".Channel"
-        const val INTENT_CLASS_MAIN_ACTIVITY: String = BuildConfig.APPLICATION_ID + ".MainActivity"
+//        const val INTENT_ACTION_DISCONNECT: String = BuildConfig.APPLICATION_ID + ".Disconnect"
+//        const val NOTIFICATION_CHANNEL: String = BuildConfig.APPLICATION_ID + ".Channel"
+//        const val INTENT_CLASS_MAIN_ACTIVITY: String = BuildConfig.APPLICATION_ID + ".MainActivity"
 
         // values have to be unique within each app
         const val NOTIFY_MANAGER_START_FOREGROUND_SERVICE = 1001

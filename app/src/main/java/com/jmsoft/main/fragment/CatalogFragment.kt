@@ -60,8 +60,4 @@ class CatalogFragment : Fragment(), View.OnClickListener {
 
     }
 
-
-
-
-
 }

@@ -41,6 +41,7 @@ import com.jmsoft.basic.validation.Validation
 import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.ActivitySignUpBinding
 import java.util.ArrayList
+import java.util.Locale
 
 /**
  * SignUp Activity
@@ -50,7 +51,7 @@ import java.util.ArrayList
  *  intent to login activity
  */
 
-class SignUpActivity : AppCompatActivity(), View.OnClickListener {
+class SignUpActivity : BaseActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivitySignUpBinding
     private val activity = this@SignUpActivity
@@ -125,8 +126,8 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
         //Set Image for current Language
         Utils.setImageForCurrentLanguage(binding.ivJewellery!!)
-        Utils.toSetPasswordAsLanguage(binding.etPassword)
-        Utils.toSetPasswordAsLanguage(binding.etConformPassword)
+        Utils.toSetPasswordAsLanguage(binding.etPassword,activity)
+        Utils.toSetPasswordAsLanguage(binding.etConformPassword,activity)
         //Setting  Click on SignUp Button
         binding.mcvSignUp?.setOnClickListener(activity)
 
@@ -221,7 +222,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         if (!Utils.isPhoneNumberExist(binding.etPhoneNumber?.text.toString().trim())){
 
             //Checks if Email Already Exist
-            if (!Utils.isEmailExist(binding.etEmailAddress?.text.toString().trim().toLowerCase())){
+            if (!Utils.isEmailExist(binding.etEmailAddress?.text.toString().trim().lowercase())){
 
                 val userDataModel = UserDataModel()
 
@@ -234,7 +235,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
                 userDataModel.firstName = binding.etFirstName?.text.toString().trim()
                 userDataModel.lastName = binding.etLastName?.text.toString().trim()
                 //Store Email in the lower Case letter
-                userDataModel.email = binding.etEmailAddress?.text.toString().trim().toLowerCase()
+                userDataModel.email = binding.etEmailAddress?.text.toString().trim().lowercase()
                 userDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
                 userDataModel.profileUri = ""
 
@@ -242,6 +243,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
                 //Insert Data in the User Table
                 Utils.insetDataInUserTable(userDataModel)
+
                 //Intent to Login Activity
                 Utils.T(activity, getString(R.string.signup_successfully))
 
@@ -346,24 +348,5 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
         super.onSaveInstanceState(outState)
     }
-
-
-    // Close the Keyboard when you touch the Screen
-    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            // remove focus from edit text on click outside
-            val v = currentFocus
-            if (v is EditText) {
-                val outRect = Rect()
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    v.clearFocus()
-                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
-                }
-            }
-        }
-        return super.dispatchTouchEvent(event)
-    }
-
 
 }

@@ -70,7 +70,7 @@
     <string name="add_device">Add Device</string>
     <string name="rfid_tag_printer">RFID tag printer</string>
     <string name="ticket_printer">Ticket printer</string>
-    <string name="conform_password">Conform Password</string>
+    <string name="confirm_password">Confirm Password</string>
     <string name="available_devices">Available Devices</string>
     <string name="connected">Connected</string>
     <string name="take_photo">Take photo</string>
@@ -111,5 +111,8 @@
     <string name="new_user_registered_successfully">New User Registered Successfully</string>
     <string name="paired_failed">Paired Failed</string>
     <string name="are_you_sure_you_want_to_delete_this_user_this_action_cannot_be_undone">Are you sure you want to delete this user ? This action cannot be undone.</string>
+    <string name="only_admin_can_edit_phone_number">Only Admin can edit Phone Number</string>
+    <string name="only_admin_can_edit_email_address">Only Admin can edit Email Address</string>
+
 
 </resources>

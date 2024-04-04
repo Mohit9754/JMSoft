@@ -11,7 +11,7 @@ import com.jmsoft.databinding.ItemCatalogBinding
 /**
  * Catalog Adapter
  *
- * Showing the catlog details
+ * Showing the catalog details
  *
  */
 

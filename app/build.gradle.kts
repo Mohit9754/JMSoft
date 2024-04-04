@@ -24,12 +24,15 @@ android {
         release {
             isMinifyEnabled = false
 
+            debug {
+
+                isDebuggable = true
+            }
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )         // Other release configurations
-
 
         }
 
@@ -42,7 +45,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
-
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 
 }
 
@@ -58,6 +63,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+    implementation("androidx.activity:activity:1.8.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test.ext:junit-ktx:1.1.5")
@@ -68,12 +74,13 @@ dependencies {
     implementation("com.intuit.ssp:ssp-android:1.1.0")
     implementation("com.intuit.sdp:sdp-android:1.1.0")
     //FireBase
-    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     // Firebase Realtime Database
     implementation("com.google.firebase:firebase-database:20.3.1")
+
     //Validation For Phone Number
     implementation("io.michaelrocks:libphonenumber-android:8.12.49")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")

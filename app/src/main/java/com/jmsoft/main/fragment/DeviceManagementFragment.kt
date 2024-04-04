@@ -146,9 +146,11 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
         }
     }
+
+    //Set the Status of the connected device
     private fun  setDeviceStatus() {
 
-        BluetoothUtils.getConnectedDevice(context, object : ConnectedDeviceCallback {
+        BluetoothUtils.getConnectedDevice(requireActivity(), object : ConnectedDeviceCallback {
 
             @SuppressLint("NotifyDataSetChanged")
             override fun onDeviceFound(device: ArrayList<BluetoothDevice>) {
@@ -202,7 +204,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
                     }
                 })
 
-            if (BluetoothUtils.isEnableBluetooth()) {
+            if (BluetoothUtils.isEnableBluetooth(requireActivity())) {
 
                 //if Add device clicked
                 if (isAddDeviceClicked){
