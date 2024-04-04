@@ -84,7 +84,8 @@ class Validation {
             EditTextPointer = editText
             false
         } else {
-            val p = Pattern.compile(
+            true
+           /* val p = Pattern.compile(
                 "^" +
                         "(?=.*[0-9])" +  //at least 1 digit
                         "(?=.*[a-z])" +  //at least 1 lower case letter
@@ -103,7 +104,7 @@ class Validation {
                 EditTextPointer = editText
                 errorMessage = context.getString(R.string.passwordStrong)
                 false
-            }
+            }*/
         }
     }
 
