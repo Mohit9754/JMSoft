@@ -1,6 +1,7 @@
 package com.jmsoft.main.adapter
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +27,7 @@ import okio.Utf8
 
 class ProductImageAdapter(
     private val context: Context,
-    private val productImageList: ArrayList<Int>,
+    private val productImageList: ArrayList<Bitmap>,
     private val imageProduct: ImageView,
     private val llLeftBtn:LinearLayout,
     private val llRightBtn:LinearLayout
@@ -45,17 +46,21 @@ class ProductImageAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(productImageList[position],position)
+        Utils.E("${productImageList.size}")
+
     }
 
     inner class MyViewHolder(private val binding: ItemProductImageBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        private var image: Int = 0
+        private lateinit var image: Bitmap
         private var position = -1
-        fun bind(image: Int,position: Int) {
+        fun bind(image: Bitmap,position: Int) {
 
             this.image = image
             this.position = position
+
+            Utils.E("$position")
 
             //Set the Image product
             setImage()
@@ -74,7 +79,7 @@ class ProductImageAdapter(
         //Set the Image product
         private fun setImage() {
 
-            binding.ivProduct.setImageResource(image)
+            binding.ivProduct.setImageBitmap(image)
         }
 
         //Handles All the Clicks
@@ -82,7 +87,7 @@ class ProductImageAdapter(
 
             //Set Click on Product Image
             if (v == binding.mcvProductImage){
-                imageProduct.setImageResource(image)
+                imageProduct.setImageBitmap(image)
                 visibleImageIndex = position
 
             }
@@ -92,7 +97,7 @@ class ProductImageAdapter(
 
                 visibleImageIndex = (visibleImageIndex + 1) % productImageList.size
 
-                imageProduct.setImageResource(productImageList[visibleImageIndex])
+                imageProduct.setImageBitmap(productImageList[visibleImageIndex])
             }
 
             // Set Click on left button
@@ -102,7 +107,7 @@ class ProductImageAdapter(
 
                 Utils.E(visibleImageIndex.toString())
 
-                imageProduct.setImageResource(productImageList[visibleImageIndex])
+                imageProduct.setImageBitmap(productImageList[visibleImageIndex])
 
             }
 

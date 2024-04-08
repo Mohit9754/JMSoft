@@ -1,14 +1,10 @@
 package com.jmsoft.basic.Database
 
-import android.content.ContentValues
-import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import com.jmsoft.basic.UtilityTools.Utils.E
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
 import com.jmsoft.basic.UtilityTools.Utils
-import java.sql.Blob
+import com.jmsoft.basic.UtilityTools.Utils.E
 
 class UserDataModel {
 
@@ -70,6 +66,7 @@ class UserDataModel {
         const val Key_deviceAddress = "deviceAddress"
         const val Key_deviceId = "deviceId"
 
+
         @JvmStatic
         fun CreateTable(db: SQLiteDatabase) {
 
@@ -105,6 +102,7 @@ class UserDataModel {
                     Key_userUUID + " text," +
                     " FOREIGN KEY ("+Key_userUUID+") REFERENCES "+ TABLE_NAME_USER+"("+ Key_userUUID+")"+
                     " )")
+
 
             E("CreateTableQuery::$CreateTableUserSessionQuery")
 

@@ -55,6 +55,8 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.model.LatLng
 import com.jmsoft.R
+import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.loadingButton.LoadingButton
 import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.Database.UserDataModel
@@ -79,9 +81,11 @@ import java.io.OutputStream
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 object Utils {
+
 
     //Getting Name of the Admin from the config.properties file
     fun getName(context: Context): String? {
@@ -327,6 +331,45 @@ object Utils {
     //Update User Details in the User Table
     fun updateUserDetails(userDataModel: UserDataModel){
         UserDataHelper.instance.updateUserDetails(userDataModel)
+    }
+
+    // Inserting Category in Category table
+    fun insertCategoryInCategoryTable(categoryDataModel: CategoryDataModel){
+        UserDataHelper.instance.insertCategoryInCategoryTable(categoryDataModel)
+    }
+
+    // Inserting Product in Product table
+    fun insertProductInProductTable(productDataModel: ProductDataModel){
+        UserDataHelper.instance.insertProductInProductTable(productDataModel)
+    }
+
+    //Get All Products of particular category  from the Product table
+    fun getProductsThroughCategory(productCategory:String): ArrayList<ProductDataModel> {
+        return UserDataHelper.instance.getProductsThroughCategory(productCategory)
+    }
+
+    // Check if Category exist in the category table
+    fun isCategoryExist(categoryName:String): Boolean? {
+        return UserDataHelper.instance.isCategoryExist(categoryName)
+    }
+
+    //Getting the Category UUId through Category Name
+    fun getCategoryUUIDThroughCategoryName(categoryName:String): String {
+        return UserDataHelper.instance.getCategoryUUIDThroughCategoryName(categoryName)
+    }
+
+    fun getAllProducts(): ArrayList<ProductDataModel> {
+        return UserDataHelper.instance.getAllProducts()
+    }
+
+    //Getting the Category Name through Category UUID
+    fun getCategoryNameThroughCategoryUUID(categoryUUID: String): String {
+        return UserDataHelper.instance.getCategoryNameThroughCategoryUUID(categoryUUID)
+    }
+
+    //Getting the Product through Product UUID
+    fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
+        return UserDataHelper.instance.getProductThroughProductUUID(productUUID)
     }
 
     @JvmStatic

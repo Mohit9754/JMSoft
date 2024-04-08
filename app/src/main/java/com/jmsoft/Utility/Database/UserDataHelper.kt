@@ -5,6 +5,10 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import androidx.core.graphics.drawable.toBitmap
+import com.jmsoft.R
+import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.user
 import com.jmsoft.basic.UtilityTools.Utils
@@ -50,6 +54,257 @@ class UserDataHelper(cx: Context) {
      */
     fun read() {
         db = dm.readableDatabase
+    }
+
+    //Getting the Category Name through Category UUID
+    @SuppressLint("Recycle", "Range")
+    fun getCategoryNameThroughCategoryUUID(categoryUUID: String): String {
+
+        read()
+
+        val cursor = db?.rawQuery("SELECT * FROM ${CategoryDataModel.TABLE_NAME_CATEGORY} WHERE ${CategoryDataModel.Key_categoryUUID} == '$categoryUUID'",null)
+
+        cursor?.moveToFirst()
+
+        return cursor?.getString(cursor.getColumnIndex(CategoryDataModel.Key_categoryName))!!
+    }
+
+    //Get All Products of particular category  from the Product table
+    @SuppressLint("Range")
+    fun getProductsThroughCategory(productCategory: String): ArrayList<ProductDataModel> {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery("SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productCategory} == '$productCategory' ",null)
+
+        cursor?.moveToFirst()
+
+        val productList = ArrayList<ProductDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val productData = ProductDataModel()
+
+                productData.productUUId = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+                productData.categoryUUID = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+                productData.productName = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
+                productData.productImage = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImage))
+                productData.productPrice = cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                productData.productCategory = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCategory))
+                productData.productDescription = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
+                productData.productDescription = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
+                productData.productWeight = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+                productData.productType = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productType))
+                productData.productCarat = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                productData.productRFID = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFID))
+
+                productList.add(productData)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return productList
+    }
+
+
+    //Get All Products from the Product table
+    @SuppressLint("Range")
+    fun getAllProducts(): ArrayList<ProductDataModel> {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery("SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} ",null)
+
+        cursor?.moveToFirst()
+
+        val productList = ArrayList<ProductDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val productData = ProductDataModel()
+
+                productData.productUUId = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+                productData.categoryUUID = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+                productData.productName = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
+                productData.productImage = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImage))
+                productData.productPrice = cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                productData.productCategory = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCategory))
+                productData.productDescription = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
+                productData.productDescription = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
+                productData.productWeight = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+                productData.productType = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productType))
+                productData.productCarat = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                productData.productRFID = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFID))
+
+                productList.add(productData)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return productList
+    }
+
+    //Getting the Product through Product UUID
+    @SuppressLint("Range", "Recycle")
+    fun getProductThroughProductUUID(productUUID:String): ProductDataModel {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery("SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} == '$productUUID' ",null)
+
+        val productData = ProductDataModel()
+
+        if (cursor != null && cursor.moveToFirst()) {
+
+            productData.productUUId = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+            productData.categoryUUID = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+            productData.productName = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
+            productData.productImage = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImage))
+            productData.productCategory = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCategory))
+            productData.productPrice = cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+            productData.productDescription = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
+            productData.productDescription = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
+            productData.productWeight = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+            productData.productType = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productType))
+            productData.productCarat = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+            productData.productRFID = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFID))
+
+        }
+        cursor?.close()
+        close()
+
+        return productData
+    }
+
+
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    fun insertProduct(categoryName: String,productName:String,productPrice:Int) {
+
+        read()
+
+        val productDataModel = ProductDataModel()
+        productDataModel.productUUId = Utils.generateUUId()
+        productDataModel.categoryUUID = Utils.getCategoryUUIDThroughCategoryName(categoryName)
+        productDataModel.productName =  productName
+
+        val bitmapOne = cx.getDrawable(R.drawable.img_ring)?.toBitmap()
+        val bitmapTwo = cx.getDrawable(R.drawable.img_ring_product)?.toBitmap()
+
+        val nameOfImageOne = Utils.getImageFileName()
+        val nameOfImageTwo = Utils.getImageFileName()
+
+        bitmapOne?.let { Utils.saveToInternalStorage(cx, it,nameOfImageOne) }
+        bitmapTwo?.let { Utils.saveToInternalStorage(cx, it,nameOfImageTwo) }
+
+
+        productDataModel.productImage = "$nameOfImageOne,$nameOfImageTwo"
+
+        productDataModel.productPrice = productPrice
+        productDataModel.productDescription = "No Description"
+        productDataModel.productWeight = "5"
+        productDataModel.productType = "Gold"
+        productDataModel.productCarat = "24"
+        productDataModel.productRFID = "100"
+        productDataModel.productCategory = categoryName
+
+        val productValue = ContentValues().apply {
+
+            put(ProductDataModel.Key_productUUID,productDataModel.productUUId)
+            put(ProductDataModel.Key_categoryUUID,productDataModel.categoryUUID)
+            put(ProductDataModel.Key_productName,productDataModel.productName)
+            put(ProductDataModel.Key_productImage,productDataModel.productImage)
+            put(ProductDataModel.Key_productPrice,productDataModel.productPrice)
+            put(ProductDataModel.Key_productDescription,productDataModel.productDescription)
+            put(ProductDataModel.Key_productWeight,productDataModel.productWeight)
+            put(ProductDataModel.Key_productType,productDataModel.productType)
+            put(ProductDataModel.Key_productCarat,productDataModel.productCarat)
+            put(ProductDataModel.Key_productRFID,productDataModel.productRFID)
+            put(ProductDataModel.Key_productCategory,productDataModel.productCategory)
+        }
+
+        db?.insert(ProductDataModel.TABLE_NAME_PRODUCT,null,productValue)
+
+    }
+
+
+    //Inserting Category in Category table
+    fun insertCategoryInCategoryTable(categoryDataModel: CategoryDataModel){
+
+        open()
+
+        val categoryValue = ContentValues().apply {
+            put(CategoryDataModel.Key_categoryUUID,categoryDataModel.categoryUUID)
+            put(CategoryDataModel.Key_categoryName,categoryDataModel.categoryName)
+        }
+
+        db?.insert(CategoryDataModel.TABLE_NAME_CATEGORY,null,categoryValue)
+
+    }
+
+    //Inserting Product in Product table
+    fun insertProductInProductTable(productDataModel: ProductDataModel){
+
+        open()
+
+        val productValue = ContentValues().apply {
+
+            put(ProductDataModel.Key_productUUID,productDataModel.productUUId)
+            put(ProductDataModel.Key_categoryUUID,productDataModel.categoryUUID)
+            put(ProductDataModel.Key_productName,productDataModel.productName)
+            put(ProductDataModel.Key_productImage,productDataModel.productImage)
+            put(ProductDataModel.Key_productPrice,productDataModel.productPrice)
+            put(ProductDataModel.Key_productDescription,productDataModel.productDescription)
+            put(ProductDataModel.Key_productWeight,productDataModel.productWeight)
+            put(ProductDataModel.Key_productType,productDataModel.productType)
+            put(ProductDataModel.Key_productCarat,productDataModel.productCarat)
+            put(ProductDataModel.Key_productRFID,productDataModel.productRFID)
+        }
+
+        db?.insert(ProductDataModel.TABLE_NAME_PRODUCT,null,productValue)
+
+    }
+
+    // Check if Category exist in the category table
+    @SuppressLint("Recycle")
+    fun isCategoryExist(categoryName:String): Boolean? {
+
+        read()
+
+        val cursor = db?.rawQuery("SELECT * FROM ${CategoryDataModel.TABLE_NAME_CATEGORY} WHERE ${CategoryDataModel.Key_categoryName} == '$categoryName'",null)
+
+        return cursor?.moveToFirst()
+    }
+
+    //Getting the Category UUId through Category Name
+    @SuppressLint("Recycle", "Range")
+    fun getCategoryUUIDThroughCategoryName(categoryName:String): String {
+
+        read()
+
+        val cursor = db?.rawQuery("SELECT * FROM ${CategoryDataModel.TABLE_NAME_CATEGORY} WHERE ${CategoryDataModel.Key_categoryName} == '$categoryName'",null)
+
+        var categoryName = ""
+
+        if ( cursor != null && cursor.moveToFirst()){
+            categoryName =  cursor.getString(cursor.getColumnIndex(CategoryDataModel.Key_categoryUUID))!!
+        }
+
+        return categoryName
     }
 
     //Inserting the Admin in the user table at the time of table creation

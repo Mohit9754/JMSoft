@@ -6,6 +6,8 @@ import com.jmsoft.basic.Database.UserDataModel.Companion.dropTable
 import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.Utility.Database.ProductDataModel
 
 /**
  * Created by Hritik on 2/10/2023.
@@ -23,7 +25,10 @@ class DataManager
      * @param db //
      */
     override fun onCreate(db: SQLiteDatabase) {
+
         CreateTable(db)
+        ProductDataModel.CreateTable(db)
+        CategoryDataModel.CreateTable(db)
     }
 
     /**
@@ -32,7 +37,11 @@ class DataManager
      * @param paramInt2 //
      */
     override fun onUpgrade(db: SQLiteDatabase, paramInt1: Int, paramInt2: Int) {
+
         dropTable(db)
+        ProductDataModel.dropTable(db)
+        CategoryDataModel.dropTable(db)
+
         onCreate(db)
     }
 

@@ -17,6 +17,8 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
+import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
@@ -55,6 +57,32 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
 
         //set the Clicks And initialization
         init()
+
+        val categoryDataModel = CategoryDataModel()
+        categoryDataModel.categoryUUID = Utils.generateUUId()
+        categoryDataModel.categoryName = "Ring"
+
+
+        val categoryDataModel2 = CategoryDataModel()
+        categoryDataModel2.categoryUUID = Utils.generateUUId()
+        categoryDataModel2.categoryName = "necklace"
+
+
+        val categoryDataModel3 = CategoryDataModel()
+        categoryDataModel3.categoryUUID = Utils.generateUUId()
+        categoryDataModel3.categoryName = "earrings"
+
+
+        Utils.insertCategoryInCategoryTable(categoryDataModel)
+        Utils.insertCategoryInCategoryTable(categoryDataModel2)
+        Utils.insertCategoryInCategoryTable(categoryDataModel3)
+
+
+        val instance = UserDataHelper.instance
+
+        instance.insertProduct("Ring","Royal Gold Ring",12000)
+        instance.insertProduct("necklace","Royal Gold necklace",24000)
+        instance.insertProduct("earrings","Royal Gold earrings",30000)
     }
 
     //setting the selector on material card view
