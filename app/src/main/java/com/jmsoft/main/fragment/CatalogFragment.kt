@@ -36,13 +36,17 @@ class CatalogFragment : Fragment(), View.OnClickListener {
         //set the Clicks And initialization
         init()
 
+        (requireActivity() as DashboardActivity).mcvSearch?.visibility = View.VISIBLE
+
+
         return binding.root
     }
 
     // Setting the RecyclerView
     private fun setRecyclerView() {
 
-        val catalogAdapter = CatalogAdapter(requireActivity(), arrayListOf(""))
+
+        val catalogAdapter = CatalogAdapter(requireActivity(), arrayListOf("","","","","","","","",""))
 
         binding.rvCatalog?.layoutManager = GridLayoutManager(requireActivity(), 3) // Span Count is set to 3
         binding.rvCatalog?.adapter = catalogAdapter

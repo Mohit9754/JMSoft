@@ -128,6 +128,12 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentSettingBinding.inflate(layoutInflater)
 
+        // Hide the Search option
+        (requireActivity() as DashboardActivity).mcvSearch?.visibility = View.GONE
+
+        (requireActivity() as DashboardActivity).currentState = ""
+
+
         //set the Clicks And initialization
         init()
 

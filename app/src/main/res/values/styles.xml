@@ -21,6 +21,11 @@
 
     </style>
 
+    <style name="CustomProgressBarStyle" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/bg_progress_bar</item>
+        <item name="android:minHeight">@dimen/_2sdp</item>
+    </style>
+
     <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
         <item name="android:windowSoftInputMode">adjustResize</item>

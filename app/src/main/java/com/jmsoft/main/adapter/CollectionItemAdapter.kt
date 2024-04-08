@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.Firebase
 import com.jmsoft.R
 import com.jmsoft.databinding.ItemCatalogBinding
+import com.jmsoft.databinding.ItemCollectionBinding
 import com.jmsoft.main.activity.DashboardActivity
 
 /**
@@ -17,22 +17,21 @@ import com.jmsoft.main.activity.DashboardActivity
  *
  */
 
-class CatalogAdapter(private val context: Context, private val catalogList: ArrayList<String>) :
-    RecyclerView.Adapter<CatalogAdapter.MyViewHolder>() {
-
+class CollectionItemAdapter(private val context: Context, private val catalogList: ArrayList<String>) :
+    RecyclerView.Adapter<CollectionItemAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = ItemCatalogBinding.inflate(LayoutInflater.from(context), parent, false)
+        val view = ItemCollectionBinding.inflate(LayoutInflater.from(context), parent, false)
         return MyViewHolder(view)
     }
 
-    override fun getItemCount() = catalogList.size
+    override fun getItemCount() = 10
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(catalogList[position])
+//        holder.bind(catalogList[position])
     }
 
-    inner class MyViewHolder(private val binding: ItemCatalogBinding) :
+    inner class MyViewHolder(private val binding: ItemCollectionBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         private lateinit var data: String
@@ -42,7 +41,7 @@ class CatalogAdapter(private val context: Context, private val catalogList: Arra
             this.data = data
 
             //Setting Click on Catalog Item
-            binding.mcvCatalogItem.setOnClickListener(this)
+//            binding.mcvCatalogItem?.setOnClickListener(this)
         }
 
         //Handles All the Clicks
@@ -51,11 +50,7 @@ class CatalogAdapter(private val context: Context, private val catalogList: Arra
             if (v == binding.mcvCatalogItem){
 
                 //Navigate to Product
-                if((context as DashboardActivity).currentFocus?.id != R.id.product) {
-
-                    (context as DashboardActivity).navController?.navigate(R.id.product)
-
-                }
+                (context as DashboardActivity).navController?.navigate(R.id.product)
             }
 
         }

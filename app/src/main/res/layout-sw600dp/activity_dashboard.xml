@@ -2,6 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -50,7 +51,7 @@
             android:src="@drawable/icon_setting" />
 
         <ImageView
-            android:id="@+id/ivBag"
+            android:id="@+id/ivCard"
             android:layout_width="@dimen/_16sdp"
             android:layout_height="@dimen/_16sdp"
             android:layout_centerVertical="true"
@@ -59,14 +60,47 @@
             android:padding="@dimen/_3sdp"
             android:src="@drawable/icon_bag" />
 
-        <ImageView
-            android:layout_width="@dimen/_16sdp"
-            android:layout_height="@dimen/_16sdp"
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="@dimen/_100sdp"
+            android:layout_toStartOf="@+id/ivCard"
+            android:layout_marginEnd="@dimen/_7sdp"
+            android:id="@+id/mcvSearch"
+            android:visibility="gone"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/text_hint"
+            app:cardCornerRadius="@dimen/_8sdp"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/_4sdp"
-            android:layout_toStartOf="@+id/ivBag"
-            android:padding="@dimen/_3sdp"
-            android:src="@drawable/icon_search" />
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:textSize="10sp"
+                    android:hint="@string/search_here"
+                    android:id="@+id/etSearch"
+                    android:paddingVertical="@dimen/_5sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/_22sdp"
+                    tools:ignore="SmallSp" />
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/_4sdp"
+                    android:layout_alignParentEnd="true"
+                    android:padding="@dimen/_3sdp"
+                    android:src="@drawable/icon_search" />
+
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
     </RelativeLayout>
 

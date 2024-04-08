@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,12 +17,14 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
+import com.jmsoft.R.color
 import com.jmsoft.basic.Database.UserDataModel
 import com.jmsoft.basic.UtilityTools.Constants.Companion.Default_Country_Code
 import com.jmsoft.basic.UtilityTools.Constants.Companion.Default_Country_Region
 import com.jmsoft.basic.UtilityTools.Constants.Companion.defaultCoordinates
 import com.jmsoft.basic.UtilityTools.Constants.Companion.userUUID
 import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.databinding.ItemCardUserBinding
 import com.jmsoft.databinding.ItemUserManagementBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.fragment.UserManagementFragment
@@ -32,15 +37,17 @@ import com.jmsoft.main.fragment.UserManagementFragment
  *
  */
 
-class UserManagementAdapter(
+class CardUserAdapter(
     private val context: Context,
     private val userList: ArrayList<UserDataModel>,
     private val ivNoUser: ImageView
 ) :
-    RecyclerView.Adapter<UserManagementAdapter.MyViewHolder>() {
+    RecyclerView.Adapter<CardUserAdapter.MyViewHolder>() {
+
+    var selectedUserBinding:ItemCardUserBinding? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = ItemUserManagementBinding.inflate(LayoutInflater.from(context), parent, false)
+        val view = ItemCardUserBinding.inflate(LayoutInflater.from(context), parent, false)
         return MyViewHolder(view)
     }
 
@@ -51,7 +58,7 @@ class UserManagementAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun showDeleteDialog(userUUID:String,position: Int){
+    private fun showDeleteDialog(position: Int){
 
         val dialog = Dialog(context)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -62,7 +69,7 @@ class UserManagementAdapter(
 
             dialog.dismiss()
             // Deleting the user from the user Table
-            Utils.deleteUserThroughUserUUID(userUUID)
+//            Utils.deleteUserThroughUserUUID(userUUID)
             userList.removeAt(position)
             if (userList.size == 0) {
                 ivNoUser.visibility = View.VISIBLE
@@ -80,48 +87,40 @@ class UserManagementAdapter(
 
     }
 
-    inner class MyViewHolder(private val binding: ItemUserManagementBinding) :
+    inner class MyViewHolder(private val binding: ItemCardUserBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        private lateinit var userDataModel: UserDataModel
+        private lateinit var userData: UserDataModel
         private var position = -1
 
         fun bind(userDataModel: UserDataModel,position: Int) {
-            this.userDataModel = userDataModel
+            this.userData = userDataModel
             this.position = position
 
             //Setting Full Name of the User
             setFullName()
 
-            //Setting Email of the User
-            setEmail()
-
-            //Setting Phone Number of the User
-            setPhoneNumber()
-
             //Setting Click on Delete Button
             binding.ivDelete.setOnClickListener(this)
 
-            //Setting Click on EditProfile Button
-            binding.ivEditProfile.setOnClickListener(this)
+            //Setting Click on User Section
+            binding.mcvUser.setOnClickListener(this)
 
         }
 
         //Setting Full Name of the User
-        private fun setFullName(){
-            binding.tvUserName.text = "${userDataModel.firstName} ${userDataModel.lastName}"
-        }
-
-        //Setting Email of the User
-        private fun setEmail(){
-            binding.tvEmail.text = userDataModel.email
-        }
-
-        //Setting Phone Number of the User
         @SuppressLint("SetTextI18n")
-        private fun setPhoneNumber(){
-            binding.tvPhoneNumber.text = "$Default_Country_Code ${userDataModel.phoneNumber}"
+        private fun setFullName(){
+            binding.tvUserName.text = "${userData.firstName} ${userData.lastName}"
         }
+
+        private fun setIconTint(imageView: ImageView,color: Int){
+
+            // Apply the ColorFilter to the ImageView
+            imageView.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
+
+        }
+
 
         //Handles All the Clicks
         override fun onClick(v: View?) {
@@ -130,18 +129,23 @@ class UserManagementAdapter(
             if (v == binding.ivDelete) {
 
                 //Showing Delete Dialog
-                showDeleteDialog(userDataModel.userUUID!!,position)
+                showDeleteDialog(position)
             }
 
-            else if(v == binding.ivEditProfile){
+            else if (v == binding.mcvUser) {
 
-                val bundle = Bundle()
+                selectedUserBinding?.mcvUser?.setCardBackgroundColor(context.getColor(color.mcv_background_color))
+                selectedUserBinding?.tvUserName?.setTextColor(context.getColor(color.text_color))
 
-                //Giving the userUUID
-                bundle.putString(userUUID, userDataModel.userUUID!!)
+                selectedUserBinding?.let { setIconTint(it.ivDelete,context.getColor(color.text_color)) }
 
-                //Navigate to Edit Profile
-                (context as DashboardActivity).navController?.navigate(R.id.editProfile,bundle)
+                binding.mcvUser.setCardBackgroundColor(context.getColor(color.text_color))
+                binding.tvUserName.setTextColor(context.getColor(color.white))
+
+                setIconTint(binding.ivDelete,context.getColor(color.white))
+
+                selectedUserBinding = binding
+
             }
 
         }

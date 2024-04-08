@@ -80,7 +80,8 @@
                         android:fontFamily="@font/montserrat_arabic_semibold"
                         android:text="@string/add_user"
                         android:textColor="@color/white"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                 </LinearLayout>
 

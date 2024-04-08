@@ -96,6 +96,7 @@ interface Constants {
         const val android = "android"
         const val userType = "userType"
         const val connected = "Connected"
+        const val information = "Information"
 
 
         //String device_type = "device_type";
@@ -204,6 +205,7 @@ interface Constants {
         const val buildingNumber = "buildingNumber"
         const val landMark = "landMark"
         const val webUrl = "webUrl"
+
 
         // State
 

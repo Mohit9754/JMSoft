@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="0dp"
+    android:id="@+id/mcvUser"
+    android:layout_marginHorizontal="1dp"
+    android:layout_marginVertical="@dimen/_4sdp"
+    app:cardCornerRadius="@dimen/_4sdp"
+    app:cardBackgroundColor="@color/mcv_background_color"
+    tools:ignore="MissingDefaultResource">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_arabic_semibold"
+            android:text="@string/jenny_wilson"
+            android:textColor="@color/text_color"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_40sdp"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:textSize="10sp"
+            tools:ignore="RelativeOverlap,SmallSp" />
+
+
+        <ImageView
+            android:layout_width="@dimen/_14sdp"
+            android:layout_height="@dimen/_14sdp"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/ivDelete"
+            android:layout_marginVertical="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_3sdp"
+            android:padding="@dimen/_2sdp"
+            android:src="@drawable/icon_delete"
+            app:tint="@color/text_color"
+            tools:ignore="ContentDescription" />
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>
+

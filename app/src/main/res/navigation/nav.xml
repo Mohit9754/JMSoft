@@ -40,9 +40,18 @@
         android:id="@+id/editProfile"
         android:name="com.jmsoft.main.fragment.EditProfileFragment"
         android:label="Edit Profile"
-        tool:layout="@layout/fragment_edit_profile">
+        tool:layout="@layout/fragment_edit_profile"/>
 
+    <fragment
+        android:id="@+id/product"
+        android:name="com.jmsoft.main.fragment.ProductFragment"
+        android:label="Product"
+        tool:layout="@layout/fragment_product"/>
 
-    </fragment>
+    <fragment
+        android:id="@+id/card"
+        android:name="com.jmsoft.main.fragment.CardFragment"
+        android:label="Add To Card"
+        tool:layout="@layout/fragment_card"/>
 
 </navigation>

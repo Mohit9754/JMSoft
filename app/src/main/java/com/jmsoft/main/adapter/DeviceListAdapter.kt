@@ -171,7 +171,7 @@ class DeviceListAdapter(
                 //Remove the device from the device list
                 deviceList.removeAt(position)
 
-                notifyDataSetChanged()
+                notifyItemRemoved(position)
 
                 // if the device list is empty then Show No device Status
                 if (deviceList.isEmpty()) {
