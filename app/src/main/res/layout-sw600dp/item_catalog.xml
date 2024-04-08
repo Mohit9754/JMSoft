@@ -28,6 +28,7 @@
             android:fontFamily="@font/montserrat_arabic_bold"
             android:text="@string/royal_gold_ring"
             android:textColor="@color/black"
+            android:id="@+id/tvProductName"
             android:textSize="14sp" />
 
         <RelativeLayout
@@ -59,6 +60,7 @@
                         android:layout_marginStart="@dimen/_1sdp"
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/_2_5_g"
+                        android:id="@+id/tvProductWeight"
                         android:textColor="@color/text_color"
                         android:textSize="10sp" />
 
@@ -84,6 +86,7 @@
                         android:layout_marginStart="@dimen/_1sdp"
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/gold"
+                        android:id="@+id/tvProductType"
                         android:textColor="@color/text_color"
                         android:textSize="10sp" />
 
@@ -116,6 +119,7 @@
                         android:layout_marginStart="@dimen/_1sdp"
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/rings"
+                        android:id="@+id/tvProductCategory"
                         android:textColor="@color/text_color"
                         android:textSize="10sp" />
 
@@ -142,6 +146,7 @@
                         android:layout_marginStart="@dimen/_1sdp"
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/_0_75"
+                        android:id="@+id/tvProductCarat"
                         android:textColor="@color/text_color"
                         android:textSize="10sp" />
 
@@ -156,13 +161,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/_14sdp"
+            app:cardElevation="0dp"
             app:cardBackgroundColor="@color/off_white"
             app:cardCornerRadius="@dimen/_50sdp">
 
             <ImageView
                 android:layout_width="@dimen/_70sdp"
                 android:layout_height="@dimen/_70sdp"
-                android:scaleType="centerCrop"
+                android:id="@+id/tvProductImage"
                 android:src="@drawable/img_ring_product" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -203,6 +209,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_arabic_bold"
                     android:text="@string/_35_000"
+                    android:id="@+id/tvProductPrice"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 

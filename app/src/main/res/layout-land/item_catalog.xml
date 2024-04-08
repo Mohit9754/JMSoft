@@ -19,13 +19,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="@dimen/_7sdp">
+        android:paddingStart="@dimen/_7sdp"
+        tools:ignore="RtlSymmetry">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_9sdp"
             android:fontFamily="@font/montserrat_arabic_bold"
+            android:id="@+id/tvProductName"
             android:text="@string/royal_gold_ring"
             android:textColor="@color/black"
             android:textSize="14sp" />
@@ -51,7 +53,8 @@
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/weight"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -59,8 +62,10 @@
                         android:layout_marginStart="@dimen/_1sdp"
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/_2_5_g"
+                        android:id="@+id/tvProductWeight"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                 </LinearLayout>
 
@@ -76,7 +81,8 @@
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/type"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -84,8 +90,10 @@
                         android:layout_marginStart="@dimen/_1sdp"
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/gold"
+                        android:id="@+id/tvProductType"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                 </LinearLayout>
 
@@ -116,6 +124,7 @@
                         android:layout_marginStart="@dimen/_1sdp"
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/rings"
+                        android:id="@+id/tvProductCategory"
                         android:textColor="@color/text_color"
                         android:textSize="10sp" />
 
@@ -134,7 +143,8 @@
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/carat"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -142,8 +152,10 @@
                         android:layout_marginStart="@dimen/_1sdp"
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/_0_75"
+                        android:id="@+id/tvProductCarat"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                 </LinearLayout>
 
@@ -203,6 +215,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_arabic_bold"
                     android:text="@string/_35_000"
+                    android:id="@+id/tvProductPrice"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 

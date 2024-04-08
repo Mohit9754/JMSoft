@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.basic.UtilityTools.IOnBackPressed
+import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentCatalogBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CatalogAdapter
@@ -45,8 +46,9 @@ class CatalogFragment : Fragment(), View.OnClickListener {
     // Setting the RecyclerView
     private fun setRecyclerView() {
 
+        val productList = Utils.getAllProducts()
 
-        val catalogAdapter = CatalogAdapter(requireActivity(), arrayListOf("","","","","","","","",""))
+        val catalogAdapter = CatalogAdapter(requireActivity(), productList)
 
         binding.rvCatalog?.layoutManager = GridLayoutManager(requireActivity(), 3) // Span Count is set to 3
         binding.rvCatalog?.adapter = catalogAdapter

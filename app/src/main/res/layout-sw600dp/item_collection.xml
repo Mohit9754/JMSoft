@@ -25,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_9sdp"
+            android:id="@+id/tvProductName"
             android:fontFamily="@font/montserrat_arabic_bold"
             android:text="@string/royal_gold_ring"
             android:textColor="@color/black"
@@ -36,6 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/_14sdp"
+            app:cardElevation="0dp"
             app:cardBackgroundColor="@color/off_white"
             app:cardCornerRadius="@dimen/_50sdp">
 
@@ -43,6 +45,7 @@
                 android:layout_width="@dimen/_70sdp"
                 android:layout_height="@dimen/_70sdp"
                 android:scaleType="centerCrop"
+                android:id="@+id/ivProductImage"
                 android:src="@drawable/img_ring_product" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -85,6 +88,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_arabic_bold"
                     android:text="@string/_35_000"
+                    android:id="@+id/tvProductPrice"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
