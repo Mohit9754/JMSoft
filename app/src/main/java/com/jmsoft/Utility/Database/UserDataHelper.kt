@@ -60,7 +60,7 @@ class UserDataHelper(cx: Context) {
             put(UserDataModel.Key_userType, Constants.admin)
             put(UserDataModel.Key_userUUID, Utils.generateUUId())
             put(UserDataModel.Key_firstName, Utils.getName(cx))
-            put(UserDataModel.Key_lastName, Utils.getName(cx))
+            put(UserDataModel.Key_lastName, "")
             put(UserDataModel.Key_email, Utils.getEmail(cx)?.lowercase())
             put(UserDataModel.Key_phoneNumber, "")
             put(UserDataModel.Key_profileUri, "")

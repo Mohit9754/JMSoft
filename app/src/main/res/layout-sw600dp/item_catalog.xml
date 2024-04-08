@@ -9,6 +9,7 @@
     android:layout_marginVertical="@dimen/_8sdp"
     app:cardBackgroundColor="@color/off_white"
     app:cardElevation="@dimen/_4sdp"
+    android:id="@+id/mcvCatalogItem"
     android:outlineAmbientShadowColor="@color/ambientShadowColor"
     android:outlineSpotShadowColor="@color/spotShadowColor"
     app:cardCornerRadius="@dimen/_7sdp"
@@ -162,7 +163,7 @@
                 android:layout_width="@dimen/_70sdp"
                 android:layout_height="@dimen/_70sdp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/img_ring" />
+                android:src="@drawable/img_ring_product" />
 
         </com.google.android.material.card.MaterialCardView>
 

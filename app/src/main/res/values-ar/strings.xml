@@ -113,5 +113,31 @@
     <string name="are_you_sure_you_want_to_delete_this_user_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="only_admin_can_edit_phone_number">يمكن للمسؤول فقط تعديل رقم الهاتف</string>
     <string name="only_admin_can_edit_email_address">يمكن للمسؤول فقط تعديل عنوان البريد الإلكتروني</string>
+    <string name="description">وصف</string>
+    <string name="add_to_card">اضف الى البطاقة</string>
+    <string name="check_out_the_full_collection">تحقق من المجموعة الكاملة</string>
+    <string name="you_may_also_like">ربما يعجبك أيضا</string>
+    <string name="search_here">ابحث هنا</string>
+    <string name="verification">تَحَقّق</string>
+    <string name="information">معلومة</string>
+    <string name="confirmation">تأكيد</string>
+    <string name="_12_000">12.000</string>
+    <string name="checkout">الدفع</string>
+    <string name="plus">+</string>
+    <string name="_1">1</string>
+    <string name="minus">-</string>
+    <string name="add_new_address">إضافة عنوان جديد</string>
+    <string name="address">عنوان</string>
+    <string name="enter_your_address">أدخل عنوانك</string>
+    <string name="zip">أَزِيز</string>
+    <string name="enter_your_zip_code">أدخل رمزك البريدي</string>
+    <string name="total">المجموع  :</string>
+    <string name="place_order">مكان الامر</string>
+    <string name="order_confirmed_successfully">تم تأكيد الطلب بنجاح!</string>
+    <string name="you_can_either_print_receipt_or_share_it_nwith_the_client_easily_from_here">يمكنك إما طباعة الإيصال أو مشاركته\nمع العميل بسهولة من هنا</string>
+    <string name="print">مطبعة</string>
+    <string name="share">يشارك</string>
+    <string name="back_to_main_page">العودة إلى الصفحة الرئيسية</string>
+
 
 </resources>

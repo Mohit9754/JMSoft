@@ -43,7 +43,8 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
         if (userList.size != 0) {
             binding.ivNoUser?.visibility = View.GONE
 
-            val userManagementAdapter = UserManagementAdapter(requireActivity(), userList,this)
+            val userManagementAdapter =
+                binding.ivNoUser?.let { UserManagementAdapter(requireActivity(), userList, it) }
 
             binding.rvUserList?.layoutManager = GridLayoutManager(requireActivity(), 2) // Span Count is set to 3
             binding.rvUserList?.adapter = userManagementAdapter

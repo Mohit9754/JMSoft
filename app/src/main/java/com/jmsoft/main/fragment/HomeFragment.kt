@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.jmsoft.R
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.databinding.FragmentHomeBinding
 import com.jmsoft.main.activity.DashboardActivity
 
@@ -27,6 +28,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
     ): View {
 
         binding = FragmentHomeBinding.inflate(layoutInflater)
+
+        // Hide the Search option
+        (requireActivity() as DashboardActivity).mcvSearch?.visibility = View.GONE
+
+        (requireActivity() as DashboardActivity).currentState = ""
 
         //set the Clicks And initialization
         init()

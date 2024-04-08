@@ -10,6 +10,7 @@
     <color name="light_black">#666666</color>
     <color name="light_theme">#0FE5BB38</color>
     <color name="red">#FA0404</color>
+    <color name="light_red">#DA4313</color>
     <color name="tool_bar">#fafafa</color>
     <color name="stroke_color">#CBD3E7</color>
     <color name="mcv_background_color">#F7F7F7</color>
@@ -23,5 +24,9 @@
     <color name="bottom_sheet_stroke_color">#e09c39</color>
     <color name="spotShadowColor">#66000000</color>
     <color name="ambientShadowColor">#0D141719</color>
+    <color name="product_background_color">#666666</color>
+    <color name="description_background_color">#F0F0F0</color>
+    <color name="unselect_color">#ACACAC</color>
+    <color name="confirmation_background_color">#DCAF6E</color>
 
 </resources>
