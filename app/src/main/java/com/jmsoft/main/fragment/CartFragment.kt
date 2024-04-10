@@ -107,13 +107,14 @@ class CartFragment : Fragment(), View.OnClickListener {
         }
         // If cart is empty
         else {
-
-            binding?.rlInformation?.visibility = View.GONE
+/*            binding?.rlInformation?.visibility = View.GONE
             binding?.llConfirmation?.visibility = View.GONE
             binding?.rlVerification?.visibility = View.GONE
             binding?.llProgressStatusName?.visibility = View.GONE
-            binding?.progressBar?.visibility = View.GONE
             binding?.ivEmptyCard?.visibility = View.VISIBLE
+            binding?.progressBar?.visibility = View.GONE*/
+            binding?.rlCartManagement?.visibility = View.GONE
+            binding?.llCartEmpty?.visibility = View.VISIBLE
 
         }
     }

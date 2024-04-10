@@ -795,7 +795,6 @@ class DatabaseHelper(cx: Context) {
     // getting All User Details Accept Admin form the user table
     @SuppressLint("Range")
     fun getAllUserDetails(): ArrayList<UserDataModel> {
-
         read()
         @SuppressLint("Recycle") val cursor = db!!.rawQuery(
             "select * from " + UserDataModel.TABLE_NAME_USER + " where " + UserDataModel.Key_userType + "='"

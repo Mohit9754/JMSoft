@@ -215,10 +215,12 @@ class CartListAdapter(
                 // if cart is empty then show the cart empty image
                 if (cardList.isEmpty()) {
 
-                    fragmentCartBinding.ivEmptyCard?.visibility = View.VISIBLE
+                  /*  fragmentCartBinding.ivEmptyCard?.visibility = View.VISIBLE
                     fragmentCartBinding.rlVerification?.visibility = View.GONE
                     fragmentCartBinding.llProgressStatusName?.visibility = View.GONE
-                    fragmentCartBinding.progressBar?.visibility = View.GONE
+                    fragmentCartBinding.progressBar?.visibility = View.GONE*/
+                    fragmentCartBinding.rlCartManagement?.visibility = View.GONE
+                    fragmentCartBinding.llCartEmpty?.visibility = View.VISIBLE
 
                 }
             }

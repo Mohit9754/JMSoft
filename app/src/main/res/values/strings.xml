@@ -142,6 +142,7 @@
     <string name="please_select_address">Please Select Address</string>
     <string name="added_successfully">Added Successfully</string>
     <string name="removed_successfully">Removed Successfully</string>
+    <string name="your_cart_is_empty">Your Cart is empty</string>
 
 
 </resources>
