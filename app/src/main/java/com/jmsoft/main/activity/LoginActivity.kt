@@ -79,10 +79,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         Utils.insertCategoryInCategoryTable(categoryDataModel3)
 
 
-//        val instance = Utils.
-
-
-
         val bitmapOne = getDrawable(R.drawable.img_ring)?.toBitmap()
         val bitmapTwo = getDrawable(R.drawable.img_ring_product)?.toBitmap()
 
