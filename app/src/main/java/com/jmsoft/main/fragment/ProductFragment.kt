@@ -23,9 +23,10 @@ import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentProductBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CatalogAdapter
-import com.jmsoft.main.adapter.CollectionItemAdapter
+import com.jmsoft.main.adapter.CollectionAdapter
 import com.jmsoft.main.adapter.ProductImageAdapter
 
+@Suppress("DEPRECATION")
 class ProductFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentProductBinding
@@ -90,7 +91,7 @@ class ProductFragment : Fragment(), View.OnClickListener {
 
         val productList = Utils.getProductsThroughCategory(productCategory, productUUID)
 
-        val adapter = CollectionItemAdapter(requireActivity(), productList)
+        val adapter = CollectionAdapter(requireActivity(), productList)
 
         binding.rvCollection?.layoutManager =
             LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)

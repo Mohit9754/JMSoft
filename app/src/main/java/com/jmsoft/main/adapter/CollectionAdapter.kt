@@ -1,14 +1,15 @@
 package com.jmsoft.main.adapter
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
-import com.jmsoft.databinding.ItemCatalogBinding
 import com.jmsoft.databinding.ItemCollectionBinding
 import com.jmsoft.main.activity.DashboardActivity
 
@@ -19,11 +20,11 @@ import com.jmsoft.main.activity.DashboardActivity
  *
  */
 
-class CollectionItemAdapter(
+class CollectionAdapter(
     private val context: Context,
     private val productList: ArrayList<ProductDataModel>
 ) :
-    RecyclerView.Adapter<CollectionItemAdapter.MyViewHolder>() {
+    RecyclerView.Adapter<CollectionAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemCollectionBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -54,8 +55,8 @@ class CollectionItemAdapter(
             //Set the Product image
             setProductImage()
 
-            //Setting Click on Catalog Item
-//            binding.mcvCatalogItem?.setOnClickListener(this)
+            //Setting Click on Collection Item
+            binding.mcvCollectionItem.setOnClickListener(this)
         }
 
         //Set the Product image
@@ -84,11 +85,15 @@ class CollectionItemAdapter(
         //Handles All the Clicks
         override fun onClick(v: View?) {
 
-            //Click on Catalog item
-            if (v == binding.mcvCatalogItem) {
+            //Click on Collection item
+            if (v == binding.mcvCollectionItem) {
+
+                val bundle = Bundle()
+                //Giving the product UUID
+                bundle.putString(Constants.productUUID, productData.productUUId)
 
                 //Navigate to Product
-                (context as DashboardActivity).navController?.navigate(R.id.product)
+                (context as DashboardActivity).navController?.navigate(R.id.product,bundle)
             }
 
         }
