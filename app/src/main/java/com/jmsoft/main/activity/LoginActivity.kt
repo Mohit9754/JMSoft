@@ -81,6 +81,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
 
 //        val instance = Utils.
 
+
+
         val bitmapOne = getDrawable(R.drawable.img_ring)?.toBitmap()
         val bitmapTwo = getDrawable(R.drawable.img_ring_product)?.toBitmap()
 
