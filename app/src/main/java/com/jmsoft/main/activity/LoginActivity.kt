@@ -144,8 +144,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                 activity
             )
         } }
-
-//        instance.insertProduct("earrings","Royal Gold earrings",30000)
     }
 
     //setting the selector on material card view
