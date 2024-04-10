@@ -30,9 +30,6 @@ class CategoryDataModel {
 
             db.execSQL(CreateTableCategoryQuery)
 
-
-
-
         }
 
         @JvmStatic

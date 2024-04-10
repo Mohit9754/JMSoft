@@ -56,6 +56,8 @@ import com.jmsoft.main.model.DeviceModel
 class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentDeviceManagementBinding
+
+    // flag for unregister the Receiver
     private var isReceiverRegistered = false
     private lateinit var bottomSheetBluetoothScan: BottomSheetDialog
     private var deviceType: String? = null
@@ -223,6 +225,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // Open Setting Dialog
     private fun showOpenSettingDialog() {
 
         val dialog = Dialog(requireActivity())
@@ -250,6 +253,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         dialog.show()
     }
 
+    //set the Clicks And initialization
     private fun init() {
 
         //Checks the Android Version And  Launch Custom Permission ,according to Version

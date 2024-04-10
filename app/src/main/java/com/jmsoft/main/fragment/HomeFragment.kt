@@ -9,6 +9,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.jmsoft.R
 import com.jmsoft.basic.UtilityTools.Constants
+import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
 import com.jmsoft.databinding.FragmentHomeBinding
 import com.jmsoft.main.activity.DashboardActivity
 
@@ -32,7 +33,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         // Hide the Search option
         (requireActivity() as DashboardActivity).mcvSearch?.visibility = View.GONE
 
-        (requireActivity() as DashboardActivity).currentState = ""
+        (requireActivity() as DashboardActivity).currentState = verification
 
         //set the Clicks And initialization
         init()
@@ -40,6 +41,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         return binding.root
     }
 
+    //set the Clicks And initialization
     private fun init() {
 
         // Set Click on Catalog option
@@ -50,7 +52,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
     }
 
     //Handles All the Clicks
-
     override fun onClick(v: View?) {
 
         // Navigate to Catalog Fragment

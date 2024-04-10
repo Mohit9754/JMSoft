@@ -41,7 +41,8 @@
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:scaleType="centerCrop"
-                android:id="@+id/ivJewellery"
+                android:id="@+id/ivProduct"
+                android:elevation="0dp"
                 android:src="@drawable/img_ring_product" />
 
         </com.google.android.material.card.MaterialCardView>

@@ -138,6 +138,10 @@
     <string name="print">مطبعة</string>
     <string name="share">يشارك</string>
     <string name="back_to_main_page">العودة إلى الصفحة الرئيسية</string>
+    <string name="remove_from_card">إزالة من البطاقة</string>
+    <string name="please_select_address">الرجاء تحديد العنوان</string>
+    <string name="added_successfully">اضيف بنجاح</string>
+    <string name="removed_successfully">تمت الإزالة بنجاح</string>
 
 
 </resources>

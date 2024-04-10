@@ -6,7 +6,10 @@ import com.jmsoft.basic.Database.UserDataModel.Companion.dropTable
 import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.jmsoft.Utility.Database.AddressDataModel
+import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 
 /**
@@ -29,6 +32,9 @@ class DataManager
         CreateTable(db)
         ProductDataModel.CreateTable(db)
         CategoryDataModel.CreateTable(db)
+        CartDataModel.CreateTable(db)
+        AddressDataModel.CreateTable(db)
+        DeviceDataModel.CreateTable(db)
     }
 
     /**
@@ -41,13 +47,16 @@ class DataManager
         dropTable(db)
         ProductDataModel.dropTable(db)
         CategoryDataModel.dropTable(db)
+        CartDataModel.dropTable(db)
+        AddressDataModel.dropTable(db)
+        DeviceDataModel.dropTable(db)
 
         onCreate(db)
     }
 
     companion object {
 
-        const val DATABASE_VERSION = 4
+        const val DATABASE_VERSION = 20
         const val DATABASE_NAME = "JM_Soft"
     }
 }

@@ -8,9 +8,9 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="@dimen/_150sdp"
-        android:layout_height="@dimen/_150sdp"
-        android:src="@drawable/no_user_found"
+        android:layout_width="@dimen/_180sdp"
+        android:layout_height="@dimen/_180sdp"
+        android:src="@drawable/img_cart_empty"
         android:visibility="gone"
         android:id="@+id/ivEmptyCard"
         android:layout_centerInParent="true"
@@ -94,7 +94,7 @@
                     android:layout_height="wrap_content">
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvCardList"
+                        android:id="@+id/rvCartList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/_5sdp"
@@ -129,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/_1sdp"
                     android:fontFamily="@font/montserrat_arabic_regular"
-                    android:text="@string/_12_000"
+                    android:id="@+id/tvTotalPriceVerification"
                     android:textColor="@color/selected"
                     android:textSize="14sp"
                     tools:ignore="SmallSp" />
@@ -195,18 +195,18 @@
                 android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvUserList"
+                    android:id="@+id/rvAddressList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="visible"
-                    tools:listitem="@layout/item_card_user" />
+                    tools:listitem="@layout/item_card_address" />
 
                 <ImageView
-                    android:id="@+id/ivNoUser"
-                    android:layout_width="@dimen/_150sdp"
-                    android:layout_height="@dimen/_150sdp"
+                    android:id="@+id/ivNoAddress"
+                    android:layout_width="@dimen/_120sdp"
+                    android:layout_height="@dimen/_120sdp"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/no_user_found"
+                    android:src="@drawable/img_address_empty"
                     android:visibility="gone"
                     tools:ignore="ContentDescription" />
 
@@ -618,6 +618,7 @@
                 android:layout_marginEnd="@dimen/_2sdp"
                 android:fontFamily="@font/montserrat_arabic_semibold"
                 android:text="@string/_12_000"
+                android:id="@+id/tvTotalPriceInformation"
                 android:textColor="@color/selected"
                 android:textSize="14sp"
                 tools:ignore="SmallSp" />

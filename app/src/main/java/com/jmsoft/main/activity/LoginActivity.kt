@@ -15,10 +15,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CategoryDataModel
-import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
@@ -44,14 +44,15 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     private lateinit var binding: ActivityLoginBinding
     private var isPasswordVisible = false
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
 
         // Setting the savedInstanceState Data when language switches
-//        binding.etEmailAddress?.setText(savedInstanceState?.getString(email) ?: "")
-//        binding.etPassword?.setText(savedInstanceState?.getString(password) ?: "")
+        binding.etEmailAddress?.setText(savedInstanceState?.getString(email) ?: "")
+        binding.etPassword?.setText(savedInstanceState?.getString(password) ?: "")
 
         setContentView(binding.root)
 
@@ -78,11 +79,75 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         Utils.insertCategoryInCategoryTable(categoryDataModel3)
 
 
-        val instance = UserDataHelper.instance
+//        val instance = Utils.
 
-        instance.insertProduct("Ring","Royal Gold Ring",12000)
-        instance.insertProduct("necklace","Royal Gold necklace",24000)
-        instance.insertProduct("earrings","Royal Gold earrings",30000)
+        val bitmapOne = getDrawable(R.drawable.img_ring)?.toBitmap()
+        val bitmapTwo = getDrawable(R.drawable.img_ring_product)?.toBitmap()
+
+        bitmapOne?.let { bitmapTwo?.let { it1 ->
+            Utils.insertProductInProductTable("Ring","Royal Gold Ring",12000, it,
+                it1,
+                activity
+            )
+        } }
+
+        val bitmapThree = getDrawable(R.drawable.ring_one)?.toBitmap()
+        val bitmapFour = getDrawable(R.drawable.ring_two)?.toBitmap()
+
+        bitmapFour?.let { bitmapThree?.let { it1 ->
+            Utils.insertProductInProductTable("Ring","Royal Silver Ring",10000, it,
+                it1,
+                activity
+            )
+        } }
+
+        val bitmapFive = getDrawable(R.drawable.necklace_one)?.toBitmap()
+//        val bitmapSix = getDrawable(R.drawable.necklace_one)?.toBitmap()
+
+        bitmapFive?.let { bitmapFive?.let { it1 ->
+            Utils.insertProductInProductTable("necklace","Royal Gold necklace",25000, it,
+                it1,
+                activity
+            )
+        } }
+
+        val bitmapSix = getDrawable(R.drawable.necklane_two)?.toBitmap()
+
+        bitmapSix?.let { bitmapSix?.let { it1 ->
+            Utils.insertProductInProductTable("necklace","Royal Silver necklace",15000, it,
+                it1,
+                activity
+            )
+        } }
+
+        val bitmapEight = getDrawable(R.drawable.necklane_three)?.toBitmap()
+
+        bitmapEight?.let { bitmapEight?.let { it1 ->
+            Utils.insertProductInProductTable("necklace","Royal Diamond necklace",50000, it,
+                it1,
+                activity
+            )
+        } }
+
+        val bitmapSeven = getDrawable(R.drawable.earing_one)?.toBitmap()
+
+        bitmapSeven?.let { bitmapSeven?.let { it1 ->
+            Utils.insertProductInProductTable("earrings","Royal Gold earrings",30000, it,
+                it1,
+                activity
+            )
+        } }
+
+        val bitmapNine = getDrawable(R.drawable.earing_two)?.toBitmap()
+
+        bitmapNine?.let { bitmapNine?.let { it1 ->
+            Utils.insertProductInProductTable("earrings","Royal Solver earrings",34000, it,
+                it1,
+                activity
+            )
+        } }
+
+//        instance.insertProduct("earrings","Royal Gold earrings",30000)
     }
 
     //setting the selector on material card view

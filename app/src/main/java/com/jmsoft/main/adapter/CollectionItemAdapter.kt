@@ -13,7 +13,7 @@ import com.jmsoft.databinding.ItemCollectionBinding
 import com.jmsoft.main.activity.DashboardActivity
 
 /**
- * Catalog Adapter
+ * Collection Adapter
  *
  * Showing the catalog details
  *
@@ -45,16 +45,20 @@ class CollectionItemAdapter(
 
             this.productData = productData
 
+            //Set the Product image
             setProductName()
 
+            //Set the Product price
             setProductPrice()
 
+            //Set the Product image
             setProductImage()
 
             //Setting Click on Catalog Item
 //            binding.mcvCatalogItem?.setOnClickListener(this)
         }
 
+        //Set the Product image
         private fun setProductImage() {
 
             val arrayOfImages = productData.productImage?.split(",")?.toTypedArray()
@@ -63,16 +67,15 @@ class CollectionItemAdapter(
                 context,
                 arrayOfImages?.get(0).toString()
             )
-
-
             binding.ivProductImage.setImageBitmap(bitmap)
         }
 
+        //Set the Product price
         private fun setProductPrice() {
             binding.tvProductPrice.text = productData.productPrice.toString()
         }
 
-
+        //Set the Product image
         private fun setProductName() {
 
             binding.tvProductName.text = productData.productName
@@ -81,6 +84,7 @@ class CollectionItemAdapter(
         //Handles All the Clicks
         override fun onClick(v: View?) {
 
+            //Click on Catalog item
             if (v == binding.mcvCatalogItem) {
 
                 //Navigate to Product

@@ -99,6 +99,8 @@ interface Constants {
         const val userType = "userType"
         const val connected = "Connected"
         const val information = "Information"
+        const val confirmation = "Confirmation"
+        const val verification = "Verification"
 
 
         //String device_type = "device_type";
@@ -160,7 +162,7 @@ interface Constants {
         const val VerifyPhone = "VerifyPhone"
         const val query = "query"
         const val aigCode = "aigCode"
-        const val zipcode = "zipcode"
+        const val zipCode = "zipCode"
         const val latitude = "latitude"
         const val latlng = "latlng"
         const val longitude = "longitude"
@@ -207,6 +209,8 @@ interface Constants {
         const val buildingNumber = "buildingNumber"
         const val landMark = "landMark"
         const val webUrl = "webUrl"
+        const val statusBarHeight = "status_bar_height"
+        const val dimen = "dimen"
 
 
         // State

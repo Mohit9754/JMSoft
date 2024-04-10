@@ -19,7 +19,7 @@ import com.jmsoft.main.activity.DashboardActivity
 import okio.Utf8
 
 /**
- * Catalog Adapter
+ * Product Image Adapter
  *
  * Showing the catalog details
  *
@@ -46,7 +46,6 @@ class ProductImageAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(productImageList[position],position)
-        Utils.E("${productImageList.size}")
 
     }
 
@@ -60,7 +59,6 @@ class ProductImageAdapter(
             this.image = image
             this.position = position
 
-            Utils.E("$position")
 
             //Set the Image product
             setImage()
@@ -88,6 +86,8 @@ class ProductImageAdapter(
             //Set Click on Product Image
             if (v == binding.mcvProductImage){
                 imageProduct.setImageBitmap(image)
+
+                //Change Visible image index
                 visibleImageIndex = position
 
             }
@@ -95,6 +95,7 @@ class ProductImageAdapter(
             // Set Click on Right button
             else if (v == llRightBtn) {
 
+                //Increment Visible image index circularly
                 visibleImageIndex = (visibleImageIndex + 1) % productImageList.size
 
                 imageProduct.setImageBitmap(productImageList[visibleImageIndex])
@@ -103,6 +104,7 @@ class ProductImageAdapter(
             // Set Click on left button
             else if (v == llLeftBtn){
 
+                //decrement Visible image index circularly
                 visibleImageIndex = (visibleImageIndex + productImageList.size - 1) % productImageList.size
 
                 Utils.E(visibleImageIndex.toString())

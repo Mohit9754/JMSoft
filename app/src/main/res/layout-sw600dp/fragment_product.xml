@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_220sdp"
             android:baselineAligned="false"
+            android:id="@+id/llProductSection"
             android:orientation="horizontal"
             android:weightSum="3">
 
@@ -29,6 +30,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvProductImage"
                     android:layout_width="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/_18sdp"
                     android:layout_marginStart="@dimen/_18sdp"
@@ -58,6 +60,7 @@
                     android:layout_width="@dimen/_85sdp"
                     android:layout_height="@dimen/_85sdp"
                     android:layout_centerVertical="true"
+                    android:scaleType="centerCrop"
                     android:layout_marginHorizontal="@dimen/_22sdp"
                     android:layout_toEndOf="@+id/llLeftBtn"
                     android:src="@drawable/icon_tag_printer"
@@ -98,9 +101,10 @@
                 <LinearLayout
                     android:id="@+id/lltop"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginHorizontal="@dimen/_20sdp"
                     android:orientation="vertical"
+                    android:layout_above="@+id/rlCardStatus"
                     tools:ignore="UselessParent">
 
                     <TextView
@@ -111,7 +115,7 @@
                         android:text="@string/royal_gold_ring"
                         android:id="@+id/tvProductName"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="17sp" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -135,7 +139,7 @@
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:text="@string/weight"
                                     android:textColor="@color/text_color"
-                                    android:textSize="10sp"
+                                    android:textSize="11sp"
                                     tools:ignore="SmallSp" />
 
                                 <TextView
@@ -146,7 +150,7 @@
                                     android:text="@string/_2_5_g"
                                     android:id="@+id/tvProductWeight"
                                     android:textColor="@color/text_color"
-                                    android:textSize="10sp"
+                                    android:textSize="11sp"
                                     tools:ignore="SmallSp" />
 
                             </LinearLayout>
@@ -163,7 +167,7 @@
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:text="@string/type"
                                     android:textColor="@color/text_color"
-                                    android:textSize="10sp"
+                                    android:textSize="11sp"
                                     tools:ignore="SmallSp" />
 
                                 <TextView
@@ -174,7 +178,7 @@
                                     android:text="@string/gold"
                                     android:id="@+id/tvProductType"
                                     android:textColor="@color/text_color"
-                                    android:textSize="10sp"
+                                    android:textSize="11sp"
                                     tools:ignore="SmallSp" />
 
                             </LinearLayout>
@@ -208,7 +212,7 @@
                                     android:text="@string/rings"
                                     android:id="@+id/tvProductCategory"
                                     android:textColor="@color/text_color"
-                                    android:textSize="10sp" />
+                                    android:textSize="11sp" />
 
                             </LinearLayout>
 
@@ -225,7 +229,7 @@
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:text="@string/carat"
                                     android:textColor="@color/text_color"
-                                    android:textSize="10sp"
+                                    android:textSize="11sp"
                                     tools:ignore="SmallSp" />
 
                                 <TextView
@@ -236,7 +240,7 @@
                                     android:text="@string/_0_75"
                                     android:id="@+id/tvProductCarat"
                                     android:textColor="@color/text_color"
-                                    android:textSize="10sp"
+                                    android:textSize="11sp"
                                     tools:ignore="SmallSp" />
 
                             </LinearLayout>
@@ -248,7 +252,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginVertical="@dimen/_10sdp"
                         android:background="@drawable/bg_description"
                         android:orientation="vertical"
                         android:padding="@dimen/_10sdp">
@@ -269,7 +273,7 @@
                             android:fontFamily="@font/montserrat_arabic_regular"
                             android:text="@string/are_you_sure_you_want_to_delete_this_user_this_action_cannot_be_undone"
                             android:textColor="@color/text_color"
-                            android:textSize="10sp"
+                            android:textSize="11sp"
                             tools:ignore="SmallSp" />
 
 
@@ -280,12 +284,13 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/rlCartStatus"
                     android:layout_alignParentBottom="true"
                     android:layout_marginHorizontal="@dimen/_20sdp"
                     android:layout_marginBottom="@dimen/_2sdp">
 
                     <LinearLayout
-                        android:id="@+id/llAddToCard"
+                        android:id="@+id/llCartStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_add_to_card"
@@ -299,6 +304,7 @@
                             android:fontFamily="@font/montserrat_arabic_semibold"
                             android:text="@string/add_to_card"
                             android:textColor="@color/white"
+                            android:id="@+id/tvCartStatus"
                             android:textSize="10sp"
                             tools:ignore="SmallSp" />
 
@@ -353,27 +359,41 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_7sdp"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_5sdp"
                     android:fontFamily="@font/montserrat_arabic_bold"
                     android:text="@string/check_out_the_full_collection"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="17sp" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvCollection"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/_10sdp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_collection" />
 
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvCollection"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_4sdp"
+                            android:layout_marginHorizontal="@dimen/_9sdp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            android:orientation="horizontal"
+                            tools:listitem="@layout/item_collection" />
+
+                    </LinearLayout>
+
+                </androidx.core.widget.NestedScrollView>
 
             </LinearLayout>
 
@@ -382,18 +402,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_40sdp"
+            android:layout_marginHorizontal="@dimen/_12sdp"
             android:fontFamily="@font/montserrat_arabic_bold"
             android:text="@string/you_may_also_like"
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="17sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvCatalog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_32sdp"
-            android:paddingTop="@dimen/_12sdp"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:paddingTop="@dimen/_8sdp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="3"
             tools:listitem="@layout/item_catalog" />

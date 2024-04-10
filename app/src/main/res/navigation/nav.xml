@@ -50,8 +50,8 @@
 
     <fragment
         android:id="@+id/card"
-        android:name="com.jmsoft.main.fragment.CardFragment"
+        android:name="com.jmsoft.main.fragment.CartFragment"
         android:label="Add To Card"
-        tool:layout="@layout/fragment_card"/>
+        tool:layout="@layout/fragment_cart"/>
 
 </navigation>

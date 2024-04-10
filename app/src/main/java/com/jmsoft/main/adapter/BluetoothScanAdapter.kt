@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
+import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.bluetoothUuid
@@ -199,13 +200,13 @@ class BluetoothScanAdapter(
             //get userUUID
             val userUUID = Utils.GetSession().userUUID
 
-            val deviceMode = DeviceModel()
+            val deviceDataMode = DeviceDataModel()
 
-            deviceMode.deviceUUID = Utils.generateUUId() //Generating the UUID for device
-            deviceMode.deviceType = deviceType
-            deviceMode.deviceName = deviceModel.device.name
-            deviceMode.deviceAddress = deviceModel.device.address
-            deviceMode.userUUID = userUUID
+            deviceDataMode.deviceUUID = Utils.generateUUId() //Generating the UUID for device
+            deviceDataMode.deviceType = deviceType
+            deviceDataMode.deviceName = deviceModel.device.name
+            deviceDataMode.deviceAddress = deviceModel.device.address
+            deviceDataMode.userUUID = userUUID
 
             val addedDeviceList = Utils.getDevicesThroughUserUUID(Utils.GetSession().userUUID!!)
             if (addedDeviceList.firstOrNull { it.deviceAddress == deviceModel.device.address } != null) {
@@ -213,7 +214,7 @@ class BluetoothScanAdapter(
             }
             else {
                 //Insert Data in the device table
-                Utils.insertNewDeviceData(deviceMode)
+                Utils.insertNewDeviceData(deviceDataMode)
             }
 
             rotateAnimator.cancel()

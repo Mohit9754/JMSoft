@@ -1,33 +1,19 @@
 package com.jmsoft.main.activity
 
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Dialog
-import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
-import android.view.Window
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.RelativeLayout
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CategoryDataModel
-import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
 import com.jmsoft.basic.UtilityTools.Constants.Companion.information
-import com.jmsoft.basic.UtilityTools.IOnBackPressed
+import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ActivityDashboardBinding
 
@@ -43,13 +29,23 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
     private val activity: Activity = this@DashboardActivity
     private lateinit var binding: ActivityDashboardBinding
     var navController: NavController? = null
+
+    // search
     var mcvSearch:MaterialCardView? = null
+
+    // flag variable for back press management of cart fragment
     var currentState = ""
+
+    var toolbar:RelativeLayout? = null
+    var bottom:RelativeLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        toolbar = binding.toolbar
+        bottom = binding.rlBottom
 
         navController = findNavController(R.id.fragmentContainerView)
 
@@ -153,14 +149,12 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
 
                     navController?.popBackStack()
                     navController?.navigate(R.id.card)
-                    currentState = ""
                 }
                 else {
-
                     navController?.popBackStack()
-                    currentState = ""
-
                 }
+
+                currentState = verification
             }
             else {
                 navController?.popBackStack()

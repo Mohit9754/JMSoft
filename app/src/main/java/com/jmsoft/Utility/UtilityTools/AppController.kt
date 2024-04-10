@@ -5,7 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
-import com.jmsoft.basic.Database.UserDataHelper
+import com.jmsoft.basic.Database.DatabaseHelper
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 
@@ -43,7 +43,7 @@ class AppController : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        UserDataHelper(this)
+        DatabaseHelper(this)
         SavedData.instance
         val glideConfig = GlideBuilder()
             .setLogLevel(Log.ERROR) // Set your desired log level, e.g., Log.DEBUG

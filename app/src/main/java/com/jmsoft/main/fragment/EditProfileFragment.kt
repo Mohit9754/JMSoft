@@ -47,6 +47,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentEditProfileBinding.inflate(layoutInflater)
 
+        //set the Clicks And initialization
         init()
 
         return binding.root
@@ -123,6 +124,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    //set the Clicks And initialization
     private fun init() {
 
         //set Password for  current Language
@@ -186,6 +188,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         )
 
         errorValidationModels.add(
+
             ValidationModel(
                 Validation.Type.Phone, binding.etPhoneNumber, binding.tvPhoneNumberError
             )
@@ -199,7 +202,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
         errorValidationModels.add(
             ValidationModel(
-                Validation.Type.PasswordStrong, binding.etPassword, binding.tvPasswordError
+                Validation.Type.Empty, binding.etPassword, binding.tvPasswordError
             )
         )
 

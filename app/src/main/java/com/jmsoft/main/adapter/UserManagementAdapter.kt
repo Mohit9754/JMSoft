@@ -26,7 +26,7 @@ import com.jmsoft.main.fragment.UserManagementFragment
 
 
 /**
- * User list Adapter
+ * UserManagement list Adapter
  *
  *
  *
@@ -108,6 +108,7 @@ class UserManagementAdapter(
         }
 
         //Setting Full Name of the User
+        @SuppressLint("SetTextI18n")
         private fun setFullName(){
             binding.tvUserName.text = "${userDataModel.firstName} ${userDataModel.lastName}"
         }
@@ -133,6 +134,7 @@ class UserManagementAdapter(
                 showDeleteDialog(userDataModel.userUUID!!,position)
             }
 
+            //Click on Edit Profile Button
             else if(v == binding.ivEditProfile){
 
                 val bundle = Bundle()

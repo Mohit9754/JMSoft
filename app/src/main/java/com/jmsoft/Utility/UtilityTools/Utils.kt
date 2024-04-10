@@ -55,16 +55,21 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.model.LatLng
 import com.jmsoft.R
+import com.jmsoft.Utility.Database.AddressDataModel
+import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.loadingButton.LoadingButton
-import com.jmsoft.basic.Database.UserDataHelper
+import com.jmsoft.basic.Database.DatabaseHelper
 import com.jmsoft.basic.Database.UserDataModel
 import com.jmsoft.basic.UtilityTools.Constants.Companion.CONFIG_FILE
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
+import com.jmsoft.basic.UtilityTools.Constants.Companion.dimen
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
 import com.jmsoft.basic.UtilityTools.Constants.Companion.name
 import com.jmsoft.basic.UtilityTools.Constants.Companion.password
+import com.jmsoft.basic.UtilityTools.Constants.Companion.statusBarHeight
 import com.jmsoft.databinding.AlertdialogBinding
 import com.jmsoft.databinding.ItemCustomToastBinding
 import com.jmsoft.main.model.DeviceModel
@@ -79,6 +84,7 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -86,6 +92,23 @@ import kotlin.random.Random
 
 object Utils {
 
+    // Get thousand separate price
+    fun getThousandSeparate(price: Int): String {
+
+        val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
+        return numberFormat.format(price).toString()
+    }
+
+    // Get Status bar height
+    @SuppressLint("InternalInsetResource")
+    fun getStatusbarHeight(context: Context): Int {
+        val resourceId = context.resources.getIdentifier(statusBarHeight, dimen, Constants.android)
+        return if (resourceId > 0) {
+            context.resources.getDimensionPixelSize(resourceId)
+        } else {
+            0
+        }
+    }
 
     //Getting Name of the Admin from the config.properties file
     fun getName(context: Context): String? {
@@ -129,7 +152,7 @@ object Utils {
         }
     }
 
-//    generate UUIDs (Universally Unique Identifiers) using the UUID
+    //    generate UUIDs (Universally Unique Identifiers) using the UUID
     fun generateUUId(): String {
         return UUID.randomUUID().toString()
     }
@@ -155,13 +178,18 @@ object Utils {
     }
 
     //get Image Name
-    fun getImageFileName():String{
+    fun getImageFileName(): String {
 
-        return Random.nextInt(1, 1001).toString()+Random.nextInt(1,1001).toString()+Random.nextInt(1,1000).toString()+Random.nextInt(1,1000).toString()
+        return Random.nextInt(1, 1001).toString() + Random.nextInt(1, 1001)
+            .toString() + Random.nextInt(1, 1000).toString() + Random.nextInt(1, 1000).toString()
     }
 
     // this function save the image into internal storage
-    fun saveToInternalStorage(context: Context, bitmapImage: Bitmap, imageFileName: String): String {
+    fun saveToInternalStorage(
+        context: Context,
+        bitmapImage: Bitmap,
+        imageFileName: String
+    ): String {
         context.openFileOutput(imageFileName, Context.MODE_PRIVATE).use { fos ->
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 25, fos)
         }
@@ -181,6 +209,7 @@ object Utils {
         val file = File(dir, imageFileName)
         return file.delete()
     }
+
     fun setLocale(context: Context, languageCode: String) {
         val locale = Locale(languageCode)
         Locale.setDefault(locale)
@@ -196,7 +225,8 @@ object Utils {
 
             // Set layout direction after recreation
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                context.window.decorView.layoutDirection = if (isRTL(languageCode)) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
+                context.window.decorView.layoutDirection =
+                    if (isRTL(languageCode)) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
             }
         }
 
@@ -211,11 +241,11 @@ object Utils {
     }
 
     // set Images according to current language
-    fun setImageForCurrentLanguage(imageView: ImageView){
+    fun setImageForCurrentLanguage(imageView: ImageView) {
 
         val lang = getCurrentLanguage()
 
-        if (lang == arabic){
+        if (lang == arabic) {
             imageView.setImageDrawable(null)
             imageView.setImageResource(R.drawable.img_jewellery)
 
@@ -235,146 +265,243 @@ object Utils {
 
     @JvmStatic
     fun GetSession(): UserDataModel {
-        return UserDataHelper.instance.list[0]
+        return DatabaseHelper.instance.list[0]
     }
 
     @JvmStatic
     fun IS_LOGIN(): Boolean {
-        return UserDataHelper.instance.list.size > 0
+        return DatabaseHelper.instance.list.size > 0
     }
+
     // Checks if User Table is Empty
     fun isUserTableEmpty(): Boolean {
-        return UserDataHelper.instance.isUserTableEmpty()
+        return DatabaseHelper.instance.isUserTableEmpty()
     }
 
     // Checks if Email Already Exist in the User Table
-    fun isEmailExist(email:String): Boolean {
-        return UserDataHelper.instance.isEmailExist(email)
+    fun isEmailExist(email: String): Boolean {
+        return DatabaseHelper.instance.isEmailExist(email)
     }
 
     //this method checks if any user has this phone number
-    fun isAnyUserHasThisPhoneNumber(phoneNumber: String,userUUID: String): Boolean {
-        return UserDataHelper.instance.isAnyUserHasThisPhoneNumber(phoneNumber,userUUID)
+    fun isAnyUserHasThisPhoneNumber(phoneNumber: String, userUUID: String): Boolean {
+        return DatabaseHelper.instance.isAnyUserHasThisPhoneNumber(phoneNumber, userUUID)
     }
 
     //this method checks if any user has this email
-    fun isAnyUserHasThisEmail(email: String,userUUID: String): Boolean {
-        return UserDataHelper.instance.isAnyUserHasThisEmail(email,userUUID)
+    fun isAnyUserHasThisEmail(email: String, userUUID: String): Boolean {
+        return DatabaseHelper.instance.isAnyUserHasThisEmail(email, userUUID)
 
     }
 
     // Checks if Phone Number Already Exist in the User Table
-    fun isPhoneNumberExist(phoneNumber:String): Boolean {
-        return UserDataHelper.instance.isPhoneNumberExist(phoneNumber)
+    fun isPhoneNumberExist(phoneNumber: String): Boolean {
+        return DatabaseHelper.instance.isPhoneNumberExist(phoneNumber)
+    }
+
+    // Checks is Phone Number Already Exist in the Address table
+    fun isPhoneNumberExistInAddressTable(phoneNumber: String): Boolean {
+        return DatabaseHelper.instance.isPhoneNumberExistInAddressTable(phoneNumber)
     }
 
     // Insert new user in the User Table
     fun insetDataInUserTable(userDataModel: UserDataModel) {
-        UserDataHelper.instance.insetDataInUserTable(userDataModel)
+        DatabaseHelper.instance.insetDataInUserTable(userDataModel)
     }
 
-     // Check if User is Valid or not, through User Table
-    fun isValidUser(email: String,password:String): Boolean {
-        return UserDataHelper.instance.isValidUser(email,password)
+    // Check if User is Valid or not, through User Table
+    fun isValidUser(email: String, password: String): Boolean {
+        return DatabaseHelper.instance.isValidUser(email, password)
     }
 
     //Get User details through email and password from the user table
-    fun getUserThroughEmailAndPassword(email: String,password: String): UserDataModel {
-        return UserDataHelper.instance.getUserThroughEmailAndPassword(email,password)
+    fun getUserThroughEmailAndPassword(email: String, password: String): UserDataModel {
+        return DatabaseHelper.instance.getUserThroughEmailAndPassword(email, password)
     }
 
     // get User through UserUUID from the User Table
     fun getUserDetailsThroughUserUUID(userUUID: String): UserDataModel {
-        return UserDataHelper.instance.getUserDetailsThroughUserUUID(userUUID)
+        return DatabaseHelper.instance.getUserDetailsThroughUserUUID(userUUID)
     }
 
     // insert Data in the Session Table
     fun insertDataInSessionTable(userDataModel: UserDataModel) {
-        UserDataHelper.instance.insertDataInSessionTable(userDataModel)
+        DatabaseHelper.instance.insertDataInSessionTable(userDataModel)
     }
 
     // update user profile in the User Table
-    fun updateProfileInUserTable(profileName:String,userUUID: String) {
-        UserDataHelper.instance.updateProfileInUserTable(profileName,userUUID)
+    fun updateProfileInUserTable(profileName: String, userUUID: String) {
+        DatabaseHelper.instance.updateProfileInUserTable(profileName, userUUID)
     }
 
     // Checks if no device Available for particular user through userUUID
     fun isNoDeviceForUser(userUUID: String): Boolean {
-        return UserDataHelper.instance.isNoDeviceForUser(userUUID)
+        return DatabaseHelper.instance.isNoDeviceForUser(userUUID)
     }
 
     //get All Devices of particular user through userUUID
     fun getDevicesThroughUserUUID(userUUID: String): ArrayList<DeviceModel> {
-        return UserDataHelper.instance.getDevicesThroughUserUUID(userUUID)
+        return DatabaseHelper.instance.getDevicesThroughUserUUID(userUUID)
     }
 
     // Insert New Device in the device table
-    fun insertNewDeviceData(deviceModel: DeviceModel) {
-        UserDataHelper.instance.insertNewDeviceData(deviceModel)
+    fun insertNewDeviceData(deviceDataModel: DeviceDataModel) {
+        DatabaseHelper.instance.insertNewDeviceData(deviceDataModel)
     }
 
     //Delete Device from Device table through DeviceUUID
     fun deleteDeviceThoughDeviceUUID(deviceUUID: String) {
-        UserDataHelper.instance.deleteDeviceThoughDeviceUUID(deviceUUID)
+        DatabaseHelper.instance.deleteDeviceThoughDeviceUUID(deviceUUID)
     }
 
     // getting All User Details Accept Admin
     fun getAllUserDetails(): ArrayList<UserDataModel> {
-        return UserDataHelper.instance.getAllUserDetails()
+        return DatabaseHelper.instance.getAllUserDetails()
     }
 
     //Deleting the User through the UserUUID from the user table
-    fun deleteUserThroughUserUUID(userUUID: String){
-        UserDataHelper.instance.deleteUserThroughUserUUID(userUUID)
+    fun deleteUserThroughUserUUID(userUUID: String) {
+        DatabaseHelper.instance.deleteUserThroughUserUUID(userUUID)
     }
 
     //Update User Details in the User Table
-    fun updateUserDetails(userDataModel: UserDataModel){
-        UserDataHelper.instance.updateUserDetails(userDataModel)
+    fun updateUserDetails(userDataModel: UserDataModel) {
+        DatabaseHelper.instance.updateUserDetails(userDataModel)
     }
 
     // Inserting Category in Category table
-    fun insertCategoryInCategoryTable(categoryDataModel: CategoryDataModel){
-        UserDataHelper.instance.insertCategoryInCategoryTable(categoryDataModel)
+    fun insertCategoryInCategoryTable(categoryDataModel: CategoryDataModel) {
+        DatabaseHelper.instance.insertCategoryInCategoryTable(categoryDataModel)
     }
 
     // Inserting Product in Product table
-    fun insertProductInProductTable(productDataModel: ProductDataModel){
-        UserDataHelper.instance.insertProductInProductTable(productDataModel)
+    fun insertProductInProductTable(
+        categoryName: String,
+        productName: String,
+        productPrice: Int,
+        bitmapOne: Bitmap,
+        bitmapTwo: Bitmap,
+        context: Context
+    ) {
+
+        val productDataModel = ProductDataModel()
+        productDataModel.productUUId = Utils.generateUUId()
+        productDataModel.categoryUUID = Utils.getCategoryUUIDThroughCategoryName(categoryName)
+        productDataModel.productName = productName
+
+        val nameOfImageOne = Utils.getImageFileName()
+        val nameOfImageTwo = Utils.getImageFileName()
+
+        bitmapOne.let { Utils.saveToInternalStorage(context, it, nameOfImageOne) }
+        bitmapTwo.let { Utils.saveToInternalStorage(context, it, nameOfImageTwo) }
+
+
+        productDataModel.productImage = "$nameOfImageOne,$nameOfImageTwo"
+
+        productDataModel.productPrice = productPrice
+        productDataModel.productDescription = "No Description"
+        productDataModel.productWeight = "5"
+        productDataModel.productMetalType = "Gold"
+        productDataModel.productUnitOfMeasurement = "g"
+        productDataModel.productCarat = "24"
+        productDataModel.productRFID = "100"
+        productDataModel.productCategory = categoryName
+
+
+        DatabaseHelper.instance.insertProductInProductTable(productDataModel)
+    }
+
+    // Checks if Product is Exist in Cart table
+    fun isProductExistInCartTable(userUUID: String, productUUID: String): Boolean? {
+        return DatabaseHelper.instance.isProductExistInCartTable(userUUID, productUUID)
+    }
+
+    // get cartUUId Through userUUID and ProductUUID
+    fun getCartUUID(userUUID: String, productUUID: String): String? {
+        return DatabaseHelper.instance.getCartUUID(userUUID, productUUID)
+    }
+
+    //Inserting Cart in Card table
+    fun insertProductInCartTable(cardDataModel: CartDataModel) {
+        DatabaseHelper.instance.insertProductInCartTable(cardDataModel)
     }
 
     //Get All Products of particular category  from the Product table
-    fun getProductsThroughCategory(productCategory:String): ArrayList<ProductDataModel> {
-        return UserDataHelper.instance.getProductsThroughCategory(productCategory)
+    fun getProductsThroughCategory(
+        productCategory: String,
+        productUUID: String
+    ): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getProductsThroughCategory(productCategory, productUUID)
     }
 
     // Check if Category exist in the category table
-    fun isCategoryExist(categoryName:String): Boolean? {
-        return UserDataHelper.instance.isCategoryExist(categoryName)
+    fun isCategoryExist(categoryName: String): Boolean? {
+        return DatabaseHelper.instance.isCategoryExist(categoryName)
     }
 
     //Getting the Category UUId through Category Name
-    fun getCategoryUUIDThroughCategoryName(categoryName:String): String {
-        return UserDataHelper.instance.getCategoryUUIDThroughCategoryName(categoryName)
+    fun getCategoryUUIDThroughCategoryName(categoryName: String): String {
+        return DatabaseHelper.instance.getCategoryUUIDThroughCategoryName(categoryName)
     }
 
+    //Get All Products from the Product table
     fun getAllProducts(): ArrayList<ProductDataModel> {
-        return UserDataHelper.instance.getAllProducts()
+        return DatabaseHelper.instance.getAllProducts()
+    }
+
+    //Get All Products from the Product table Accept Category one Category
+    fun getAllProductsAcceptCategory(categoryName: String): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsAcceptCategory(categoryName)
     }
 
     //Getting the Category Name through Category UUID
     fun getCategoryNameThroughCategoryUUID(categoryUUID: String): String {
-        return UserDataHelper.instance.getCategoryNameThroughCategoryUUID(categoryUUID)
+        return DatabaseHelper.instance.getCategoryNameThroughCategoryUUID(categoryUUID)
+    }
+
+    //Inserting Address in Address table
+    fun insertAddressInAddressTable(addressDataModel: AddressDataModel) {
+        return DatabaseHelper.instance.insertAddressInAddressTable(addressDataModel)
+    }
+
+    //get Cart through user UUId
+    fun getCartThroughUserUUID(userUUID: String): ArrayList<CartDataModel> {
+        return DatabaseHelper.instance.getCartThroughUserUUID(userUUID)
+    }
+
+    //Checks if cart is empty
+    fun isCartEmpty(userUUID: String): Boolean {
+        return DatabaseHelper.instance.isCartEmpty(userUUID)
+    }
+
+    // Update Quantity of Product in Card Table
+    fun updateProductQuantity(quantity: Int, cardUUID: String) {
+        DatabaseHelper.instance.updateProductQuantity(quantity, cardUUID)
+    }
+
+    //Deleting the cart from the cart table
+    fun deleteProductFromCart(cardUUID: String) {
+        DatabaseHelper.instance.deleteProductFromCart(cardUUID)
+    }
+
+    //Deleting the address from the address table
+    fun deleteAddress(addressUUID: String) {
+        DatabaseHelper.instance.deleteAddress(addressUUID)
+    }
+
+    //Get All Address of particular user from the Address table
+    fun getAllAddressThroughUserUUID(userUUID: String): ArrayList<AddressDataModel> {
+        return DatabaseHelper.instance.getAllAddressThroughUserUUID(userUUID)
     }
 
     //Getting the Product through Product UUID
     fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
-        return UserDataHelper.instance.getProductThroughProductUUID(productUUID)
+        return DatabaseHelper.instance.getProductThroughProductUUID(productUUID)
     }
 
     @JvmStatic
     fun LOGOUT() {
-        UserDataHelper.instance.deleteSession()
+        DatabaseHelper.instance.deleteSession()
     }
 
     @JvmStatic
@@ -659,7 +786,7 @@ object Utils {
     }
 
     fun UnAuthorizationToken(cx: Context) {
-        UserDataHelper.instance.deleteSession()
+        DatabaseHelper.instance.deleteSession()
         //  I_clear(cx, LoginActivity::class.java, null)
     }
 
@@ -1115,13 +1242,15 @@ object Utils {
         toast.duration = Toast.LENGTH_SHORT
         toast.show()
     }
+
     // Set input type dynamically based on locale
-    fun toSetPasswordAsLanguage(etPassword:EditText?,context: Context){
+    fun toSetPasswordAsLanguage(etPassword: EditText?, context: Context) {
         val currentLocale = getCurrentLanguage()
         if (currentLocale == arabic) {
             etPassword?.inputType = InputType.TYPE_CLASS_TEXT
         } else {
-            etPassword?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            etPassword?.inputType =
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
         //Setting font family
         etPassword?.typeface = ResourcesCompat.getFont(context, R.font.montserrat_arabic_medium)

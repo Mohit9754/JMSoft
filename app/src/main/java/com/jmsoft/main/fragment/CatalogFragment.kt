@@ -1,17 +1,11 @@
 package com.jmsoft.main.fragment
 
-import android.app.Activity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.jmsoft.R
-import com.jmsoft.basic.UtilityTools.IOnBackPressed
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentCatalogBinding
 import com.jmsoft.main.activity.DashboardActivity
