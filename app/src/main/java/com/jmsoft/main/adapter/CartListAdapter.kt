@@ -2,15 +2,19 @@ package com.jmsoft.main.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.jmsoft.R
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentCartBinding
 import com.jmsoft.databinding.ItemCardListBinding
+import com.jmsoft.main.activity.DashboardActivity
 
 /**
  * Cart list Adapter
@@ -26,7 +30,7 @@ class CartListAdapter(
     RecyclerView.Adapter<CartListAdapter.MyViewHolder>() {
 
     // Price of each product in the cart
-    private var cartPrice = ArrayList<Int>()
+    private var cartPrice = ArrayList<Double>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemCardListBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -98,18 +102,21 @@ class CartListAdapter(
             //Set Click on delete button
             binding.mcvDelete.setOnClickListener(this)
 
+            //Set Click on Cart Product
+            binding.mcvCartProduct.setOnClickListener(this)
+
         }
 
         //Set Total Price of the cart
         private fun setTotalPrice() {
 
-            var totalPrice = 0
+            var totalPrice = 0.0
 
             for (price in cartPrice){
                 totalPrice += price
             }
 
-            fragmentCartBinding.tvTotalPriceVerification?.text = Utils.getThousandSeparate(totalPrice)
+            fragmentCartBinding.tvTotalPriceVerification?.text = Utils.getThousandSeparate(Utils.roundToTwoDecimalPlaces(totalPrice))
         }
 
         //Set the Product price
@@ -168,7 +175,7 @@ class CartListAdapter(
         @SuppressLint("NotifyDataSetChanged")
         override fun onClick(v: View?) {
 
-            //Set Click on plus button
+            // Clicked on plus button
             if (v == binding.tvPlus) {
 
                 //Increment the product quantity by 1
@@ -182,7 +189,7 @@ class CartListAdapter(
 
             }
 
-            //Set Click on minus button
+            // Clicked on minus button
             else if (v == binding.tvMinus) {
 
                 if (cartData.productQuantity != 1) {
@@ -199,7 +206,7 @@ class CartListAdapter(
                 }
             }
 
-            //Set Click on delete button
+            // Clicked on delete button
             else if (v == binding.mcvDelete) {
 
                 cardList.removeAt(position)
@@ -215,14 +222,20 @@ class CartListAdapter(
                 // if cart is empty then show the cart empty image
                 if (cardList.isEmpty()) {
 
-                  /*  fragmentCartBinding.ivEmptyCard?.visibility = View.VISIBLE
-                    fragmentCartBinding.rlVerification?.visibility = View.GONE
-                    fragmentCartBinding.llProgressStatusName?.visibility = View.GONE
-                    fragmentCartBinding.progressBar?.visibility = View.GONE*/
                     fragmentCartBinding.rlCartManagement?.visibility = View.GONE
                     fragmentCartBinding.llCartEmpty?.visibility = View.VISIBLE
 
                 }
+            }
+
+            // Clicked on cart product
+            else if(v == binding.mcvCartProduct) {
+
+                val bundle = Bundle()
+                //Giving the product UUID
+                bundle.putString(Constants.productUUID, productData.productUUId)
+                (context as DashboardActivity).navController?.navigate(R.id.product,bundle)
+
             }
         }
     }

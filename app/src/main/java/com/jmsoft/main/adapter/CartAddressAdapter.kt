@@ -13,14 +13,14 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.R.color
 import com.jmsoft.Utility.Database.AddressDataModel
 import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.databinding.DialogDeleteUserBinding
 import com.jmsoft.databinding.FragmentCartBinding
 import com.jmsoft.databinding.ItemCardAddressBinding
-import com.jmsoft.main.`interface`.AddressSelected
+import com.jmsoft.main.`interface`.AddressSelectionStatus
 
 /**
  * Cart Address Adapter
@@ -33,12 +33,19 @@ class CartAddressAdapter(
     private val context: Context,
     private val addressList: ArrayList<AddressDataModel>,
     private val fragmentCardBinding: FragmentCartBinding,
-    private val addressSelected: AddressSelected
+    private var selectedAddressData: AddressDataModel?,
+    private val addressSelectionStatus: AddressSelectionStatus
 ) :
     RecyclerView.Adapter<CartAddressAdapter.MyViewHolder>() {
 
-    //Selected address binding data
+    // Selected address binding data
     var selectedAddressBinding: ItemCardAddressBinding? = null
+
+    // Selected address position
+    var selectedAddressPosition = -1
+
+    // Deleted address position
+    var deleteAddressPosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemCardAddressBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -51,6 +58,7 @@ class CartAddressAdapter(
         holder.bind(addressList[position], position)
     }
 
+    // Delete Address Dialog
     @SuppressLint("NotifyDataSetChanged")
     private fun showDeleteDialog(position: Int, addressUUID: String) {
 
@@ -58,10 +66,42 @@ class CartAddressAdapter(
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setCanceledOnTouchOutside(true)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_delete_user)
-        dialog.findViewById<MaterialCardView>(R.id.mcvYes).setOnClickListener {
+
+        val dialogBinding = DialogDeleteUserBinding.inflate(LayoutInflater.from(context))
+        dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.ivImage.setImageResource(R.drawable.img_delete_address)
+        dialogBinding.tvMessage.text =
+            context.getString(R.string.are_you_sure_you_want_to_delete_this_address_this_action_cannot_be_undone)
+
+        dialogBinding.mcvYes.setOnClickListener {
 
             dialog.dismiss()
+
+            if (selectedAddressPosition == position) {
+                unSelectAddress()
+            }
+            else {
+                if (position < selectedAddressPosition) {
+
+                    selectedAddressBinding?.mcvAddress?.setCardBackgroundColor(
+                        context.getColor(
+                            color.mcv_background_color
+                        )
+                    )
+                    selectedAddressBinding?.tvFullName?.setTextColor(context.getColor(color.text_color))
+
+
+                    selectedAddressBinding?.let {
+                        setIconTint(
+                            it.ivDelete,
+                            context.getColor(color.text_color)
+                        )
+                    }
+                    deleteAddressPosition = position
+                }
+
+            }
 
             //Deleting the address
             Utils.deleteAddress(addressUUID)
@@ -79,12 +119,47 @@ class CartAddressAdapter(
             }
             notifyDataSetChanged()
         }
-        dialog.findViewById<MaterialCardView>(R.id.mcvNo).setOnClickListener {
+
+        dialogBinding.mcvNo.setOnClickListener {
 
             dialog.dismiss()
         }
+
         dialog.setCancelable(true)
         dialog.show()
+
+    }
+
+    // making the previous selected address normal
+    fun unSelectAddress() {
+
+        selectedAddressBinding?.mcvAddress?.setCardBackgroundColor(
+            context.getColor(
+                color.mcv_background_color
+            )
+        )
+        selectedAddressBinding?.tvFullName?.setTextColor(context.getColor(color.text_color))
+
+
+        selectedAddressBinding?.let {
+            setIconTint(
+                it.ivDelete,
+                context.getColor(color.text_color)
+            )
+        }
+
+        selectedAddressBinding = null
+        selectedAddressPosition = -1
+
+        addressSelectionStatus.addressUnselected()
+
+    }
+
+    // Set Delete Icon Tint
+    private fun setIconTint(imageView: ImageView, color: Int) {
+
+        // Apply the ColorFilter to the ImageView
+        imageView.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
 
     }
 
@@ -94,47 +169,75 @@ class CartAddressAdapter(
         // Address Data
         private lateinit var addressData: AddressDataModel
 
-        //position of Address Data
+        // position of Address Data
         private var position = -1
 
         fun bind(addressData: AddressDataModel, position: Int) {
             this.addressData = addressData
             this.position = position
 
-            //Setting Address
-            setAddress()
+            // After the notify Data set Change it select the previous selected address
+            selectPreviousSelectedAddress()
 
-            //Setting Click on Delete Button
+            // Select new added address
+            selectNewAddedAddress()
+
+            // Setting full name
+            setFullName()
+
+            // Setting Click on Delete Button
             binding.ivDelete.setOnClickListener(this)
 
-            //Setting Click on Address Section
+            // Setting Click on Address Section
             binding.mcvAddress.setOnClickListener(this)
 
         }
 
+        // Select new added address
+        private fun selectNewAddedAddress() {
+
+            if (selectedAddressData != null) {
+
+                if (addressData.addressUUID == selectedAddressData!!.addressUUID) {
+                    selectAddress()
+                    addressSelectionStatus.addressSelected(addressData)
+                    selectedAddressData = null
+
+                }
+            }
+        }
+
+        // After the notify Data set Change it select the previous selected address
+        private fun selectPreviousSelectedAddress() {
+
+            if (selectedAddressBinding != null && selectedAddressPosition != -1 && deleteAddressPosition != -1) {
+
+                if (deleteAddressPosition < selectedAddressPosition) {
+
+                    if (selectedAddressPosition - 1 == position) {
+                        selectAddress()
+                        deleteAddressPosition = -1
+                    }
+                }
+            }
+        }
+
         //Setting Address
         @SuppressLint("SetTextI18n")
-        private fun setAddress() {
-            binding.tvAddress.text = addressData.address
+        private fun setFullName() {
+            binding.tvFullName.text = "${addressData.firstName} ${addressData.lastName}"
         }
 
-        // Set Delete Icon Tint
-        private fun setIconTint(imageView: ImageView, color: Int) {
-
-            // Apply the ColorFilter to the ImageView
-            imageView.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
-
-        }
 
         //Select the address and change its background color and text
         private fun selectAddress() {
 
             binding.mcvAddress.setCardBackgroundColor(context.getColor(color.text_color))
-            binding.tvAddress.setTextColor(context.getColor(color.white))
-
+            binding.tvFullName.setTextColor(context.getColor(color.white))
             setIconTint(binding.ivDelete, context.getColor(color.white))
 
             selectedAddressBinding = binding
+            selectedAddressPosition = position
         }
 
 
@@ -151,26 +254,26 @@ class CartAddressAdapter(
             //Click on Address Section
             else if (v == binding.mcvAddress) {
 
-                // making the previous selected address normal
-                selectedAddressBinding?.mcvAddress?.setCardBackgroundColor(context.getColor(color.mcv_background_color))
-                selectedAddressBinding?.tvAddress?.setTextColor(context.getColor(color.text_color))
-                selectedAddressBinding?.let {
-                    setIconTint(
-                        it.ivDelete,
-                        context.getColor(color.text_color)
-                    )
+                if (selectedAddressBinding == binding) {
+
+                    // making the previous selected address normal
+                    unSelectAddress()
+
+                    selectedAddressBinding = null
+//                    Utils.T(context,"Already selected")
+                } else {
+
+                    // making the previous selected address normal
+                    unSelectAddress()
+
+                    //select address
+                    selectAddress()
+
+                    //Callback for Managing if any address is selected or not
+                    addressSelectionStatus.addressSelected(addressData)
                 }
 
-                //select address
-                selectAddress()
-
-                //Callback for Managing if any address is selected or not
-                addressSelected.addressSelected()
-
             }
-
-
         }
-
     }
 }

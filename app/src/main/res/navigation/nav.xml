@@ -44,14 +44,32 @@
 
     <fragment
         android:id="@+id/product"
-        android:name="com.jmsoft.main.fragment.ProductFragment"
+        android:name="com.jmsoft.main.fragment.ProductDetailFragment"
         android:label="Product"
         tool:layout="@layout/fragment_product"/>
 
     <fragment
-        android:id="@+id/card"
+        android:id="@+id/cart"
         android:name="com.jmsoft.main.fragment.CartFragment"
-        android:label="Add To Card"
+        android:label="Add To Cart"
         tool:layout="@layout/fragment_cart"/>
+
+    <fragment
+        android:id="@+id/inventory"
+        android:name="com.jmsoft.main.fragment.InventoryFragment"
+        android:label="Inventory"
+        tool:layout="@layout/fragment_inventory"/>
+
+    <fragment
+        android:id="@+id/metalType"
+        android:name="com.jmsoft.main.fragment.MetalTypeFragment"
+        android:label="Metal Type"
+        tool:layout="@layout/fragment_metal_type"/>
+
+    <fragment
+        android:id="@+id/productInventory"
+        android:name="com.jmsoft.main.fragment.ProductInventoryFragment"
+        android:label="Product Inventory"
+        tool:layout="@layout/fragment_product_inventory"/>
 
 </navigation>

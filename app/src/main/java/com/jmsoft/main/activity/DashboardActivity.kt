@@ -27,33 +27,28 @@ import com.jmsoft.databinding.ActivityDashboardBinding
 class DashboardActivity : BaseActivity(), View.OnClickListener {
 
     private val activity: Activity = this@DashboardActivity
-    private lateinit var binding: ActivityDashboardBinding
+    var binding: ActivityDashboardBinding? = null
     var navController: NavController? = null
-
-    // search
-    var mcvSearch:MaterialCardView? = null
 
     // flag variable for back press management of cart fragment
     var currentState = ""
 
-    var toolbar:RelativeLayout? = null
-    var bottom:RelativeLayout? = null
+    var mcvSearch:MaterialCardView? = null
+    var etSearch:EditText? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDashboardBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        toolbar = binding.toolbar
-        bottom = binding.rlBottom
+        binding = ActivityDashboardBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
+
+        mcvSearch = binding?.mcvSearch
+        etSearch = binding?.etSearch
 
         navController = findNavController(R.id.fragmentContainerView)
 
-        mcvSearch = binding.mcvSearch
-
         //set the Clicks And initialization
         init()
-
 
     }
 
@@ -73,28 +68,28 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
     //set the Clicks And initialization
     private fun init() {
 
-        binding.etSearch?.let { binding.mcvSearch?.let { it1 -> setFocusChangeLis(it, it1) } }
+        binding?.etSearch?.let { binding?.mcvSearch?.let { it1 -> setFocusChangeLis(it, it1) } }
 
         //For Managing Back press
         this.onBackPressedDispatcher.addCallback(onBackPressedCallback)
 
         // Set Click on language switcher
-        binding.ivLanguageSwitcher?.setOnClickListener(this)
+        binding?.ivLanguageSwitcher?.setOnClickListener(this)
 
         // Set Click on setting icon for navigating to Setting fragment
-        binding.ivSetting?.setOnClickListener(this)
+        binding?.ivSetting?.setOnClickListener(this)
 
         // set Click on Bag Icon for navigating to Home fragment
-        binding.ivLogo?.setOnClickListener(this)
+        binding?.ivLogo?.setOnClickListener(this)
 
-        binding.ivCard?.setOnClickListener(this)
+        binding?.ivCard?.setOnClickListener(this)
     }
 
     //Handles All the Clicks
     override fun onClick(v: View?) {
 
         // Switching language according to current language
-        if (v == binding.ivLanguageSwitcher) {
+        if (v == binding?.ivLanguageSwitcher) {
 
             val lang = Utils.getCurrentLanguage()
 
@@ -106,8 +101,8 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
                 activity.recreate()
             }
 
-            // navigate to Setting fragment
-        } else if (v == binding.ivSetting) {
+        // navigate to Setting fragment
+        } else if (v == binding?.ivSetting) {
 
             // navController?.navigate(R.id.addToCard)
             if(navController?.currentDestination?.id != R.id.setting) {
@@ -118,21 +113,20 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
         }
 
         // navigate to home fragment
-        else if (v == binding.ivLogo) {
+        else if (v == binding?.ivLogo) {
             navController?.popBackStack(R.id.home, false)
         }
 
         // navigate to Card fragment
-        else if (v == binding.ivCard) {
+        else if (v == binding?.ivCard) {
 
             // navController?.navigate(R.id.addToCard)
-            if(navController?.currentDestination?.id != R.id.card) {
+            if(navController?.currentDestination?.id != R.id.cart) {
 
-                navController?.navigate(R.id.card)
+                navController?.navigate(R.id.cart)
 
             }
         }
-
     }
 
     //Managing Back press
@@ -143,12 +137,12 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
             if (navController?.currentDestination?.id == R.id.home) {
                 finish()
             }
-            else if (navController?.currentDestination?.id == R.id.card){
+            else if (navController?.currentDestination?.id == R.id.cart){
 
                 if (currentState == information){
 
                     navController?.popBackStack()
-                    navController?.navigate(R.id.card)
+                    navController?.navigate(R.id.cart)
                 }
                 else {
                     navController?.popBackStack()
@@ -162,5 +156,4 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
             }
         }
     }
-
 }

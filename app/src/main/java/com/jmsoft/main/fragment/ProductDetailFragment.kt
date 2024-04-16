@@ -23,11 +23,11 @@ import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentProductBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CatalogAdapter
-import com.jmsoft.main.adapter.CollectionAdapter
+import com.jmsoft.main.adapter.ProductCollectionAdapter
 import com.jmsoft.main.adapter.ProductImageAdapter
 
 @Suppress("DEPRECATION")
-class ProductFragment : Fragment(), View.OnClickListener {
+class ProductDetailFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentProductBinding
 
@@ -44,6 +44,9 @@ class ProductFragment : Fragment(), View.OnClickListener {
 
         // Inflate the layout for this fragment
         binding = FragmentProductBinding.inflate(layoutInflater)
+
+        // Hide the Search option
+        (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.GONE
 
         // set the Clicks , initialization And Setup
         init()
@@ -64,10 +67,6 @@ class ProductFragment : Fragment(), View.OnClickListener {
             Utils.getImageFromInternalStorage(requireActivity(), image)
                 ?.let { bitmapImages.add(it) }
         }
-
-
-        binding.ivProduct?.setImageBitmap(bitmapImages[0])
-
 
         val adapter = binding.ivProduct?.let {
             binding.llLeftBtn?.let { it1 ->
@@ -91,7 +90,7 @@ class ProductFragment : Fragment(), View.OnClickListener {
 
         val productList = Utils.getProductsThroughCategory(productCategory, productUUID)
 
-        val adapter = CollectionAdapter(requireActivity(), productList)
+        val adapter = ProductCollectionAdapter(requireActivity(), productList)
 
         binding.rvCollection?.layoutManager =
             LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
@@ -140,11 +139,11 @@ class ProductFragment : Fragment(), View.OnClickListener {
     private fun setCartStatus() {
 
         if (isProductExistInCart) {
-            binding.tvCartStatus?.text = requireActivity().getString(R.string.remove_from_card)
+            binding.tvCartStatus?.text = requireActivity().getString(R.string.remove_from_cart)
             binding.llCartStatus?.setBackgroundResource(R.drawable.bg_button)
         } else {
 
-            binding.tvCartStatus?.text = requireActivity().getString(R.string.add_to_card)
+            binding.tvCartStatus?.text = requireActivity().getString(R.string.add_to_cart)
             binding.llCartStatus?.setBackgroundResource(R.drawable.bg_add_to_card)
         }
     }
@@ -162,14 +161,18 @@ class ProductFragment : Fragment(), View.OnClickListener {
         binding.tvProductWeight?.text =
             "${productData.productWeight} ${productData.productUnitOfMeasurement} "
 
-        binding.tvProductCarat?.text = productData.productCarat
+        binding.tvProductCarat?.text = productData.productCarat.toString()
         binding.tvProductType?.text = productData.productMetalType
 
         binding.tvProductCategory?.text =
             productData.categoryUUID?.let { Utils.getCategoryNameThroughCategoryUUID(it) }
 
         binding.tvProductDescription?.text = productData.productDescription
-        binding.tvProductPrice?.text = productData.productPrice.toString()
+        binding.tvProductPrice?.text = productData.productPrice?.let {
+            Utils.roundToTwoDecimalPlaces(
+                it
+            )
+        }?.let { Utils.getThousandSeparate(it) }
 
         // Set up collection Recycler view
         productData.productCategory?.let {
@@ -202,7 +205,7 @@ class ProductFragment : Fragment(), View.OnClickListener {
 
         //Height of toolbar and bottom
         val heightOfToolbarAndBottom =
-            (dashboardActivity.bottom?.height?.let { dashboardActivity.toolbar?.height?.plus(it) })
+            (dashboardActivity.binding?.rlBottom?.height?.let { dashboardActivity.binding?.toolbar?.height?.plus(it) })
 
         val statusBarHeight = Utils.getStatusbarHeight(requireActivity())
 

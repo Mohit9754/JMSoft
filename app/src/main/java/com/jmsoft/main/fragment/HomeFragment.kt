@@ -31,7 +31,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         binding = FragmentHomeBinding.inflate(layoutInflater)
 
         // Hide the Search option
-        (requireActivity() as DashboardActivity).mcvSearch?.visibility = View.GONE
+        (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.INVISIBLE
 
         (requireActivity() as DashboardActivity).currentState = verification
 
@@ -49,6 +49,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         // Set Click on Settings option
         binding.mcvSettings?.setOnClickListener(this)
+
+        // Set Click on Purchasing option
+        binding.mcvPurchasing?.setOnClickListener(this)
+
+        // Set Click on Inventory option
+        binding.mcvInventory?.setOnClickListener(this)
+
     }
 
     //Handles All the Clicks
@@ -63,6 +70,20 @@ class HomeFragment : Fragment(), View.OnClickListener {
         // Navigate to Setting Fragment
         else if (v == binding.mcvSettings) {
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.setting)
+
+        }
+
+        // Navigate to Cart Fragment
+        else if (v == binding.mcvPurchasing) {
+
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.cart)
+
+        }
+
+        // Navigate to Inventory Fragment
+        else if (v == binding.mcvInventory) {
+
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.inventory)
 
         }
 

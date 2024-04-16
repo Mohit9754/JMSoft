@@ -12,7 +12,7 @@
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/_5sdp"
     app:cardElevation="0dp"
-    app:strokeColor="@color/theme"
+    app:strokeColor="@color/white"
     app:strokeWidth="2dp"
     tools:ignore="MissingDefaultResource">
 
@@ -23,6 +23,6 @@
         android:layout_gravity="center"
         android:layout_marginHorizontal="@dimen/_22sdp"
         android:layout_marginVertical="@dimen/_5sdp"
-        android:src="@drawable/img_ring" />
+        tools:ignore="ContentDescription" />
 
 </com.google.android.material.card.MaterialCardView>

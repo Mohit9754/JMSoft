@@ -272,7 +272,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
                 //Update user details in the User Table
                 Utils.updateUserDetails(userDataModel)
-                Utils.T(activity, getString(R.string.updated_successfully))
+                Utils.T(requireActivity(), getString(R.string.updated_successfully))
 
                 val updateInSession = arguments?.getBoolean(updateInSession)
 
@@ -310,6 +310,8 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         textView.text = msg
         textView.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.top_to_bottom))
     }
+
+    // Handles All the Clicks
 
     override fun onClick(v: View?) {
 
@@ -385,7 +387,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 binding.etPhoneNumber?.setText("")
                 binding.etPassword?.setText("")
 
-                Utils.T(activity, getString(R.string.new_user_registered_successfully))
+                Utils.T(requireActivity(), getString(R.string.new_user_registered_successfully))
 
                 //Navigate to user management
                 (requireActivity() as DashboardActivity).navController?.popBackStack()

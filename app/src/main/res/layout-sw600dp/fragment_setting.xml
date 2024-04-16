@@ -91,7 +91,6 @@
                 <LinearLayout
                     android:layout_width="@dimen/_43sdp"
                     android:layout_height="@dimen/_43sdp"
-
                     android:background="@drawable/dotted_stroke"
                     android:padding="@dimen/_3sdp">
 

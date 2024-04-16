@@ -1,14 +1,13 @@
 package com.jmsoft.basic.Database
 
 import android.content.Context
-import com.jmsoft.basic.Database.UserDataModel.Companion.CreateTable
-import com.jmsoft.basic.Database.UserDataModel.Companion.dropTable
-import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteOpenHelper
 import com.jmsoft.Utility.Database.AddressDataModel
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 
@@ -29,12 +28,27 @@ class DataManager
      */
     override fun onCreate(db: SQLiteDatabase) {
 
-        CreateTable(db)
+        // Creating User and User_session table
+        UserDataModel.CreateTable(db)
+
+        // Creating Product table
         ProductDataModel.CreateTable(db)
+
+        // Creating Category table
         CategoryDataModel.CreateTable(db)
+
+        // Creating Cart table
         CartDataModel.CreateTable(db)
+
+        // Creating Address table
         AddressDataModel.CreateTable(db)
+
+        // Creating Device table
         DeviceDataModel.CreateTable(db)
+
+        // Creating Collection table
+        CollectionDataModel.CreateTable(db)
+
     }
 
     /**
@@ -44,19 +58,33 @@ class DataManager
      */
     override fun onUpgrade(db: SQLiteDatabase, paramInt1: Int, paramInt2: Int) {
 
-        dropTable(db)
+        // Drop User and User_session table
+        UserDataModel.dropTable(db)
+
+        // Drop Product table
         ProductDataModel.dropTable(db)
+
+        // Drop Category table
         CategoryDataModel.dropTable(db)
+
+        // Drop Cart table
         CartDataModel.dropTable(db)
+
+        // Drop Address table
         AddressDataModel.dropTable(db)
+
+        // Drop Device table
         DeviceDataModel.dropTable(db)
+
+        // Drop Collection table
+        CollectionDataModel.dropTable(db)
 
         onCreate(db)
     }
 
     companion object {
 
-        const val DATABASE_VERSION = 20
+        const val DATABASE_VERSION = 31
         const val DATABASE_NAME = "JM_Soft"
     }
 }

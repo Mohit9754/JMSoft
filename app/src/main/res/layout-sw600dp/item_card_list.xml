@@ -10,7 +10,7 @@
     android:layout_marginVertical="@dimen/_4sdp"
     app:cardBackgroundColor="@color/off_white"
     app:cardElevation="0dp"
-    android:id="@+id/mcvCart"
+    android:id="@+id/mcvCartProduct"
     app:cardCornerRadius="@dimen/_5sdp"
     tools:ignore="MissingDefaultResource">
 
@@ -18,13 +18,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="5"
+        android:weightSum="10"
         android:paddingStart="@dimen/_8sdp"
-        tools:ignore="RtlSymmetry">
+        tools:ignore="DisableBaselineAlignment,RtlSymmetry">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="3"
+            android:layout_weight="6"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_height="wrap_content">
@@ -33,6 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/mcvImage"
+            android:layout_marginStart="1dp"
             android:layout_marginVertical="@dimen/_4sdp"
             app:cardBackgroundColor="@color/off_white"
             app:cardCornerRadius="@dimen/_15sdp">
@@ -43,7 +44,8 @@
                 android:scaleType="centerCrop"
                 android:id="@+id/ivProduct"
                 android:elevation="0dp"
-                android:src="@drawable/img_ring_product" />
+                android:src="@drawable/img_ring_product"
+                tools:ignore="ContentDescription" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -61,54 +63,58 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="2"
+            android:orientation="horizontal"
             android:gravity="end"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1.8"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/plus"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/tvPlus"
+                android:padding="@dimen/_2sdp"
+                android:textSize="@dimen/_13sdp"
+                android:textColor="@color/text_hint"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_1"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/tvQuantity"
+                android:layout_marginHorizontal="@dimen/_2sdp"
+                android:padding="@dimen/_1sdp"
+                android:textSize="@dimen/_8sdp"
+                android:textColor="@color/black"
+                />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/minus"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/tvMinus"
+                android:padding="@dimen/_2sdp"
+                android:textSize="@dimen/_16sdp"
+                android:textColor="@color/text_hint"
+                />
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:gravity="end"
+            android:layout_weight="2.2"
             android:orientation="horizontal"
             android:layout_gravity="center_vertical"
             android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginEnd="@dimen/_15sdp"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/plus"
-                    android:id="@+id/tvPlus"
-                    android:padding="@dimen/_2sdp"
-                    android:textSize="@dimen/_13sdp"
-                    android:textColor="@color/text_hint"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/_1"
-                    android:id="@+id/tvQuantity"
-                    android:layout_marginHorizontal="@dimen/_2sdp"
-                    android:padding="@dimen/_1sdp"
-                    android:textSize="@dimen/_8sdp"
-                    android:textColor="@color/black"
-                    />
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/minus"
-                    android:id="@+id/tvMinus"
-                    android:padding="@dimen/_2sdp"
-                    android:textSize="@dimen/_13sdp"
-                    android:textColor="@color/text_hint"
-                    />
-
-
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -145,22 +151,26 @@
                 android:id="@+id/mcvDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:outlineAmbientShadowColor="@color/ambientShadowColor"
                 android:outlineSpotShadowColor="@color/spotShadowColor"
                 android:layout_marginEnd="@dimen/_8sdp"
                 app:cardBackgroundColor="@color/light_red"
-                app:cardCornerRadius="@dimen/_6sdp">
+                app:cardCornerRadius="@dimen/_6sdp"
+                tools:ignore="UnusedAttribute">
 
                 <ImageView
                     android:layout_width="@dimen/_6sdp"
                     android:layout_height="@dimen/_6sdp"
                     android:layout_marginHorizontal="@dimen/_5sdp"
                     android:layout_marginVertical="@dimen/_5sdp"
-                    android:src="@drawable/icon_cross" />
+                    android:src="@drawable/icon_cross"
+                    tools:ignore="ContentDescription" />
 
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
+
 
     </LinearLayout>
 

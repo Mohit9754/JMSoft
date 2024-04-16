@@ -133,7 +133,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
         binding = FragmentSettingBinding.inflate(layoutInflater)
 
         // Hide the Search option
-        (requireActivity() as DashboardActivity).mcvSearch?.visibility = View.GONE
+        (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.GONE
 
         (requireActivity() as DashboardActivity).currentState = Constants.verification
 

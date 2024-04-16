@@ -3,16 +3,19 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item>
-        <shape android:shape="oval" >
+        <shape android:shape="rectangle" >
             <stroke
                 android:color="@color/theme"
-                android:dashWidth="8px"
-                android:dashGap="8px"
-                android:width="3px"/>
+                android:dashWidth="6px"
+                android:dashGap="11px"
+                android:width="2px"/>
 
             <size
                 android:width="@dimen/_15sdp"
                 android:height="@dimen/_15sdp"/>
+
+            <corners android:radius="@dimen/_3sdp"/>
+
         </shape>
     </item>
 

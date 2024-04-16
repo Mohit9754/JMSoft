@@ -19,6 +19,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
@@ -59,6 +60,12 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         //set the Clicks And initialization
         init()
 
+        val collectionDataModel = CollectionDataModel()
+        collectionDataModel.collectionUUID = Utils.generateUUId()
+        collectionDataModel.collectionName = "wedding"
+
+        Utils.addCollectionInCollectionTable(collectionDataModel)
+
         val categoryDataModel = CategoryDataModel()
         categoryDataModel.categoryUUID = Utils.generateUUId()
         categoryDataModel.categoryName = "Ring"
@@ -83,7 +90,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         val bitmapTwo = getDrawable(R.drawable.img_ring_product)?.toBitmap()
 
         bitmapOne?.let { bitmapTwo?.let { it1 ->
-            Utils.insertProductInProductTable("Ring","Royal Gold Ring",12000, it,
+            Utils.insertProductInProductTable("Ring","Royal Gold Ring",12000.5, it,
                 it1,
                 activity
             )
@@ -93,7 +100,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         val bitmapFour = getDrawable(R.drawable.ring_two)?.toBitmap()
 
         bitmapFour?.let { bitmapThree?.let { it1 ->
-            Utils.insertProductInProductTable("Ring","Royal Silver Ring",10000, it,
+            Utils.insertProductInProductTable("Ring","Royal Silver Ring",10000.65, it,
                 it1,
                 activity
             )
@@ -103,7 +110,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
 //        val bitmapSix = getDrawable(R.drawable.necklace_one)?.toBitmap()
 
         bitmapFive?.let { bitmapFive?.let { it1 ->
-            Utils.insertProductInProductTable("necklace","Royal Gold necklace",25000, it,
+            Utils.insertProductInProductTable("necklace","Royal Gold necklace",25000.55, it,
                 it1,
                 activity
             )
@@ -112,7 +119,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         val bitmapSix = getDrawable(R.drawable.necklane_two)?.toBitmap()
 
         bitmapSix?.let { bitmapSix?.let { it1 ->
-            Utils.insertProductInProductTable("necklace","Royal Silver necklace",15000, it,
+            Utils.insertProductInProductTable("necklace","Royal Silver necklace",15000.45, it,
                 it1,
                 activity
             )
@@ -121,7 +128,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         val bitmapEight = getDrawable(R.drawable.necklane_three)?.toBitmap()
 
         bitmapEight?.let { bitmapEight?.let { it1 ->
-            Utils.insertProductInProductTable("necklace","Royal Diamond necklace",50000, it,
+            Utils.insertProductInProductTable("necklace","Royal Diamond necklace",50000.21, it,
                 it1,
                 activity
             )
@@ -130,7 +137,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         val bitmapSeven = getDrawable(R.drawable.earing_one)?.toBitmap()
 
         bitmapSeven?.let { bitmapSeven?.let { it1 ->
-            Utils.insertProductInProductTable("earrings","Royal Gold earrings",30000, it,
+            Utils.insertProductInProductTable("earrings","Royal Gold earrings",30000.85, it,
                 it1,
                 activity
             )
@@ -139,7 +146,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         val bitmapNine = getDrawable(R.drawable.earing_two)?.toBitmap()
 
         bitmapNine?.let { bitmapNine?.let { it1 ->
-            Utils.insertProductInProductTable("earrings","Royal Solver earrings",34000, it,
+            Utils.insertProductInProductTable("earrings","Royal Solver earrings",34000.22, it,
                 it1,
                 activity
             )

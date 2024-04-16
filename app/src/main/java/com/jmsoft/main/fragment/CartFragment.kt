@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.AddressDataModel
-import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.address
 import com.jmsoft.basic.UtilityTools.Constants.Companion.confirmation
 import com.jmsoft.basic.UtilityTools.Constants.Companion.firstName
@@ -37,7 +36,7 @@ import com.jmsoft.databinding.FragmentCartBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CartListAdapter
 import com.jmsoft.main.adapter.CartAddressAdapter
-import com.jmsoft.main.`interface`.AddressSelected
+import com.jmsoft.main.`interface`.AddressSelectionStatus
 
 class CartFragment : Fragment(), View.OnClickListener {
 
@@ -46,14 +45,13 @@ class CartFragment : Fragment(), View.OnClickListener {
     //Validation Mode object
     private var errorValidationModels: MutableList<ValidationModel> = ArrayList()
 
-    //Address List
-    private var addressList = ArrayList<AddressDataModel>()
-
     //Current state for recreating the fragment
     private var currentState: String = verification
 
-    // Flag variable for checking if address is selected or not
-    private var isAddressSelected = false
+    // Selected Address Data Model
+    private var selectedAddressData: AddressDataModel? = null
+
+    private var addressListAdapter:CartAddressAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,8 +71,8 @@ class CartFragment : Fragment(), View.OnClickListener {
         // Calling the setState method for Setting the state when fragment recreate
         savedInstanceState?.getString(state)?.let { setState(it) }
 
-        // Visible the Search on Toolbar
-        (requireActivity() as DashboardActivity).mcvSearch?.visibility = View.VISIBLE
+        // Hide the Search option
+        (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.INVISIBLE
 
         //set the Clicks , initialization and setup
         init()
@@ -107,12 +105,7 @@ class CartFragment : Fragment(), View.OnClickListener {
         }
         // If cart is empty
         else {
-/*            binding?.rlInformation?.visibility = View.GONE
-            binding?.llConfirmation?.visibility = View.GONE
-            binding?.rlVerification?.visibility = View.GONE
-            binding?.llProgressStatusName?.visibility = View.GONE
-            binding?.ivEmptyCard?.visibility = View.VISIBLE
-            binding?.progressBar?.visibility = View.GONE*/
+
             binding?.rlCartManagement?.visibility = View.GONE
             binding?.llCartEmpty?.visibility = View.VISIBLE
 
@@ -122,27 +115,47 @@ class CartFragment : Fragment(), View.OnClickListener {
     //Setting Up Address List Recycler View
     private fun setUpAddressListRecyclerView() {
 
-        addressList = Utils.GetSession().userUUID?.let { Utils.getAllAddressThroughUserUUID(it) }
-            ?: ArrayList()
+        val addressList =
+            Utils.GetSession().userUUID?.let { Utils.getAllAddressThroughUserUUID(it) }
 
         // Address list is empty
-        if (addressList.isEmpty()) {
+        if (addressList?.isEmpty() == true || addressList == null) {
 
             binding?.ivNoAddress?.visibility = View.VISIBLE
 
         } else {
 
             binding?.ivNoAddress?.visibility = View.GONE
-            val cartListAdapter =
+            addressListAdapter =
 
                 binding?.let {
                     CartAddressAdapter(
                         requireActivity(),
                         addressList,
                         it,
-                        object : AddressSelected {
-                            override fun addressSelected() {
-                                isAddressSelected = true
+                        selectedAddressData
+                        ,
+                        object : AddressSelectionStatus {
+
+                            override fun addressSelected(addressDataModel: AddressDataModel) {
+                                selectedAddressData = addressDataModel
+
+                                binding?.radioButton?.isChecked = false
+                                binding?.etFirstName?.setText(addressDataModel.firstName)
+                                binding?.etLastName?.setText(addressDataModel.lastName)
+                                binding?.etAddress?.setText(addressDataModel.address)
+                                binding?.etPhoneNumber?.setText(addressDataModel.phoneNumber)
+                                binding?.etZipCode?.setText(addressDataModel.zipCode)
+                            }
+
+                            override fun addressUnselected() {
+
+                                selectedAddressData = null
+//                                binding?.radioButton?.isChecked = true
+
+                                // Make empty all the edittext
+                                removeData()
+
                             }
                         }
                     )
@@ -150,10 +163,20 @@ class CartFragment : Fragment(), View.OnClickListener {
 
             binding?.rvAddressList?.layoutManager =
                 LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
-            binding?.rvAddressList?.adapter = cartListAdapter
+            binding?.rvAddressList?.adapter = addressListAdapter
         }
     }
 
+    // Make empty all the edittext
+    private fun removeData(){
+
+        binding?.etFirstName?.setText("")
+        binding?.etLastName?.setText("")
+        binding?.etAddress?.setText("")
+        binding?.etPhoneNumber?.setText("")
+        binding?.etZipCode?.setText("")
+
+    }
 
     //setting the selector on material card view
     private fun setFocusChangeLis(editText: EditText, materialCardView: MaterialCardView) {
@@ -317,12 +340,16 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         // Set Click on Back To Home  TextView
         binding?.tvBackToHomePage?.setOnClickListener(this)
+
+        // Set Click on Radio Button
+        binding?.llRadioButton?.setOnClickListener(this)
     }
 
-    // Add new Address in the Address table
-    private fun addAddress() {
+    // Add new Address
+    private fun addNewAddress() {
 
         val addressDataModel = AddressDataModel()
+
         addressDataModel.addressUUID = Utils.generateUUId()
         addressDataModel.firstName = binding?.etFirstName?.text.toString().trim()
         addressDataModel.lastName = binding?.etLastName?.text.toString().trim()
@@ -331,17 +358,92 @@ class CartFragment : Fragment(), View.OnClickListener {
         addressDataModel.zipCode = binding?.etZipCode?.text.toString().trim()
         addressDataModel.userUUID = Utils.GetSession().userUUID
 
-        binding?.etFirstName?.setText("")
-        binding?.etLastName?.setText("")
-        binding?.etAddress?.setText("")
-        binding?.etPhoneNumber?.setText("")
-        binding?.etZipCode?.setText("")
+        // Make empty all the edittext
+        removeData()
 
         Utils.insertAddressInAddressTable(addressDataModel)
+
+        selectedAddressData = addressDataModel
 
         //Setting Up Address List Recycler View
         setUpAddressListRecyclerView()
 
+    }
+
+    // Show phone number already exist error
+    private fun showPhoneNumberAlreadyExistError() {
+
+        binding?.tvPhoneNumberError?.also {
+
+            it.visibility = View.VISIBLE
+            it.text = requireActivity().getString(R.string.mobile_number_already_exist)
+            it.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.top_to_bottom))
+        }
+    }
+
+    // Update Address
+    private fun updateAddress() {
+
+        val addressDataModel = AddressDataModel()
+
+        addressDataModel.addressUUID = selectedAddressData?.addressUUID
+        addressDataModel.firstName = binding?.etFirstName?.text.toString().trim()
+        addressDataModel.lastName = binding?.etLastName?.text.toString().trim()
+        addressDataModel.address = binding?.etAddress?.text.toString().trim()
+        addressDataModel.phoneNumber = binding?.etPhoneNumber?.text.toString().trim()
+        addressDataModel.zipCode = binding?.etZipCode?.text.toString().trim()
+        addressDataModel.userUUID = Utils.GetSession().userUUID
+
+        Utils.updateAddressInTheAddressTable(addressDataModel)
+
+
+
+        selectedAddressData = addressDataModel
+
+        //Setting Up Address List Recycler View
+        setUpAddressListRecyclerView()
+
+        Utils.T(requireActivity(), getString(R.string.address_updated_successfully))
+
+    }
+
+    // Check whether we have to add new address or update the address , and act accordingly
+    private fun checkIfAddNewAddressOrUpdateAddress() {
+
+        val phoneNumber = binding?.etPhoneNumber?.text.toString().trim()
+
+        // Update address
+        if (selectedAddressData != null) {
+
+            val isPhoneNumberExist = selectedAddressData!!.addressUUID?.let {
+                Utils.isPhoneNumberExistInAddressTableAcceptMine(
+                    phoneNumber,
+                    it
+                )
+            }
+
+            if (isPhoneNumberExist == true) {
+                showPhoneNumberAlreadyExistError()
+            } else {
+
+                // Update Address
+                updateAddress()
+            }
+
+        }
+        // Add new address
+        else {
+
+            // Check if phone Number exist
+            if (!Utils.isPhoneNumberExistInAddressTable(phoneNumber)) {
+
+                //Add new address
+                addNewAddress()
+
+            } else {
+                showPhoneNumberAlreadyExistError()
+            }
+        }
     }
 
     //Validating Sign Up details
@@ -372,10 +474,9 @@ class CartFragment : Fragment(), View.OnClickListener {
             )
         )
 
-
         errorValidationModels.add(
             ValidationModel(
-                Validation.Type.Empty, binding?.etZipCode, binding?.tvZipCodeError
+                Validation.Type.ZipCode, binding?.etZipCode, binding?.tvZipCodeError
             )
         )
 
@@ -384,23 +485,8 @@ class CartFragment : Fragment(), View.OnClickListener {
             validation?.CheckValidation(requireActivity(), errorValidationModels)
         if (resultReturn?.aBoolean == true) {
 
-            // Check if phone Number exist
-            if (!Utils.isPhoneNumberExistInAddressTable(
-                    binding?.etPhoneNumber?.text.toString().trim()
-                )
-            ) {
-                //Add new address
-                addAddress()
-
-            } else {
-
-                binding?.tvPhoneNumberError?.also {
-
-                    it.visibility = View.VISIBLE
-                    it.text = requireActivity().getString(R.string.mobile_number_already_exist)
-                    it.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.top_to_bottom))
-                }
-            }
+            // Check whether we have to add new address or update the address , and act accordingly
+            checkIfAddNewAddressOrUpdateAddress()
 
         } else {
             resultReturn?.errorTextView?.visibility = View.VISIBLE
@@ -466,7 +552,7 @@ class CartFragment : Fragment(), View.OnClickListener {
         // Set Click Place Order button
         else if (v == binding?.mcvPlaceOrder) {
 
-            if (isAddressSelected) {
+            if (selectedAddressData != null) {
 
                 (requireActivity() as DashboardActivity).currentState = confirmation
                 currentState = confirmation
@@ -482,6 +568,27 @@ class CartFragment : Fragment(), View.OnClickListener {
             }
         }
 
+        // Click on Radio button
+        else if (v == binding?.llRadioButton) {
+
+            if (selectedAddressData == null) {
+
+                if (binding?.radioButton?.isChecked == true ){
+                    binding?.radioButton?.isChecked = false
+                }
+                else {
+                    binding?.radioButton?.isChecked = true
+                }
+            }
+            else {
+
+                selectedAddressData = null
+                binding?.radioButton?.isChecked = true
+
+                addressListAdapter?.unSelectAddress()
+
+            }
+        }
     }
 
 }

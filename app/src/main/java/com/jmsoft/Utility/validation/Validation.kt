@@ -56,6 +56,9 @@ class Validation {
                     isPasswordMatch(context, validationModel.editText, validationModel.editText1)
                 Type.PasswordStrong -> validationCheck =
                     isPasswordStrong(context, validationModel.editText)
+                Type.ZipCode -> validationCheck =
+                    isValidZipCode(context, validationModel.editText)
+
                 Type.PAN -> validationCheck = isValidPAN(context, validationModel.editText)
                 Type.IFSC -> validationCheck = isValidIFSC(context, validationModel.editText)
                 Type.Empty -> validationCheck = isEmpty(context, validationModel.editText)
@@ -384,6 +387,31 @@ class Validation {
         }
     }
 
+    // is valid Zip code
+    fun isValidZipCode(context: Context, editText: EditText?): Boolean {
+
+        EditTextPointer = editText
+
+        if (editText?.text == null || TextUtils.isEmpty(editText.text)) {
+            errorMessage = context.getString(R.string.empty_error)
+            return false
+        }
+
+        val zipCode = editText.getText().toString()
+        errorMessage = context.getString(R.string.enter_a_valid_zipcode)
+
+        // Check if the zip code has exactly 5 digits and if all characters are digits
+        if (zipCode.length != 5 || !zipCode.all { it.isDigit() }) {
+            return false
+        }
+
+        // Extract the region code from the first digit
+        val regionCode = zipCode[0].toString().toInt()
+
+        // Validate the region code (1 to 9)
+        return regionCode in 1..9
+    }
+
     fun validateMobileNumber(phoneNo: String): Boolean {
         val phonenumber: PhoneNumber
         val regionalCode = getCountryRegion()
@@ -407,7 +435,7 @@ class Validation {
      * Enum of the Type of error we have
      */
     enum class Type(var label: String) {
-        Email(""), Phone(""), EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
+        Email(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
             ""
         ),
         PAN(""), IFSC(""), Empty(""), AccountNumber(""), MPIN("");

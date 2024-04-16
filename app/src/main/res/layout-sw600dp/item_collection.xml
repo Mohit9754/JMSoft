@@ -59,10 +59,9 @@
             android:layout_marginBottom="@dimen/_5sdp">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/mcvVendors"
+                android:id="@+id/mcvCartStatus"
                 android:outlineAmbientShadowColor="@color/ambientShadowColor"
                 android:outlineSpotShadowColor="@color/spotShadowColor"
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/black"
@@ -73,9 +72,9 @@
                 <ImageView
                     android:layout_width="@dimen/_8sdp"
                     android:layout_height="@dimen/_8sdp"
+                    android:id="@+id/ivCartStatus"
                     android:layout_marginHorizontal="@dimen/_4sdp"
                     android:layout_marginVertical="@dimen/_4sdp"
-                    android:src="@drawable/icon_white_bag"
                     tools:ignore="ContentDescription" />
 
             </com.google.android.material.card.MaterialCardView>

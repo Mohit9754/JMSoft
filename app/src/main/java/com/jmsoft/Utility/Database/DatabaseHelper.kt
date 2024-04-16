@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase
 import com.jmsoft.Utility.Database.AddressDataModel
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Constants
@@ -97,6 +98,21 @@ class DatabaseHelper(cx: Context) {
         close()
     }
 
+    // Add Collection in Collection table
+    fun addCollectionInCollectionTable(collectionDataModel: CollectionDataModel) {
+
+        open()
+
+        val collectionValue = ContentValues().apply {
+
+            put(CollectionDataModel.Key_collectionUUID, collectionDataModel.collectionUUID)
+            put(CollectionDataModel.Key_collectionName, collectionDataModel.collectionName)
+        }
+
+        db?.insert(CollectionDataModel.TABLE_NAME_COLLECTION, null, collectionValue)
+    }
+
+
     // Checks if Product is Exist in Cart table
     @SuppressLint("Recycle")
     fun isProductExistInCartTable(userUUID: String, productUUID: String): Boolean? {
@@ -106,7 +122,11 @@ class DatabaseHelper(cx: Context) {
             null
         )
 
-        return cursor?.moveToFirst()
+        val result =  cursor?.moveToFirst()
+
+        cursor?.close()
+
+        return  result
     }
 
     // get cartUUId Through userUUID and ProductUUID
@@ -119,7 +139,10 @@ class DatabaseHelper(cx: Context) {
         )
         cursor?.moveToFirst()
 
-        return  cursor?.getString(cursor.getColumnIndex(CartDataModel.Key_cartUUID))
+        val cartUUID  =  cursor?.getString(cursor.getColumnIndex(CartDataModel.Key_cartUUID))
+        cursor?.close()
+
+        return  cartUUID
     }
 
     //Inserting Product in Cart table
@@ -195,7 +218,10 @@ class DatabaseHelper(cx: Context) {
             "SELECT * FROM ${CartDataModel.TABLE_NAME_CART} WHERE ${CartDataModel.Key_userUUID} == '$userUUID' ",
             null
         )
-        return !((cursor?.moveToFirst())?: false)
+        val result =  !((cursor?.moveToFirst())?: false)
+        cursor?.close()
+
+        return result
     }
 
     //Inserting Address in Address table
@@ -215,6 +241,29 @@ class DatabaseHelper(cx: Context) {
         }
 
         db?.insert(AddressDataModel.TABLE_NAME_ADDRESS, null, addressValue)
+    }
+
+    // Update Address in the Address Table
+    fun updateAddressInTheAddressTable(addressDataModel: AddressDataModel){
+
+        open()
+
+        val addressValue = ContentValues().apply {
+
+            put(AddressDataModel.Key_firstName, addressDataModel.firstName)
+            put(AddressDataModel.Key_lastName, addressDataModel.lastName)
+            put(AddressDataModel.Key_address, addressDataModel.address)
+            put(AddressDataModel.Key_phoneNumber, addressDataModel.phoneNumber)
+            put(AddressDataModel.Key_zipCode, addressDataModel.zipCode)
+            put(AddressDataModel.Key_userUUID, addressDataModel.userUUID)
+        }
+
+        db?.update(
+            AddressDataModel.TABLE_NAME_ADDRESS,
+            addressValue,
+            "${AddressDataModel.Key_addressUUID} = ?",
+            arrayOf(addressDataModel.addressUUID)
+        )
     }
 
     //Get All Address of particular user from the Address table
@@ -246,8 +295,19 @@ class DatabaseHelper(cx: Context) {
                     cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_addressUUID))
                 addressData.userUUID =
                     cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_userUUID))
+
+                addressData.firstName =
+                    cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_firstName))
+
+                addressData.lastName =
+                    cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_lastName))
+
                 addressData.address =
                     cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_address))
+
+                addressData.phoneNumber =
+                    cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_phoneNumber))
+
                 addressData.zipCode =
                     cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_zipCode))
 
@@ -276,7 +336,11 @@ class DatabaseHelper(cx: Context) {
 
         cursor?.moveToFirst()
 
-        return cursor?.getString(cursor.getColumnIndex(CategoryDataModel.Key_categoryName))!!
+        val categoryName =  cursor?.getString(cursor.getColumnIndex(CategoryDataModel.Key_categoryName))!!
+
+        cursor.close()
+
+        return  categoryName
     }
 
     //Get All Products of particular category  from the Product table
@@ -314,7 +378,7 @@ class DatabaseHelper(cx: Context) {
                 productData.productImage =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImage))
                 productData.productPrice =
-                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
                 productData.productCategory =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCategory))
                 productData.productDescription =
@@ -322,13 +386,13 @@ class DatabaseHelper(cx: Context) {
                 productData.productDescription =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
                 productData.productWeight =
-                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
                 productData.productMetalType =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productMetalType))
                 productData.productUnitOfMeasurement =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUnitOfMeasurement))
                 productData.productCarat =
-                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
                 productData.productRFID =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFID))
 
@@ -368,12 +432,14 @@ class DatabaseHelper(cx: Context) {
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
                 productData.categoryUUID =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+                productData.collectionUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_collectionUUID))
                 productData.productName =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
                 productData.productImage =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImage))
                 productData.productPrice =
-                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
                 productData.productCategory =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCategory))
                 productData.productDescription =
@@ -381,13 +447,13 @@ class DatabaseHelper(cx: Context) {
                 productData.productDescription =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
                 productData.productWeight =
-                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
                 productData.productMetalType =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productMetalType))
                 productData.productUnitOfMeasurement =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUnitOfMeasurement))
                 productData.productCarat =
-                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
                 productData.productRFID =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFID))
 
@@ -428,12 +494,14 @@ class DatabaseHelper(cx: Context) {
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
                 productData.categoryUUID =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+                productData.collectionUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_collectionUUID))
                 productData.productName =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
                 productData.productImage =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImage))
                 productData.productPrice =
-                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
                 productData.productCategory =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCategory))
                 productData.productDescription =
@@ -441,13 +509,13 @@ class DatabaseHelper(cx: Context) {
                 productData.productDescription =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
                 productData.productWeight =
-                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
                 productData.productMetalType =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productMetalType))
                 productData.productUnitOfMeasurement =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUnitOfMeasurement))
                 productData.productCarat =
-                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
                 productData.productRFID =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFID))
 
@@ -481,6 +549,8 @@ class DatabaseHelper(cx: Context) {
                 cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
             productData.categoryUUID =
                 cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+            productData.collectionUUID =
+                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_collectionUUID))
             productData.productName =
                 cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
             productData.productImage =
@@ -488,19 +558,19 @@ class DatabaseHelper(cx: Context) {
             productData.productCategory =
                 cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCategory))
             productData.productPrice =
-                cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
             productData.productDescription =
                 cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
             productData.productDescription =
                 cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
             productData.productWeight =
-                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+                cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
             productData.productUnitOfMeasurement =
                 cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUnitOfMeasurement))
             productData.productMetalType =
                 cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productMetalType))
             productData.productCarat =
-                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
             productData.productRFID =
                 cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFID))
 
@@ -535,6 +605,7 @@ class DatabaseHelper(cx: Context) {
 
             put(ProductDataModel.Key_productUUID, productDataModel.productUUId)
             put(ProductDataModel.Key_categoryUUID, productDataModel.categoryUUID)
+            put(ProductDataModel.Key_collectionUUID, productDataModel.collectionUUID)
             put(ProductDataModel.Key_productName, productDataModel.productName)
             put(ProductDataModel.Key_productImage, productDataModel.productImage)
             put(ProductDataModel.Key_productPrice, productDataModel.productPrice)
@@ -562,12 +633,14 @@ class DatabaseHelper(cx: Context) {
             null
         )
 
-        return cursor?.moveToFirst()
+        val result = cursor?.moveToFirst()
+        cursor?.close()
+        return  result
     }
 
     //Getting the Category UUId through Category Name
     @SuppressLint("Recycle", "Range")
-    fun getCategoryUUIDThroughCategoryName(categoryName: String): String {
+    fun getCategoryUUIDThroughCategoryName(categoryName: String): String? {
 
         read()
 
@@ -576,14 +649,33 @@ class DatabaseHelper(cx: Context) {
             null
         )
 
-        var categoryName = ""
+        cursor?.moveToFirst()
 
-        if (cursor != null && cursor.moveToFirst()) {
-            categoryName =
-                cursor.getString(cursor.getColumnIndex(CategoryDataModel.Key_categoryUUID))!!
-        }
+        val categoryUUID = cursor?.getString(cursor.getColumnIndex(CategoryDataModel.Key_categoryUUID))
 
-        return categoryName
+        cursor?.close()
+
+        return categoryUUID
+    }
+
+    //Getting the Collection UUId through collection Name
+    @SuppressLint("Recycle", "Range")
+    fun getCollectionUUIDThroughCollectionName(collectionName: String): String? {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT * FROM ${CollectionDataModel.TABLE_NAME_COLLECTION} WHERE ${CollectionDataModel.Key_collectionName} == '$collectionName'",
+            null
+        )
+
+        cursor?.moveToFirst()
+
+        val collectionUUID = cursor?.getString(cursor.getColumnIndex(CollectionDataModel.Key_collectionUUID))
+
+        cursor?.close()
+
+        return collectionUUID
     }
 
     //Inserting the Admin in the user table at the time of table creation
@@ -724,7 +816,7 @@ class DatabaseHelper(cx: Context) {
         return isValid
     }
 
-    //this method checks if any user has this phone number
+    //this method checks if any user has this phone number in the User table
     @SuppressLint("Recycle")
     fun isAnyUserHasThisPhoneNumber(phoneNumber: String, userUUID: String): Boolean {
 
@@ -733,9 +825,9 @@ class DatabaseHelper(cx: Context) {
             "SELECT * From ${UserDataModel.TABLE_NAME_USER} where ${UserDataModel.Key_phoneNumber} = '$phoneNumber' And ${UserDataModel.Key_userUUID} != '$userUUID' ",
             null
         )
-
-        return cursor.moveToFirst()
-
+        val result =  cursor.moveToFirst()
+        cursor?.close()
+        return  result
     }
 
     //this method checks if any user has this email
@@ -748,7 +840,9 @@ class DatabaseHelper(cx: Context) {
             null
         )
 
-        return cursor.moveToFirst()
+        val result =  cursor.moveToFirst()
+        cursor.close()
+        return  result
     }
 
 
@@ -762,7 +856,23 @@ class DatabaseHelper(cx: Context) {
             null
         )
 
-        return cursor.moveToFirst()
+        val result =  cursor.moveToFirst()
+        cursor?.close()
+        return  result
+    }
+
+    // Checks is Phone Number Already Exist in the Address table accept my phone number
+    @SuppressLint("Recycle")
+    fun isPhoneNumberExistInAddressTableAcceptMine(phoneNumber: String, addressUUID: String): Boolean {
+
+        read()
+        val cursor = db!!.rawQuery(
+            "SELECT * From ${AddressDataModel.TABLE_NAME_ADDRESS} where ${AddressDataModel.Key_phoneNumber} = '$phoneNumber' And ${AddressDataModel.Key_addressUUID} != '$addressUUID' ",
+            null
+        )
+        val result =  cursor.moveToFirst()
+        cursor?.close()
+        return  result
     }
 
     // Checks is Phone Number Already Exist in the Address table
@@ -775,8 +885,9 @@ class DatabaseHelper(cx: Context) {
             null
         )
 
-        return cursor.moveToFirst()
-    }
+        val result =  cursor.moveToFirst()
+        cursor?.close()
+        return  result    }
 
     // Checks is Email Already Exist in the user table
     @SuppressLint("Recycle")
@@ -788,8 +899,9 @@ class DatabaseHelper(cx: Context) {
             null
         )
 
-        return cursor.moveToFirst()
-    }
+        val result =  cursor.moveToFirst()
+        cursor?.close()
+        return  result    }
 
 
     // getting All User Details Accept Admin form the user table
@@ -881,10 +993,13 @@ class DatabaseHelper(cx: Context) {
     fun isUserTableEmpty(): Boolean {
 
         read()
-        @SuppressLint("Recycle") val cur = db!!.rawQuery(
+        @SuppressLint("Recycle") val cursor = db!!.rawQuery(
             "select * from " + UserDataModel.TABLE_NAME_USER, null
         )
-        return !cur.moveToFirst()
+        val result =  !cursor.moveToFirst()
+        cursor.close()
+
+        return  result
     }
 
     //Updating the User Profile in the User Table
@@ -1030,6 +1145,7 @@ class DatabaseHelper(cx: Context) {
             arrayOf(userUUID)
         )
         val result = cursor!!.moveToFirst()
+        cursor.close()
         close()
         return !result
     }

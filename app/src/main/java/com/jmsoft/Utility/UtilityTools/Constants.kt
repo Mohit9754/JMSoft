@@ -213,6 +213,14 @@ interface Constants {
         const val statusBarHeight = "status_bar_height"
         const val dimen = "dimen"
 
+        // fragment state
+        const val metalType = "metalType"
+        const val collection = "collection"
+        const val category = "category"
+        const val product = "product"
+        const val edit = "edit"
+        const val add = "add"
+
 
         // State
 

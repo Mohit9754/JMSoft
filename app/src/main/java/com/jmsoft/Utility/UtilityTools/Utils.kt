@@ -2,6 +2,7 @@ package com.jmsoft.basic.UtilityTools
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -42,6 +43,7 @@ import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.webkit.MimeTypeMap
 import android.webkit.WebView
 import android.widget.EditText
@@ -58,6 +60,7 @@ import com.jmsoft.R
 import com.jmsoft.Utility.Database.AddressDataModel
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.loadingButton.LoadingButton
@@ -67,10 +70,12 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.CONFIG_FILE
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.dimen
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
+import com.jmsoft.basic.UtilityTools.Constants.Companion.english
 import com.jmsoft.basic.UtilityTools.Constants.Companion.name
 import com.jmsoft.basic.UtilityTools.Constants.Companion.password
 import com.jmsoft.basic.UtilityTools.Constants.Companion.statusBarHeight
 import com.jmsoft.databinding.AlertdialogBinding
+//import com.jmsoft.databinding.AlertdialogBinding
 import com.jmsoft.databinding.ItemCustomToastBinding
 import com.jmsoft.main.model.DeviceModel
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
@@ -92,9 +97,51 @@ import kotlin.random.Random
 
 object Utils {
 
-    // Get thousand separate price
-    fun getThousandSeparate(price: Int): String {
+    fun formatArabicToTwoDecimalPoints(arabicValue: String): Double {
+        // Replace Arabic numerals with their Latin counterparts
+        val latinValue = convertToLatinNumerals(arabicValue)
 
+        // Replace Arabic decimal separator with a dot (if present)
+        val latinValueWithDot = latinValue.replace('٫', '.')
+
+        try {
+            // Parse the Latin numeral string to a Double value
+            return latinValueWithDot.toDouble()
+        } catch (e: NumberFormatException) {
+            // Handle parsing errors here (e.g., return a default value)
+            return 0.0
+        }
+    }
+
+    fun convertToLatinNumerals(input: String): String {
+        val arabicNumerals = listOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
+        val latinNumerals = (0..9).map { (it + '0'.toInt()).toChar() }
+
+        val convertedChars = input.map { char ->
+            val index = arabicNumerals.indexOf(char)
+            if (index != -1) latinNumerals[index] else char
+        }
+
+        return convertedChars.joinToString(separator = "") { it.toString() }
+    }
+
+    // Round off to two digit
+    fun roundToTwoDecimalPlaces(value: Double): Double {
+
+        if (getCurrentLanguage() == english ){
+
+            val decimalFormat = DecimalFormat("#.##") // Define the decimal format with two decimal places
+            return decimalFormat.format(value).toDouble() // Format the value and convert it back to Double
+        }
+        else if (getCurrentLanguage() == arabic) {
+            return formatArabicToTwoDecimalPoints(value.toString())
+        }
+
+        return 0000.00
+    }
+
+    // Get thousand separate price
+    fun getThousandSeparate(price: Double): String {
         val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
         return numberFormat.format(price).toString()
     }
@@ -283,7 +330,7 @@ object Utils {
         return DatabaseHelper.instance.isEmailExist(email)
     }
 
-    //this method checks if any user has this phone number
+    //this method checks if any user has this phone number in the User table
     fun isAnyUserHasThisPhoneNumber(phoneNumber: String, userUUID: String): Boolean {
         return DatabaseHelper.instance.isAnyUserHasThisPhoneNumber(phoneNumber, userUUID)
     }
@@ -297,6 +344,11 @@ object Utils {
     // Checks if Phone Number Already Exist in the User Table
     fun isPhoneNumberExist(phoneNumber: String): Boolean {
         return DatabaseHelper.instance.isPhoneNumberExist(phoneNumber)
+    }
+
+    // Checks is Phone Number Already Exist in the Address table accept my phone number
+    fun isPhoneNumberExistInAddressTableAcceptMine(phoneNumber: String, addressUUID: String): Boolean {
+        return DatabaseHelper.instance.isPhoneNumberExistInAddressTableAcceptMine(phoneNumber,addressUUID)
     }
 
     // Checks is Phone Number Already Exist in the Address table
@@ -369,6 +421,11 @@ object Utils {
         DatabaseHelper.instance.updateUserDetails(userDataModel)
     }
 
+    // Add Collection in Collection table
+    fun addCollectionInCollectionTable(collectionDataModel: CollectionDataModel) {
+        DatabaseHelper.instance.addCollectionInCollectionTable(collectionDataModel)
+    }
+
     // Inserting Category in Category table
     fun insertCategoryInCategoryTable(categoryDataModel: CategoryDataModel) {
         DatabaseHelper.instance.insertCategoryInCategoryTable(categoryDataModel)
@@ -378,7 +435,7 @@ object Utils {
     fun insertProductInProductTable(
         categoryName: String,
         productName: String,
-        productPrice: Int,
+        productPrice: Double,
         bitmapOne: Bitmap,
         bitmapTwo: Bitmap,
         context: Context
@@ -400,12 +457,13 @@ object Utils {
 
         productDataModel.productPrice = productPrice
         productDataModel.productDescription = "No Description"
-        productDataModel.productWeight = "5"
+        productDataModel.productWeight = 2.5
         productDataModel.productMetalType = "Gold"
         productDataModel.productUnitOfMeasurement = "g"
-        productDataModel.productCarat = "24"
+        productDataModel.productCarat = 24.0
         productDataModel.productRFID = "100"
         productDataModel.productCategory = categoryName
+        productDataModel.collectionUUID = getCollectionUUIDThroughCollectionName("wedding")
 
 
         DatabaseHelper.instance.insertProductInProductTable(productDataModel)
@@ -440,8 +498,13 @@ object Utils {
     }
 
     //Getting the Category UUId through Category Name
-    fun getCategoryUUIDThroughCategoryName(categoryName: String): String {
+    fun getCategoryUUIDThroughCategoryName(categoryName: String): String? {
         return DatabaseHelper.instance.getCategoryUUIDThroughCategoryName(categoryName)
+    }
+
+    //Getting the Collection UUId through collection Name
+    fun getCollectionUUIDThroughCollectionName(categoryName: String): String? {
+        return DatabaseHelper.instance.getCollectionUUIDThroughCollectionName(categoryName)
     }
 
     //Get All Products from the Product table
@@ -462,6 +525,11 @@ object Utils {
     //Inserting Address in Address table
     fun insertAddressInAddressTable(addressDataModel: AddressDataModel) {
         return DatabaseHelper.instance.insertAddressInAddressTable(addressDataModel)
+    }
+
+    // Update Address in the Address Table
+    fun updateAddressInTheAddressTable(addressDataModel: AddressDataModel){
+        return DatabaseHelper.instance.updateAddressInTheAddressTable(addressDataModel)
     }
 
     //get Cart through user UUId
@@ -850,6 +918,30 @@ object Utils {
             }
     }
 
+    fun rotateView90Degrees(view: View) {
+        // Create an ObjectAnimator to animate the rotation property
+        val rotateAnimator = ObjectAnimator.ofFloat(view, "rotation", 0f, 90f)
+
+        // Set duration and interpolator for the animation
+        rotateAnimator.duration = 1000 // 1000 milliseconds (1 second)
+        rotateAnimator.interpolator = LinearInterpolator()
+
+        // Start the animation
+        rotateAnimator.start()
+    }
+
+    fun rotateView(view: View, degrees: Float) {
+        // Create an ObjectAnimator to animate the rotation property
+        val rotateAnimator = ObjectAnimator.ofFloat(view, "rotation", view.rotation, degrees)
+
+        // Set duration and interpolator for the animation
+        rotateAnimator.duration = 300
+        rotateAnimator.interpolator = LinearInterpolator()
+
+        // Start the animation
+        rotateAnimator.start()
+    }
+
     fun collapseView(view: View) {
         val initialHeight = view.height
         view.animate()
@@ -1190,7 +1282,7 @@ object Utils {
             e.printStackTrace()
             // Handle any exceptions here
         }
-        CustomeToast(context, "Saved Successfully")
+//        CustomeToast(context, "Saved Successfully")
 
     }
 
@@ -1232,16 +1324,17 @@ object Utils {
         return dialog
     }
 
-    @SuppressLint("InflateParams")
-    fun T(c: Context?, msg: String?) {
-        val toast = Toast(c)
-        val view = LayoutInflater.from(c).inflate(R.layout.item_custom_toast, null)
-        val textView = view.findViewById<TextView>(R.id.tvMessage)
-        textView.text = msg
-        toast.view = view
+    @SuppressLint("InflateParams", "MissingInflatedId")
+    fun T(context: Context, msg: String?) {
+
+        val toast = Toast(context)
+        val binding = ItemCustomToastBinding.inflate(LayoutInflater.from(context))
+        binding.tvMessage.text = msg
+        toast.view = binding.root
         toast.duration = Toast.LENGTH_SHORT
         toast.show()
     }
+
 
     // Set input type dynamically based on locale
     fun toSetPasswordAsLanguage(etPassword: EditText?, context: Context) {
@@ -1258,13 +1351,13 @@ object Utils {
 
     fun CustomeToast(c: Context?, msg: String?) {
         val toast = Toast(c)
-        val itemCustomToastBinding = ItemCustomToastBinding.inflate(LayoutInflater.from(c))
+//        val itemCustomToastBinding = ItemCustomToastBinding.inflate(LayoutInflater.from(c))
         toast.duration = Toast.LENGTH_SHORT
         toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 0)
         toast.view?.startAnimation(AnimationUtils.loadAnimation(c, R.anim.top_to_bottom))
-        itemCustomToastBinding.tvMessage.text = msg
-        itemCustomToastBinding.mcvToast.minimumWidth = getScreenWidth(c!!) - 12
-        toast.view = itemCustomToastBinding.root //setting the view of custom toast layout
+//        itemCustomToastBinding.tvMessage.text = msg
+//        itemCustomToastBinding.mcvToast.minimumWidth = getScreenWidth(c!!) - 12
+//        toast.view = itemCustomToastBinding.root //setting the view of custom toast layout
         toast.show()
     }
 

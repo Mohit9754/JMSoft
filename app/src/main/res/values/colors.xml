@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="theme">#E5BB38</color>
     <color name="custom_toast_color">#E8BD38</color>
     <color name="selected">#DA8913</color>
@@ -28,5 +29,6 @@
     <color name="description_background_color">#F0F0F0</color>
     <color name="unselect_color">#ACACAC</color>
     <color name="confirmation_background_color">#DCAF6E</color>
+    <color name="selected_drop_down_color">#E6E6E6</color>
 
 </resources>

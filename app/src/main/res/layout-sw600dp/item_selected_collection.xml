@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/mcv_background_color"
+    android:layout_height="wrap_content"
+    app:cardElevation="0dp"
+    android:layout_marginVertical="1dp"
+    android:layout_marginHorizontal="@dimen/_2sdp"
+    app:cardCornerRadius="@dimen/_2sdp"
+    tools:ignore="MissingDefaultResource">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/_2sdp"
+        android:paddingHorizontal="@dimen/_2sdp"
+        tools:ignore="UseCompoundDrawables,UselessLeaf">
+
+        <ImageView
+            android:layout_width="@dimen/_7sdp"
+            android:layout_height="@dimen/_7sdp"
+            android:src="@drawable/icon_cross"
+            android:id="@+id/ivCross"
+            android:paddingVertical="@dimen/_1sdp"
+            android:tint="@color/black"
+            tools:ignore="ContentDescription,UseAppTint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:id="@+id/tvCollectionName"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:fontFamily="@font/montserrat_arabic_regular"
+            android:text="@string/metal_type"
+            tools:ignore="SmallSp" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

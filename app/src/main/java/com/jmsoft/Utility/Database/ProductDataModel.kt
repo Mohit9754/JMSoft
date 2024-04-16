@@ -8,15 +8,16 @@ class ProductDataModel {
     var productUUId: String? = null
     var productName: String? = null
     var productImage: String? = null
-    var productPrice: Int? = null
+    var productPrice: Double? = null
     var productDescription: String? = null
-    var productWeight: String? = null
+    var productWeight: Double? = null
     var productUnitOfMeasurement:String? = null
     var productMetalType: String? = null
-    var productCarat: String? = null
+    var productCarat: Double? = null
     var productRFID: String? = null
     var categoryUUID: String? = null
     var productCategory: String? = null
+    var collectionUUID: String? = null
 
     companion object {
 
@@ -37,6 +38,7 @@ class ProductDataModel {
         const val Key_productCarat = "productCarat"
         const val Key_productRFID = "productRFID"
         const val Key_categoryUUID = "categoryUUID"
+        const val Key_collectionUUID = "collectionUUID"
 
 
         @JvmStatic
@@ -49,14 +51,16 @@ class ProductDataModel {
                     Key_productUnitOfMeasurement + " text," +
                     Key_productCategory + " text," +
                     Key_productImage + " text," +
-                    Key_productPrice + " INTEGER," +
+                    Key_productPrice + " REAL," +
                     Key_productDescription + " text," +
-                    Key_productWeight + " text," +
+                    Key_productWeight + " REAL," +
                     Key_productMetalType + " text," +
-                    Key_productCarat + " text," +
+                    Key_productCarat + " REAL," +
                     Key_productRFID + " text," +
                     Key_categoryUUID + " text," +
+                    Key_collectionUUID + " text," +
                     " FOREIGN KEY (" + Key_categoryUUID + ") REFERENCES " + CategoryDataModel.TABLE_NAME_CATEGORY + "(" + CategoryDataModel.Key_categoryUUID + ")" +
+                    " FOREIGN KEY (" + Key_collectionUUID + ") REFERENCES " + CollectionDataModel.TABLE_NAME_COLLECTION + "(" + CollectionDataModel.Key_collectionUUID + ")" +
                     " )")
 
             db.execSQL(CreateTableProductQuery)
