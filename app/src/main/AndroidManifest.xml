@@ -40,16 +40,19 @@
             android:name=".main.activity.SignUpActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            tools:ignore="DiscouragedApi" />
         <activity
             android:name=".main.activity.LoginActivity"
             android:exported="true"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            tools:ignore="DiscouragedApi" />
         <activity
             android:name=".main.activity.SplashActivity"
             android:exported="true"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape"
+            tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

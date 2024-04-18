@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.databinding.FragmentProductInventoryBinding
-import com.jmsoft.databinding.ItemCollectionListBinding
 import com.jmsoft.databinding.ItemSelectedCollectionBinding
-import com.jmsoft.main.`interface`.CollectionStatusCallback
 
 /**
  * Catalog Adapter
@@ -69,7 +67,7 @@ class SelectedCollectionAdapter(
 
                 if (selectedCollectionList.size == 0) {
 
-                    fragmentProductInventoryBinding.tvCollectionHint?.visibility = View.VISIBLE
+                    fragmentProductInventoryBinding.tvCollection?.visibility = View.VISIBLE
                 }
 
                 notifyDataSetChanged()

@@ -2,6 +2,7 @@ package com.jmsoft.basic.validation
 
 import android.widget.EditText
 import android.widget.TextView
+import com.rscja.team.qcom.deviceapi.T
 
 class ValidationModel {
     var type: Validation.Type? = null
@@ -11,12 +12,29 @@ class ValidationModel {
     var errorMessage: String? = null
     var errorTextView: TextView? = null
     var Parameter: String? = null
+    var arrayListSize:Int? =null
+    var textView:TextView? = null
 
     constructor() {}
+
+    constructor(type: Validation.Type?, textView: TextView?,errorTextView: TextView?){
+
+        this.type = type
+        this.textView = textView
+        this.errorTextView = errorTextView
+
+    }
+
     constructor(type: Validation.Type?, editText: EditText?, editText1: EditText?) {
         this.type = type
         this.editText = editText
         this.editText1 = editText1
+    }
+
+    constructor(type: Validation.Type?, arrayListSize:Int?, textView: TextView?) {
+        this.type = type
+        this.arrayListSize = arrayListSize
+        this.errorTextView = textView
     }
 
     constructor(type: Validation.Type?, field: String?, errorMessage: String?) {

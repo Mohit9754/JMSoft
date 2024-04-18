@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,7 +10,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/_28sdp"
+        android:paddingStart="@dimen/_28sdp"
+        android:paddingEnd="@dimen/_27sdp"
         android:orientation="vertical"
         android:background="@color/white">
 
@@ -54,17 +55,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="@dimen/_15sdp"
+            android:orientation="horizontal"
             android:weightSum="2"
             tools:ignore="DisableBaselineAlignment,UselessLeaf">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/_12sdp"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_marginEnd="@dimen/_11sdp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -84,11 +85,14 @@
                         android:id="@+id/mcvProductName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="1dp"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
                         android:layout_marginTop="@dimen/_1sdp"
                         app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
-                        android:layout_marginStart="1dp"
-                        app:strokeWidth="1dp">
+                        app:strokeWidth="1dp"
+                        tools:ignore="UnusedAttribute">
 
                         <EditText
                             android:id="@+id/etProductName"
@@ -110,7 +114,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/tvFirstNameError"
+                            android:id="@+id/tvProductNameError"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_1sdp"
@@ -128,8 +132,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginTop="@dimen/_6sdp"
+                    android:orientation="vertical"
                     tools:ignore="UselessParent">
 
                     <TextView
@@ -144,39 +148,48 @@
                         android:id="@+id/mcvMetalType"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="1dp"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
                         android:layout_marginTop="@dimen/_1sdp"
                         app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
                         app:strokeWidth="1dp"
-                        android:layout_marginStart="1dp">
+                        tools:ignore="UnusedAttribute">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
                             android:id="@+id/llMetalType"
-                            android:gravity="center_vertical"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:gravity="center_vertical"
+                            android:weightSum="2"
                             tools:ignore="UseCompoundDrawables">
 
                             <TextView
                                 android:id="@+id/tvMetalType"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:background="@null"
                                 android:layout_weight="2"
+                                android:background="@null"
+                                android:clickable="false"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"
                                 android:fontFamily="@font/montserrat_arabic_medium"
                                 android:hint="@string/select_metal_type"
                                 android:paddingHorizontal="@dimen/_5sdp"
                                 android:paddingVertical="@dimen/_7sdp"
                                 android:textSize="10sp"
-                                tools:ignore="Autofill,SmallSp,TouchTargetSizeCheck" />
+                                tools:ignore="Autofill,SmallSp,TextFields,TouchTargetSizeCheck" />
 
                             <ImageView
-                                android:layout_width="@dimen/_7sdp"
-                                android:layout_height="@dimen/_7sdp"
-                                android:layout_marginEnd="@dimen/_5sdp"
-                                android:src="@drawable/icon_open"
                                 android:id="@+id/ivMetalType"
+                                android:layout_width="@dimen/_17sdp"
+                                android:layout_height="@dimen/_17sdp"
+                                android:padding="@dimen/_5sdp"
+                                android:src="@drawable/icon_open"
                                 tools:ignore="ContentDescription" />
 
                         </LinearLayout>
@@ -202,23 +215,79 @@
                     </LinearLayout>
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/mcvMetalTypeList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="@dimen/_3sdp"
-                        android:id="@+id/mcvMetalTypeList"
-                        android:visibility="gone"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
                         android:layout_marginHorizontal="1dp"
                         android:layout_marginVertical="@dimen/_5sdp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
-                        app:strokeWidth="1dp">
+                        app:strokeWidth="1dp"
+                        tools:ignore="UnusedAttribute">
 
-                        <androidx.recyclerview.widget.RecyclerView
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/rvMetalType"
-                            tools:listitem="@layout/item_metal_type"
-                            />
+                            android:orientation="vertical"
+                            android:layout_height="wrap_content">
 
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/mcvAddMetalType"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                                android:outlineSpotShadowColor="@color/spotShadowColor"
+                                android:layout_gravity="end"
+                                android:layout_marginEnd="@dimen/_7sdp"
+                                android:layout_marginTop="@dimen/_7sdp"
+                                android:layout_marginBottom="@dimen/_2sdp"
+                                app:cardBackgroundColor="@color/theme"
+                                app:cardCornerRadius="@dimen/_4sdp"
+                                app:strokeWidth="0dp">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal"
+                                    tools:ignore="UseCompoundDrawables">
+
+                                    <ImageView
+                                        android:layout_width="@dimen/_12sdp"
+                                        android:layout_height="@dimen/_12sdp"
+                                        android:layout_marginHorizontal="@dimen/_1sdp"
+                                        android:layout_marginVertical="@dimen/_2sdp"
+                                        android:src="@drawable/icon_add_device"
+                                        tools:ignore="ContentDescription,TooDeepLayout" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:id="@+id/tvButtonName"
+                                        android:fontFamily="@font/montserrat_arabic_semibold"
+                                        android:text="@string/add_metal_type"
+                                        android:textColor="@color/white"
+                                        android:textSize="9sp"
+                                        tools:ignore="SmallSp" />
+
+
+                                </LinearLayout>
+
+
+                            </com.google.android.material.card.MaterialCardView>
+
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvMetalType"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                tools:listitem="@layout/item_metal_type_dropdown" />
+
+
+                        </LinearLayout>
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -227,8 +296,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginTop="@dimen/_6sdp"
+                    android:orientation="vertical"
                     tools:ignore="UselessParent">
 
                     <TextView
@@ -243,52 +312,57 @@
                         android:id="@+id/mcvCollection"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
+                        android:layout_marginStart="1dp"
                         android:layout_marginTop="@dimen/_1sdp"
                         app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
-                        app:strokeWidth="1dp"
-                        android:layout_marginStart="1dp">
+                        app:strokeWidth="1dp">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
                             android:id="@+id/llCollection"
-                            android:gravity="center_vertical"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:weightSum="2"
                             tools:ignore="UseCompoundDrawables">
 
                             <TextView
-                                android:id="@+id/tvCollectionHint"
+                                android:id="@+id/tvCollection"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:background="@null"
                                 android:layout_weight="2"
+                                android:background="@null"
+                                android:focusable="false"
                                 android:fontFamily="@font/montserrat_arabic_medium"
                                 android:hint="@string/select_collections"
                                 android:paddingHorizontal="@dimen/_5sdp"
                                 android:paddingVertical="@dimen/_7sdp"
                                 android:textSize="10sp"
-                                tools:ignore="Autofill,SmallSp,TouchTargetSizeCheck" />
+                                android:visibility="visible"
+                                tools:ignore="Autofill,SmallSp,TextFields,TouchTargetSizeCheck" />
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rvCollectionSelectedList"
                                 android:layout_width="0dp"
-                                android:visibility="visible"
-                                android:layout_marginVertical="@dimen/_5sdp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="@dimen/_2sdp"
-                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                                android:orientation="horizontal"
+                                android:paddingHorizontal="@dimen/_2sdp"
+                                android:layout_marginVertical="@dimen/_4sdp"
                                 android:layout_weight="2"
+                                android:clickable="true"
+                                android:focusable="true"
                                 android:fontFamily="@font/montserrat_arabic_medium"
-                                />
+                                android:orientation="horizontal"
+                                android:visibility="visible"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                             <ImageView
-                                android:layout_width="@dimen/_7sdp"
-                                android:layout_height="@dimen/_7sdp"
-                                android:layout_marginEnd="@dimen/_5sdp"
-                                android:src="@drawable/icon_open"
                                 android:id="@+id/ivCollection"
+                                android:layout_width="@dimen/_17sdp"
+                                android:layout_height="@dimen/_17sdp"
+                                android:padding="@dimen/_5sdp"
+                                android:src="@drawable/icon_open"
                                 tools:ignore="ContentDescription" />
 
                         </LinearLayout>
@@ -314,22 +388,23 @@
                     </LinearLayout>
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/mcvCollectionList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="@dimen/_3sdp"
-                        android:id="@+id/mcvCollectionList"
-                        android:visibility="gone"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
                         android:layout_marginHorizontal="1dp"
                         android:layout_marginVertical="@dimen/_5sdp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
                         app:strokeWidth="1dp">
 
                         <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvCollectionList"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/rvCollectionList"
-                            android:layout_marginVertical="@dimen/_3sdp"
-                            />
+                            android:layout_marginVertical="@dimen/_3sdp" />
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -338,8 +413,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginTop="@dimen/_6sdp"
+                    android:orientation="vertical"
                     tools:ignore="UselessParent">
 
                     <TextView
@@ -354,10 +429,12 @@
                         android:id="@+id/mcvOrigin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
+                        android:layout_marginStart="1dp"
                         android:layout_marginTop="@dimen/_1sdp"
                         app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
-                        android:layout_marginStart="1dp"
                         app:strokeWidth="1dp">
 
                         <EditText
@@ -398,8 +475,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginTop="@dimen/_6sdp"
+                    android:orientation="vertical"
                     tools:ignore="UselessParent">
 
                     <TextView
@@ -414,11 +491,14 @@
                         android:id="@+id/mcvWeight"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
+                        android:layout_marginStart="1dp"
                         android:layout_marginTop="@dimen/_1sdp"
                         app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
-                        android:layout_marginStart="1dp"
-                        app:strokeWidth="1dp">
+                        app:strokeWidth="1dp"
+                        tools:ignore="UnusedAttribute">
 
                         <EditText
                             android:id="@+id/etWeight"
@@ -427,7 +507,7 @@
                             android:background="@null"
                             android:fontFamily="@font/montserrat_arabic_medium"
                             android:hint="@string/enter_product_weight"
-                            android:inputType="number"
+                            android:inputType="numberDecimal"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:paddingVertical="@dimen/_7sdp"
                             android:textSize="10sp"
@@ -458,8 +538,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginTop="@dimen/_6sdp"
+                    android:orientation="vertical"
                     tools:ignore="UselessParent">
 
                     <TextView
@@ -474,10 +554,12 @@
                         android:id="@+id/mcvCarat"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
+                        android:layout_marginStart="1dp"
                         android:layout_marginTop="@dimen/_1sdp"
                         app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
-                        android:layout_marginStart="1dp"
                         app:strokeWidth="1dp">
 
                         <EditText
@@ -487,7 +569,7 @@
                             android:background="@null"
                             android:fontFamily="@font/montserrat_arabic_medium"
                             android:hint="@string/enter_product_carat"
-                            android:inputType="number"
+                            android:inputType="numberDecimal"
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:paddingVertical="@dimen/_7sdp"
                             android:textSize="10sp"
@@ -518,8 +600,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginTop="@dimen/_6sdp"
+                    android:orientation="vertical"
                     tools:ignore="UselessParent">
 
                     <TextView
@@ -534,10 +616,12 @@
                         android:id="@+id/mcvCost"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
+                        android:layout_marginStart="1dp"
                         android:layout_marginTop="@dimen/_1sdp"
                         app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
-                        android:layout_marginStart="1dp"
                         app:strokeWidth="1dp">
 
                         <EditText
@@ -581,13 +665,15 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:layout_marginStart="@dimen/_1sdp"
+                    android:layout_marginEnd="@dimen/_1sdp"
                     tools:ignore="UselessParent">
 
                     <TextView
@@ -602,26 +688,28 @@
                         android:id="@+id/mcvCategory"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
+                        android:layout_marginStart="1dp"
                         android:layout_marginTop="@dimen/_1sdp"
                         app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
-                        app:strokeWidth="1dp"
-                        android:layout_marginStart="1dp">
+                        app:strokeWidth="1dp">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
                             android:id="@+id/llCategory"
-                            android:gravity="center_vertical"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:weightSum="2"
                             tools:ignore="UseCompoundDrawables">
 
                             <TextView
                                 android:id="@+id/tvCategory"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:background="@null"
                                 android:layout_weight="2"
+                                android:background="@null"
                                 android:fontFamily="@font/montserrat_arabic_medium"
                                 android:hint="@string/select_category"
                                 android:paddingHorizontal="@dimen/_5sdp"
@@ -630,10 +718,10 @@
                                 tools:ignore="Autofill,SmallSp,TouchTargetSizeCheck" />
 
                             <ImageView
-                                android:layout_width="@dimen/_7sdp"
-                                android:layout_height="@dimen/_7sdp"
-                                android:layout_marginEnd="@dimen/_5sdp"
+                                android:layout_width="@dimen/_17sdp"
+                                android:layout_height="@dimen/_17sdp"
                                 android:src="@drawable/icon_open"
+                                android:padding="@dimen/_5sdp"
                                 android:id="@+id/ivCategory"
                                 tools:ignore="ContentDescription" />
 
@@ -660,22 +748,23 @@
                     </LinearLayout>
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/mcvCategoryList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="@dimen/_3sdp"
-                        android:id="@+id/mcvCategoryList"
-                        android:visibility="gone"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
                         android:layout_marginHorizontal="1dp"
                         android:layout_marginVertical="@dimen/_5sdp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
                         app:strokeWidth="1dp">
 
                         <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvCategory"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/rvCategory"
-                            tools:listitem="@layout/item_metal_type"
-                            />
+                            tools:listitem="@layout/item_metal_type_dropdown" />
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -684,8 +773,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginTop="@dimen/_6sdp"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="@dimen/_1sdp"
+                    android:layout_marginStart="@dimen/_1sdp"
                     tools:ignore="UselessParent">
 
                     <TextView
@@ -700,10 +791,12 @@
                         android:id="@+id/mcvDescription"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_30sdp"
+                        android:layout_marginStart="1dp"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
                         android:layout_marginTop="@dimen/_1sdp"
                         app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
-                        android:layout_marginStart="1dp"
                         app:strokeWidth="1dp">
 
                         <EditText
@@ -712,11 +805,11 @@
                             android:layout_height="match_parent"
                             android:background="@null"
                             android:fontFamily="@font/montserrat_arabic_medium"
+                            android:gravity="start"
                             android:hint="@string/enter_description"
                             android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
-                            android:gravity="start"
-                            android:paddingVertical="@dimen/_3sdp"
                             android:paddingHorizontal="@dimen/_5sdp"
+                            android:paddingVertical="@dimen/_3sdp"
                             android:textSize="10sp"
                             tools:ignore="Autofill,SmallSp,TouchTargetSizeCheck" />
 
@@ -724,7 +817,8 @@
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        tools:ignore="TooManyViews">
 
                         <TextView
                             android:id="@+id/tvDescriptionError"
@@ -745,8 +839,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginTop="@dimen/_6sdp"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="@dimen/_1sdp"
+                    android:layout_marginStart="@dimen/_1sdp"
                     tools:ignore="UselessParent">
 
                     <TextView
@@ -759,34 +855,36 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:weightSum="2"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="@dimen/_1sdp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_1sdp"
+                        android:orientation="horizontal"
+                        android:weightSum="2"
                         tools:ignore="TooManyViews">
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/mcvRFIDCode"
                             android:layout_width="0dp"
+                            android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                            android:outlineSpotShadowColor="@color/spotShadowColor"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="1dp"
                             android:layout_weight="2"
                             app:cardCornerRadius="@dimen/_3sdp"
                             app:strokeColor="@color/text_hint"
-                            android:layout_marginStart="1dp"
                             app:strokeWidth="1dp">
 
-                                <EditText
-                                    android:id="@+id/etRFIDCode"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@null"
-                                    android:fontFamily="@font/montserrat_arabic_medium"
-                                    android:hint="@string/enter_rfid_code"
-                                    android:inputType="text"
-                                    android:paddingHorizontal="@dimen/_5sdp"
-                                    android:paddingVertical="@dimen/_7sdp"
-                                    android:textSize="10sp"
-                                    tools:ignore="Autofill,SmallSp,TooManyViews,TouchTargetSizeCheck" />
+                            <EditText
+                                android:id="@+id/etRFIDCode"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@null"
+                                android:fontFamily="@font/montserrat_arabic_medium"
+                                android:hint="@string/enter_rfid_code"
+                                android:inputType="text"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:paddingVertical="@dimen/_7sdp"
+                                android:textSize="10sp"
+                                tools:ignore="Autofill,SmallSp,TooManyViews,TouchTargetSizeCheck" />
 
 
                         </com.google.android.material.card.MaterialCardView>
@@ -794,15 +892,16 @@
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/mcvRFIDCodeBtn"
                             android:layout_width="wrap_content"
+                            android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                            android:outlineSpotShadowColor="@color/spotShadowColor"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_3sdp"
-                            android:layout_gravity="center_vertical"
                             app:cardBackgroundColor="@color/mcv_background_color"
                             app:cardCornerRadius="@dimen/_4sdp"
                             app:cardElevation="0dp">
 
                             <ImageView
-                                android:layout_width="@dimen/_11sdp"
+                                android:layout_width="@dimen/_12sdp"
                                 android:layout_height="@dimen/_12sdp"
                                 android:layout_marginHorizontal="@dimen/_3sdp"
                                 android:layout_marginVertical="@dimen/_3sdp"
@@ -811,7 +910,7 @@
 
                         </com.google.android.material.card.MaterialCardView>
 
-                        </LinearLayout>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -836,8 +935,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginTop="@dimen/_6sdp"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="@dimen/_1sdp"
+                    android:layout_marginStart="@dimen/_1sdp"
                     tools:ignore="UselessParent">
 
                     <TextView
@@ -849,54 +950,58 @@
                         tools:ignore="SmallSp" />
 
                     <LinearLayout
-                        android:layout_width="@dimen/_70sdp"
-                        android:background="@drawable/dotted_stroke"
-                        android:layout_height="@dimen/_30sdp"
-                        android:layout_marginTop="@dimen/_4sdp"
-                        android:id="@+id/llAddImageBarcode"
-                        android:visibility="visible"
-                        android:padding="@dimen/_1sdp"
-                        tools:ignore="UseCompoundDrawables,UselessLeaf">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_1sdp"
+                        android:orientation="horizontal"
+                        android:weightSum="2"
+                        tools:ignore="TooManyViews">
 
                         <com.google.android.material.card.MaterialCardView
-                            android:layout_width="match_parent"
-                            app:strokeWidth="0dp"
-                            app:cardElevation="0dp"
-                            app:cardBackgroundColor="@android:color/transparent"
-                            android:layout_height="match_parent">
+                            android:id="@+id/mcvBarcode"
+                            android:layout_width="0dp"
+                            android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                            android:outlineSpotShadowColor="@color/spotShadowColor"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="1dp"
+                            android:layout_weight="2"
+                            app:cardCornerRadius="@dimen/_3sdp"
+                            app:strokeColor="@color/text_hint"
+                            app:strokeWidth="1dp">
 
-                            <LinearLayout
+                            <EditText
+                                android:id="@+id/etBarcode"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal"
-                                android:visibility="visible"
-                                android:id="@+id/llBarcodeImage"
-                                android:gravity="center">
+                                android:layout_height="wrap_content"
+                                android:background="@null"
+                                android:fontFamily="@font/montserrat_arabic_medium"
+                                android:hint="@string/enter_rfid_code"
+                                android:inputType="text"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:paddingVertical="@dimen/_7sdp"
+                                android:textSize="10sp"
+                                tools:ignore="Autofill,SmallSp,TooManyViews,TouchTargetSizeCheck" />
 
-                                <ImageView
-                                    android:layout_width="@dimen/_6sdp"
-                                    android:layout_height="@dimen/_6sdp"
-                                    android:src="@drawable/icon_add"
-                                    android:tint="@color/theme"
-                                    tools:ignore="ContentDescription,UseAppTint" />
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/add_image"
-                                    android:layout_marginStart="@dimen/_5sdp"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:textColor="@color/theme"
-                                    android:textSize="12sp"
-                                    />
+                        </com.google.android.material.card.MaterialCardView>
 
-                            </LinearLayout>
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/mcvBarcodeBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                            android:outlineSpotShadowColor="@color/spotShadowColor"
+                            android:layout_marginStart="@dimen/_3sdp"
+                            app:cardBackgroundColor="@color/mcv_background_color"
+                            app:cardCornerRadius="@dimen/_4sdp"
+                            app:cardElevation="0dp">
 
                             <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:id="@+id/ivBarcodeImage"
-                                android:scaleType="centerCrop"
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginHorizontal="@dimen/_3sdp"
+                                android:layout_marginVertical="@dimen/_3sdp"
+                                android:src="@drawable/icon_barcode"
                                 tools:ignore="ContentDescription" />
 
                         </com.google.android.material.card.MaterialCardView>
@@ -921,13 +1026,73 @@
 
                     </LinearLayout>
 
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="wrap_content"
+                        app:strokeWidth="0.7dp"
+
+                        app:strokeColor="@color/theme"
+                        android:id="@+id/mcvBarcodeImage"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        app:cardElevation="@dimen/_2sdp"
+                        android:visibility="gone"
+                        android:outlineAmbientShadowColor="@color/white"
+                        android:outlineSpotShadowColor="@color/white"
+                        app:cardBackgroundColor="@android:color/transparent"
+                        android:layout_height="wrap_content"
+                        tools:ignore="UnusedAttribute">
+
+                        <RelativeLayout
+                            android:layout_width="@dimen/_66sdp"
+                            android:layout_height="@dimen/_36sdp"
+                            android:orientation="horizontal"
+                            android:visibility="visible"
+                            android:gravity="center">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                app:cardCornerRadius="@dimen/_4sdp"
+                                android:id="@+id/mcvCrossBtn"
+                                android:visibility="visible"
+                                app:cardBackgroundColor="@color/theme"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:layout_width="@dimen/_8sdp"
+                                    android:layout_height="@dimen/_8sdp"
+                                    android:src="@drawable/icon_cross"
+                                    android:id="@+id/ivCross"
+                                    android:padding="@dimen/_2sdp"
+                                    android:elevation="5dp"
+                                    android:visibility="visible"
+                                    android:paddingVertical="@dimen/_1sdp"
+                                    android:tint="@color/white"
+                                    tools:ignore="ContentDescription,UseAppTint" />
+
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:id="@+id/ivBarcodeImage"
+                                android:scaleType="centerCrop"
+                                android:padding="@dimen/_3sdp"
+                                android:layout_centerInParent="true"
+                                tools:ignore="ContentDescription" />
+
+                        </RelativeLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginTop="@dimen/_6sdp"
+                    android:orientation="vertical"
                     tools:ignore="UselessParent">
 
                     <TextView
@@ -936,359 +1101,17 @@
                         android:fontFamily="@font/montserrat_arabic_medium"
                         android:text="@string/product_image"
                         android:textSize="10sp"
+                        android:layout_marginStart="@dimen/_1sdp"
                         tools:ignore="SmallSp" />
 
-                    <LinearLayout
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvProductImage"
                         android:layout_width="match_parent"
-                        android:weightSum="3"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:orientation="horizontal"
-                        android:layout_height="wrap_content">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:background="@drawable/dotted_stroke"
-                            android:layout_height="@dimen/_40sdp"
-                            android:layout_weight="1"
-                            android:layout_marginTop="@dimen/_2sdp"
-                            android:layout_marginEnd="@dimen/_5sdp"
-                            android:id="@+id/llAddImageProductOne"
-                            android:visibility="visible"
-                            tools:ignore="UseCompoundDrawables,UselessLeaf">
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="match_parent"
-                                app:strokeWidth="0dp"
-                                app:cardElevation="0dp"
-                                app:cardBackgroundColor="@android:color/transparent"
-                                android:layout_height="match_parent">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="horizontal"
-                                    android:visibility="visible"
-                                    android:id="@+id/llProductImageOne"
-                                    android:gravity="center">
-
-                                    <ImageView
-                                        android:layout_width="@dimen/_6sdp"
-                                        android:layout_height="@dimen/_6sdp"
-                                        android:src="@drawable/icon_add"
-                                        android:tint="@color/theme"
-                                        tools:ignore="ContentDescription,TooDeepLayout,UseAppTint" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/add_image"
-                                        android:layout_marginStart="@dimen/_5sdp"
-                                        android:fontFamily="@font/montserrat_arabic_regular"
-                                        android:textColor="@color/theme"
-                                        android:textSize="12sp"
-                                        />
-
-                                </LinearLayout>
-
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:id="@+id/ivProductImageOne"
-                                    android:scaleType="centerCrop"
-                                    tools:ignore="ContentDescription" />
-
-                            </com.google.android.material.card.MaterialCardView>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:background="@drawable/dotted_stroke"
-                            android:layout_height="@dimen/_40sdp"
-                            android:layout_weight="1"
-                            android:layout_marginTop="@dimen/_2sdp"
-                            android:layout_marginEnd="@dimen/_5sdp"
-                            android:id="@+id/llAddImageProductTwo"
-                            android:visibility="visible"
-                            tools:ignore="UseCompoundDrawables,UselessLeaf">
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="match_parent"
-                                app:strokeWidth="0dp"
-                                app:cardElevation="0dp"
-                                app:cardBackgroundColor="@android:color/transparent"
-                                android:layout_height="match_parent">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="horizontal"
-                                    android:visibility="visible"
-                                    android:id="@+id/llProductImageTwo"
-                                    android:gravity="center">
-
-                                    <ImageView
-                                        android:layout_width="@dimen/_6sdp"
-                                        android:layout_height="@dimen/_6sdp"
-                                        android:src="@drawable/icon_add"
-                                        android:tint="@color/theme"
-                                        tools:ignore="ContentDescription,UseAppTint" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/add_image"
-                                        android:layout_marginStart="@dimen/_5sdp"
-                                        android:fontFamily="@font/montserrat_arabic_regular"
-                                        android:textColor="@color/theme"
-                                        android:textSize="12sp"
-                                        />
-
-                                </LinearLayout>
-
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:id="@+id/ivProductImageTwo"
-                                    android:scaleType="centerCrop"
-                                    tools:ignore="ContentDescription" />
-
-                            </com.google.android.material.card.MaterialCardView>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:background="@drawable/dotted_stroke"
-                            android:layout_height="@dimen/_40sdp"
-                            android:layout_weight="1"
-                            android:layout_marginTop="@dimen/_2sdp"
-                            android:layout_marginEnd="@dimen/_5sdp"
-                            android:id="@+id/llAddImageProductThree"
-                            android:visibility="visible"
-                            tools:ignore="UseCompoundDrawables,UselessLeaf">
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="match_parent"
-                                app:strokeWidth="0dp"
-                                app:cardElevation="0dp"
-                                app:cardBackgroundColor="@android:color/transparent"
-                                android:layout_height="match_parent">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="horizontal"
-                                    android:visibility="visible"
-                                    android:id="@+id/llProductImageThree"
-                                    android:gravity="center">
-
-                                    <ImageView
-                                        android:layout_width="@dimen/_6sdp"
-                                        android:layout_height="@dimen/_6sdp"
-                                        android:src="@drawable/icon_add"
-                                        android:tint="@color/theme"
-                                        tools:ignore="ContentDescription,UseAppTint" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/add_image"
-                                        android:layout_marginStart="@dimen/_5sdp"
-                                        android:fontFamily="@font/montserrat_arabic_regular"
-                                        android:textColor="@color/theme"
-                                        android:textSize="12sp"
-                                        />
-
-                                </LinearLayout>
-
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:id="@+id/ivProductImageThree"
-                                    android:scaleType="centerCrop"
-                                    tools:ignore="ContentDescription" />
-
-                            </com.google.android.material.card.MaterialCardView>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:weightSum="3"
-                        android:id="@+id/llProductImageFourAndFive"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:orientation="horizontal"
-                        android:layout_height="wrap_content">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:background="@drawable/dotted_stroke"
-                            android:layout_height="@dimen/_40sdp"
-                            android:layout_weight="1"
-                            android:layout_marginTop="@dimen/_2sdp"
-                            android:layout_marginEnd="@dimen/_5sdp"
-                            android:id="@+id/llAddImageProductFour"
-                            android:visibility="visible"
-                            tools:ignore="UseCompoundDrawables,UselessLeaf">
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="match_parent"
-                                app:strokeWidth="0dp"
-                                app:cardElevation="0dp"
-                                app:cardBackgroundColor="@android:color/transparent"
-                                android:layout_height="match_parent">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="horizontal"
-                                    android:visibility="visible"
-                                    android:id="@+id/llProductImageFour"
-                                    android:gravity="center">
-
-                                    <ImageView
-                                        android:layout_width="@dimen/_6sdp"
-                                        android:layout_height="@dimen/_6sdp"
-                                        android:src="@drawable/icon_add"
-                                        android:tint="@color/theme"
-                                        tools:ignore="ContentDescription,TooDeepLayout,UseAppTint" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/add_image"
-                                        android:layout_marginStart="@dimen/_5sdp"
-                                        android:fontFamily="@font/montserrat_arabic_regular"
-                                        android:textColor="@color/theme"
-                                        android:textSize="12sp"
-                                        />
-
-                                </LinearLayout>
-
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:id="@+id/ivProductImageFour"
-                                    android:scaleType="centerCrop"
-                                    tools:ignore="ContentDescription" />
-
-                            </com.google.android.material.card.MaterialCardView>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:background="@drawable/dotted_stroke"
-                            android:layout_height="@dimen/_40sdp"
-                            android:layout_weight="1"
-                            android:layout_marginTop="@dimen/_2sdp"
-                            android:layout_marginEnd="@dimen/_5sdp"
-                            android:id="@+id/llAddImageProductFive"
-                            android:visibility="visible"
-                            tools:ignore="UseCompoundDrawables,UselessLeaf">
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="match_parent"
-                                app:strokeWidth="0dp"
-                                app:cardElevation="0dp"
-                                app:cardBackgroundColor="@android:color/transparent"
-                                android:layout_height="match_parent">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="horizontal"
-                                    android:visibility="visible"
-                                    android:id="@+id/llProductImageFive"
-                                    android:gravity="center">
-
-                                    <ImageView
-                                        android:layout_width="@dimen/_6sdp"
-                                        android:layout_height="@dimen/_6sdp"
-                                        android:src="@drawable/icon_add"
-                                        android:tint="@color/theme"
-                                        tools:ignore="ContentDescription,UseAppTint" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/add_image"
-                                        android:layout_marginStart="@dimen/_5sdp"
-                                        android:fontFamily="@font/montserrat_arabic_regular"
-                                        android:textColor="@color/theme"
-                                        android:textSize="12sp"
-                                        />
-
-                                </LinearLayout>
-
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:id="@+id/ivProductImageFive"
-                                    android:scaleType="centerCrop"
-                                    tools:ignore="ContentDescription" />
-
-                            </com.google.android.material.card.MaterialCardView>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:background="@drawable/dotted_stroke"
-                            android:layout_height="@dimen/_40sdp"
-                            android:layout_weight="1"
-                            android:layout_marginTop="@dimen/_2sdp"
-                            android:layout_marginEnd="@dimen/_5sdp"
-                            android:visibility="invisible"
-                            tools:ignore="UseCompoundDrawables,UselessLeaf">
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="match_parent"
-                                app:strokeWidth="0dp"
-                                app:cardElevation="0dp"
-                                app:cardBackgroundColor="@android:color/transparent"
-                                android:layout_height="match_parent">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="horizontal"
-                                    android:visibility="visible"
-                                    android:gravity="center">
-
-                                    <ImageView
-                                        android:layout_width="@dimen/_6sdp"
-                                        android:layout_height="@dimen/_6sdp"
-                                        android:src="@drawable/icon_add"
-                                        android:tint="@color/theme"
-                                        tools:ignore="ContentDescription,UseAppTint" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/add_image"
-                                        android:layout_marginStart="@dimen/_5sdp"
-                                        android:fontFamily="@font/montserrat_arabic_regular"
-                                        android:textColor="@color/theme"
-                                        android:textSize="12sp"
-                                        />
-
-                                </LinearLayout>
-
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:scaleType="centerCrop"
-                                    tools:ignore="ContentDescription" />
-
-                            </com.google.android.material.card.MaterialCardView>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
+                        android:layout_height="wrap_content"
+                        app:spanCount="3"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        tools:listitem="@layout/item_add_image_product"
+                        android:layout_marginTop="@dimen/_4sdp" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -1314,8 +1137,9 @@
                     android:id="@+id/mcvSave"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/_8sdp"
                     android:layout_gravity="end"
+                    android:layout_marginEnd="@dimen/_1sdp"
+                    android:layout_marginVertical="@dimen/_7sdp"
                     app:cardBackgroundColor="@color/theme"
                     app:cardCornerRadius="@dimen/_3sdp"
                     app:strokeWidth="0dp">
@@ -1335,7 +1159,6 @@
                 </com.google.android.material.card.MaterialCardView>
 
 
-
             </LinearLayout>
 
         </LinearLayout>
@@ -1344,5 +1167,5 @@
     </LinearLayout>
 
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
 

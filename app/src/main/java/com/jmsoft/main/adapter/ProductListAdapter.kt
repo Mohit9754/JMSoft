@@ -47,18 +47,7 @@ class ProductListAdapter(
         holder.bind(productList[position],position)
     }
 
-    //setting the selector on material card view
-    private fun setFocusChangeLis(editText: EditText, materialCardView: MaterialCardView) {
 
-        editText.setOnFocusChangeListener { _, hasFocus ->
-
-            if (hasFocus) {
-                materialCardView.strokeColor = context.getColor(R.color.theme)
-            } else {
-                materialCardView.strokeColor = context.getColor(R.color.text_hint)
-            }
-        }
-    }
 
     // Show Category Delete Dialog
     @SuppressLint("NotifyDataSetChanged")
@@ -72,7 +61,7 @@ class ProductListAdapter(
         val dialogBinding = DialogDeleteUserBinding.inflate(LayoutInflater.from(context))
         dialog.setContentView(dialogBinding.root)
 
-        dialogBinding.ivImage.setImageResource(R.drawable.img_delete_address)
+        dialogBinding.ivImage.setImageResource(R.drawable.img_delete_inventory)
         dialogBinding.tvMessage.text =
             context.getString(R.string.are_you_sure_you_want_to_delete_this_product_this_action_cannot_be_undone)
 
@@ -140,7 +129,6 @@ class ProductListAdapter(
                 //Giving the product UUID
                 bundle.putString(Constants.state, edit)
 
-                Utils.E("Clicked the ediit button")
 
                 (context as DashboardActivity).navController?.navigate(R.id.productInventory, bundle)
 

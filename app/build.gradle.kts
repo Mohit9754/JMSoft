@@ -78,6 +78,10 @@ dependencies {
     // Firebase Realtime Database
     implementation("com.google.firebase:firebase-database:20.3.1")
 
+    implementation("com.google.zxing:core:3.4.1")
+
+
+
     //Validation For Phone Number
     implementation("io.michaelrocks:libphonenumber-android:8.12.49")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")

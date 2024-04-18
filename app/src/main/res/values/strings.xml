@@ -195,6 +195,9 @@
     <string name="barcode">Barcode</string>
     <string name="product_image">Product image</string>
     <string name="select_category">Select Category</string>
+    <string name="please_select_at_least_two_images">Please select at least two images</string>
+    <string name="collection_name">Collection name</string>
+    <string name="please_generate_barcode">Please generate barcode</string>
 
 
 </resources>
