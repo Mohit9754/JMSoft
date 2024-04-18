@@ -22,7 +22,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.basic.Database.UserDataHelper
+import com.jmsoft.basic.Database.DatabaseHelper
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
 import com.jmsoft.basic.UtilityTools.Constants.Companion.updateInSession
@@ -45,7 +45,11 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentSettingBinding
     private lateinit var editProfileDialog: Dialog
+
+    // for Opening the Camera Dialog
     private var forCameraSettingDialog = 100
+
+    // for Opening the Gallery Dialog
     private var forGallerySettingDialog = 200
 
     //Gallery Permission Launcher
@@ -129,9 +133,9 @@ class SettingFragment : Fragment(), View.OnClickListener {
         binding = FragmentSettingBinding.inflate(layoutInflater)
 
         // Hide the Search option
-        (requireActivity() as DashboardActivity).mcvSearch?.visibility = View.GONE
+        (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.GONE
 
-        (requireActivity() as DashboardActivity).currentState = ""
+        (requireActivity() as DashboardActivity).currentState = Constants.verification
 
 
         //set the Clicks And initialization
@@ -140,6 +144,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
         return binding.root
     }
 
+    // Open Setting Dialog
     private fun showOpenSettingDialog(dialogCode: Int) {
 
         val dialog = Dialog(requireActivity())
@@ -178,12 +183,14 @@ class SettingFragment : Fragment(), View.OnClickListener {
         dialog.show()
     }
 
+    // Setting the full Name
     @SuppressLint("SetTextI18n")
     private fun setFullName() {
-        val instance = UserDataHelper.instance.list[0]
+        val instance = DatabaseHelper.instance.list[0]
         binding.tvfullName?.text = "${instance.firstName}  ${instance.lastName}"
     }
 
+    // Update the Profile
     private fun updateProfile(profile: Bitmap?) {
 
         if (profile != null) {
@@ -211,7 +218,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
     // Setting the profile picture
     private fun setProfilePicture() {
 
-        val profileName = UserDataHelper.instance.list[0].profileUri.toString()
+        val profileName = DatabaseHelper.instance.list[0].profileUri.toString()
 
         if (profileName != "") {
             val profile = Utils.getImageFromInternalStorage(requireActivity(), profileName)
@@ -227,6 +234,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // set the Clicks , initialization And Setup
     private fun init() {
 
         //Check if the User is admin or not. if not then hide the user Management option
@@ -257,6 +265,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Edit Profile Dialog
     private fun showEditProfileDialog() {
 
         editProfileDialog = Dialog(requireActivity())
@@ -284,6 +293,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
         editProfileDialog.show()
     }
 
+    // Logout Dialog
     private fun showLogOutDialog() {
 
         val dialog = Dialog(requireActivity())
@@ -311,25 +321,33 @@ class SettingFragment : Fragment(), View.OnClickListener {
     //Handles All the Clicks
     override fun onClick(v: View?) {
 
-        //Navigate to Device Management Fragment
+        // Click on Device Management
         if (v == binding.mcvDeviceManagement) {
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.deviceManagement)
 
-        } else if (v == binding.mcvUserManagement) {
+        }
+
+        // Click on User Management
+        else if (v == binding.mcvUserManagement) {
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
-        } else if (v == binding.mcvBackBtn) {
+        }
 
-            (requireActivity() as DashboardActivity).navController?.popBackStack(R.id.home,false)
-        }else if (v == binding.mcvUserName) {
+        // Click on Back Button
+        else if (v == binding.mcvBackBtn) {
+
+            (requireActivity() as DashboardActivity).navController?.popBackStack(R.id.home, false)
+        }
+        //Click on Username
+        else if (v == binding.mcvUserName) {
 
             //Navigate to Edit Profile
             val bundle = Bundle()
             Utils.GetSession().userUUID?.let { bundle.putString(Constants.userUUID, it) }
-            bundle.putBoolean(updateInSession,true)
+            bundle.putBoolean(updateInSession, true)
 
-            (context as DashboardActivity).navController?.navigate(R.id.editProfile,bundle)
+            (context as DashboardActivity).navController?.navigate(R.id.editProfile, bundle)
         }
 
         // When LogOut button Clicked

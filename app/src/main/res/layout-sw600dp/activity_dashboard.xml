@@ -9,12 +9,6 @@
     android:orientation="vertical">
 
 
-    <androidx.appcompat.widget.Toolbar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/blankToolbar"
-        android:visibility="gone"/>
-
     <RelativeLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -28,7 +22,8 @@
             android:layout_height="@dimen/_20sdp"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/_25sdp"
-            android:src="@drawable/logo_small" />
+            android:src="@drawable/logo_small"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/ivLanguageSwitcher"
@@ -38,7 +33,8 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/_16sdp"
             android:layout_toEndOf="@+id/ivLogo"
-            android:src="@drawable/img_language_switcher" />
+            android:src="@drawable/img_language_switcher"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/ivSetting"
@@ -48,7 +44,8 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/_25sdp"
             android:padding="@dimen/_3sdp"
-            android:src="@drawable/icon_setting" />
+            android:src="@drawable/icon_setting"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/ivCard"
@@ -58,14 +55,15 @@
             android:layout_marginEnd="@dimen/_4sdp"
             android:layout_toStartOf="@+id/ivSetting"
             android:padding="@dimen/_3sdp"
-            android:src="@drawable/icon_bag" />
+            android:src="@drawable/icon_cart"
+            tools:ignore="ContentDescription" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="@dimen/_100sdp"
             android:layout_toStartOf="@+id/ivCard"
             android:layout_marginEnd="@dimen/_7sdp"
             android:id="@+id/mcvSearch"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:strokeWidth="1dp"
             app:strokeColor="@color/text_hint"
             app:cardCornerRadius="@dimen/_8sdp"
@@ -82,12 +80,14 @@
                     android:background="@null"
                     android:textSize="10sp"
                     android:hint="@string/search_here"
+                    android:maxLines="1"
+                    android:inputType="text"
                     android:id="@+id/etSearch"
                     android:paddingVertical="@dimen/_5sdp"
                     android:layout_marginStart="@dimen/_5sdp"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/_22sdp"
-                    tools:ignore="SmallSp" />
+                    tools:ignore="SmallSp,TextFields" />
 
                 <ImageView
                     android:layout_width="@dimen/_16sdp"

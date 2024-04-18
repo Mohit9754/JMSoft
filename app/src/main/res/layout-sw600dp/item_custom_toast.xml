@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="1dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/_5sdp"
+    app:cardElevation="0dp"
+    tools:ignore="MissingDefaultResource">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/_7sdp"
+        tools:ignore="UselessLeaf">
+
+        <ImageView
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="@dimen/_16sdp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/logo_small"
+            android:id="@+id/ivLogo"
+            android:layout_marginVertical="@dimen/_5sdp"
+            android:visibility="visible"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="wrap_content"
+            android:fontFamily="@font/montserrat_arabic_medium"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/ivLogo"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

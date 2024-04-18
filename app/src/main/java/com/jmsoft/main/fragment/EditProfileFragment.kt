@@ -47,6 +47,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentEditProfileBinding.inflate(layoutInflater)
 
+        //set the Clicks And initialization
         init()
 
         return binding.root
@@ -123,6 +124,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    //set the Clicks And initialization
     private fun init() {
 
         //set Password for  current Language
@@ -186,6 +188,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         )
 
         errorValidationModels.add(
+
             ValidationModel(
                 Validation.Type.Phone, binding.etPhoneNumber, binding.tvPhoneNumberError
             )
@@ -199,7 +202,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
         errorValidationModels.add(
             ValidationModel(
-                Validation.Type.PasswordStrong, binding.etPassword, binding.tvPasswordError
+                Validation.Type.Empty, binding.etPassword, binding.tvPasswordError
             )
         )
 
@@ -269,7 +272,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
                 //Update user details in the User Table
                 Utils.updateUserDetails(userDataModel)
-                Utils.T(activity, getString(R.string.updated_successfully))
+                Utils.T(requireActivity(), getString(R.string.updated_successfully))
 
                 val updateInSession = arguments?.getBoolean(updateInSession)
 
@@ -307,6 +310,8 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         textView.text = msg
         textView.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.top_to_bottom))
     }
+
+    // Handles All the Clicks
 
     override fun onClick(v: View?) {
 
@@ -382,7 +387,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 binding.etPhoneNumber?.setText("")
                 binding.etPassword?.setText("")
 
-                Utils.T(activity, getString(R.string.new_user_registered_successfully))
+                Utils.T(requireActivity(), getString(R.string.new_user_registered_successfully))
 
                 //Navigate to user management
                 (requireActivity() as DashboardActivity).navController?.popBackStack()

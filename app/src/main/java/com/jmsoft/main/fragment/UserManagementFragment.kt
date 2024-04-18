@@ -26,19 +26,19 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
         binding = FragmentUserManagementBinding.inflate(layoutInflater)
 
 
+        // set the Clicks , initialization And Setup
         init()
 
 
         return binding.root
     }
 
+    // set the Recycler View of User List
     private fun setRecyclerView(){
 
         // getting All User Details Accept Admin
 
         val userList = Utils.getAllUserDetails()
-
-        Utils.E("##################### -> ${userList.size}")
 
         if (userList.size != 0) {
             binding.ivNoUser?.visibility = View.GONE
@@ -49,11 +49,14 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
             binding.rvUserList?.layoutManager = GridLayoutManager(requireActivity(), 2) // Span Count is set to 3
             binding.rvUserList?.adapter = userManagementAdapter
 
-        }else{
+        }
+        // if no user
+        else{
             binding.ivNoUser?.visibility = View.VISIBLE
         }
     }
 
+    // set the Clicks , initialization And Setup
     private fun init(){
 
         // set the Recycler View of User List
@@ -67,12 +70,15 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
 
     }
 
+    //Handles All the Clicks
     override fun onClick(v: View?) {
 
+        //Click on Add user button
         if (v == binding.mcvAddUser) {
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.editProfile)
         }
 
+        //Click on Back button
         else if(v == binding.mcvBackBtn){
 
             (requireActivity() as DashboardActivity).navController?.popBackStack()

@@ -57,7 +57,7 @@
             android:layout_marginEnd="@dimen/_4sdp"
             android:layout_toStartOf="@+id/ivSetting"
             android:padding="@dimen/_3sdp"
-            android:src="@drawable/icon_bag" />
+            android:src="@drawable/icon_cart" />
 
         <ImageView
             android:layout_width="@dimen/_16sdp"

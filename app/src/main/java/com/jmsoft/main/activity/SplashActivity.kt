@@ -3,7 +3,6 @@ package com.jmsoft.main.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.jmsoft.R
-import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.UtilityTools.Utils
 
 /**

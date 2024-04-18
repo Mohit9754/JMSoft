@@ -6,11 +6,11 @@
     android:id="@+id/mcvDevice"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="1dp"
     android:layout_marginBottom="@dimen/_7sdp"
+    android:layout_marginHorizontal="1dp"
     app:cardBackgroundColor="@color/mcv_background_color"
-    app:cardCornerRadius="@dimen/_5sdp"
     app:cardElevation="0dp"
+    app:cardCornerRadius="@dimen/_5sdp"
     tools:ignore="MissingDefaultResource">
 
     <RelativeLayout

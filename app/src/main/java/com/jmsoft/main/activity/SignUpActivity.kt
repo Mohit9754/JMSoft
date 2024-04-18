@@ -1,16 +1,11 @@
 package com.jmsoft.main.activity
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.Rect
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
@@ -18,12 +13,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.Database.UserDataModel
-import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
@@ -34,14 +26,12 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.lastName
 
 import com.jmsoft.basic.UtilityTools.Constants.Companion.password
 import com.jmsoft.basic.UtilityTools.Constants.Companion.phoneNumber
-import com.jmsoft.basic.UtilityTools.Constants.Companion.user
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation
 import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.ActivitySignUpBinding
 import java.util.ArrayList
-import java.util.Locale
 
 /**
  * SignUp Activity

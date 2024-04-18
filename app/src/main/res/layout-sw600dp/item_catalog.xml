@@ -13,7 +13,7 @@
     android:outlineAmbientShadowColor="@color/ambientShadowColor"
     android:outlineSpotShadowColor="@color/spotShadowColor"
     app:cardCornerRadius="@dimen/_7sdp"
-    tools:ignore="MissingDefaultResource">
+    tools:ignore="MissingDefaultResource,UnusedAttribute">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -52,7 +52,8 @@
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/weight"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="11sp"
+                        />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -62,7 +63,8 @@
                         android:text="@string/_2_5_g"
                         android:id="@+id/tvProductWeight"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="11sp"
+                        />
 
                 </LinearLayout>
 
@@ -78,7 +80,8 @@
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/type"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="11sp"
+                        />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -88,7 +91,8 @@
                         android:text="@string/gold"
                         android:id="@+id/tvProductType"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="11sp"
+                        />
 
                 </LinearLayout>
 
@@ -111,7 +115,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/cat"
                         android:textColor="@color/text_color"
-                        android:textSize="11sp" />
+                        android:textSize="11sp"
+                        />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -121,7 +126,8 @@
                         android:text="@string/rings"
                         android:id="@+id/tvProductCategory"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="11sp"
+                        />
 
                 </LinearLayout>
 
@@ -138,7 +144,8 @@
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:text="@string/carat"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="11sp"
+                        />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -148,7 +155,8 @@
                         android:text="@string/_0_75"
                         android:id="@+id/tvProductCarat"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="11sp"
+                        />
 
                 </LinearLayout>
 
@@ -180,19 +188,46 @@
             android:layout_marginBottom="@dimen/_5sdp">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/mcvVendors"
+                android:id="@+id/mcvCartStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/black"
-                app:cardElevation="@dimen/_2sdp"
-                app:cardCornerRadius="@dimen/_6sdp">
+                android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                android:outlineSpotShadowColor="@color/spotShadowColor"
+                app:cardElevation="@dimen/_1sdp"
+                app:cardCornerRadius="@dimen/_6sdp"
+                tools:ignore="UnusedAttribute">
 
                 <ImageView
                     android:layout_width="@dimen/_8sdp"
                     android:layout_height="@dimen/_8sdp"
                     android:layout_marginHorizontal="@dimen/_4sdp"
                     android:layout_marginVertical="@dimen/_4sdp"
-                    android:src="@drawable/icon_white_bag" />
+                    android:id="@+id/ivCartStatus"
+                    tools:ignore="ContentDescription" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/white"
+                android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                android:outlineSpotShadowColor="@color/spotShadowColor"
+                app:cardElevation="@dimen/_1sdp"
+                app:cardCornerRadius="@dimen/_6sdp"
+                tools:ignore="UnusedAttribute">
+
+                <ImageView
+                    android:layout_width="@dimen/_8sdp"
+                    android:layout_height="@dimen/_8sdp"
+                    android:layout_marginHorizontal="@dimen/_4sdp"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    android:src="@drawable/icon_delete"
+                    tools:ignore="ContentDescription" />
 
             </com.google.android.material.card.MaterialCardView>
 

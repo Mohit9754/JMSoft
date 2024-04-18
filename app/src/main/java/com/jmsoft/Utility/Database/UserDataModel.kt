@@ -3,8 +3,6 @@ package com.jmsoft.basic.Database
 import android.database.sqlite.SQLiteDatabase
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.jmsoft.basic.UtilityTools.Utils
-import com.jmsoft.basic.UtilityTools.Utils.E
 
 class UserDataModel {
 
@@ -44,7 +42,6 @@ class UserDataModel {
 
         const val TABLE_NAME_USER_SESSION = "User_session"
         const val TABLE_NAME_USER = "User"
-        const val TABLE_NAME_DEVICE = "Device"
 
         //All Key of User Table
         const val Key_Id = "Id"
@@ -57,15 +54,6 @@ class UserDataModel {
         const val Key_phoneNumber = "phoneNumber"
         const val Key_profileUri = "profileUri"
         const val Key_password = "password"
-
-        //All keys of Device table
-
-        const val Key_deviceUUID = "deviceUUID"
-        const val Key_deviceName = "deviceName"
-        const val Key_deviceType = "deviceType"
-        const val Key_deviceAddress = "deviceAddress"
-        const val Key_deviceId = "deviceId"
-
 
         @JvmStatic
         fun CreateTable(db: SQLiteDatabase) {
@@ -90,32 +78,15 @@ class UserDataModel {
                     Key_email + " text," +
                     Key_phoneNumber + " text," +
                     Key_profileUri + " text," +
-                    Key_password + " text"  +
+                    Key_password + " text" +
                     " )")
-
-            val CreateTableDeviceQuery = ("create table " + TABLE_NAME_DEVICE + " ("
-                    + Key_deviceId + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    Key_deviceUUID + " text," +
-                    Key_deviceName + " text," +
-                    Key_deviceType + " text," +
-                    Key_deviceAddress + " text," +
-                    Key_userUUID + " text," +
-                    " FOREIGN KEY ("+Key_userUUID+") REFERENCES "+ TABLE_NAME_USER+"("+ Key_userUUID+")"+
-                    " )")
-
-
-            E("CreateTableQuery::$CreateTableUserSessionQuery")
 
             db.execSQL(CreateTableUserSessionQuery)
             db.execSQL(CreateTableUserQuery)
-            db.execSQL(CreateTableDeviceQuery)
-
-            Utils.E("##################### Table is created")
 
             // Insert the admin
-            UserDataHelper.instance.insertAdmin(db)
+            DatabaseHelper.instance.insertAdmin(db)
 
-            Utils.E("##################### Admin is created")
         }
 
         /**
@@ -126,7 +97,6 @@ class UserDataModel {
 
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_USER_SESSION)
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_USER)
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_DEVICE)
         }
     }
 

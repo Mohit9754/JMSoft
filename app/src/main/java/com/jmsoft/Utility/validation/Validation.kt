@@ -45,6 +45,14 @@ class Validation {
                 errorTextView.visibility = View.GONE
             }
             when (validationModel.type) {
+                
+                Type.Barcode -> validationCheck = isBarCodeGenerate(context,validationModel.arrayListSize)
+
+                Type.AtLeastTwo -> validationCheck = isTwoImageSelected(context,validationModel.arrayListSize)
+
+                Type.EmptyTextView -> validationCheck = isEmptyTextView(context,validationModel.textView)
+
+                Type.EmptyArrayList -> validationCheck = isEmptyArrayList(context,validationModel.arrayListSize)
                 Type.Phone -> validationCheck =
                     isValidPhoneNumber(context, validationModel.editText)
                 Type.Email -> validationCheck = isEmailValid(context, validationModel.editText)
@@ -56,6 +64,9 @@ class Validation {
                     isPasswordMatch(context, validationModel.editText, validationModel.editText1)
                 Type.PasswordStrong -> validationCheck =
                     isPasswordStrong(context, validationModel.editText)
+                Type.ZipCode -> validationCheck =
+                    isValidZipCode(context, validationModel.editText)
+
                 Type.PAN -> validationCheck = isValidPAN(context, validationModel.editText)
                 Type.IFSC -> validationCheck = isValidIFSC(context, validationModel.editText)
                 Type.Empty -> validationCheck = isEmpty(context, validationModel.editText)
@@ -84,7 +95,8 @@ class Validation {
             EditTextPointer = editText
             false
         } else {
-            val p = Pattern.compile(
+            true
+           /* val p = Pattern.compile(
                 "^" +
                         "(?=.*[0-9])" +  //at least 1 digit
                         "(?=.*[a-z])" +  //at least 1 lower case letter
@@ -103,8 +115,19 @@ class Validation {
                 EditTextPointer = editText
                 errorMessage = context.getString(R.string.passwordStrong)
                 false
-            }
+            }*/
         }
+    }
+    
+    private fun isBarCodeGenerate(context: Context,arrayListSize: Int?): Boolean {
+        
+        return if(arrayListSize == 0){
+            errorMessage = context.getString(R.string.please_generate_barcode)
+            false
+
+        } else {
+            true
+        } 
     }
 
     /**
@@ -133,7 +156,44 @@ class Validation {
         }
     }
 
-    /**
+    private fun isEmptyArrayList(context: Context,arrayListSize: Int?):Boolean{
+
+        return if (arrayListSize == 0) {
+            errorMessage = context.getString(R.string.empty_error)
+            false
+        } else {
+            true
+        }
+
+    }
+
+    private fun isEmptyTextView(context: Context,textView: TextView?):Boolean{
+
+        return if(textView?.text?.isEmpty() == true){
+            errorMessage = context.getString(R.string.empty_error)
+            false
+
+        } else {
+            true
+        }
+    }
+
+    private fun isTwoImageSelected(context: Context,arrayListSize: Int?):Boolean {
+
+        if (arrayListSize != null) {
+            return if (arrayListSize < 2) {
+                errorMessage = context.getString(R.string.please_select_at_least_two_images)
+                false
+
+            } else {
+                true
+            }
+        }
+        return false
+    }
+
+
+        /**
      * is String Empty
      *
      * @param context Page Reference
@@ -383,6 +443,31 @@ class Validation {
         }
     }
 
+    // is valid Zip code
+    fun isValidZipCode(context: Context, editText: EditText?): Boolean {
+
+        EditTextPointer = editText
+
+        if (editText?.text == null || TextUtils.isEmpty(editText.text)) {
+            errorMessage = context.getString(R.string.empty_error)
+            return false
+        }
+
+        val zipCode = editText.getText().toString()
+        errorMessage = context.getString(R.string.enter_a_valid_zipcode)
+
+        // Check if the zip code has exactly 5 digits and if all characters are digits
+        if (zipCode.length != 5 || !zipCode.all { it.isDigit() }) {
+            return false
+        }
+
+        // Extract the region code from the first digit
+        val regionCode = zipCode[0].toString().toInt()
+
+        // Validate the region code (1 to 9)
+        return regionCode in 1..9
+    }
+
     fun validateMobileNumber(phoneNo: String): Boolean {
         val phonenumber: PhoneNumber
         val regionalCode = getCountryRegion()
@@ -406,10 +491,11 @@ class Validation {
      * Enum of the Type of error we have
      */
     enum class Type(var label: String) {
-        Email(""), Phone(""), EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
+
+        Barcode("") ,AtLeastTwo("") , Email(""),EmptyTextView(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
             ""
         ),
-        PAN(""), IFSC(""), Empty(""), AccountNumber(""), MPIN("");
+        PAN(""), IFSC(""), Empty(""), EmptyArrayList(""), AccountNumber(""), MPIN("");
     }
 
     companion object {

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/llMetalType"
+    android:paddingHorizontal="@dimen/_7sdp"
+    android:layout_marginTop="@dimen/_2sdp"
+    android:orientation="vertical"
+    tools:ignore="MissingDefaultResource">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:gravity="center_vertical"
+        tools:ignore="MissingDefaultResource,UselessParent">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:layout_weight="2"
+            android:id="@+id/tvMetalType"
+            android:fontFamily="@font/montserrat_arabic_regular"
+            android:text="@string/silver"
+            android:textColor="@color/black"
+            android:paddingTop="@dimen/_4sdp"
+            android:paddingBottom="@dimen/_2sdp"
+            android:gravity="center_vertical"
+            tools:ignore="MissingDefaultResource,NestedWeights,SmallSp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            android:id="@+id/llDelAndEditSection"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                app:cardBackgroundColor="@color/mcv_background_color"
+                app:cardCornerRadius="@dimen/_4sdp"
+                app:cardElevation="0dp"
+                tools:ignore="RtlSymmetry">
+
+                <ImageView
+                    android:layout_width="@dimen/_7sdp"
+                    android:layout_height="@dimen/_7sdp"
+                    android:layout_marginHorizontal="@dimen/_4sdp"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    android:src="@drawable/icon_edit"
+                    tools:ignore="ContentDescription" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/_2sdp"
+                android:layout_marginStart="@dimen/_5sdp"
+                app:cardBackgroundColor="@color/mcv_background_color"
+                app:cardCornerRadius="@dimen/_4sdp"
+                app:cardElevation="0dp">
+
+                <ImageView
+                    android:layout_width="@dimen/_8sdp"
+                    android:layout_height="@dimen/_8sdp"
+                    android:layout_marginHorizontal="@dimen/_3sdp"
+                    android:layout_marginVertical="@dimen/_3sdp"
+                    android:src="@drawable/icon_delete"
+                    tools:ignore="ContentDescription" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:visibility="gone"
+        android:id="@+id/viewLine"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:background="@color/selected_drop_down_color"
+        />
+
+</LinearLayout>
+
+
+

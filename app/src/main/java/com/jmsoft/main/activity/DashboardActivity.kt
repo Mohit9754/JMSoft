@@ -1,33 +1,19 @@
 package com.jmsoft.main.activity
 
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Dialog
-import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
-import android.view.Window
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.RelativeLayout
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CategoryDataModel
-import com.jmsoft.basic.Database.UserDataHelper
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
 import com.jmsoft.basic.UtilityTools.Constants.Companion.information
-import com.jmsoft.basic.UtilityTools.IOnBackPressed
+import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ActivityDashboardBinding
 
@@ -41,23 +27,28 @@ import com.jmsoft.databinding.ActivityDashboardBinding
 class DashboardActivity : BaseActivity(), View.OnClickListener {
 
     private val activity: Activity = this@DashboardActivity
-    private lateinit var binding: ActivityDashboardBinding
+    var binding: ActivityDashboardBinding? = null
     var navController: NavController? = null
-    var mcvSearch:MaterialCardView? = null
+
+    // flag variable for back press management of cart fragment
     var currentState = ""
+
+    var mcvSearch:MaterialCardView? = null
+    var etSearch:EditText? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityDashboardBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(binding?.root)
+
+        mcvSearch = binding?.mcvSearch
+        etSearch = binding?.etSearch
 
         navController = findNavController(R.id.fragmentContainerView)
 
-        mcvSearch = binding.mcvSearch
-
         //set the Clicks And initialization
         init()
-
 
     }
 
@@ -77,28 +68,28 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
     //set the Clicks And initialization
     private fun init() {
 
-        binding.etSearch?.let { binding.mcvSearch?.let { it1 -> setFocusChangeLis(it, it1) } }
+        binding?.etSearch?.let { binding?.mcvSearch?.let { it1 -> setFocusChangeLis(it, it1) } }
 
         //For Managing Back press
         this.onBackPressedDispatcher.addCallback(onBackPressedCallback)
 
         // Set Click on language switcher
-        binding.ivLanguageSwitcher?.setOnClickListener(this)
+        binding?.ivLanguageSwitcher?.setOnClickListener(this)
 
         // Set Click on setting icon for navigating to Setting fragment
-        binding.ivSetting?.setOnClickListener(this)
+        binding?.ivSetting?.setOnClickListener(this)
 
         // set Click on Bag Icon for navigating to Home fragment
-        binding.ivLogo?.setOnClickListener(this)
+        binding?.ivLogo?.setOnClickListener(this)
 
-        binding.ivCard?.setOnClickListener(this)
+        binding?.ivCard?.setOnClickListener(this)
     }
 
     //Handles All the Clicks
     override fun onClick(v: View?) {
 
         // Switching language according to current language
-        if (v == binding.ivLanguageSwitcher) {
+        if (v == binding?.ivLanguageSwitcher) {
 
             val lang = Utils.getCurrentLanguage()
 
@@ -110,8 +101,8 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
                 activity.recreate()
             }
 
-            // navigate to Setting fragment
-        } else if (v == binding.ivSetting) {
+        // navigate to Setting fragment
+        } else if (v == binding?.ivSetting) {
 
             // navController?.navigate(R.id.addToCard)
             if(navController?.currentDestination?.id != R.id.setting) {
@@ -122,21 +113,20 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
         }
 
         // navigate to home fragment
-        else if (v == binding.ivLogo) {
+        else if (v == binding?.ivLogo) {
             navController?.popBackStack(R.id.home, false)
         }
 
         // navigate to Card fragment
-        else if (v == binding.ivCard) {
+        else if (v == binding?.ivCard) {
 
             // navController?.navigate(R.id.addToCard)
-            if(navController?.currentDestination?.id != R.id.card) {
+            if(navController?.currentDestination?.id != R.id.cart) {
 
-                navController?.navigate(R.id.card)
+                navController?.navigate(R.id.cart)
 
             }
         }
-
     }
 
     //Managing Back press
@@ -147,20 +137,18 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
             if (navController?.currentDestination?.id == R.id.home) {
                 finish()
             }
-            else if (navController?.currentDestination?.id == R.id.card){
+            else if (navController?.currentDestination?.id == R.id.cart){
 
                 if (currentState == information){
 
                     navController?.popBackStack()
-                    navController?.navigate(R.id.card)
-                    currentState = ""
+                    navController?.navigate(R.id.cart)
                 }
                 else {
-
                     navController?.popBackStack()
-                    currentState = ""
-
                 }
+
+                currentState = verification
             }
             else {
                 navController?.popBackStack()
@@ -168,5 +156,4 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
             }
         }
     }
-
 }

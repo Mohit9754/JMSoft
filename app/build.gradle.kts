@@ -1,7 +1,4 @@
 @file:Suppress("UnstableApiUsage")
-
-
-
 plugins {
     id("com.android.application")
     //  id("com.google.gms.google-services")
@@ -80,6 +77,10 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     // Firebase Realtime Database
     implementation("com.google.firebase:firebase-database:20.3.1")
+
+    implementation("com.google.zxing:core:3.4.1")
+
+
 
     //Validation For Phone Number
     implementation("io.michaelrocks:libphonenumber-android:8.12.49")

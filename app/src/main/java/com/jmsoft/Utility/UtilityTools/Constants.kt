@@ -5,6 +5,7 @@ import com.google.android.gms.maps.model.LatLng
 
 interface Constants {
     companion object {
+
         const val cameraZoom: Float = 20f
         const val distanceInDegree = 111320.00
         val defaultCoordinates: LatLng = LatLng(9.0820, 8.6753)
@@ -99,6 +100,8 @@ interface Constants {
         const val userType = "userType"
         const val connected = "Connected"
         const val information = "Information"
+        const val confirmation = "Confirmation"
+        const val verification = "Verification"
 
 
         //String device_type = "device_type";
@@ -160,7 +163,7 @@ interface Constants {
         const val VerifyPhone = "VerifyPhone"
         const val query = "query"
         const val aigCode = "aigCode"
-        const val zipcode = "zipcode"
+        const val zipCode = "zipCode"
         const val latitude = "latitude"
         const val latlng = "latlng"
         const val longitude = "longitude"
@@ -207,6 +210,16 @@ interface Constants {
         const val buildingNumber = "buildingNumber"
         const val landMark = "landMark"
         const val webUrl = "webUrl"
+        const val statusBarHeight = "status_bar_height"
+        const val dimen = "dimen"
+
+        // fragment state
+        const val metalType = "metalType"
+        const val collection = "collection"
+        const val category = "category"
+        const val product = "product"
+        const val edit = "edit"
+        const val add = "add"
 
 
         // State
