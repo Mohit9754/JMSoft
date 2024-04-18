@@ -124,13 +124,14 @@ class CatalogFragment : Fragment(), View.OnClickListener {
         // Getting all the Product list
         getAllProducts()
 
-
         // Show the Search And Set the Search
         lifecycleScope.launch {
             showSearch()
         }
 
     }
+
+
 
     // Set the Search
     private fun setSearch(){

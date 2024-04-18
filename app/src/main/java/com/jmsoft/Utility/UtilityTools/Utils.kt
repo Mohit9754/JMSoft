@@ -1,5 +1,6 @@
 package com.jmsoft.basic.UtilityTools
 
+//import com.jmsoft.databinding.AlertdialogBinding
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
@@ -56,6 +57,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.AddressDataModel
 import com.jmsoft.Utility.Database.CartDataModel
@@ -75,7 +77,6 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.name
 import com.jmsoft.basic.UtilityTools.Constants.Companion.password
 import com.jmsoft.basic.UtilityTools.Constants.Companion.statusBarHeight
 import com.jmsoft.databinding.AlertdialogBinding
-//import com.jmsoft.databinding.AlertdialogBinding
 import com.jmsoft.databinding.ItemCustomToastBinding
 import com.jmsoft.main.model.DeviceModel
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
@@ -92,10 +93,50 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.random.Random
 
+
 object Utils {
+
+    fun showError(context: Context,textView: TextView,msg: String) {
+
+        textView.visibility = View.VISIBLE
+        textView.text = msg
+        textView.startAnimation(AnimationUtils.loadAnimation(context, R.anim.top_to_bottom))
+
+    }
+
+    // Removing Error when text entered
+    fun setTextChangeListener(editText: EditText, textView: TextView) {
+
+        editText.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if (s.toString().isNotEmpty()) {
+                    textView.visibility = View.GONE
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+
+    //setting the selector on material card view
+    fun setFocusChangeListener(context: Context,editText: EditText, materialCardView: MaterialCardView) {
+
+        editText.setOnFocusChangeListener { _, hasFocus ->
+
+            if (hasFocus) {
+                materialCardView.strokeColor = context.getColor(R.color.theme)
+            } else {
+                materialCardView.strokeColor = context.getColor(R.color.text_hint)
+            }
+        }
+    }
 
     fun formatArabicToTwoDecimalPoints(arabicValue: String): Double {
         // Replace Arabic numerals with their Latin counterparts

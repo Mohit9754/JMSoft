@@ -42,9 +42,9 @@ import com.jmsoft.databinding.DialogAddMetalTypeBinding
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentMetalTypeBinding
 import com.jmsoft.main.activity.DashboardActivity
-import com.jmsoft.main.adapter.CategoryAdapter
-import com.jmsoft.main.adapter.CollectionAdapter
-import com.jmsoft.main.adapter.MetalTypeAdapter
+import com.jmsoft.main.adapter.CategoryListAdapter
+import com.jmsoft.main.adapter.CollectionListAdapter
+import com.jmsoft.main.adapter.MetalTypeListAdapter
 import com.jmsoft.main.adapter.ProductListAdapter
 import com.jmsoft.main.`interface`.EditInventoryCallback
 
@@ -60,11 +60,11 @@ class MetalTypeFragment : Fragment(),View.OnClickListener {
 
     private val productList = ArrayList<ProductDataModel>()
 
-    private var metalTypeAdapter:MetalTypeAdapter? = null
+    private var metalTypeAdapter:MetalTypeListAdapter? = null
 
-    private var collectionAdapter:CollectionAdapter? = null
+    private var collectionAdapter:CollectionListAdapter? = null
 
-    private var categoryAdapter:CategoryAdapter? = null
+    private var categoryAdapter:CategoryListAdapter? = null
 
     private var productListAdapter:ProductListAdapter? = null
 
@@ -79,6 +79,8 @@ class MetalTypeFragment : Fragment(),View.OnClickListener {
     private lateinit var editProfileDialog: Dialog
 
     private lateinit var dialogMetalBinding:DialogAddMetalTypeBinding
+
+
 
     //Gallery Permission Launcher
     private var galleryPermissionLauncher = registerForActivityResult(
@@ -266,7 +268,7 @@ class MetalTypeFragment : Fragment(),View.OnClickListener {
         metalTypeList.add("Silver")
         metalTypeList.add("Diamond")
 
-        metalTypeAdapter = MetalTypeAdapter(requireActivity(),metalTypeList, object : EditInventoryCallback {
+        metalTypeAdapter = MetalTypeListAdapter(requireActivity(),metalTypeList, object : EditInventoryCallback {
 
             override fun editInventory(position: Int) {
 
@@ -300,7 +302,7 @@ class MetalTypeFragment : Fragment(),View.OnClickListener {
         collectionList.add("Royal Gold Ring")
         collectionList.add("Royal Gold Ring")
 
-        collectionAdapter = CollectionAdapter(requireActivity(),collectionList, object : EditInventoryCallback {
+        collectionAdapter = CollectionListAdapter(requireActivity(),collectionList, object : EditInventoryCallback {
 
             override fun editInventory(position: Int) {
 
@@ -327,7 +329,7 @@ class MetalTypeFragment : Fragment(),View.OnClickListener {
         }
     }
 
-    // Add Metal Type Dialog
+    // Add Add and Update inventory Dialog
     @SuppressLint("NotifyDataSetChanged")
     private fun showInventoryDialog(position: Int?) {
 
@@ -343,6 +345,7 @@ class MetalTypeFragment : Fragment(),View.OnClickListener {
 
             if (position != null){
                 dialogMetalBinding.tvTitle.text = getString(R.string.edit_metal_type)
+                dialogMetalBinding.etMetalType.setText(metalTypeList[position])
             } else {
                 dialogMetalBinding.tvTitle.text = requireActivity().getString(R.string.add_collection)
             }
@@ -356,6 +359,8 @@ class MetalTypeFragment : Fragment(),View.OnClickListener {
             if (position != null){
 
                 dialogMetalBinding.tvTitle.text = getString(R.string.update_collection)
+                dialogMetalBinding.etMetalType.setText(collectionList[position])
+
 
             }else{
                 dialogMetalBinding.tvTitle.text = requireActivity().getString(R.string.add_collection)
@@ -373,8 +378,10 @@ class MetalTypeFragment : Fragment(),View.OnClickListener {
 
         else if (fragmentState == category){
 
-            if (position != null){
+            if (position != null) {
                 dialogMetalBinding.tvTitle.text = getString(R.string.edit_category)
+                dialogMetalBinding.etMetalType.setText(categoryList[position])
+
             }
             else {
                 dialogMetalBinding.tvTitle.text = requireActivity().getString(R.string.add_category)
@@ -407,7 +414,7 @@ class MetalTypeFragment : Fragment(),View.OnClickListener {
 
                 if (fragmentState == metalType){
 
-                    if (position != null){
+                    if (position != null) {
 
                         metalTypeList[position] = dialogMetalBinding.etMetalType.text.toString().trim()
                         metalTypeAdapter?.notifyItemChanged(position)
@@ -553,7 +560,7 @@ class MetalTypeFragment : Fragment(),View.OnClickListener {
         categoryList.add("Earing")
         categoryList.add("Necklace")
 
-        categoryAdapter = CategoryAdapter(requireActivity(),categoryList,object : EditInventoryCallback {
+        categoryAdapter = CategoryListAdapter(requireActivity(),categoryList,object : EditInventoryCallback {
 
             override fun editInventory(position: Int) {
                 showInventoryDialog(position)
@@ -586,7 +593,18 @@ class MetalTypeFragment : Fragment(),View.OnClickListener {
 
         // When Add Metal type Button click
         else if(v == binding.mcvAddMetalType){
-            showInventoryDialog(null)
+
+            if (fragmentState == product) {
+
+                val bundle = Bundle()
+                //Giving the product UUID
+                bundle.putString(Constants.state, Constants.add)
+                (context as DashboardActivity).navController?.navigate(R.id.productInventory, bundle)
+
+            }
+            else {
+                showInventoryDialog(null)
+            }
         }
     }
 }

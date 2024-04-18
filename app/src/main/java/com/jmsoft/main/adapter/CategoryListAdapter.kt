@@ -1,25 +1,22 @@
 package com.jmsoft.main.adapter
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
-import android.os.Bundle
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CartDataModel
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.basic.UtilityTools.Constants
-import com.jmsoft.basic.UtilityTools.Utils
-import com.jmsoft.databinding.FragmentProductInventoryBinding
-import com.jmsoft.databinding.ItemCatalogBinding
-import com.jmsoft.databinding.ItemMetalTypeBinding
-import com.jmsoft.main.activity.DashboardActivity
+import com.jmsoft.databinding.DialogDeleteUserBinding
+import com.jmsoft.databinding.ItemInventoryBinding
+import com.jmsoft.main.`interface`.EditInventoryCallback
 
 /**
- * Catalog Adapter
+ * MetalType Adapter
  *
  * Showing the catalog details
  *
@@ -28,78 +25,106 @@ import com.jmsoft.main.activity.DashboardActivity
 class CategoryListAdapter(
     private val context: Context,
     private var categoryList: ArrayList<String>,
-    private var productInventoryBinding:FragmentProductInventoryBinding
+    private val editInventoryCallback: EditInventoryCallback
+
 ) :
     RecyclerView.Adapter<CategoryListAdapter.MyViewHolder>() {
 
-
-    var selectedItemBinding:ItemMetalTypeBinding? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = ItemMetalTypeBinding.inflate(LayoutInflater.from(context), parent, false)
+        val view = ItemInventoryBinding.inflate(LayoutInflater.from(context), parent, false)
         return MyViewHolder(view)
     }
 
     override fun getItemCount() = categoryList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(categoryList[position])
+        holder.bind(categoryList[position],position)
     }
 
-    inner class MyViewHolder(private val binding: ItemMetalTypeBinding) :
+
+
+    // Show Category Delete Dialog
+    @SuppressLint("NotifyDataSetChanged")
+    private fun showCategoryDeleteDialog(position: Int) {
+
+        val dialog = Dialog(context)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+
+        val dialogBinding = DialogDeleteUserBinding.inflate(LayoutInflater.from(context))
+        dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.ivImage.setImageResource(R.drawable.img_delete_inventory)
+        dialogBinding.tvMessage.text =
+            context.getString(R.string.are_you_sure_you_want_to_delete_this_category_this_action_cannot_be_undone)
+//            context.getString(R.string.are_you_sure_you_want_to_delete_this_metal_type_this_action_cannot_be_undone)
+
+        dialogBinding.mcvYes.setOnClickListener {
+
+            dialog.dismiss()
+
+            categoryList.removeAt(position)
+            notifyDataSetChanged()
+        }
+
+        dialogBinding.mcvNo.setOnClickListener {
+
+            dialog.dismiss()
+        }
+
+        dialog.setCancelable(true)
+        dialog.show()
+
+    }
+
+    inner class MyViewHolder(private val binding: ItemInventoryBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        private lateinit var category:String
+        // Product Data
+        private lateinit var categoryName: String
 
-        fun bind(category: String) {
+        private var position:Int = -1
 
-            this.category = category
+        fun bind(categoryName: String,position: Int) {
 
-            Utils.E("REcrated $category")
+            this.categoryName = categoryName
+            this.position = position
 
-            setCategory()
+            //Set Category Name
+            setCategoryName()
 
-            binding.tvMetalType.setOnClickListener(this)
+            //Setting Click on Delete Icon
+            binding.mcvDelete.setOnClickListener(this)
 
+            //Setting Click on Edit Icon
+            binding.mcvEdit.setOnClickListener(this)
         }
 
-//        private fun checkSelectedCategory(){
-//
-//            val selectedCategory = productInventoryBinding.tvCategory?.text.toString()
-//
-//            if (selectedCategory == category){
-//
-//                Utils.E("$selectedCategory $category true")
-//
-//                binding.tvMetalType.setBackgroundColor(context.getColor(R.color.selected_drop_down_color))
-//                selectedItemBinding = binding
-//            }
-//            else {
-//
-//                Utils.E("$selectedCategory $category false")
-//            }
-//        }
 
-        private fun setCategory() {
-            binding.tvMetalType.text = category
+        //Set Category Name
+        private fun setCategoryName() {
+            binding.tvMetalType.text = categoryName
         }
 
+        //Handles All the Clicks
+        @SuppressLint("NotifyDataSetChanged")
         override fun onClick(v: View?) {
 
-            if (v == binding.tvMetalType) {
+            // When delete button Clicked
+            if (v == binding.mcvDelete) {
 
-                selectedItemBinding?.tvMetalType?.setBackgroundColor(context.getColor(R.color.white))
+                // Show Category Delete Dialog
+                showCategoryDeleteDialog(position)
+            }
 
-                binding.tvMetalType.setBackgroundColor(context.getColor(R.color.selected_drop_down_color))
-                selectedItemBinding = binding
+            // When edit button Clicked
+            else if(v == binding.mcvEdit) {
 
-                productInventoryBinding.tvCategory?.text = category
-                productInventoryBinding.ivCategory?.let { Utils.rotateView(it,0f) }
-                productInventoryBinding.mcvCategoryList?.let { Utils.collapseView(it) }
+                editInventoryCallback.editInventory(position)
             }
 
         }
-
     }
 
 }

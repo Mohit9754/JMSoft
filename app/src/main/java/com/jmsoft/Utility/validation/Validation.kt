@@ -45,6 +45,14 @@ class Validation {
                 errorTextView.visibility = View.GONE
             }
             when (validationModel.type) {
+                
+                Type.Barcode -> validationCheck = isBarCodeGenerate(context,validationModel.arrayListSize)
+
+                Type.AtLeastTwo -> validationCheck = isTwoImageSelected(context,validationModel.arrayListSize)
+
+                Type.EmptyTextView -> validationCheck = isEmptyTextView(context,validationModel.textView)
+
+                Type.EmptyArrayList -> validationCheck = isEmptyArrayList(context,validationModel.arrayListSize)
                 Type.Phone -> validationCheck =
                     isValidPhoneNumber(context, validationModel.editText)
                 Type.Email -> validationCheck = isEmailValid(context, validationModel.editText)
@@ -110,6 +118,17 @@ class Validation {
             }*/
         }
     }
+    
+    private fun isBarCodeGenerate(context: Context,arrayListSize: Int?): Boolean {
+        
+        return if(arrayListSize == 0){
+            errorMessage = context.getString(R.string.please_generate_barcode)
+            false
+
+        } else {
+            true
+        } 
+    }
 
     /**
      * Email All Type Validation
@@ -137,7 +156,44 @@ class Validation {
         }
     }
 
-    /**
+    private fun isEmptyArrayList(context: Context,arrayListSize: Int?):Boolean{
+
+        return if (arrayListSize == 0) {
+            errorMessage = context.getString(R.string.empty_error)
+            false
+        } else {
+            true
+        }
+
+    }
+
+    private fun isEmptyTextView(context: Context,textView: TextView?):Boolean{
+
+        return if(textView?.text?.isEmpty() == true){
+            errorMessage = context.getString(R.string.empty_error)
+            false
+
+        } else {
+            true
+        }
+    }
+
+    private fun isTwoImageSelected(context: Context,arrayListSize: Int?):Boolean {
+
+        if (arrayListSize != null) {
+            return if (arrayListSize < 2) {
+                errorMessage = context.getString(R.string.please_select_at_least_two_images)
+                false
+
+            } else {
+                true
+            }
+        }
+        return false
+    }
+
+
+        /**
      * is String Empty
      *
      * @param context Page Reference
@@ -435,10 +491,11 @@ class Validation {
      * Enum of the Type of error we have
      */
     enum class Type(var label: String) {
-        Email(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
+
+        Barcode("") ,AtLeastTwo("") , Email(""),EmptyTextView(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
             ""
         ),
-        PAN(""), IFSC(""), Empty(""), AccountNumber(""), MPIN("");
+        PAN(""), IFSC(""), Empty(""), EmptyArrayList(""), AccountNumber(""), MPIN("");
     }
 
     companion object {

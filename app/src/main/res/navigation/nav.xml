@@ -72,4 +72,10 @@
         android:label="Product Inventory"
         tool:layout="@layout/fragment_product_inventory"/>
 
+    <fragment
+        android:id="@+id/collectionDetail"
+        android:name="com.jmsoft.main.fragment.CollectionDetailFragment"
+        android:label="Collection Detail"
+        tool:layout="@layout/fragment_collection_detail"/>
+
 </navigation>
