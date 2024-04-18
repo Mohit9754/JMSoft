@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentProductInventoryBinding
 import com.jmsoft.databinding.ItemSelectedCollectionBinding
 

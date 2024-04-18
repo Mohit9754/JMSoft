@@ -458,9 +458,10 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         setProductImageRecyclerView()
 
-        binding.ivMetalType?.setOnClickListener(this)
+        binding.llMetalType?.setOnClickListener(this)
+        binding.mcvCollection?.setOnClickListener(this)
 
-        binding.ivCategory?.setOnClickListener(this)
+        binding.llCategory?.setOnClickListener(this)
 
         binding.ivCollection?.setOnClickListener(this)
 
@@ -782,7 +783,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
     @SuppressLint("NotifyDataSetChanged")
     override fun onClick(v: View?) {
 
-        if (v == binding.ivMetalType) {
+        if (v == binding.llMetalType) {
 
             if (binding.mcvMetalTypeList?.visibility == View.VISIBLE) {
 
@@ -799,7 +800,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         }
 
-        else if (v == binding.ivCategory) {
+        else if (v == binding.llCategory) {
 
             if (binding.mcvCategoryList?.visibility == View.VISIBLE) {
 
@@ -815,6 +816,19 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         }
 
         else if (v == binding.ivCollection) {
+
+            if (binding.mcvCollectionList?.visibility == View.VISIBLE) {
+
+                binding.ivCollection?.let { Utils.rotateView(it, 180f) }
+                binding.mcvCollectionList?.let { Utils.collapseView(it) }
+
+            } else {
+
+                binding.ivCollection?.let { Utils.rotateView(it, 0f) }
+                binding.mcvCollectionList?.let { Utils.expandView(it) }
+            }
+        }
+   else if (v == binding.mcvCollection) {
 
             if (binding.mcvCollectionList?.visibility == View.VISIBLE) {
 

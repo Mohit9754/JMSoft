@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/llMetalType"
     android:paddingHorizontal="@dimen/_7sdp"
-    android:layout_marginTop="@dimen/_3sdp"
+    android:layout_marginTop="@dimen/_2sdp"
     android:orientation="vertical"
     tools:ignore="MissingDefaultResource">
 

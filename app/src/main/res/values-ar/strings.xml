@@ -148,7 +148,56 @@
     <string name="removed_from_the_cart">تمت إزالتها من العربة</string>
     <string name="are_you_sure_you_want_to_delete_this_address_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذا العنوان؟ لا يمكن التراجع عن هذا الإجراء.</string>
 
+    <string name="hello_blank_fragment">مرحبا جزء فارغ</string>
+    <string name="metal_type">نوع المعدن</string>
+    <string name="address_updated_successfully">تم تحديث العنوان بنجاح</string>
+    <string name="collection">مجموعة</string>
+    <string name="category">فئة</string>
+    <string name="product">منتج</string>
+    <string name="add_metal_type">أضف نوع المعدن</string>
+    <string name="enter_metal_type">أدخل نوع المعدن</string>
+    <string name="save_small">يحفظ</string>
+    <string name="edit_metal_type">تحرير نوع المعدن</string>
+    <string name="are_you_sure_you_want_to_delete_this_metal_type_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذا النوع المعدني؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="add_collection">أضف المجموعة</string>
+    <string name="edit_collection">تحرير المجموعة</string>
+    <string name="enter_collection">أدخل المجموعة</string>
+    <string name="are_you_sure_you_want_to_delete_this_collection_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذه المجموعة؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="add_category">إضافة فئة</string>
+    <string name="edit_category">تحرير الفئة</string>
+    <string name="enter_category_name">أدخل اسم الفئة</string>
+    <string name="are_you_sure_you_want_to_delete_this_category_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذه الفئة؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="are_you_sure_you_want_to_delete_this_product_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذا المنتج؟ لا يمكن التراجع عن هذا الإجراء.</string>
 
+    <string name="enter_collection_name">أدخل اسم المجموعة</string>
+    <string name="product_name">اسم المنتج</string>
+    <string name="add_product">أضف منتج</string>
+    <string name="uom">UOM</string>
+    <string name="cost">يكلف</string>
+    <string name="action">فعل</string>
+    <string name="origin">أصل</string>
+    <string name="add_image">إضافة صورة</string>
+    <string name="update_collection">تحديث المجموعة</string>
+    <string name="product_inventory">مخزون المنتجات</string>
+    <string name="enter_product_name">أدخل اسم المنتج</string>
+    <string name="select_metal_type">اختر نوع المعدن</string>
+    <string name="enter_description">أدخل الوصف</string>
+    <string name="silver">فضة</string>
+    <string name="select_collections">حدد المجموعات</string>
+    <string name="enter_origin">أدخل الأصل</string>
+    <string name="weight_">وزن</string>
+    <string name="carat_">قيراط</string>
+    <string name="enter_product_cost">أدخل تكلفة المنتج</string>
+    <string name="enter_product_carat">أدخل قيراط المنتج</string>
+    <string name="enter_product_weight">أدخل وزن المنتج</string>
+    <string name="rfid_code">رمز رفيد</string>
+    <string name="enter_rfid_code">أدخل رمز RFID</string>
+    <string name="barcode">الباركود</string>
+    <string name="product_image">صورة المنتج</string>
+    <string name="select_category">اختر الفئة</string>
+    <string name="please_select_at_least_two_images">الرجاء اختيار صورتين على الأقل</string>
+    <string name="collection_name">اسم المجموعة</string>
+    <string name="please_generate_barcode">يرجى إنشاء الباركود</string>
 
 
 </resources>
