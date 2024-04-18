@@ -195,6 +195,7 @@
     <string name="barcode">Barcode</string>
     <string name="product_image">Product image</string>
     <string name="select_category">Select Category</string>
+    <string name="collection_name">Collection Name</string>
 
 
 </resources>

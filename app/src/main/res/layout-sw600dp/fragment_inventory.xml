@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@color/white"
     android:gravity="center_horizontal"
-    android:background="@color/white">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="@dimen/_200sdp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginTop="@dimen/_12sdp"
+        android:orientation="vertical"
         tools:ignore="UselessParent">
 
         <LinearLayout
@@ -56,161 +55,238 @@
         </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/_20sdp"
-            app:cardCornerRadius="@dimen/_4sdp"
-            app:cardElevation="0dp"
             android:id="@+id/mcvMetalType"
-            app:cardBackgroundColor="@color/selected"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/_4sdp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/stroke_color"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="1"
                 tools:ignore="UseCompoundDrawables,UselessLeaf">
 
-                <ImageView
-                    android:layout_width="@dimen/_14sdp"
-                    android:layout_height="@dimen/_14sdp"
-                    android:src="@drawable/icon_metal_type"
-                    android:layout_marginVertical="@dimen/_7sdp"
-                    android:layout_marginStart="@dimen/_6sdp"
-                    tools:ignore="ContentDescription" />
-
-                <TextView
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvUserManagementIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/mcv_background_color"
+                    app:cardCornerRadius="@dimen/_2sdp"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        android:src="@drawable/icon_metal_type" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_arabic_medium"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
                     android:text="@string/metal_type"
-                    android:fontFamily="@font/montserrat_arabic_medium"
-                    android:layout_marginStart="@dimen/_6sdp"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    />
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:layout_width="@dimen/_11sdp"
+                    android:layout_height="@dimen/_11sdp"
+                    android:layout_marginEnd="@dimen/_4sdp"
+                    android:src="@drawable/icon_tabler_circle" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/_13sdp"
-            app:cardCornerRadius="@dimen/_4sdp"
-            app:cardElevation="0dp"
             android:id="@+id/mcvCollection"
-            app:cardBackgroundColor="@color/theme"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_13sdp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/_4sdp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/stroke_color"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="1"
                 tools:ignore="UseCompoundDrawables,UselessLeaf">
 
-                <ImageView
-                    android:layout_width="@dimen/_14sdp"
-                    android:layout_height="@dimen/_14sdp"
-                    android:src="@drawable/icon_collection"
-                    android:layout_marginVertical="@dimen/_7sdp"
-                    android:layout_marginStart="@dimen/_6sdp"
-                    tools:ignore="ContentDescription" />
-
-                <TextView
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/mcv_background_color"
+                    app:cardCornerRadius="@dimen/_2sdp"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        android:src="@drawable/icon_collection" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_arabic_medium"
                     android:text="@string/collection"
-                    android:fontFamily="@font/montserrat_arabic_medium"
-                    android:layout_marginStart="@dimen/_6sdp"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    />
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:layout_width="@dimen/_11sdp"
+                    android:layout_height="@dimen/_11sdp"
+
+                    android:layout_marginEnd="@dimen/_4sdp"
+                    android:src="@drawable/icon_tabler_circle" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/_13sdp"
-            app:cardCornerRadius="@dimen/_4sdp"
-            app:cardElevation="0dp"
             android:id="@+id/mcvCategory"
-            app:cardBackgroundColor="@color/theme"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_13sdp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/_4sdp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/stroke_color"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables,UselessLeaf">
 
-                <ImageView
-                    android:layout_width="@dimen/_14sdp"
-                    android:layout_height="@dimen/_14sdp"
-                    android:src="@drawable/icon_category"
-                    android:layout_marginVertical="@dimen/_7sdp"
-                    android:layout_marginStart="@dimen/_6sdp"
-                    tools:ignore="ContentDescription" />
-
-                <TextView
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/category"
-                    android:fontFamily="@font/montserrat_arabic_medium"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/mcv_background_color"
+                    app:cardCornerRadius="@dimen/_2sdp"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        android:src="@drawable/icon_category" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_6sdp"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    />
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_arabic_medium"
+                    android:text="@string/category"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:layout_width="@dimen/_11sdp"
+                    android:layout_height="@dimen/_11sdp"
+
+                    android:layout_marginEnd="@dimen/_4sdp"
+                    android:src="@drawable/icon_tabler_circle" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcvProduct"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_13sdp"
+            app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/_4sdp"
             app:cardElevation="0dp"
-            android:id="@+id/mcvProduct"
-            app:cardBackgroundColor="@color/theme"
-            android:layout_height="wrap_content">
+            app:strokeColor="@color/stroke_color"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables,UselessLeaf">
 
-                <ImageView
-                    android:layout_width="@dimen/_14sdp"
-                    android:layout_height="@dimen/_14sdp"
-                    android:src="@drawable/icon_product"
-                    android:layout_marginVertical="@dimen/_7sdp"
-                    android:layout_marginStart="@dimen/_6sdp"
-                    tools:ignore="ContentDescription" />
-
-                <TextView
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/product"
-                    android:fontFamily="@font/montserrat_arabic_medium"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/mcv_background_color"
+                    app:cardCornerRadius="@dimen/_2sdp"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        android:src="@drawable/icon_product" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_6sdp"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    />
+                    android:fontFamily="@font/montserrat_arabic_medium"
+                    android:text="@string/product"
+                    android:layout_weight="1"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:layout_width="@dimen/_11sdp"
+                    android:layout_height="@dimen/_11sdp"
+                    android:layout_marginEnd="@dimen/_4sdp"
+                    android:src="@drawable/icon_tabler_circle" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
-
 
 
     </LinearLayout>
-
 
 
 </LinearLayout>
