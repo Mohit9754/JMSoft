@@ -12,11 +12,15 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
+import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.basic.UtilityTools.Constants
+import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
+import com.jmsoft.databinding.FragmentMetalTypeBinding
 import com.jmsoft.databinding.ItemInventoryBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.`interface`.EditInventoryCallback
+import java.util.UUID
 
 /**
  * MetalType Adapter
@@ -27,7 +31,8 @@ import com.jmsoft.main.`interface`.EditInventoryCallback
 
 class CollectionListAdapter(
     private val context: Context,
-    private var collectionList: ArrayList<String>,
+    private var collectionDataList: ArrayList<CollectionDataModel>,
+    private val fragmentMetalTypeBinding: FragmentMetalTypeBinding,
     private val editCollectionCallback: EditInventoryCallback
 ) :
     RecyclerView.Adapter<CollectionListAdapter.MyViewHolder>() {
@@ -37,15 +42,15 @@ class CollectionListAdapter(
         return MyViewHolder(view)
     }
 
-    override fun getItemCount() = collectionList.size
+    override fun getItemCount() = collectionDataList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(collectionList[position],position)
+        holder.bind(collectionDataList[position],position)
     }
 
     // Show Metal Type Delete Dialog
     @SuppressLint("NotifyDataSetChanged")
-    private fun showCollectionDeleteDialog(position: Int) {
+    private fun showCollectionDeleteDialog(position: Int,collectionUUID: String) {
 
         val dialog = Dialog(context)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -64,8 +69,26 @@ class CollectionListAdapter(
 
             dialog.dismiss()
 
-            collectionList.removeAt(position)
-            notifyDataSetChanged()
+            // Delete the collection first
+            Utils.deleteCollection(collectionUUID)
+
+            // Remove the item from the local list
+            collectionDataList.removeAt(position)
+
+            // Notify the adapter about the removed item
+            notifyItemRemoved(position)
+
+            // Notify the adapter about the range of changed items
+            notifyItemRangeChanged(position, collectionDataList.size - position)
+
+            if (collectionDataList.isEmpty()) {
+
+                fragmentMetalTypeBinding.mcvMetalTypeList?.visibility = View.GONE
+                fragmentMetalTypeBinding.llEmptyInventory?.visibility = View.VISIBLE
+                fragmentMetalTypeBinding.tvEmptyMsg?.text = context.getString(R.string.collection_is_empty)
+
+            }
+
         }
 
         dialogBinding.mcvNo.setOnClickListener {
@@ -82,18 +105,18 @@ class CollectionListAdapter(
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         // Product Data
-        private lateinit var collectionName: String
+        private lateinit var collectionData: CollectionDataModel
 
         private var position:Int = -1
 
-        fun bind(collectionName: String,position: Int) {
+        @SuppressLint("NotifyDataSetChanged")
+        fun bind(collectionData: CollectionDataModel, position: Int) {
 
-            this.collectionName = collectionName
+            this.collectionData = collectionData
             this.position = position
 
-            visibleCollectionImage()
+            setCollectionImage()
 
-            //Set Metal Type
             setCollectionName()
 
             //Setting Click on Delete Icon
@@ -106,13 +129,21 @@ class CollectionListAdapter(
         }
 
 
-        private fun visibleCollectionImage(){
+        private fun setCollectionImage(){
+
              binding.mcvCollectionImage.visibility = View.VISIBLE
+
+             binding.ivProduct.setImageBitmap(collectionData.collectionImageUri?.let {
+                 Utils.getImageFromInternalStorage(context,
+                     it
+                 )
+             })
+            
         }
 
         //Set Metal Type
         private fun setCollectionName(){
-            binding.tvMetalType.text = collectionName
+            binding.tvMetalType.text = collectionData.collectionName
 
         }
 
@@ -122,21 +153,21 @@ class CollectionListAdapter(
 
             // When delete button Clicked
             if (v == binding.mcvDelete){
-
                 // Show Metal Type Delete Dialog
-                showCollectionDeleteDialog(position)
+                collectionData.collectionUUID?.let { showCollectionDeleteDialog(position, it) }
             }
 
             // When edit button Clicked
             else if(v == binding.mcvEdit) {
-                editCollectionCallback.editInventory(position)
+                collectionData.collectionUUID?.let { editCollectionCallback.editInventory(it,position) }
             }
 
             else if (v == binding.mcvInventory) {
 
                 val bundle = Bundle()
-                //Giving the product UUID
-                bundle.putString(Constants.collection, "")
+                //Giving the collection UUID
+                bundle.putString(Constants.collectionUUID,collectionData.collectionUUID)
+
                 (context as DashboardActivity).navController?.navigate(R.id.collectionDetail, bundle)
 
             }

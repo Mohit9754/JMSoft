@@ -20,7 +20,7 @@ import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
-import com.jmsoft.databinding.FragmentProductBinding
+import com.jmsoft.databinding.FragmentProductDetailBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CatalogAdapter
 import com.jmsoft.main.adapter.ProductCollectionAdapter
@@ -29,7 +29,7 @@ import com.jmsoft.main.adapter.ProductImageAdapter
 @Suppress("DEPRECATION")
 class ProductDetailFragment : Fragment(), View.OnClickListener {
 
-    private lateinit var binding: FragmentProductBinding
+    private lateinit var binding: FragmentProductDetailBinding
 
     //Product Data
     private lateinit var productData: ProductDataModel
@@ -43,7 +43,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     ): View {
 
         // Inflate the layout for this fragment
-        binding = FragmentProductBinding.inflate(layoutInflater)
+        binding = FragmentProductDetailBinding.inflate(layoutInflater)
 
         // Hide the Search option
         (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.GONE
@@ -102,7 +102,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     private fun setUpMayLikeRecyclerView() {
 
         val productList =
-            productData.productCategory?.let { Utils.getAllProductsAcceptCategory(it) }
+            productData.categoryUUID?.let { Utils.getAllProductsAcceptCategory(it) }
 
         val catalogAdapter = productList?.let { CatalogAdapter(requireActivity(), it) }
 
@@ -116,7 +116,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     private fun isProductAlreadyAddedInCard() {
 
         val isExistInCart = Utils.GetSession().userUUID?.let {
-            productData.productUUId?.let { it1 ->
+            productData.productUUID?.let { it1 ->
                 Utils.isProductExistInCartTable(
                     it,
                     it1
@@ -155,28 +155,32 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
         productData = Utils.getProductThroughProductUUID(productUUID)
 
         // Setup Product Image Recycler View
-        productData.productImage?.let { setUpProductImageRecyclerView(it) }
+        productData.productImageUri?.let { setUpProductImageRecyclerView(it) }
 
         binding.tvProductName?.text = productData.productName
         binding.tvProductWeight?.text =
-            "${productData.productWeight} ${productData.productUnitOfMeasurement} "
+            "${productData.productWeight} ${productData.productWeight} "
 
         binding.tvProductCarat?.text = productData.productCarat.toString()
-        binding.tvProductType?.text = productData.productMetalType
+        binding.tvProductType?.text = productData.metalTypeUUID?.let {
+            Utils.getMetalTypeNameThroughMetalTypeUUID(
+                it
+            )
+        }
 
         binding.tvProductCategory?.text =
             productData.categoryUUID?.let { Utils.getCategoryNameThroughCategoryUUID(it) }
 
         binding.tvProductDescription?.text = productData.productDescription
-        binding.tvProductPrice?.text = productData.productPrice?.let {
+        binding.tvProductPrice?.text = productData.productCost?.let {
             Utils.roundToTwoDecimalPlaces(
                 it
             )
         }?.let { Utils.getThousandSeparate(it) }
 
         // Set up collection Recycler view
-        productData.productCategory?.let {
-            productData.productUUId?.let { it1 ->
+        productData.categoryUUID?.let {
+            productData.productUUID?.let { it1 ->
                 setUpCollectionItemRecyclerView(
                     it,
                     it1
@@ -250,7 +254,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
             if (isProductExistInCart) {
 
                 val cardUUID = Utils.GetSession().userUUID?.let {
-                    productData.productUUId?.let { it1 ->
+                    productData.productUUID?.let { it1 ->
                         Utils.getCartUUID(
                             it,
                             it1
@@ -269,7 +273,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
                 val cardDataModel = CartDataModel()
                 cardDataModel.cartUUID = Utils.generateUUId()
-                cardDataModel.productUUID = productData.productUUId
+                cardDataModel.productUUID = productData.productUUID
                 cardDataModel.userUUID = Utils.GetSession().userUUID
                 cardDataModel.productQuantity = 1
 

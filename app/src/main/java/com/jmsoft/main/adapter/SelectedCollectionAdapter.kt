@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentProductInventoryBinding
 import com.jmsoft.databinding.ItemSelectedCollectionBinding
+import com.jmsoft.main.model.SelectedCollectionModel
 
 /**
  * Catalog Adapter
@@ -20,7 +22,7 @@ import com.jmsoft.databinding.ItemSelectedCollectionBinding
 class SelectedCollectionAdapter(
 
     private val context: Context,
-    private var selectedCollectionList: ArrayList<String>,
+    private var selectedCollectionDataList: ArrayList<SelectedCollectionModel>,
     private val fragmentProductInventoryBinding: FragmentProductInventoryBinding
 
 ) :
@@ -31,22 +33,22 @@ class SelectedCollectionAdapter(
         return MyViewHolder(view)
     }
 
-    override fun getItemCount() = selectedCollectionList.size
+    override fun getItemCount() = selectedCollectionDataList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(selectedCollectionList[position],position)
+        holder.bind(selectedCollectionDataList[position],position)
     }
 
     inner class MyViewHolder(private val binding: ItemSelectedCollectionBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        private lateinit var collection:String
+        private lateinit var selectedCollectionData:SelectedCollectionModel
 
         private var position = -1
 
-        fun bind(collection: String,position: Int) {
+        fun bind(selectedCollectionData: SelectedCollectionModel,position: Int) {
 
-            this.collection = collection
+            this.selectedCollectionData = selectedCollectionData
             this.position = position
 
             setCollectionName()
@@ -56,7 +58,7 @@ class SelectedCollectionAdapter(
         }
 
         private fun setCollectionName() {
-            binding.tvCollectionName.text = collection
+            binding.tvCollectionName.text = selectedCollectionData.collectionDataModel.collectionName
         }
 
         @SuppressLint("NotifyDataSetChanged")
@@ -64,9 +66,10 @@ class SelectedCollectionAdapter(
 
             if (v == binding.ivCross) {
 
-                selectedCollectionList.removeAt(position)
+                selectedCollectionDataList.removeAt(position)
+                selectedCollectionData.checkbox.isChecked = false
 
-                if (selectedCollectionList.size == 0) {
+                if (selectedCollectionDataList.isEmpty()) {
 
                     fragmentProductInventoryBinding.tvCollection?.visibility = View.VISIBLE
                 }
@@ -75,7 +78,6 @@ class SelectedCollectionAdapter(
 
             }
         }
-
     }
 
 }

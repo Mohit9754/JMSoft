@@ -45,6 +45,8 @@ class Validation {
                 errorTextView.visibility = View.GONE
             }
             when (validationModel.type) {
+
+                Type.ImageSelect -> validationCheck = isImageSelected(context,validationModel.isImageSelected)
                 
                 Type.Barcode -> validationCheck = isBarCodeGenerate(context,validationModel.arrayListSize)
 
@@ -80,6 +82,19 @@ class Validation {
             }
         }
         return ResultReturn(type, validationCheck, errorMessage, parameter, errorTextView)
+    }
+
+    private fun isImageSelected(context: Context,isImageSelected:Boolean?): Boolean {
+
+        return if(isImageSelected == false){
+
+            errorMessage = context.getString(R.string.select_collection_image)
+            false
+
+        } else {
+            true
+        }
+
     }
 
     /**
@@ -492,7 +507,7 @@ class Validation {
      */
     enum class Type(var label: String) {
 
-        Barcode("") ,AtLeastTwo("") , Email(""),EmptyTextView(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
+         ImageSelect(""),Barcode("") ,AtLeastTwo("") , Email(""),EmptyTextView(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
             ""
         ),
         PAN(""), IFSC(""), Empty(""), EmptyArrayList(""), AccountNumber(""), MPIN("");

@@ -14,15 +14,20 @@ class ValidationModel {
     var Parameter: String? = null
     var arrayListSize:Int? =null
     var textView:TextView? = null
+    var isImageSelected:Boolean? = null
 
     constructor() {}
 
-    constructor(type: Validation.Type?, textView: TextView?,errorTextView: TextView?){
+    constructor(type: Validation.Type?,isImageSelected: Boolean?, textView: TextView?) {
+        this.type = type
+        this.isImageSelected = isImageSelected
+        this.errorTextView = textView
+    }
 
+    constructor(type: Validation.Type?, textView: TextView?,errorTextView: TextView?){
         this.type = type
         this.textView = textView
         this.errorTextView = errorTextView
-
     }
 
     constructor(type: Validation.Type?, editText: EditText?, editText1: EditText?) {

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/_8sdp"
     android:layout_marginVertical="@dimen/_8sdp"
@@ -16,10 +17,11 @@
     tools:ignore="MissingDefaultResource,UnusedAttribute">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="@dimen/_7sdp">
+        android:paddingStart="@dimen/_7sdp"
+        tools:ignore="RtlSymmetry">
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,15 +33,19 @@
             android:id="@+id/tvProductName"
             android:textSize="14sp" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_6sdp">
+            android:weightSum="2"
+            android:layout_marginTop="@dimen/_6sdp"
+            tools:ignore="DisableBaselineAlignment">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_weight="2"
+                android:orientation="vertical"
+                tools:ignore="NestedWeights">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -101,7 +107,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/_7sdp"
                 android:orientation="vertical">
 
@@ -162,7 +167,7 @@
 
             </LinearLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
@@ -177,7 +182,9 @@
                 android:layout_width="@dimen/_70sdp"
                 android:layout_height="@dimen/_70sdp"
                 android:id="@+id/tvProductImage"
-                android:src="@drawable/img_ring_product" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_ring_product"
+                tools:ignore="ContentDescription" />
 
         </com.google.android.material.card.MaterialCardView>
 

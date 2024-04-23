@@ -7,9 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
+import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentProductInventoryBinding
 import com.jmsoft.databinding.ItemMetalTypeDropdownBinding
+import com.jmsoft.main.`interface`.CategorySelectedCallback
 
 /**
  * Catalog Adapter
@@ -20,8 +23,9 @@ import com.jmsoft.databinding.ItemMetalTypeDropdownBinding
 
 class CategoryDropdownAdapter(
     private val context: Context,
-    private var categoryList: ArrayList<String>,
-    private var productInventoryBinding:FragmentProductInventoryBinding
+    private var categoryDataModelList: ArrayList<CategoryDataModel>,
+    private val categorySelectedCallback: CategorySelectedCallback
+
 ) :
     RecyclerView.Adapter<CategoryDropdownAdapter.MyViewHolder>() {
 
@@ -32,30 +36,28 @@ class CategoryDropdownAdapter(
         return MyViewHolder(view)
     }
 
-    override fun getItemCount() = categoryList.size
+    override fun getItemCount() = categoryDataModelList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(categoryList[position],position)
+        holder.bind(categoryDataModelList[position],position)
     }
 
     inner class MyViewHolder(private val binding: ItemMetalTypeDropdownBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        private lateinit var category:String
+        private lateinit var categoryData:CategoryDataModel
 
         private var position = -1
 
-        fun bind(category: String,position: Int) {
+        fun bind(categoryData: CategoryDataModel,position: Int) {
 
-            this.category = category
+            this.categoryData = categoryData
             this.position = position
 
-            Utils.E("REcrated $category")
 
-            setCategory()
+            setCategoryName()
 
             setSelected()
-
 
 
             binding.llMetalType.setOnClickListener(this)
@@ -67,6 +69,8 @@ class CategoryDropdownAdapter(
             if (selectedPosition == position) {
 
                 binding.llMetalType.setBackgroundColor(context.getColor(R.color.selected_drop_down_color))
+                categorySelectedCallback.categorySelected(categoryData)
+
             }
             else {
 
@@ -74,8 +78,8 @@ class CategoryDropdownAdapter(
             }
         }
 
-        private fun setCategory() {
-            binding.tvMetalType.text = category
+        private fun setCategoryName() {
+            binding.tvMetalType.text = categoryData.categoryName
         }
 
         @SuppressLint("NotifyDataSetChanged")
@@ -85,10 +89,7 @@ class CategoryDropdownAdapter(
 
                 selectedPosition = position
 
-                productInventoryBinding.tvCategory?.text = category
-                productInventoryBinding.tvCategoryError?.visibility = View.GONE
-                productInventoryBinding.ivCategory?.let { Utils.rotateView(it,0f) }
-                productInventoryBinding.mcvCategoryList?.let { Utils.collapseView(it) }
+                categorySelectedCallback.categorySelected(categoryData)
 
                 notifyDataSetChanged()
             }

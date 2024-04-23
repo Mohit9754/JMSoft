@@ -131,8 +131,6 @@ class CatalogFragment : Fragment(), View.OnClickListener {
 
     }
 
-
-
     // Set the Search
     private fun setSearch(){
 

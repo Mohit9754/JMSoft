@@ -1,376 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:baselineAligned="false"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:orientation="vertical"
-        tools:context=".main.fragment.ProductDetailFragment">
+        tools:ignore="UselessParent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_220sdp"
-            android:baselineAligned="false"
-            android:id="@+id/llProductSection"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="3">
+            android:id="@+id/llTop"
+            android:weightSum="2"
+            tools:ignore="UselessParent">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.8"
-                android:background="@color/product_background_color">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvProductImage"
-                    android:layout_width="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/_18sdp"
-                    android:layout_marginStart="@dimen/_18sdp"
-                    android:layout_marginEnd="@dimen/_12sdp"
-                    tools:listitem="@layout/item_product_image" />
-
-                <LinearLayout
-                    android:id="@+id/llLeftBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_toEndOf="@+id/rvProductImage"
-                    android:background="@drawable/bg_button">
-
-                    <ImageView
-                        android:layout_width="@dimen/_9sdp"
-                        android:layout_height="@dimen/_9sdp"
-                        android:layout_margin="@dimen/_5sdp"
-                        android:src="@drawable/icon_arrow_left"
-                        tools:ignore="ContentDescription" />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/ivProduct"
-                    android:layout_width="@dimen/_85sdp"
-                    android:layout_height="@dimen/_85sdp"
-                    android:layout_centerVertical="true"
-                    android:scaleType="centerCrop"
-                    android:layout_marginHorizontal="@dimen/_22sdp"
-                    android:layout_toEndOf="@+id/llLeftBtn"
-                    android:src="@drawable/icon_tag_printer"
-                    tools:ignore="ContentDescription" />
-
-                <LinearLayout
-                    android:id="@+id/llRightBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/ivProduct"
-                    android:background="@drawable/bg_button">
-
-                    <ImageView
-                        android:layout_width="@dimen/_9sdp"
-                        android:layout_height="@dimen/_9sdp"
-                        android:layout_margin="@dimen/_5sdp"
-                        android:src="@drawable/icon_arrow_right"
-                        tools:ignore="ContentDescription" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="@dimen/_4sdp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:background="@color/theme" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.2"
-                android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
                 tools:ignore="UselessLeaf">
 
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvBackBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_5sdp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/stroke_color"
+                    app:strokeWidth="1dp">
+
+                    <ImageView
+                        android:id="@+id/ivDeviceIcon"
+                        android:layout_width="@dimen/_9sdp"
+                        android:layout_height="@dimen/_9sdp"
+                        android:layout_margin="@dimen/_4sdp"
+                        android:src="@drawable/icon_back_arrow"
+                        tools:ignore="ContentDescription" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:fontFamily="@font/montserrat_arabic_semibold"
+                    android:text="@string/product"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_marginVertical="1dp"
+                app:strokeWidth="0.7dp"
+                app:strokeColor="@color/selected_drop_down_color">
+
                 <LinearLayout
-                    android:id="@+id/lltop"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="@dimen/_20sdp"
-                    android:orientation="vertical"
-                    android:layout_above="@+id/rlCartStatus"
-                    tools:ignore="UselessParent">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginVertical="@dimen/_2sdp"
+                    android:layout_marginHorizontal="@dimen/_5sdp"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
 
-                    <TextView
+                    <Spinner
+                        android:id="@+id/spinner"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_9sdp"
-                        android:fontFamily="@font/montserrat_arabic_bold"
-                        android:text="@string/royal_gold_ring"
-                        android:id="@+id/tvProductName"
-                        android:textColor="@color/black"
-                        android:textSize="17sp" />
+                        android:textColor="@color/text_color"
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp">
+                        />
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/_10sdp"
-                            android:orientation="vertical">
+<!--                    <TextView-->
+<!--                        android:id="@+id/tvFilter"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/montserrat_arabic_medium"-->
+<!--                        android:text="@string/add_product"-->
+<!--                        android:textColor="@color/text_color"-->
+<!--                        android:textSize="10sp"-->
+<!--                        tools:ignore="SmallSp" />-->
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
+<!--                    <ImageView-->
+<!--                        android:layout_width="@dimen/_8sdp"-->
+<!--                        android:layout_height="@dimen/_8sdp"-->
+<!--                        android:layout_marginStart="@dimen/_2sdp"-->
+<!--                        android:src="@drawable/icon_open"-->
+<!--                        android:tint="@color/text_color"-->
+<!--                        tools:ignore="ContentDescription,UseAppTint" />-->
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:text="@string/weight"
-                                    android:textColor="@color/text_color"
-                                    android:textSize="11sp"
-                                    tools:ignore="SmallSp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/_1sdp"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:text="@string/_2_5_g"
-                                    android:id="@+id/tvProductWeight"
-                                    android:textColor="@color/text_color"
-                                    android:textSize="11sp"
-                                    tools:ignore="SmallSp" />
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/_5sdp"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:text="@string/type"
-                                    android:textColor="@color/text_color"
-                                    android:textSize="11sp"
-                                    tools:ignore="SmallSp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/_1sdp"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:text="@string/gold"
-                                    android:id="@+id/tvProductType"
-                                    android:textColor="@color/text_color"
-                                    android:textSize="11sp"
-                                    tools:ignore="SmallSp" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="@dimen/_7sdp"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/cat"
-                                    android:textColor="@color/text_color"
-                                    android:textSize="11sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/_1sdp"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:text="@string/rings"
-                                    android:id="@+id/tvProductCategory"
-                                    android:textColor="@color/text_color"
-                                    android:textSize="11sp" />
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/_5sdp"
-                                android:layout_marginEnd="@dimen/_5sdp"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:text="@string/carat"
-                                    android:textColor="@color/text_color"
-                                    android:textSize="11sp"
-                                    tools:ignore="SmallSp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/_1sdp"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:text="@string/_0_75"
-                                    android:id="@+id/tvProductCarat"
-                                    android:textColor="@color/text_color"
-                                    android:textSize="11sp"
-                                    tools:ignore="SmallSp" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="@dimen/_10sdp"
-                        android:background="@drawable/bg_description"
-                        android:orientation="vertical"
-                        android:padding="@dimen/_10sdp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/montserrat_arabic_bold"
-                            android:text="@string/description"
-                            android:textColor="@color/black"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_5sdp"
-                            android:id="@+id/tvProductDescription"
-                            android:fontFamily="@font/montserrat_arabic_regular"
-                            android:text="@string/are_you_sure_you_want_to_delete_this_user_this_action_cannot_be_undone"
-                            android:textColor="@color/text_color"
-                            android:textSize="11sp"
-                            tools:ignore="SmallSp" />
-
-
-                    </LinearLayout>
 
                 </LinearLayout>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvAddProduct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/theme"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/rlCartStatus"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginHorizontal="@dimen/_20sdp"
-                    android:layout_marginBottom="@dimen/_2sdp">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
 
-                    <LinearLayout
-                        android:id="@+id/llCartStatus"
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_marginHorizontal="@dimen/_1sdp"
+                        android:layout_marginVertical="@dimen/_1sdp"
+                        android:src="@drawable/icon_add_device"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/tvButtonName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_add_to_card"
-                        tools:ignore="UselessParent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="@dimen/_5sdp"
-                            android:layout_marginVertical="@dimen/_6sdp"
-                            android:fontFamily="@font/montserrat_arabic_semibold"
-                            android:text="@string/add_to_cart"
-                            android:textColor="@color/white"
-                            android:id="@+id/tvCartStatus"
-                            android:textSize="10sp"
-                            tools:ignore="SmallSp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/_1sdp"
-                            android:fontFamily="@font/montserrat_arabic_regular"
-                            android:text="@string/_12_000"
-                            android:id="@+id/tvProductPrice"
-                            android:textColor="@color/selected"
-                            android:textSize="14sp"
-                            tools:ignore="SmallSp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_1sdp"
-                            android:fontFamily="@font/montserrat_arabic_regular"
-                            android:text="@string/dh"
-                            android:textColor="@color/selected"
-                            android:textSize="14sp"
-                            tools:ignore="SmallSp" />
-
-                    </LinearLayout>
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
+                        android:text="@string/add_product"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
 
-                </RelativeLayout>
+                </LinearLayout>
 
-            </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
 
         </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_12sdp"
-            android:layout_marginVertical="@dimen/_15sdp"
-            app:cardBackgroundColor="@color/description_background_color"
-            app:cardCornerRadius="@dimen/_12sdp"
+            android:layout_below="@+id/llTop"
+            android:visibility="visible"
+            android:layout_marginHorizontal="1dp"
+            android:id="@+id/mcvProductList"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:cardBackgroundColor="@color/mcv_background_color"
+            app:cardCornerRadius="@dimen/_6sdp"
             app:cardElevation="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:layout_marginBottom="@dimen/_7sdp"
                 android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_15sdp"
-                    android:fontFamily="@font/montserrat_arabic_bold"
-                    android:text="@string/check_out_the_full_collection"
-                    android:textColor="@color/black"
-                    android:textSize="17sp" />
 
 
                 <androidx.core.widget.NestedScrollView
@@ -378,48 +181,215 @@
                     android:layout_height="wrap_content">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
                         android:layout_height="wrap_content">
 
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/mcvProductDetailName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/_7sdp"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            android:visibility="visible"
+                            app:cardBackgroundColor="@color/white"
+                            app:cardCornerRadius="@dimen/_4sdp"
+                            app:cardElevation="0dp"
+                            tools:ignore="MissingDefaultResource">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="@dimen/_9sdp"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:orientation="horizontal"
+                                android:weightSum="10"
+                                tools:ignore="UselessLeaf">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="2"
+                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:paddingStart="@dimen/_5sdp"
+                                    android:text="@string/product"
+                                    android:gravity="center"
+                                    android:textColor="@color/black"
+                                    android:textSize="10sp"
+                                    tools:ignore="RtlSymmetry,SmallSp" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:text="@string/metal_type"
+                                    android:gravity="center"
+                                    android:textColor="@color/black"
+                                    android:textSize="10sp"
+                                    tools:ignore="SmallSp" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:text="@string/category"
+                                    android:gravity="center"
+                                    android:textColor="@color/black"
+                                    android:textSize="10sp"
+                                    tools:ignore="SmallSp" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:text="@string/origin"
+                                    android:gravity="center"
+                                    android:textColor="@color/black"
+                                    android:textSize="10sp"
+                                    tools:ignore="SmallSp" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:text="@string/weight_"
+                                    android:textColor="@color/black"
+                                    android:textSize="10sp"
+                                    tools:ignore="SmallSp" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:text="@string/carat_"
+                                    android:gravity="center"
+                                    android:textColor="@color/black"
+                                    android:textSize="10sp"
+                                    tools:ignore="SmallSp" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:text="@string/cost"
+                                    android:gravity="center"
+                                    android:textColor="@color/black"
+                                    android:textSize="10sp"
+                                    tools:ignore="SmallSp" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:text="@string/rfid_code"
+                                    android:textColor="@color/black"
+                                    android:textSize="10sp"
+                                    tools:ignore="SmallSp" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:text="@string/action"
+                                    android:textColor="@color/black"
+                                    android:textSize="10sp"
+                                    tools:ignore="SmallSp" />
+
+                            </LinearLayout>
+
+
+                        </com.google.android.material.card.MaterialCardView>
+
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rvCollection"
+                            android:id="@+id/rvProduct"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/_3sdp"
+                            android:layout_marginVertical="@dimen/_3sdp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:listitem="@layout/item_product_list" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/mcvAdd"
+                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingTop="@dimen/_4sdp"
-                            android:layout_marginHorizontal="@dimen/_9sdp"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            android:orientation="horizontal"
-                            tools:listitem="@layout/item_collection" />
+                            android:layout_gravity="end"
+                            android:layout_marginHorizontal="@dimen/_7sdp"
+                            android:layout_marginBottom="@dimen/_7sdp"
+                            app:cardBackgroundColor="@color/theme"
+                            app:cardCornerRadius="@dimen/_5sdp"
+                            app:strokeWidth="0dp">
+
+                            <TextView
+                                android:id="@+id/tvAdd"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="@dimen/_25sdp"
+                                android:layout_marginVertical="@dimen/_5sdp"
+                                android:fontFamily="@font/montserrat_arabic_semibold"
+                                android:text="@string/add"
+                                android:textColor="@color/white"
+                                android:textSize="10sp"
+                                tools:ignore="SmallSp" />
+
+
+                        </com.google.android.material.card.MaterialCardView>
+
 
                     </LinearLayout>
 
+
                 </androidx.core.widget.NestedScrollView>
+
 
             </LinearLayout>
 
+
         </com.google.android.material.card.MaterialCardView>
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/llEmptyProduct"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_12sdp"
-            android:fontFamily="@font/montserrat_arabic_bold"
-            android:text="@string/you_may_also_like"
-            android:textColor="@color/black"
-            android:textSize="17sp" />
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:visibility="gone"
+            android:orientation="vertical"
+            tools:ignore="UseCompoundDrawables">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvCatalog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_4sdp"
-            android:paddingTop="@dimen/_8sdp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="3"
-            tools:listitem="@layout/item_catalog" />
+            <ImageView
+                android:id="@+id/ivEmptyImage"
+                android:layout_width="@dimen/_180sdp"
+                android:layout_height="@dimen/_120sdp"
+                android:src="@drawable/cart_empty"
+                android:visibility="visible"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_arabic_medium"
+                android:text="@string/product_is_empty"
+                android:textAlignment="center"
+                android:id="@+id/tvEmptyMsg"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+        </LinearLayout>
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
-</androidx.core.widget.NestedScrollView>
-
+</LinearLayout>

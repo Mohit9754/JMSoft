@@ -7,7 +7,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/llMetalType"
     android:paddingHorizontal="@dimen/_7sdp"
-    android:layout_marginTop="@dimen/_2sdp"
     android:orientation="vertical"
     tools:ignore="MissingDefaultResource">
 
@@ -30,7 +29,7 @@
             android:text="@string/silver"
             android:textColor="@color/black"
             android:paddingTop="@dimen/_4sdp"
-            android:paddingBottom="@dimen/_2sdp"
+            android:paddingBottom="@dimen/_3sdp"
             android:gravity="center_vertical"
             tools:ignore="MissingDefaultResource,NestedWeights,SmallSp" />
 

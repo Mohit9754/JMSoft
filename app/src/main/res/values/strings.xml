@@ -168,7 +168,6 @@
     <string name="enter_category_name">Enter category name</string>
     <string name="are_you_sure_you_want_to_delete_this_category_this_action_cannot_be_undone">Are you sure you want to delete this category ? This action cannot be undone.</string>
     <string name="are_you_sure_you_want_to_delete_this_product_this_action_cannot_be_undone">Are you sure you want to delete this product ? This action cannot be undone.</string>
-
     <string name="enter_collection_name">Enter collection name</string>
     <string name="product_name">Product name</string>
     <string name="add_product">Add Product</string>
@@ -198,6 +197,26 @@
     <string name="please_select_at_least_two_images">Please select at least two images</string>
     <string name="collection_name">Collection name</string>
     <string name="please_generate_barcode">Please generate barcode</string>
+    <string name="ring">Ring</string>
+    <string name="_50g">50g</string>
+    <string name="_23">23</string>
+    <string name="_1200_dh">1200 DH</string>
+    <string name="_1234567890">1234567890</string>
+    <string name="add">Add</string>
+    <string name="metaltype_already_exist">MetalType Already Exist</string>
+    <string name="deleted_successfully">Deleted Successfully</string>
+    <string name="metal_type_is_empty">Metal type is empty</string>
+    <string name="metal_type_already_exist">Metal type Already Exist</string>
+    <string name="category_already_exist">Category Already Exist</string>
+    <string name="category_is_empty">Category is empty</string>
+    <string name="product_is_empty">Product is empty</string>
+    <string name="select_collection_image">Select collection image</string>
+    <string name="collection_already_exist">Collection already exist</string>
+    <string name="collection_is_empty">Collection is empty</string>
+    <string name="collection_product_is_empty">Collection product is empty</string>
+    <string name="remove">Remove</string>
+    <string name="are_you_sure_you_want_to_remove_this_product_from_the_collection">Are you sure you want to remove this product from the collection ?</string>
+    <string name="na">NA</string>
 
 
 </resources>

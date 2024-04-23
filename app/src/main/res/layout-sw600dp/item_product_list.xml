@@ -23,16 +23,26 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingStart="@dimen/_5sdp"
             android:layout_gravity="center_vertical"
             android:layout_weight="2"
             tools:ignore="RtlSymmetry">
+
+            <CheckBox
+                android:id="@+id/cbProduct"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_15sdp"
+                android:visibility="gone"
+                android:layout_marginStart="@dimen/_1sdp"
+                android:layout_gravity="center_vertical"
+                android:buttonTint="@drawable/bg_checkbox"
+                />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/mcvCollectionImage"
                 android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_5sdp"
                 android:visibility="visible"
                 android:layout_marginVertical="@dimen/_4sdp"
                 app:cardBackgroundColor="@color/off_white"
@@ -51,12 +61,12 @@
 
 
             <TextView
-                android:id="@+id/tvMetalType"
+                android:id="@+id/tvProductName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/_6sdp"
-                android:text="Royal Gold Ring"
+                android:layout_marginStart="@dimen/_4sdp"
+                android:text="@string/royal_gold_ring"
                 android:fontFamily="@font/montserrat_arabic_regular"
                 android:textColor="@color/black"
                 android:textSize="10sp"
@@ -67,10 +77,11 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Gold"
+            android:text="@string/gold"
             android:layout_weight="1"
             android:fontFamily="@font/montserrat_arabic_regular"
             android:gravity="center"
+            android:id="@+id/tvMetalType"
             android:textColor="@color/black"
             android:textSize="10sp"
             tools:ignore="SmallSp" />
@@ -78,20 +89,10 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Ring"
+            android:text="@string/ring"
             android:layout_weight="1"
             android:gravity="center"
-            android:fontFamily="@font/montserrat_arabic_regular"
-            android:textColor="@color/black"
-            android:textSize="10sp"
-            tools:ignore="SmallSp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="g"
-            android:layout_weight="1"
-            android:gravity="center"
+            android:id="@+id/tvProductCategory"
             android:fontFamily="@font/montserrat_arabic_regular"
             android:textColor="@color/black"
             android:textSize="10sp"
@@ -100,9 +101,10 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Origin"
+            android:text="@string/origin"
             android:layout_weight="1"
             android:gravity="center"
+            android:id="@+id/tvProductOrigin"
             android:fontFamily="@font/montserrat_arabic_regular"
             android:textColor="@color/black"
             android:textSize="10sp"
@@ -111,9 +113,10 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="50"
+            android:text="@string/_50g"
             android:layout_weight="1"
+            android:gravity="center"
+            android:id="@+id/tvProductWeight"
             android:fontFamily="@font/montserrat_arabic_regular"
             android:textColor="@color/black"
             android:textSize="10sp"
@@ -123,7 +126,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="23"
+            android:text="@string/_23"
+            android:id="@+id/tvProductCarat"
             android:layout_weight="1"
             android:fontFamily="@font/montserrat_arabic_regular"
             android:textColor="@color/black"
@@ -133,9 +137,22 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="1200DH"
+            android:gravity="center"
+            android:text="@string/_1200_dh"
+            android:layout_weight="1"
+            android:id="@+id/tvProductCost"
+            android:fontFamily="@font/montserrat_arabic_regular"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/_1234567890"
             android:gravity="center"
             android:layout_weight="1"
+            android:id="@+id/tvRFIDCode"
             android:fontFamily="@font/montserrat_arabic_regular"
             android:textColor="@color/black"
             android:textSize="10sp"
@@ -144,48 +161,57 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:layout_height="wrap_content">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/mcvEdit"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_5sdp"
-                app:cardBackgroundColor="@color/mcv_background_color"
-                app:cardCornerRadius="@dimen/_4sdp"
-                app:cardElevation="0dp"
-                tools:ignore="RtlSymmetry">
+                tools:ignore="UselessParent">
 
-                <ImageView
-                    android:layout_width="@dimen/_9sdp"
-                    android:layout_height="@dimen/_9sdp"
-                    android:layout_marginHorizontal="@dimen/_3sdp"
-                    android:layout_marginVertical="@dimen/_3sdp"
-                    android:src="@drawable/icon_edit"
-                    tools:ignore="ContentDescription" />
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/mcv_background_color"
+                    app:cardCornerRadius="@dimen/_4sdp"
+                    app:cardElevation="0dp"
+                    tools:ignore="NestedWeights,RtlSymmetry">
 
-            </com.google.android.material.card.MaterialCardView>
+                    <ImageView
+                        android:layout_width="@dimen/_8sdp"
+                        android:layout_height="@dimen/_8sdp"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        android:src="@drawable/icon_edit"
+                        tools:ignore="ContentDescription" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/mcvDelete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/_4sdp"
-                android:layout_marginHorizontal="@dimen/_5sdp"
-                app:cardBackgroundColor="@color/mcv_background_color"
-                app:cardCornerRadius="@dimen/_4sdp"
-                app:cardElevation="0dp">
+                </com.google.android.material.card.MaterialCardView>
 
-                <ImageView
-                    android:layout_width="@dimen/_9sdp"
-                    android:layout_height="@dimen/_9sdp"
-                    android:layout_marginHorizontal="@dimen/_3sdp"
-                    android:layout_marginVertical="@dimen/_3sdp"
-                    android:src="@drawable/icon_delete"
-                    tools:ignore="ContentDescription" />
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/mcv_background_color"
+                    app:cardCornerRadius="@dimen/_4sdp"
+                    app:cardElevation="0dp">
 
-            </com.google.android.material.card.MaterialCardView>
+                    <ImageView
+                        android:layout_width="@dimen/_9sdp"
+                        android:layout_height="@dimen/_9sdp"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        android:src="@drawable/icon_delete"
+                        tools:ignore="ContentDescription" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
 
         </LinearLayout>
 

@@ -30,59 +30,114 @@
                 android:textSize="12sp" />
 
             <LinearLayout
-                android:layout_width="@dimen/_80sdp"
-                android:background="@drawable/dotted_stroke"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:id="@+id/llAddImage"
-                android:visibility="gone"
-                android:padding="@dimen/_1sdp"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
                 android:layout_marginBottom="@dimen/_6sdp"
                 android:layout_gravity="center_horizontal"
-                tools:ignore="UseCompoundDrawables,UselessLeaf">
+                android:id="@+id/llAddImage"
+                android:visibility="gone"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    app:strokeWidth="0dp"
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginHorizontal="@dimen/_2sdp"
+                    app:strokeWidth="0.7dp"
+                    android:visibility="visible"
+                    app:strokeColor="@color/theme"
+                    app:cardCornerRadius="@dimen/_3sdp"
                     app:cardElevation="0dp"
                     app:cardBackgroundColor="@android:color/transparent"
-                    android:layout_height="match_parent">
+                    tools:ignore="MissingDefaultResource">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:visibility="visible"
-                        android:id="@+id/llCollectionImage"
-                        android:gravity="center">
+                        android:layout_height="match_parent">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            app:cardCornerRadius="@dimen/_4sdp"
+                            android:id="@+id/mcvCrossBtn"
+                            android:visibility="gone"
+                            app:cardBackgroundColor="@color/theme"
+                            android:layout_margin="@dimen/_2sdp"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_width="@dimen/_8sdp"
+                                android:layout_height="@dimen/_8sdp"
+                                android:src="@drawable/icon_cross"
+                                android:id="@+id/ivCross"
+                                android:padding="@dimen/_2sdp"
+                                android:elevation="5dp"
+                                android:visibility="visible"
+                                android:paddingVertical="@dimen/_1sdp"
+                                android:tint="@color/white"
+                                tools:ignore="ContentDescription,UseAppTint" />
+
+
+                        </com.google.android.material.card.MaterialCardView>
 
                         <ImageView
-                            android:layout_width="@dimen/_7sdp"
-                            android:layout_height="@dimen/_7sdp"
-                            android:src="@drawable/icon_add"
-                            android:tint="@color/theme"
-                            tools:ignore="ContentDescription,UseAppTint" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/ivCollectionImage"
+                            android:scaleType="centerCrop"
+                            tools:ignore="ContentDescription" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/add_image"
-                            android:layout_marginStart="@dimen/_5sdp"
-                            android:fontFamily="@font/montserrat_arabic_regular"
-                            android:textColor="@color/theme"
-                            android:textSize="13sp"
-                            />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:visibility="visible"
+                            android:id="@+id/llAddImageSection"
+                            android:gravity="center"
+                            android:layout_centerInParent="true"
+                            tools:ignore="RelativeOverlap,UseCompoundDrawables">
 
-                    </LinearLayout>
+                            <ImageView
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:src="@drawable/icon_add"
+                                android:tint="@color/theme"
+                                tools:ignore="ContentDescription,TooDeepLayout,UseAppTint" />
 
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/ivCollectionImage"
-                        android:scaleType="centerCrop"
-                        tools:ignore="ContentDescription" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/add_image"
+                                android:layout_marginStart="@dimen/_5sdp"
+                                android:fontFamily="@font/montserrat_arabic_regular"
+                                android:textColor="@color/theme"
+                                android:textSize="12sp"
+                                />
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
 
                 </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tvCollectionImageError"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_1sdp"
+                        android:layout_marginTop="@dimen/_1sdp"
+                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:textColor="@color/red"
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        tools:ignore="SmallSp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

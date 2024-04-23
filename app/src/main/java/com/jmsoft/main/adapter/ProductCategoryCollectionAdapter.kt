@@ -12,14 +12,16 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CartDataModel
+import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
+import com.jmsoft.databinding.FragmentCollectionDetailBinding
 import com.jmsoft.databinding.ItemCollectionBinding
 import com.jmsoft.main.activity.DashboardActivity
+import java.util.UUID
 
 /**
  * Collection Adapter
@@ -28,12 +30,17 @@ import com.jmsoft.main.activity.DashboardActivity
  *
  */
 
-class ProductCollectionAdapter(
+class ProductCategoryCollectionAdapter(
     private val context: Context,
     private val productList: ArrayList<ProductDataModel>,
-
+    private val productCategory: String,
+    private val categoryDataList: ArrayList<CategoryDataModel>,
+    private val collectionDetailAdapter: CollectionDetailAdapter,
+    private val collectionUUID: String,
+    private val collectionDetailAdapterPosition: Int,
+    private val fragmentCollectionDetailBinding: FragmentCollectionDetailBinding
 ) :
-    RecyclerView.Adapter<ProductCollectionAdapter.MyViewHolder>() {
+    RecyclerView.Adapter<ProductCategoryCollectionAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemCollectionBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -46,19 +53,78 @@ class ProductCollectionAdapter(
         holder.bind(productList[position],position)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private fun showCollectionDeleteDialog(
+        position: Int,
+        productUUID: String,
+        productCollectionUUID: String
+    ) {
 
+        val dialog = Dialog(context)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+
+        val dialogBinding = DialogDeleteUserBinding.inflate(LayoutInflater.from(context))
+        dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.ivImage.setImageResource(R.drawable.img_delete_inventory)
+
+        dialogBinding.tvTitle.text = context.getString(R.string.remove)
+
+        dialogBinding.tvMessage.text =
+            context.getString(R.string.are_you_sure_you_want_to_remove_this_product_from_the_collection)
+
+        dialogBinding.mcvYes.setOnClickListener {
+
+            val collectionUUIDList:MutableList<String> = productCollectionUUID.split(",").toMutableList()
+            collectionUUIDList.remove(collectionUUID)
+
+            val productDataModel = ProductDataModel()
+            productDataModel.productUUID = productUUID
+            productDataModel.collectionUUID = collectionUUIDList.joinToString().replace(" ","")
+
+            Utils.updateCollectionInProduct(productDataModel)
+
+            productList.removeAt(position)
+
+            notifyItemRemoved(position)
+
+            notifyItemRangeChanged(position,productList.size - position)
+
+            if (productList.isEmpty()) {
+
+                categoryDataList.removeAt(collectionDetailAdapterPosition)
+                collectionDetailAdapter.notifyItemRemoved(collectionDetailAdapterPosition)
+
+                collectionDetailAdapter.notifyItemRangeChanged(position,categoryDataList.size - collectionDetailAdapterPosition)
+
+                if (categoryDataList.isEmpty()) {
+                    fragmentCollectionDetailBinding.llEmptyInventory?.visibility  = View.VISIBLE
+                }
+
+            }
+
+            Utils.T(context,context.getString(R.string.removed_successfully))
+
+            dialog.dismiss()
+
+        }
+
+        dialogBinding.mcvNo.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setCancelable(true)
+        dialog.show()
+
+    }
 
     inner class MyViewHolder(private val binding: ItemCollectionBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         // Product Data
         private lateinit var productData: ProductDataModel
-
-        // flag variable for Cart Status
-        private var isProductExistInCart:Boolean? = false
-
-        // Cart Product UUID
-        private var cartProductUUID:String? = null
 
         private var position:Int = -1
 
@@ -84,18 +150,16 @@ class ProductCollectionAdapter(
             //Set the Product image
             setProductImage()
 
-            // Set the Product Cart Status
-            setCartStatus()
+            binding.mcvDelete.visibility = View.VISIBLE
+            binding.rlCollectionDetail.visibility = View.VISIBLE
 
-            // Getting Cart Product UUID for Deleting the product from the cart
-            getCartProductUUID()
+            binding.mcvCartStatus.visibility = View.GONE
 
+            binding.mcvDelete.setOnClickListener(this)
 
             //Setting Click on Collection Item
             binding.mcvCollectionItem.setOnClickListener(this)
 
-            //Setting Click on CartStatus
-            binding.mcvCartStatus.setOnClickListener(this)
         }
 
         private fun setProductCarat(){
@@ -103,7 +167,7 @@ class ProductCollectionAdapter(
         }
 
         private fun setProductCategory() {
-//            binding.tvProductCategory.text = productCategory
+            binding.tvProductCategory.text = productCategory
         }
 
         private fun setProductType(){
@@ -117,43 +181,6 @@ class ProductCollectionAdapter(
         @SuppressLint("SetTextI18n")
         private fun setProductWeight() {
             binding.tvProductWeight.text = "${productData.productWeight} $weightUnit"
-        }
-
-        // Getting Cart Product UUID for Deleting the product from the cart
-        private fun getCartProductUUID(){
-
-            if (isProductExistInCart == true) {
-
-                cartProductUUID = Utils.GetSession().userUUID?.let { productData.productUUID?.let { it1 ->
-                    Utils.getCartUUID(it,
-                        it1
-                    )
-                } }
-            }
-        }
-
-
-        // Set the Product Cart Status
-        private fun setCartStatus(){
-
-            isProductExistInCart = Utils.GetSession().userUUID?.let {
-                productData.productUUID?.let { it1 ->
-                    Utils.isProductExistInCartTable(
-                        it,
-                        it1
-                    )
-                }
-            }
-
-            Utils.E(isProductExistInCart.toString())
-
-            if (isProductExistInCart == true){
-                binding.ivCartStatus.setImageResource(R.drawable.icon_cart_white)
-            }
-            else if(isProductExistInCart == false){
-                binding.ivCartStatus.setImageResource(R.drawable.icon_add)
-
-            }
         }
 
         //Set the Product image
@@ -197,40 +224,16 @@ class ProductCollectionAdapter(
 
                 //Navigate to Product
                 (context as DashboardActivity).navController?.navigate(R.id.productDetail,bundle)
+
             }
 
-            // Click on Cart Status
-            else if(v == binding.mcvCartStatus){
+            else if (v == binding.mcvDelete){
 
-                if (isProductExistInCart == true){
-
-                    cartProductUUID?.let { Utils.deleteProductFromCart(it)}
-
-                    Utils.T(context, context.getString(R.string.removed_from_the_cart))
-                    isProductExistInCart = false
-                    binding.ivCartStatus.setImageResource(R.drawable.icon_add)
-
-                }
-                else if (isProductExistInCart == false) {
-
-                    val cardDataModel = CartDataModel()
-                    cardDataModel.cartUUID = Utils.generateUUId()
-                    cardDataModel.productUUID = productData.productUUID
-                    cardDataModel.userUUID = Utils.GetSession().userUUID
-                    cardDataModel.productQuantity = 1
-
-                    Utils.insertProductInCartTable(cardDataModel)
-
-                    isProductExistInCart = true
-                    binding.ivCartStatus.setImageResource(R.drawable.icon_cart_white)
-
-                    // Getting Cart Product UUID for Deleting the product from the cart
-                    getCartProductUUID()
-
-                    Utils.T(context, context.getString(R.string.added_in_the_cart))
-
-
-                }
+                productData.productUUID?.let { productData.collectionUUID?.let { it1 ->
+                    showCollectionDeleteDialog(position, it,
+                        it1
+                    )
+                } }
             }
 
         }

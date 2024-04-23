@@ -11,11 +11,12 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
+import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
-import com.jmsoft.databinding.FragmentProductInventoryBinding
 import com.jmsoft.databinding.ItemMetalTypeDropdownBinding
 import com.jmsoft.main.fragment.ProductInventoryFragment
+import com.jmsoft.main.`interface`.MetalTypeSelectedCallback
 
 /**
  * Catalog Adapter
@@ -26,14 +27,14 @@ import com.jmsoft.main.fragment.ProductInventoryFragment
 
 class MetalTypeDropdownAdapter(
     private val context: Context,
-    private var metalTypeList: ArrayList<String>,
-    private var productInventoryBinding: FragmentProductInventoryBinding,
-    private val productInventoryFragment: ProductInventoryFragment
+    private var metalTypeList: ArrayList<MetalTypeDataModel>,
+    private val productInventoryFragment: ProductInventoryFragment,
+    private val metalTypeSelectedCallback: MetalTypeSelectedCallback
 
 ) :
     RecyclerView.Adapter<MetalTypeDropdownAdapter.MyViewHolder>() {
 
-    var selectedPosition:Int? = -1
+    var selectedPosition:Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemMetalTypeDropdownBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -48,7 +49,7 @@ class MetalTypeDropdownAdapter(
 
     // Show Metal Type Delete Dialog
     @SuppressLint("NotifyDataSetChanged")
-    private fun showMetalTypeDeleteDialog(position: Int) {
+    private fun showMetalTypeDeleteDialog(position: Int,metalTypeUUID:String) {
 
         val dialog = Dialog(context)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -66,7 +67,11 @@ class MetalTypeDropdownAdapter(
 
             dialog.dismiss()
 
+            Utils.deleteMetalType(metalTypeUUID)
             metalTypeList.removeAt(position)
+
+            Utils.T(context, context.getString(R.string.deleted_successfully))
+
             notifyDataSetChanged()
         }
 
@@ -83,20 +88,18 @@ class MetalTypeDropdownAdapter(
     inner class MyViewHolder(private val binding: ItemMetalTypeDropdownBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        private lateinit var metalType:String
+        private lateinit var metalTypeData:MetalTypeDataModel
 
         private var position = -1
 
-        fun bind(metalType: String,position: Int) {
+        fun bind(metalTypeData: MetalTypeDataModel,position: Int) {
 
-            this.metalType = metalType
+            this.metalTypeData = metalTypeData
             this.position = position
 
             setMetalType()
 
             visibleViews()
-
-            Utils.E(" Rebind $metalType")
 
             setSelected()
 
@@ -108,6 +111,7 @@ class MetalTypeDropdownAdapter(
 
         }
 
+
         private fun visibleViews(){
             binding.llDelAndEditSection.visibility = View.VISIBLE
             binding.viewLine.visibility = View.VISIBLE
@@ -117,7 +121,9 @@ class MetalTypeDropdownAdapter(
 
             if (selectedPosition == position) {
 
+
                 binding.llMetalType.setBackgroundColor(context.getColor(R.color.selected_drop_down_color))
+                metalTypeSelectedCallback.selectedMetalType(metalTypeData)
 
             }
             else {
@@ -128,7 +134,7 @@ class MetalTypeDropdownAdapter(
         }
 
         private fun setMetalType() {
-            binding.tvMetalType.text = metalType
+            binding.tvMetalType.text = metalTypeData.metalTypeName
         }
 
         @SuppressLint("NotifyDataSetChanged")
@@ -137,28 +143,20 @@ class MetalTypeDropdownAdapter(
             if (v == binding.llMetalType) {
 
                 selectedPosition = position
-
-
-                productInventoryBinding.tvMetalType?.text = metalType
-                productInventoryBinding.tvMetalTypeError?.visibility = View.GONE
-
-                productInventoryBinding.ivMetalType?.let { Utils.rotateView(it,0f) }
-
-                productInventoryBinding.mcvMetalTypeList?.let { Utils.collapseView(it) }
-
+//                metalTypeSelectedCallback.selectedMetalType(metalTypeData)
                 notifyDataSetChanged()
 
             }
 
-            else if (v == binding.mcvDelete){
+            else if (v == binding.mcvDelete) {
 
-                showMetalTypeDeleteDialog(position)
+                metalTypeData.metalTypeUUID?.let { showMetalTypeDeleteDialog(position, it) }
             }
 
             else if (v == binding.mcvEdit) {
-                productInventoryFragment.showAddOrEditMetalTypeDialog(position)
-            }
 
+                productInventoryFragment.showAddOrEditMetalTypeDialog(position,metalTypeData.metalTypeUUID)
+            }
 
         }
 
