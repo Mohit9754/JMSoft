@@ -5,9 +5,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
@@ -20,10 +22,12 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,6 +59,7 @@ import com.jmsoft.main.`interface`.CollectionStatusCallback
 import com.jmsoft.main.`interface`.MetalTypeSelectedCallback
 import com.jmsoft.main.model.SelectedCollectionModel
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.basic.UtilityTools.KeyboardUtils.hideKeyboard
 
 class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
@@ -597,6 +602,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         binding.ivCross?.setOnClickListener(this)
 
+        binding.root.setOnClickListener(this)
+
+
     }
 
 
@@ -868,10 +876,43 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
                 val animation =
                     AnimationUtils.loadAnimation(requireActivity(), R.anim.top_to_bottom)
                 resultReturn?.errorTextView?.startAnimation(animation)
-                validation?.EditTextPointer?.requestFocus()
 
-                val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(validation?.EditTextPointer, InputMethodManager.SHOW_IMPLICIT)
+                if (validation?.textViewPointer != null ) {
+
+                    Utils.E("It is not nulll")
+
+                    if (validation.textViewPointer == binding.tvMetalType) {
+
+                        binding.ivMetalType?.let { Utils.rotateView(it, 0f) }
+                        binding.mcvMetalTypeList?.let { Utils.expandView(it) }
+
+                    }
+                    else if (validation.textViewPointer == binding.tvCategory){
+
+                        binding.ivCategory?.let { Utils.rotateView(it, 0f) }
+                        binding.mcvCategoryList?.let { Utils.expandView(it) }
+
+                    }
+
+                    validation.textViewPointer = null
+
+                }
+
+
+                else {
+
+                    Utils.E("It is  nulll")
+
+
+                    validation?.EditTextPointer?.requestFocus()
+
+                    val imm =
+                        requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(validation?.EditTextPointer , InputMethodManager.SHOW_IMPLICIT)
+
+                    validation?.EditTextPointer = null
+
+                }
             }
         }
     }
@@ -988,11 +1029,13 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
                     val animation =
                         AnimationUtils.loadAnimation(context, R.anim.top_to_bottom)
                     resultReturn?.errorTextView?.startAnimation(animation)
+
                     validation?.EditTextPointer?.requestFocus()
 
                     val imm =
                         requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.showSoftInput(validation?.EditTextPointer, InputMethodManager.SHOW_IMPLICIT)
+                    imm.showSoftInput(validation?.EditTextPointer , InputMethodManager.SHOW_IMPLICIT)
+
                 }
             }
         }
@@ -1068,6 +1111,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
             if (categoryDataModelList.isNotEmpty()) {
 
                 if (binding.mcvCategoryList?.visibility == View.VISIBLE) {
+
                     binding.ivCategory?.let { Utils.rotateView(it, 180f) }
                     binding.mcvCategoryList?.let { Utils.collapseView(it) }
 
@@ -1075,6 +1119,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
                     binding.ivCategory?.let { Utils.rotateView(it, 0f) }
                     binding.mcvCategoryList?.let { Utils.expandView(it) }
+
                 }
             }
             else {
@@ -1171,6 +1216,11 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
             binding.etBarcode?.setText("")
             binding.mcvBarcodeImage?.visibility = View.GONE
 
+        }
+
+        else if (v == binding.root){
+
+            hideKeyboard(requireActivity())
         }
     }
 }

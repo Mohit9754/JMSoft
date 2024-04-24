@@ -199,5 +199,27 @@
     <string name="collection_name">اسم المجموعة</string>
     <string name="please_generate_barcode">يرجى إنشاء الباركود</string>
 
+    <string name="ring">جرس</string>
+    <string name="_50g">50 غ</string>
+    <string name="_23">ثلاثة وعشرون</string>
+    <string name="_1200_dh">1200 درهم</string>
+    <string name="_1234567890">مليار ومائتان وأربعة وثلاثون مليون وخمسة مائة وسبعة وستون ألف وثمانية مائة وتسعون</string>
+    <string name="add">يضيف</string>
+    <string name="metaltype_already_exist">نوع المعدن موجود بالفعل</string>
+    <string name="deleted_successfully">حذف بنجاح</string>
+    <string name="metal_type_is_empty">النوع المعدني فارغ</string>
+    <string name="metal_type_already_exist">نوع المعدن موجود بالفعل</string>
+    <string name="category_already_exist">الفئة موجودة بالفعل</string>
+    <string name="category_is_empty">الفئة فارغة</string>
+    <string name="product_is_empty">المنتج فارغ</string>
+    <string name="select_collection_image">حدد صورة المجموعة</string>
+    <string name="collection_already_exist">المجموعة موجودة بالفعل</string>
+    <string name="collection_is_empty">المجموعة فارغة</string>
+    <string name="collection_product_is_empty">منتج المجموعة فارغ</string>
+    <string name="remove">يزيل</string>
+    <string name="are_you_sure_you_want_to_remove_this_product_from_the_collection">هل أنت متأكد أنك تريد إزالة هذا المنتج من المجموعة؟</string>
+    <string name="na">غير متوفر</string>
+    <string name="catalog_is_empty">الكتالوج فارغ</string>
+
 
 </resources>

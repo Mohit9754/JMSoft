@@ -234,7 +234,7 @@ class CartListAdapter(
                 val bundle = Bundle()
                 //Giving the product UUID
                 bundle.putString(Constants.productUUID, productData.productUUID)
-                (context as DashboardActivity).navController?.navigate(R.id.product,bundle)
+                (context as DashboardActivity).navController?.navigate(R.id.productDetail,bundle)
 
             }
         }

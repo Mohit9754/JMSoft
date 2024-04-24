@@ -17,6 +17,7 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
 import com.jmsoft.basic.UtilityTools.Constants.Companion.information
 import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
+import com.jmsoft.basic.UtilityTools.KeyboardUtils.hideKeyboard
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ActivityDashboardBinding
 
@@ -86,6 +87,8 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
         binding?.ivLogo?.setOnClickListener(this)
 
         binding?.ivCard?.setOnClickListener(this)
+
+        binding?.toolbar?.setOnClickListener(this)
     }
 
     //Handles All the Clicks
@@ -129,6 +132,11 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
                 navController?.navigate(R.id.cart)
 
             }
+        }
+
+        else if (v == binding?.toolbar){
+
+            hideKeyboard(this)
         }
     }
 

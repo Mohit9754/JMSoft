@@ -15,9 +15,11 @@ import io.michaelrocks.libphonenumber.android.Phonenumber.PhoneNumber
 import java.util.regex.Pattern
 
 class Validation {
+
     var EditTextPointer: EditText? = null
     var errorMessage: String? = null
     var phoneNumberUtil: PhoneNumberUtil? = null
+    var textViewPointer:TextView? = null
 
     /**
      * Check Validation
@@ -186,6 +188,8 @@ class Validation {
 
         return if(textView?.text?.isEmpty() == true){
             errorMessage = context.getString(R.string.empty_error)
+//            this@Validation.textView = textView
+            textViewPointer = textView
             false
 
         } else {

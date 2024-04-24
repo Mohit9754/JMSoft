@@ -69,7 +69,6 @@ class CategoryDropdownAdapter(
             if (selectedPosition == position) {
 
                 binding.llMetalType.setBackgroundColor(context.getColor(R.color.selected_drop_down_color))
-                categorySelectedCallback.categorySelected(categoryData)
 
             }
             else {
