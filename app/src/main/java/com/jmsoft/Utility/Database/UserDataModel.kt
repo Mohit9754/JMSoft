@@ -60,7 +60,7 @@ class UserDataModel {
 
             val CreateTableUserSessionQuery = ("create table " + TABLE_NAME_USER_SESSION + " ("
                     + Key_Id + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    Key_userUUID + " text," +
+                    Key_userUUID + " text UNIQUE," +
                     Key_userType + " text," +
                     Key_firstName + " text," +
                     Key_lastName + " text," +
@@ -71,7 +71,7 @@ class UserDataModel {
 
             val CreateTableUserQuery = ("create table " + TABLE_NAME_USER + " ("
                     + Key_userId + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    Key_userUUID + " text," +
+                    Key_userUUID + " text UNIQUE," +
                     Key_userType + " text," +
                     Key_firstName + " text," +
                     Key_lastName + " text," +

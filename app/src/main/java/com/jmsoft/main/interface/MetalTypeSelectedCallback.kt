@@ -6,4 +6,6 @@ interface MetalTypeSelectedCallback {
 
     fun selectedMetalType(metalTypeDataModel: MetalTypeDataModel)
 
+    fun unselectMetalType()
+
 }

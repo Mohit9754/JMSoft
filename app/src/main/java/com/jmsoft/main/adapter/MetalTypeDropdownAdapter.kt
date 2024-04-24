@@ -72,6 +72,9 @@ class MetalTypeDropdownAdapter(
 
             Utils.T(context, context.getString(R.string.deleted_successfully))
 
+            selectedPosition = -1
+            metalTypeSelectedCallback.unselectMetalType()
+
             notifyDataSetChanged()
         }
 
@@ -120,7 +123,6 @@ class MetalTypeDropdownAdapter(
         private fun setSelected(){
 
             if (selectedPosition == position) {
-
 
                 binding.llMetalType.setBackgroundColor(context.getColor(R.color.selected_drop_down_color))
                 metalTypeSelectedCallback.selectedMetalType(metalTypeData)

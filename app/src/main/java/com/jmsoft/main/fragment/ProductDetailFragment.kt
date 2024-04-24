@@ -1,6 +1,7 @@
 package com.jmsoft.main.fragment
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context.WINDOW_SERVICE
 import android.graphics.Bitmap
 import android.os.Build
@@ -37,6 +38,8 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     // Flag variable for checking if Product Exist In Cart
     private var isProductExistInCart = false
 
+    private var progressBarDialog:Dialog? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,6 +56,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
         return binding.root
     }
+
 
     // Setup Product Image Recycler View
     private fun setUpProductImageRecyclerView(productImages: String) {
@@ -225,6 +229,8 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     // Set the Clicks , initialization And Setup
     private fun init() {
 
+        progressBarDialog = Utils.initProgressDialog(requireActivity())
+
         //Setting the Product Section Height through Screen height
         setProductSectionHeight()
 
@@ -242,6 +248,8 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
         // Set Click on Cart Status button
         binding.llCartStatus?.setOnClickListener(this)
+
+        progressBarDialog?.dismiss()
 
     }
 

@@ -217,6 +217,7 @@
     <string name="remove">Remove</string>
     <string name="are_you_sure_you_want_to_remove_this_product_from_the_collection">Are you sure you want to remove this product from the collection ?</string>
     <string name="na">NA</string>
+    <string name="catalog_is_empty">Catalog is empty</string>
 
 
 </resources>

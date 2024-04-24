@@ -12,6 +12,7 @@ import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.databinding.FragmentCatalogBinding
 import com.jmsoft.databinding.ItemCatalogBinding
 import com.jmsoft.main.activity.DashboardActivity
 
@@ -24,7 +25,7 @@ import com.jmsoft.main.activity.DashboardActivity
 
 class CatalogAdapter(
     private val context: Context,
-    private var productList: ArrayList<ProductDataModel>
+    private var productList: ArrayList<ProductDataModel>,
 ) :
     RecyclerView.Adapter<CatalogAdapter.MyViewHolder>() {
 

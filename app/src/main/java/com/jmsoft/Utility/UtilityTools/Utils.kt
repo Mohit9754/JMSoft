@@ -1430,7 +1430,6 @@ object Utils {
         return dialog
     }
 
-
     fun videoProgressDialog(c: Context?): Dialog {
         val dialog = Dialog(c!!)
         dialog.setCanceledOnTouchOutside(false)

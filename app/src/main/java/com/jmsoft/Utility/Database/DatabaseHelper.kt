@@ -42,7 +42,6 @@ class DatabaseHelper(cx: Context) {
     fun open() {
         db = dm.writableDatabase
         db?.execSQL("PRAGMA foreign_keys=ON")
-
     }
 
     /**
@@ -57,7 +56,7 @@ class DatabaseHelper(cx: Context) {
      */
     fun read() {
         db = dm.readableDatabase
-//        db?.execSQL("PRAGMA foreign_keys=ON")
+        db?.execSQL("PRAGMA foreign_keys=ON")
 
     }
 

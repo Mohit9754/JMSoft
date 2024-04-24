@@ -32,8 +32,8 @@ class CartDataModel {
                     Key_productUUID + " text," +
                     Key_productQuantity + " INTEGER," +
                     Key_userUUID + " text," +
-                    " FOREIGN KEY (" + Key_productUUID + ") REFERENCES " + ProductDataModel.TABLE_NAME_PRODUCT + "(" + ProductDataModel.Key_productUUID + ")," +
-                    " FOREIGN KEY (" + Key_userUUID + ") REFERENCES " + UserDataModel.TABLE_NAME_USER + "(" + UserDataModel.Key_userUUID + ")" +
+                    " FOREIGN KEY (" + Key_productUUID + ") REFERENCES " + ProductDataModel.TABLE_NAME_PRODUCT + "(" + ProductDataModel.Key_productUUID + ") ON DELETE CASCADE," +
+                    " FOREIGN KEY (" + Key_userUUID + ") REFERENCES " + UserDataModel.TABLE_NAME_USER + "(" + UserDataModel.Key_userUUID + ") ON DELETE CASCADE" +
                     " )")
 
             db.execSQL(CreateTableCartQuery)

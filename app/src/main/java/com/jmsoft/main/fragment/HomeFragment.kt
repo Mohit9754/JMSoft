@@ -70,7 +70,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
         // Navigate to Setting Fragment
         else if (v == binding.mcvSettings) {
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.setting)
-
         }
 
         // Navigate to Cart Fragment

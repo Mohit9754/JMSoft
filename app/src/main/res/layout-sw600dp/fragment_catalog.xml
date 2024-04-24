@@ -1,31 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.core.widget.NestedScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:visibility="visible"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center_horizontal">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCatalog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_40sdp"
+                android:paddingTop="@dimen/_16sdp"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="3"
+                tools:listitem="@layout/item_catalog" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:gravity="center_horizontal">
+        android:id="@+id/llEmptyCatalog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical"
+        tools:ignore="UseCompoundDrawables">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvCatalog"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/ivEmptyImage"
+            android:layout_width="@dimen/_180sdp"
+            android:layout_height="@dimen/_120sdp"
+            android:src="@drawable/cart_empty"
+            android:visibility="visible"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_40sdp"
-            android:paddingTop="@dimen/_16sdp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="3"
-            tools:listitem="@layout/item_catalog" />
+            android:fontFamily="@font/montserrat_arabic_medium"
+            android:text="@string/catalog_is_empty"
+            android:textAlignment="center"
+            android:id="@+id/tvEmptyMsg"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
 
     </LinearLayout>
 
-</androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>
+
 
 
 

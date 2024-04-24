@@ -1,5 +1,6 @@
 package com.jmsoft.main.fragment
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +17,9 @@ import com.jmsoft.main.adapter.CollectionDetailAdapter
 
 class CollectionDetailFragment : Fragment(),View.OnClickListener {
 
-    lateinit var binding:FragmentCollectionDetailBinding
+    private lateinit var binding:FragmentCollectionDetailBinding
 
-    var collectionUUID:String? = null
+    private var collectionUUID:String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,10 +29,15 @@ class CollectionDetailFragment : Fragment(),View.OnClickListener {
         // Inflate the layout for this fragment
         binding = FragmentCollectionDetailBinding.inflate(layoutInflater)
 
+        val progressBarDialog = Utils.initProgressDialog(requireActivity())
+
         init()
+
+        progressBarDialog.dismiss()
 
         return binding.root
     }
+
 
     private fun setCollectionDetailRecyclerView() {
 
@@ -90,6 +96,7 @@ class CollectionDetailFragment : Fragment(),View.OnClickListener {
         binding.mcvBackBtn?.setOnClickListener(this)
 
         binding.mcvAddProduct?.setOnClickListener(this)
+
     }
 
     override fun onClick(v: View?) {

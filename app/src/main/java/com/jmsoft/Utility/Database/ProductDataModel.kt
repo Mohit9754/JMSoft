@@ -47,7 +47,7 @@ class ProductDataModel {
 
             val CreateTableProductQuery = ("CREATE TABLE " + TABLE_NAME_PRODUCT + " ("
                     + Key_productId + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + Key_productUUID + " TEXT,"
+                    + Key_productUUID + " TEXT UNIQUE,"
                     + Key_productName + " TEXT,"
                     + Key_productOrigin + " TEXT,"
                     + Key_productWeight + " REAL,"
