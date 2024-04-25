@@ -352,9 +352,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_12sdp"
-            android:layout_marginVertical="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_15sdp"
             app:cardBackgroundColor="@color/description_background_color"
             app:cardCornerRadius="@dimen/_12sdp"
+            android:id="@+id/mcvCollection"
             app:cardElevation="0dp">
 
             <LinearLayout
@@ -406,6 +407,8 @@
             android:layout_marginHorizontal="@dimen/_12sdp"
             android:fontFamily="@font/montserrat_arabic_bold"
             android:text="@string/you_may_also_like"
+            android:id="@+id/tvMayLike"
+            android:layout_marginTop="@dimen/_15sdp"
             android:textColor="@color/black"
             android:textSize="17sp" />
 
@@ -414,7 +417,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_4sdp"
-            android:paddingTop="@dimen/_8sdp"
+            android:paddingTop="@dimen/_5sdp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="3"
             tools:listitem="@layout/item_catalog" />

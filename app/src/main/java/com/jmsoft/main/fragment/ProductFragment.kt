@@ -18,13 +18,13 @@ import com.jmsoft.databinding.FragmentProductBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.ProductListAdapter
 
-class ProductFragment : Fragment(),View.OnClickListener {
+class ProductFragment : Fragment(), View.OnClickListener {
 
-    private var productListAdapter:ProductListAdapter? = null
+    private var productListAdapter: ProductListAdapter? = null
 
-    private lateinit var binding:FragmentProductBinding
+    private lateinit var binding: FragmentProductBinding
 
-    private var collectionUUID:String? = null
+    private var collectionUUID: String? = null
 
     private var productDataList = ArrayList<ProductDataModel>()
 
@@ -40,58 +40,65 @@ class ProductFragment : Fragment(),View.OnClickListener {
 
         binding = FragmentProductBinding.inflate(layoutInflater)
 
+        val progressBarDialog = Utils.pdfProgressDialog(requireActivity())
+
         init()
+
+        progressBarDialog.dismiss()
 
         return binding.root
     }
 
-    private fun setSpinner(){
+    private fun setSpinner() {
 
         val categoryDataList = Utils.getAllCategory()
 
         val listSpinner = mutableListOf<String?>()
         listSpinner.add(All)
-        categoryDataList.map { it.categoryName}.let { listSpinner.addAll(it) }
+        categoryDataList.map { it.categoryName }.let { listSpinner.addAll(it) }
 
-        val spinnerAdapter = ArrayAdapter(requireActivity(), R.layout.item_spinner,listSpinner )
+        val spinnerAdapter = ArrayAdapter(requireActivity(), R.layout.item_spinner, listSpinner)
 
         spinnerAdapter.setDropDownViewResource(R.layout.item_custom_spinner_list)
 
-        binding.spinner?.adapter  = spinnerAdapter
+        binding.spinner?.adapter = spinnerAdapter
 
         binding.spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
 
                 if (position == 0) {
 
                     if (isRunFilter) {
 
-                        binding.mcvProductList?.visibility  = View.VISIBLE
-                        binding.llEmptyProduct?.visibility  = View.GONE
+                        binding.mcvProductList?.visibility = View.VISIBLE
+                        binding.llEmptyProduct?.visibility = View.GONE
 
                         productListAdapter?.filterProductDataList(productDataList)
-                    }
-                    else {
+                    } else {
 
                         isRunFilter = true
                     }
-                }
-                else {
+                } else {
 
-                    val filterDataList = productDataList.filter { it.categoryUUID == categoryDataList[position-1].categoryUUID } as ArrayList<ProductDataModel>
+                    val filterDataList =
+                        productDataList.filter { it.categoryUUID == categoryDataList[position - 1].categoryUUID } as ArrayList<ProductDataModel>
 
-                    if (filterDataList.isNotEmpty()){
+                    if (filterDataList.isNotEmpty()) {
 
-                        binding.mcvProductList?.visibility  = View.VISIBLE
-                        binding.llEmptyProduct?.visibility  = View.GONE
+                        binding.mcvProductList?.visibility = View.VISIBLE
+                        binding.llEmptyProduct?.visibility = View.GONE
 
                         productListAdapter?.filterProductDataList(filterDataList)
-                    }
-                    else {
+                    } else {
 
-                        binding.mcvProductList?.visibility  = View.GONE
-                        binding.llEmptyProduct?.visibility  = View.VISIBLE
+                        binding.mcvProductList?.visibility = View.GONE
+                        binding.llEmptyProduct?.visibility = View.VISIBLE
 
                     }
                 }
@@ -105,12 +112,15 @@ class ProductFragment : Fragment(),View.OnClickListener {
         }
     }
 
-    private fun checkState(){
+    private fun checkState() {
 
         collectionUUID = arguments?.getString(Constants.collectionUUID)
 
-        if (collectionUUID != null ) {
+        if (collectionUUID != null) {
             binding.mcvAdd?.visibility = View.VISIBLE
+            binding.tvTitle?.text = getString(R.string.select_products_to_add)
+        } else {
+            binding.tvTitle?.text = getString(R.string.product)
         }
     }
 
@@ -133,16 +143,22 @@ class ProductFragment : Fragment(),View.OnClickListener {
     // Set Product Recycler View
     private fun setProductRecyclerView() {
 
-        productDataList =  if (collectionUUID != null) Utils.getAllProductsAcceptCollection(
+        productDataList = if (collectionUUID != null) Utils.getAllProductsAcceptCollection(
             collectionUUID!!
-        )  else Utils.getAllProducts()
+        ) else Utils.getAllProducts()
 
         if (productDataList.isNotEmpty()) {
 
             binding.mcvProductList?.visibility = View.VISIBLE
             binding.llEmptyProduct?.visibility = View.GONE
 
-            productListAdapter = ProductListAdapter(requireActivity(), productDataList, collectionUUID,binding,selectedProductUUIDList)
+            productListAdapter = ProductListAdapter(
+                requireActivity(),
+                productDataList,
+                collectionUUID,
+                binding,
+                selectedProductUUIDList
+            )
 
             binding.rvProduct?.layoutManager =
                 LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
@@ -162,14 +178,9 @@ class ProductFragment : Fragment(),View.OnClickListener {
         if (v == binding.mcvBackBtn) {
             (requireActivity() as DashboardActivity).navController?.popBackStack()
 
-        }
-
-        else if (v == binding.mcvAddProduct) {
-
+        } else if (v == binding.mcvAddProduct) {
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.productInventory)
-        }
-
-        else if (v == binding.mcvAdd) {
+        } else if (v == binding.mcvAdd) {
 
             for (selectedUUID in selectedProductUUIDList) {
 
@@ -177,13 +188,9 @@ class ProductFragment : Fragment(),View.OnClickListener {
 
                     if (selectedUUID == productData.productUUID) {
 
-                        Utils.E("Name "+productData.productName)
-
                         val collectionUUIDData = productData.collectionUUID
 
                         val listOfCollection = collectionUUIDData?.split(",")?.toMutableList()
-
-                        Utils.E("Data is "+collectionUUID)
 
                         if (collectionUUID != null) {
 
@@ -191,26 +198,23 @@ class ProductFragment : Fragment(),View.OnClickListener {
 
                             val productDataModel = ProductDataModel()
                             productDataModel.productUUID = selectedUUID
-                            productDataModel.collectionUUID = listOfCollection?.joinToString()?.replace(" ","")
+                            productDataModel.collectionUUID =
+                                listOfCollection?.joinToString()?.replace(" ", "")
 
-                            Utils.E("List is "+listOfCollection?.joinToString()?.replace(" ",""))
 
                             Utils.updateCollectionInProduct(productDataModel)
 
-                            Utils.T(requireActivity(),
+                            Utils.T(
+                                requireActivity(),
                                 context?.getString(R.string.added_successfully)
                             )
                         }
-
                         break
-
                     }
                 }
             }
 
-
             (requireActivity() as DashboardActivity).navController?.popBackStack()
-
 
         }
 

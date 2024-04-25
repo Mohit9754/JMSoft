@@ -90,31 +90,67 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     }
 
     // Set up collection Recycler view
-    private fun setUpCollectionItemRecyclerView(productCategory: String, productUUID: String) {
+    private fun setUpCollectionItemRecyclerView(collectionUUID: String, productUUID: String) {
 
-        val productList = Utils.getProductsThroughCategory(productCategory, productUUID)
+        if (collectionUUID.isNotEmpty()) {
 
-        val adapter = ProductCollectionAdapter(requireActivity(), productList)
+            val collectionUUIDList = productData.collectionUUID?.split(",")
 
-        binding.rvCollection?.layoutManager =
-            LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
-        binding.rvCollection?.adapter = adapter
+            val productList =
+                collectionUUIDList?.let { Utils.getProductsThroughCollection(it, productUUID) }
 
+            if (productList?.isNotEmpty() == true) {
+
+                binding.mcvCollection?.visibility  = View.VISIBLE
+
+                val adapter = ProductCollectionAdapter(requireActivity(), productList)
+
+                binding.rvCollection?.layoutManager =
+                    LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
+                binding.rvCollection?.adapter = adapter
+
+            }
+            else {
+                binding.mcvCollection?.visibility  = View.GONE
+            }
+        }
+        else {
+            binding.mcvCollection?.visibility  = View.GONE
+        }
     }
 
     // Setting the May also like RecyclerView
     private fun setUpMayLikeRecyclerView() {
 
-        val productList =
-            productData.categoryUUID?.let { Utils.getAllProductsAcceptCategory(it) }
+        val collectionUUIDList = productData.collectionUUID?.split(",")
 
-        val catalogAdapter = productList?.let { CatalogAdapter(requireActivity(), it) }
+        val productList = if (productData.collectionUUID?.isNotEmpty() == true) {
 
-        binding.rvCatalog?.layoutManager =
-            GridLayoutManager(requireActivity(), 3) // Span Count is set to 3
-        binding.rvCatalog?.adapter = catalogAdapter
+            collectionUUIDList.let {
+                collectionUUIDList.let { it1 ->
+                    it1?.let { it2 ->
+                        Utils.getAllProductsAcceptCollection(
+                            it2
+                        )
+                    }
+                }
+            } }  else {
+
+            productData.productUUID?.let { Utils.getAllProductsAcceptProduct(it) }
+        }
+
+        if (productList?.isNotEmpty() == true) {
+
+            val catalogAdapter = CatalogAdapter(requireActivity(), productList)
+
+            binding.rvCatalog?.layoutManager =
+                GridLayoutManager(requireActivity(), 3) // Span Count is set to 3
+            binding.rvCatalog?.adapter = catalogAdapter
+        }
+        else {
+            binding.tvMayLike?.visibility  = View.GONE
+        }
     }
-
 
     // Checks if Product Already Added in card
     private fun isProductAlreadyAddedInCard() {
@@ -146,7 +182,6 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
             binding.tvCartStatus?.text = requireActivity().getString(R.string.remove_from_cart)
             binding.llCartStatus?.setBackgroundResource(R.drawable.bg_button)
         } else {
-
             binding.tvCartStatus?.text = requireActivity().getString(R.string.add_to_cart)
             binding.llCartStatus?.setBackgroundResource(R.drawable.bg_add_to_card)
         }
@@ -183,7 +218,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
         }?.let { Utils.getThousandSeparate(it) }
 
         // Set up collection Recycler view
-        productData.categoryUUID?.let {
+        productData.collectionUUID?.let {
             productData.productUUID?.let { it1 ->
                 setUpCollectionItemRecyclerView(
                     it,

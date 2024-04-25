@@ -114,8 +114,7 @@ class MetalTypeDropdownAdapter(
 
         }
 
-
-        private fun visibleViews(){
+        private fun visibleViews() {
             binding.llDelAndEditSection.visibility = View.VISIBLE
             binding.viewLine.visibility = View.VISIBLE
         }

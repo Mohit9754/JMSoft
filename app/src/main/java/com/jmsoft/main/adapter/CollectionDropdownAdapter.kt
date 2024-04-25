@@ -25,7 +25,8 @@ class CollectionDropdownAdapter(
 ) :
     RecyclerView.Adapter<CollectionDropdownAdapter.MyViewHolder>() {
 
-   var selectedCollectionUUID = listOf<String>()
+   var selectedCollectionUUID = mutableListOf<String>()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemCollectionDropdownBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -78,16 +79,18 @@ class CollectionDropdownAdapter(
 
             if (v == binding.llCollectionItem) {
 
-                if (binding.checkBoxCollection.isChecked == true){
+                if (binding.checkBoxCollection.isChecked){
 
                     binding.checkBoxCollection.isChecked = false
 
                     collectionStatusCallback.collectionUnSelected(SelectedCollectionModel(binding.checkBoxCollection,collectionData))
+                    selectedCollectionUUID.remove(collectionData.collectionUUID)
 
                 }
                 else{
 
                     binding.checkBoxCollection.isChecked = true
+                    collectionData.collectionUUID?.let { selectedCollectionUUID.add(it) }
 
                     collectionStatusCallback.collectionSelected(SelectedCollectionModel(binding.checkBoxCollection,collectionData))
                 }

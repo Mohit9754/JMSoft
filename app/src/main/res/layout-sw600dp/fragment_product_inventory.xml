@@ -1001,7 +1001,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@null"
                                 android:fontFamily="@font/montserrat_arabic_medium"
-                                android:hint="@string/enter_rfid_code"
+                                android:hint="@string/enter_barcode"
                                 android:inputType="text"
                                 android:paddingHorizontal="@dimen/_5sdp"
                                 android:paddingVertical="@dimen/_7sdp"

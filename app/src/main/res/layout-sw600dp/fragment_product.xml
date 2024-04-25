@@ -59,6 +59,7 @@
                     android:layout_marginStart="@dimen/_8sdp"
                     android:fontFamily="@font/montserrat_arabic_semibold"
                     android:text="@string/product"
+                    android:id="@+id/tvTitle"
                     android:textSize="13sp" />
 
             </LinearLayout>

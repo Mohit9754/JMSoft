@@ -119,9 +119,9 @@ class CatalogAdapter(
             }
 
             if (isProductExistInCart == true) {
-                binding.ivCartStatus.setImageResource(R.drawable.icon_cart_white)
+                binding.ivCartStatus.setImageResource(R.drawable.icon_cross)
             } else if (isProductExistInCart == false) {
-                binding.ivCartStatus.setImageResource(R.drawable.icon_add)
+                binding.ivCartStatus.setImageResource(R.drawable.icon_cart_white)
 
             }
         }
@@ -205,7 +205,7 @@ class CatalogAdapter(
                     Utils.T(context, context.getString(R.string.removed_from_the_cart))
 
                     isProductExistInCart = false
-                    binding.ivCartStatus.setImageResource(R.drawable.icon_add)
+                    binding.ivCartStatus.setImageResource(R.drawable.icon_cart_white)
 
                 } else if (isProductExistInCart == false) {
 
@@ -218,19 +218,16 @@ class CatalogAdapter(
                     Utils.insertProductInCartTable(cardDataModel)
 
                     isProductExistInCart = true
-                    binding.ivCartStatus.setImageResource(R.drawable.icon_cart_white)
+                    binding.ivCartStatus.setImageResource(R.drawable.icon_cross)
 
                     // Getting Cart Product UUID for Deleting the product from the cart
                     getCartProductUUID()
 
                     Utils.T(context, context.getString(R.string.added_in_the_cart))
 
-
                 }
             }
-
         }
-
     }
 
     @SuppressLint("NotifyDataSetChanged")

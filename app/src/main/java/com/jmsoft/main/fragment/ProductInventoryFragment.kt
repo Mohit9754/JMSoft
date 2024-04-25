@@ -67,7 +67,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
     private var selectedCollectionList = ArrayList<SelectedCollectionModel>()
 
-    private var selectedCollectionUUID = listOf<String>()
+    private var selectedCollectionUUID = mutableListOf<String>()
 
     private var selectedCollectionAdapter: SelectedCollectionAdapter? = null
 
@@ -264,8 +264,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentProductInventoryBinding.inflate(layoutInflater)
 
+        val progressBarDialog = Utils.pdfProgressDialog(requireActivity())
+
         //set the Clicks And initialization
         init()
+
+        progressBarDialog.dismiss()
 
         return binding.root
     }
@@ -295,16 +299,14 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
                     binding.tvMetalType?.text  = ""
                     binding.tvMetalTypeError?.visibility = View.GONE
 //                    binding.mcvMetalTypeList?.visibility = View.GONE
-                    showOrHideMetalTypeList()
+                    showOrHideMetalTypeDropDown()
 
                 }
             }
         )
 
         if (selectedMetalTypeUUID != null) {
-
             metalTypeDropdownAdapter?.selectedPosition = metalTypeDropdownList.indexOfFirst { it.metalTypeUUID == selectedMetalTypeUUID }
-
         }
 
         binding.rvMetalType?.layoutManager =
@@ -335,7 +337,10 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         )
 
         if (selectedCategoryUUID != null) {
-            categoryDropdownAdapter?.selectedPosition = categoryDataModelList.indexOfFirst { it.categoryUUID == selectedCategoryUUID }
+            val position = categoryDataModelList.indexOfFirst { it.categoryUUID == selectedCategoryUUID }
+            categoryDropdownAdapter?.selectedPosition = position
+            Utils.E("Category name ${categoryDataModelList[position].categoryName}")
+            binding.tvCategory?.text = categoryDataModelList[position].categoryName
         }
 
         binding.rvCategory?.layoutManager =
@@ -358,8 +363,11 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
                     binding.tvCollection?.visibility = View.GONE
                     binding.tvCollectionError?.visibility = View.GONE
 
-                    selectedCollectionList.add(selectedCollectionModel)
-                    selectedCollectionAdapter?.notifyDataSetChanged()
+                    if(!selectedCollectionList.contains(selectedCollectionModel)){
+
+                        selectedCollectionList.add(selectedCollectionModel)
+                        selectedCollectionAdapter?.notifyDataSetChanged()
+                    }
 
                 }
 
@@ -378,7 +386,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
             }
         )
 
-        if (selectedCollectionUUID.isNotEmpty()){
+        if (selectedCollectionUUID.isNotEmpty()) {
            collectionDropdownAdapter?.selectedCollectionUUID = selectedCollectionUUID
         }
 
@@ -389,7 +397,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
     }
 
-
     private fun setSelectedCollectionRecyclerView() {
 
         selectedCollectionAdapter =
@@ -399,6 +406,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
             LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
 
         binding.rvCollectionSelectedList?.adapter = selectedCollectionAdapter
+
+        binding.mcvCollectionList?.visibility  = View.GONE
 
     }
 
@@ -466,6 +475,14 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
                 )
             }
         }
+
+        binding.etBarcode?.let {
+            binding.mcvBarcode?.let { it1 ->
+                Utils.setFocusChangeListener(requireActivity(),
+                    it, it1
+                )
+            }
+        }
     }
 
     private fun setTextChangeListener(){
@@ -527,15 +544,14 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
             binding.mcvMetalTypeList?.visibility = View.VISIBLE
             selectedMetalTypeUUID = productData.metalTypeUUID
 
-            binding.mcvCollectionList?.visibility = View.VISIBLE
-            selectedCollectionUUID = productData.collectionUUID?.split(",") ?: listOf()
+            selectedCollectionUUID = productData.collectionUUID?.split(",")?.toMutableList() ?: mutableListOf()
 
             binding.etOrigin?.setText(productData.productOrigin)
             binding.etWeight?.setText(productData.productWeight.toString())
             binding.etCarat?.setText(productData.productCarat.toString())
             binding.etCost?.setText(productData.productCost.toString())
 
-            binding.mcvCategoryList?.visibility = View.VISIBLE
+//            binding.mcvCategoryList?.visibility = View.VISIBLE
             selectedCategoryUUID = productData.categoryUUID
 
             binding.etDescription?.setText(productData.productDescription)
@@ -558,7 +574,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
             val productImageUri = productData.productImageUri?.split(",") ?: listOf()
 
             for (imageUri in productImageUri) {
-
                 Utils.getImageFromInternalStorage(requireActivity(),imageUri.trim())
                     ?.let { selectedProductImage.add(it) }
             }
@@ -585,6 +600,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         setProductImageRecyclerView()
 
         binding.llMetalType?.setOnClickListener(this)
+
         binding.mcvCollection?.setOnClickListener(this)
 
         binding.llCategory?.setOnClickListener(this)
@@ -604,9 +620,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         binding.root.setOnClickListener(this)
 
+        if (productUUID != null) {
+            showOrHideCollectionDropDown()
+            showOrHideCollectionDropDown()
 
+        }
     }
-
 
     // Edit Profile Dialog
     fun showImageSelectionDialog(imageView: ImageView?) {
@@ -645,7 +664,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         val collectionUUID = ArrayList<String>()
 
-        for (collectionData in selectedCollectionList){
+        for (collectionData in selectedCollectionList) {
 
             collectionData.collectionDataModel.collectionUUID?.let { collectionUUID.add(it) }
 
@@ -659,12 +678,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         val imageUri = ArrayList<String>()
 
         for (imageBitmap in selectedProductImageBitmap) {
-
             imageUri.add(Utils.getPictureUri(requireActivity(),imageBitmap))
-
         }
         return imageUri.joinToString().replace(" ", "")
-
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -698,43 +714,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         }
 
         (requireActivity() as DashboardActivity).navController?.popBackStack()
-
-
-//        binding.etProductName?.setText("")
-//        metalTypeDropdownAdapter?.selectedPosition = -1
-//        metalTypeDropdownAdapter?.notifyDataSetChanged()
-//
-//        binding.tvMetalType?.text  = ""
-//
-//        binding.etOrigin?.setText("")
-//        binding.etWeight?.setText("")
-//        binding.etCarat?.setText("")
-//        binding.etCost?.setText("")
-//        binding.etDescription?.setText("")
-//        binding.etRFIDCode?.setText("")
-//        binding.etBarcode?.setText("")
-//
-//        barcodeImage.clear()
-//        binding.ivBarcodeImage?.setImageDrawable(null)
-//        binding.mcvBarcodeImage?.visibility  = View.GONE
-//
-//        selectedProductImage.clear()
-//        setProductImageRecyclerView()
-//
-//        collectionDropdownAdapter?.notifyDataSetChanged()
-//        binding.tvCollection?.visibility = View.VISIBLE
-//
-//        selectedCollectionList.clear()
-//        selectedCollectionAdapter?.notifyDataSetChanged()
-//
-//
-//        binding.tvCategory?.text  = ""
-//        categoryDropdownAdapter?.selectedPosition = -1
-//        categoryDropdownAdapter?.notifyDataSetChanged()
-//
-//        binding.mcvMetalTypeList?.let { Utils.collapseView(it) }
-//        binding.mcvCollectionList?.let { Utils.collapseView(it) }
-//        binding.mcvCategoryList?.let { Utils.collapseView(it) }
 
     }
 
@@ -879,30 +858,21 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
                 if (validation?.textViewPointer != null ) {
 
-                    Utils.E("It is not nulll")
-
                     if (validation.textViewPointer == binding.tvMetalType) {
 
                         binding.ivMetalType?.let { Utils.rotateView(it, 0f) }
                         binding.mcvMetalTypeList?.let { Utils.expandView(it) }
-
                     }
                     else if (validation.textViewPointer == binding.tvCategory){
 
                         binding.ivCategory?.let { Utils.rotateView(it, 0f) }
                         binding.mcvCategoryList?.let { Utils.expandView(it) }
-
                     }
 
                     validation.textViewPointer = null
-
                 }
 
-
                 else {
-
-                    Utils.E("It is  nulll")
-
 
                     validation?.EditTextPointer?.requestFocus()
 
@@ -920,10 +890,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
     override fun onDestroy() {
         super.onDestroy()
         prgogressBarDialog?.dismiss()
-
     }
 
-    private fun addMetalType(dialog: Dialog){
+    private fun addMetalType(dialog: Dialog) {
 
         val isMetalTypeExist =
             Utils.isMetalTypeExist(Utils.capitalizeData(dialogAddMetalTypeBinding?.etMetalType?.text.toString()))
@@ -953,7 +922,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
             setMetalTypeRecyclerView()
 
             binding.mcvMetalTypeList?.visibility  = View.GONE
-            showOrHideMetalTypeList()
+            showOrHideMetalTypeDropDown()
 
             dialog.dismiss()
 
@@ -1083,18 +1052,47 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         return null
     }
 
-    private fun showOrHideMetalTypeList(){
+    private fun showOrHideMetalTypeDropDown(){
 
         if (binding.mcvMetalTypeList?.visibility == View.VISIBLE) {
 
-            binding.ivMetalType?.let { Utils.rotateView(it, 180f) }
+            binding.ivMetalType?.let { Utils.rotateView(it, 0f) }
             binding.mcvMetalTypeList?.let { Utils.collapseView(it) }
 
         } else {
 
-            binding.ivMetalType?.let { Utils.rotateView(it, 0f) }
+            binding.ivMetalType?.let { Utils.rotateView(it, 180f) }
             binding.mcvMetalTypeList?.let { Utils.expandView(it) }
 
+        }
+    }
+
+    private fun showOrHideCollectionDropDown() {
+
+        if (collectionDataList.isNotEmpty()) {
+
+            if (binding.mcvCollectionList?.visibility == View.VISIBLE) {
+
+                binding.ivCollection?.let { Utils.rotateView(it, 0f) }
+                binding.mcvCollectionList?.let { Utils.collapseView(it) }
+
+            } else {
+
+                binding.ivCollection?.let { Utils.rotateView(it, 180f) }
+                binding.mcvCollectionList?.let { Utils.expandView(it) }
+            }
+        }
+
+        else {
+
+            if (isCollectionShow) {
+                binding.ivCollection?.let { Utils.rotateView(it, 0f) }
+                isCollectionShow = false
+            }
+            else {
+                binding.ivCollection?.let { Utils.rotateView(it, 180f) }
+                isCollectionShow = true
+            }
         }
     }
 
@@ -1103,7 +1101,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
 
         if (v == binding.llMetalType) {
-            showOrHideMetalTypeList()
+            showOrHideMetalTypeDropDown()
         }
 
         else if (v == binding.llCategory) {
@@ -1112,12 +1110,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
                 if (binding.mcvCategoryList?.visibility == View.VISIBLE) {
 
-                    binding.ivCategory?.let { Utils.rotateView(it, 180f) }
+                    binding.ivCategory?.let { Utils.rotateView(it, 0f) }
                     binding.mcvCategoryList?.let { Utils.collapseView(it) }
 
                 } else {
 
-                    binding.ivCategory?.let { Utils.rotateView(it, 0f) }
+                    binding.ivCategory?.let { Utils.rotateView(it, 180f) }
                     binding.mcvCategoryList?.let { Utils.expandView(it) }
 
                 }
@@ -1136,32 +1134,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         }
 
         else if (v == binding.mcvCollection || v == binding.ivCollection) {
-
-            if (categoryDataModelList.isNotEmpty()) {
-
-                if (binding.mcvCollectionList?.visibility == View.VISIBLE) {
-
-                    binding.ivCollection?.let { Utils.rotateView(it, 180f) }
-                    binding.mcvCollectionList?.let { Utils.collapseView(it) }
-
-                } else {
-
-                    binding.ivCollection?.let { Utils.rotateView(it, 0f) }
-                    binding.mcvCollectionList?.let { Utils.expandView(it) }
-                }
-            }
-
-            else {
-
-                if (isCollectionShow) {
-                    binding.ivCollection?.let { Utils.rotateView(it, 0f) }
-                    isCollectionShow = false
-                }
-                else {
-                    binding.ivCollection?.let { Utils.rotateView(it, 180f) }
-                    isCollectionShow = true
-                }
-            }
+            showOrHideCollectionDropDown()
         }
 
         else if (v == binding.mcvSave) {

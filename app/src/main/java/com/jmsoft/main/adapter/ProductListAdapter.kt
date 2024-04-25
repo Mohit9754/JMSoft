@@ -135,6 +135,8 @@ class ProductListAdapter(
 
             //Setting Click on Edit Icon
             binding.mcvEdit.setOnClickListener(this)
+
+            binding.mcvProduct.setOnClickListener(this)
         }
 
         private fun setProductImage(){
@@ -250,7 +252,14 @@ class ProductListAdapter(
 
             }
 
+            else if (v == binding.mcvProduct) {
 
+                val bundle = Bundle()
+                //Giving the product UUID
+                bundle.putString(Constants.productUUID, productData.productUUID)
+                (context as DashboardActivity).navController?.navigate(R.id.productDetail, bundle)
+
+            }
         }
     }
 

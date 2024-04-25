@@ -609,12 +609,12 @@ object Utils {
         DatabaseHelper.instance.insertProductInCartTable(cardDataModel)
     }
 
-    //Get All Products of particular category  from the Product table
-    fun getProductsThroughCategory(
-        categoryUUID: String,
+    //Get All Products of particular Collection  from the Product table
+    fun getProductsThroughCollection(
+        collectionUUIDList: List<String>,
         productUUID: String
     ): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getProductsThroughCategory(categoryUUID, productUUID)
+        return DatabaseHelper.instance.getProductsThroughCollection(collectionUUIDList, productUUID)
     }
 
 
@@ -628,14 +628,20 @@ object Utils {
         return DatabaseHelper.instance.getAllProducts()
     }
 
+    //Get All Products Accept one Product from product table
+    fun getAllProductsAcceptProduct(productUUID: String): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsAcceptProduct(productUUID)
+    }
+
+
     /* Get All Products from the Product table Accept the collection */
     fun getAllProductsAcceptCollection(collectionUUID: String): ArrayList<ProductDataModel> {
         return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUID)
     }
 
     //Get All Products from the Product table Accept Category one Category
-    fun getAllProductsAcceptCategory(categoryUUID: String): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProductsAcceptCategory(categoryUUID)
+    fun getAllProductsAcceptCollection(collectionUUIDList:List<String>): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUIDList)
     }
 
     //Getting the Category Name through Category UUID
