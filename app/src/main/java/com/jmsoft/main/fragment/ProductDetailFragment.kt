@@ -198,7 +198,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
         binding.tvProductName?.text = productData.productName
         binding.tvProductWeight?.text =
-            "${productData.productWeight} ${productData.productWeight} "
+            "${productData.productWeight} ${Constants.weightUnit}"
 
         binding.tvProductCarat?.text = productData.productCarat.toString()
         binding.tvProductType?.text = productData.metalTypeUUID?.let {

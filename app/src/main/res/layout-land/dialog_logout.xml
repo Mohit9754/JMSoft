@@ -43,7 +43,6 @@
             android:textColor="@color/device_text_color"
             android:layout_marginTop="@dimen/_6sdp"
             android:fontFamily="@font/montserrat_arabic_medium"
-            android:text="@string/are_you_sure_you_want_to_log_out_of_the_jm_soft_app_n_loggint_out_will_terminate_your_current_session_and_n_require_you_to_log_in_again_to_access_the_app_s_n_features"
             android:textAlignment="center"
             android:textSize="12sp" />
 

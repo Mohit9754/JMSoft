@@ -594,9 +594,9 @@ class DatabaseHelper(cx: Context) {
                 productData.productWeight =
                     cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
                 productData.productCarat =
-                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
                 productData.productCost =
-                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
                 productData.categoryUUID =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
                 productData.productDescription =
@@ -740,9 +740,9 @@ class DatabaseHelper(cx: Context) {
                 productData.productWeight =
                     cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
                 productData.productCarat =
-                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
                 productData.productCost =
-                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
                 productData.categoryUUID =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
                 productData.productDescription =
@@ -810,9 +810,9 @@ class DatabaseHelper(cx: Context) {
                 productData.productWeight =
                     cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
                 productData.productCarat =
-                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
                 productData.productCost =
-                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
                 productData.categoryUUID =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
                 productData.productDescription =
@@ -873,9 +873,9 @@ class DatabaseHelper(cx: Context) {
                 productData.productWeight =
                     cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
                 productData.productCarat =
-                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
                 productData.productCost =
-                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
                 productData.categoryUUID =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
                 productData.productDescription =
@@ -934,9 +934,9 @@ class DatabaseHelper(cx: Context) {
                 productData.productWeight =
                     cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
                 productData.productCarat =
-                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
                 productData.productCost =
-                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
                 productData.categoryUUID =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
                 productData.productDescription =
@@ -996,9 +996,9 @@ class DatabaseHelper(cx: Context) {
                 productData.productWeight =
                     cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
                 productData.productCarat =
-                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
                 productData.productCost =
-                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
                 productData.categoryUUID =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
                 productData.productDescription =
@@ -1051,9 +1051,9 @@ class DatabaseHelper(cx: Context) {
             productData.productWeight =
                 cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
             productData.productCarat =
-                cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
             productData.productCost =
-                cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+                cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
             productData.categoryUUID =
                 cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
             productData.productDescription =
@@ -1264,7 +1264,7 @@ class DatabaseHelper(cx: Context) {
             put(ProductDataModel.Key_productOrigin, productDataModel.productOrigin)
             put(ProductDataModel.Key_productWeight, productDataModel.productWeight)
             put(ProductDataModel.Key_productCarat, productDataModel.productCarat)
-            put(ProductDataModel.Key_productCost, productDataModel.productCost)
+            put(ProductDataModel.Key_productPrice, productDataModel.productCost)
             put(ProductDataModel.Key_categoryUUID, productDataModel.categoryUUID)
             put(ProductDataModel.Key_productDescription, productDataModel.productDescription)
             put(ProductDataModel.Key_productRFIDCode, productDataModel.productRFIDCode)
@@ -1291,7 +1291,7 @@ class DatabaseHelper(cx: Context) {
             put(ProductDataModel.Key_productOrigin, productDataModel.productOrigin)
             put(ProductDataModel.Key_productWeight, productDataModel.productWeight)
             put(ProductDataModel.Key_productCarat, productDataModel.productCarat)
-            put(ProductDataModel.Key_productCost, productDataModel.productCost)
+            put(ProductDataModel.Key_productPrice, productDataModel.productCost)
             put(ProductDataModel.Key_categoryUUID, productDataModel.categoryUUID)
             put(ProductDataModel.Key_productDescription, productDataModel.productDescription)
             put(ProductDataModel.Key_productRFIDCode, productDataModel.productRFIDCode)
@@ -1396,7 +1396,6 @@ class DatabaseHelper(cx: Context) {
             arrayOf(productDataModel.productUUID) )
 
     }
-
 
     //Getting the Category through Category UUID
     @SuppressLint("Recycle", "Range")

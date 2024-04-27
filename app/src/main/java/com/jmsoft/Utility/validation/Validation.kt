@@ -48,6 +48,8 @@ class Validation {
             }
             when (validationModel.type) {
 
+                Type.letterAndDigit -> validationCheck = isValidProductName(context,validationModel.editText)
+
                 Type.ImageSelect -> validationCheck = isImageSelected(context,validationModel.isImageSelected)
                 
                 Type.Barcode -> validationCheck = isBarCodeGenerate(context,validationModel.arrayListSize)
@@ -335,6 +337,25 @@ class Validation {
         }
     }
 
+    private fun isValidProductName(context: Context, editText: EditText?): Boolean {
+        return if (editText?.text == null || TextUtils.isEmpty(editText.text)) {
+            errorMessage = context.getString(R.string.empty_error)
+            EditTextPointer = editText
+            false
+        }  else {
+            val p = Pattern.compile("^[a-zA-Z0-9]*\$")
+            val s = editText.text.toString().trim { it <= ' ' }
+            val m = p.matcher(s.trim { it <= ' ' })
+            if (m.matches()) {
+                true
+            } else {
+                EditTextPointer = editText
+                errorMessage = context.getString(R.string.special_characters_are_not_allowed)
+                false
+            }
+        }
+    }
+
     /**
      * is Valid Aadhaar Number
      *
@@ -511,7 +532,7 @@ class Validation {
      */
     enum class Type(var label: String) {
 
-         ImageSelect(""),Barcode("") ,AtLeastTwo("") , Email(""),EmptyTextView(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
+         letterAndDigit(""),ImageSelect(""),Barcode("") ,AtLeastTwo("") , Email(""),EmptyTextView(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
             ""
         ),
         PAN(""), IFSC(""), Empty(""), EmptyArrayList(""), AccountNumber(""), MPIN("");

@@ -35,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/_8sdp"
                 android:textAlignment="center"
+                android:id="@+id/tvMessage"
                 android:textColor="@color/device_text_color"
                 android:layout_marginHorizontal="@dimen/_20sdp"
                 android:fontFamily="@font/montserrat_arabic_medium"

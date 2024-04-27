@@ -11,6 +11,7 @@ import com.jmsoft.R
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Constants
+import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentCatalogBinding
 import com.jmsoft.databinding.ItemCatalogBinding
@@ -143,10 +144,10 @@ class CatalogAdapter(
         private fun setProductPrice() {
 
             binding.tvProductPrice.text = productData.productCost?.let {
-                Utils.roundToTwoDecimalPlaces(
+                Utils.getThousandSeparate(
                     it
                 )
-            }?.let { Utils.getThousandSeparate(it.toDouble()) }
+            }
         }
 
         //Set the Product carat
@@ -173,8 +174,9 @@ class CatalogAdapter(
         //Set the Product weight
         @SuppressLint("SetTextI18n")
         private fun setProductWeight() {
+
             binding.tvProductWeight.text =
-                "${productData.productWeight} ${productData.productWeight} "
+                "${productData.productWeight} $weightUnit"
         }
 
         //Set the Product name

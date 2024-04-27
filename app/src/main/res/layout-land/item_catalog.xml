@@ -53,7 +53,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:fontFamily="@font/montserrat_arabic_medium"
                         android:text="@string/weight"
                         android:textColor="@color/text_color"
                         android:textSize="10sp"
@@ -118,8 +118,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/cat"
+                        android:fontFamily="@font/montserrat_arabic_regular"
                         android:textColor="@color/text_color"
-                        android:textSize="11sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -129,7 +131,8 @@
                         android:text="@string/rings"
                         android:id="@+id/tvProductCategory"
                         android:textColor="@color/text_color"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                 </LinearLayout>
 

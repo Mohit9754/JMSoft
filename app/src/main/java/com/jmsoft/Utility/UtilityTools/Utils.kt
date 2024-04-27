@@ -199,7 +199,7 @@ object Utils {
 
     // Get thousand separate price
     fun getThousandSeparate(price: Double): String {
-        val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
+        val numberFormat = NumberFormat.getNumberInstance(Locale.ENGLISH)
         return numberFormat.format(price).toString()
     }
 

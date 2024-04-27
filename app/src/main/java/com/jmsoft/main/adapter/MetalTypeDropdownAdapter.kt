@@ -16,7 +16,7 @@ import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
 import com.jmsoft.databinding.ItemMetalTypeDropdownBinding
 import com.jmsoft.main.fragment.ProductInventoryFragment
-import com.jmsoft.main.`interface`.MetalTypeSelectedCallback
+import com.jmsoft.main.`interface`.SelectedCallback
 
 /**
  * Catalog Adapter
@@ -29,7 +29,7 @@ class MetalTypeDropdownAdapter(
     private val context: Context,
     private var metalTypeList: ArrayList<MetalTypeDataModel>,
     private val productInventoryFragment: ProductInventoryFragment,
-    private val metalTypeSelectedCallback: MetalTypeSelectedCallback
+    private val selectedCallback: SelectedCallback
 
 ) :
     RecyclerView.Adapter<MetalTypeDropdownAdapter.MyViewHolder>() {
@@ -73,7 +73,7 @@ class MetalTypeDropdownAdapter(
             Utils.T(context, context.getString(R.string.deleted_successfully))
 
             selectedPosition = -1
-            metalTypeSelectedCallback.unselectMetalType()
+            selectedCallback.unselect()
 
             notifyDataSetChanged()
         }
@@ -102,8 +102,6 @@ class MetalTypeDropdownAdapter(
 
             setMetalType()
 
-            visibleViews()
-
             setSelected()
 
             binding.llMetalType.setOnClickListener(this)
@@ -114,17 +112,13 @@ class MetalTypeDropdownAdapter(
 
         }
 
-        private fun visibleViews() {
-            binding.llDelAndEditSection.visibility = View.VISIBLE
-            binding.viewLine.visibility = View.VISIBLE
-        }
 
         private fun setSelected(){
 
             if (selectedPosition == position) {
 
                 binding.llMetalType.setBackgroundColor(context.getColor(R.color.selected_drop_down_color))
-                metalTypeSelectedCallback.selectedMetalType(metalTypeData)
+                selectedCallback.selected(metalTypeData)
 
             }
             else {

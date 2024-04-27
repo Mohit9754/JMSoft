@@ -11,7 +11,7 @@ class ProductDataModel {
     var collectionUUID: String? = null
     var productOrigin:String? = null
     var productWeight: Double? = null
-    var productCarat: Double? = null
+    var productCarat: Int? = null
     var productCost: Double? = null
     var categoryUUID:String? = null
     var productDescription: String? = null
@@ -34,7 +34,7 @@ class ProductDataModel {
         const val Key_productOrigin = "productOrigin"
         const val Key_productWeight = "productWeight"
         const val Key_productCarat = "productCarat"
-        const val Key_productCost = "productPrice"
+        const val Key_productPrice = "productPrice"
         const val Key_categoryUUID = "categoryUUID"
         const val Key_productDescription = "productDescription"
         const val Key_productRFIDCode = "productRFID"
@@ -51,8 +51,8 @@ class ProductDataModel {
                     + Key_productName + " TEXT,"
                     + Key_productOrigin + " TEXT,"
                     + Key_productWeight + " REAL,"
-                    + Key_productCarat + " REAL,"
-                    + Key_productCost + " REAL,"
+                    + Key_productCarat + " INTEGER,"
+                    + Key_productPrice + " REAL,"
                     + Key_productDescription + " TEXT,"
                     + Key_productRFIDCode + " TEXT,"
                     + Key_productBarcodeData + " TEXT,"

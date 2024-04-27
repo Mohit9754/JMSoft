@@ -128,7 +128,7 @@ class ProductListAdapter(
 
             setProductCost()
 
-            setProductRFIDCode()
+//            setProductRFIDCode()
 
             //Setting Click on Delete Icon
             binding.mcvDelete.setOnClickListener(this)
@@ -225,9 +225,9 @@ class ProductListAdapter(
             binding.tvProductCost.text = "${productData.productCost.toString()} $currency"
         }
 
-        private fun setProductRFIDCode(){
-            binding.tvRFIDCode.text = productData.productRFIDCode.toString()
-        }
+//        private fun setProductRFIDCode(){
+//            binding.tvRFIDCode.text = productData.productRFIDCode.toString()
+//        }
 
 
         //Handles All the Clicks

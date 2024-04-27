@@ -204,7 +204,7 @@
                                 android:layout_marginVertical="@dimen/_9sdp"
                                 android:layout_marginTop="@dimen/_5sdp"
                                 android:orientation="horizontal"
-                                android:weightSum="10"
+                                android:weightSum="9"
                                 tools:ignore="UselessLeaf">
 
                                 <TextView
@@ -279,22 +279,12 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:text="@string/cost"
+                                    android:text="@string/price"
                                     android:gravity="center"
                                     android:textColor="@color/black"
                                     android:textSize="10sp"
                                     tools:ignore="SmallSp" />
 
-                                <TextView
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:gravity="center"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:text="@string/rfid_code"
-                                    android:textColor="@color/black"
-                                    android:textSize="10sp"
-                                    tools:ignore="SmallSp" />
 
                                 <TextView
                                     android:layout_width="0dp"

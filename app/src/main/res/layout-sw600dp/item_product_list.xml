@@ -16,7 +16,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:weightSum="10"
+        android:weightSum="9"
         android:gravity="center_vertical"
         android:layout_height="wrap_content">
 
@@ -147,17 +147,6 @@
             android:textSize="10sp"
             tools:ignore="SmallSp" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/_1234567890"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:id="@+id/tvRFIDCode"
-            android:fontFamily="@font/montserrat_arabic_regular"
-            android:textColor="@color/black"
-            android:textSize="10sp"
-            tools:ignore="SmallSp" />
 
         <LinearLayout
             android:layout_width="0dp"
