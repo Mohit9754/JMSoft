@@ -110,7 +110,7 @@
     <string name="updated_successfully">تم التحديث بنجاح</string>
     <string name="new_user_registered_successfully">تم تسجيل مستخدم جديد بنجاح</string>
     <string name="paired_failed">فشل الاقتران</string>
-    <string name="are_you_sure_you_want_to_delete_this_user_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="are_you_sure_you_want_to_delete_this_user_this_action_cannot_be_undone">هل أنت متأكد من حذفهذا المستخدم ؟ لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="only_admin_can_edit_phone_number">يمكن للمسؤول فقط تعديل رقم الهاتف</string>
     <string name="only_admin_can_edit_email_address">يمكن للمسؤول فقط تعديل عنوان البريد الإلكتروني</string>
     <string name="description">الوصف</string>
@@ -146,7 +146,7 @@
     <string name="enter_a_valid_zipcode">أدخل رمزًا بريديًا صالحًا</string>
     <string name="added_in_the_cart">تمت إضافته في سلة التسوق</string>
     <string name="removed_from_the_cart">تمت إزالتها من العربة</string>
-    <string name="are_you_sure_you_want_to_delete_this_address_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذا العنوان؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="are_you_sure_you_want_to_delete_this_address_this_action_cannot_be_undone">هل أنت متأكد من حذفهذا العنوان ؟ لا يمكن التراجع عن هذا الإجراء.</string>
 
     <string name="hello_blank_fragment">مرحبا جزء فارغ</string>
     <string name="metal_type">نوع المعدن</string>
@@ -158,16 +158,16 @@
     <string name="enter_metal_type">أدخل نوع المعدن</string>
     <string name="save_small">حفظ</string>
     <string name="edit_metal_type">تحرير نوع المعدن</string>
-    <string name="are_you_sure_you_want_to_delete_this_metal_type_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذا النوع المعدني؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="are_you_sure_you_want_to_delete_this_metal_type_this_action_cannot_be_undone">هل أنت متأكد من حذف هذا النوع من المعدن ؟ لا يمكن التراجع عن هذا الإجراء</string>
     <string name="add_collection">أضف المجموعة</string>
     <string name="edit_collection">تحرير المجموعة</string>
     <string name="enter_collection">أدخل المجموعة</string>
-    <string name="are_you_sure_you_want_to_delete_this_collection_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذه المجموعة؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="are_you_sure_you_want_to_delete_this_collection_this_action_cannot_be_undone">هل أنت متأكد من حذف هذه المجموعة ؟ لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="add_category">إضافة فئة</string>
     <string name="edit_category">تحرير الفئة</string>
     <string name="enter_category_name">أدخل اسم الفئة</string>
-    <string name="are_you_sure_you_want_to_delete_this_category_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذه الفئة؟ لا يمكن التراجع عن هذا الإجراء.</string>
-    <string name="are_you_sure_you_want_to_delete_this_product_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف هذا المنتج؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="are_you_sure_you_want_to_delete_this_category_this_action_cannot_be_undone">هل أنت متأكد من حذف هذه الفئة ؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="are_you_sure_you_want_to_delete_this_product_this_action_cannot_be_undone"> هل أنت متأكد من حذفهذا المنتج ؟ لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="to_proceed_with_adding_or_updating_your_product_n_picture_please_select_an_image_source">لمتابعة إضافة أو تحديث صورة المنتج \n، الرجاء تحديد مصدر الصورة</string>
 
     <string name="enter_collection_name">أدخل اسم المجموعة</string>
