@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <layer-list>
+            <item android:drawable="@drawable/icon_open"
+                android:gravity="center_vertical|end"
+                android:start="@dimen/_25sdp"
+                android:width="@dimen/_8sdp"
+                android:height="@dimen/_8sdp" />
+        </layer-list>
+    </item>
+</selector>

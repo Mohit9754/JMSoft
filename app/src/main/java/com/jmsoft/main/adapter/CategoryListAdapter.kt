@@ -11,7 +11,10 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
+import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
+import com.jmsoft.databinding.FragmentMetalTypeBinding
 import com.jmsoft.databinding.ItemInventoryBinding
 import com.jmsoft.main.`interface`.EditInventoryCallback
 
@@ -24,7 +27,8 @@ import com.jmsoft.main.`interface`.EditInventoryCallback
 
 class CategoryListAdapter(
     private val context: Context,
-    private var categoryList: ArrayList<String>,
+    private var categoryList: ArrayList<CategoryDataModel>,
+    private val fragmentMetalTypeBinding: FragmentMetalTypeBinding,
     private val editInventoryCallback: EditInventoryCallback
 
 ) :
@@ -45,7 +49,7 @@ class CategoryListAdapter(
 
     // Show Category Delete Dialog
     @SuppressLint("NotifyDataSetChanged")
-    private fun showCategoryDeleteDialog(position: Int) {
+    private fun showCategoryDeleteDialog(position: Int,categoryUUID: String) {
 
         val dialog = Dialog(context)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -64,7 +68,19 @@ class CategoryListAdapter(
 
             dialog.dismiss()
 
+            Utils.deleteCategory(categoryUUID)
             categoryList.removeAt(position)
+
+            Utils.T(context, context.getString(R.string.deleted_successfully))
+
+            if (categoryList.isEmpty()){
+
+                fragmentMetalTypeBinding.mcvMetalTypeList?.visibility = View.GONE
+                fragmentMetalTypeBinding.llEmptyInventory?.visibility = View.VISIBLE
+                fragmentMetalTypeBinding.tvEmptyMsg?.text =
+                    context.getString(R.string.category_is_empty)
+
+            }
             notifyDataSetChanged()
         }
 
@@ -82,13 +98,13 @@ class CategoryListAdapter(
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         // Product Data
-        private lateinit var categoryName: String
+        private lateinit var categoryData: CategoryDataModel
 
         private var position:Int = -1
 
-        fun bind(categoryName: String,position: Int) {
+        fun bind(categoryData: CategoryDataModel,position: Int) {
 
-            this.categoryName = categoryName
+            this.categoryData = categoryData
             this.position = position
 
             //Set Category Name
@@ -104,7 +120,7 @@ class CategoryListAdapter(
 
         //Set Category Name
         private fun setCategoryName() {
-            binding.tvMetalType.text = categoryName
+            binding.tvMetalType.text = categoryData.categoryName
         }
 
         //Handles All the Clicks
@@ -115,13 +131,13 @@ class CategoryListAdapter(
             if (v == binding.mcvDelete) {
 
                 // Show Category Delete Dialog
-                showCategoryDeleteDialog(position)
+                categoryData.categoryUUID?.let { showCategoryDeleteDialog(position, it) }
             }
 
             // When edit button Clicked
             else if(v == binding.mcvEdit) {
 
-                editInventoryCallback.editInventory(position)
+                categoryData.categoryUUID?.let { editInventoryCallback.editInventory(it,position) }
             }
 
         }

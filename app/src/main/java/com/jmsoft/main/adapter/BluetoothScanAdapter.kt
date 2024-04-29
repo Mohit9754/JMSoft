@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -22,16 +21,12 @@ import com.jmsoft.R
 import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.basic.UtilityTools.Constants
-import com.jmsoft.basic.UtilityTools.Constants.Companion.bluetoothUuid
 import com.jmsoft.basic.UtilityTools.Constants.Companion.connected
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemDeviceListBinding
 import com.jmsoft.main.`interface`.DeviceConnectedCallback
 import com.jmsoft.main.`interface`.PairStatusCallback
 import com.jmsoft.main.model.BluetoothScanModel
-import com.jmsoft.main.model.DeviceModel
-import java.io.IOException
-import java.util.UUID
 
 /**
  * Bluetooth Scan Adapter

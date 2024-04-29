@@ -15,9 +15,11 @@ import io.michaelrocks.libphonenumber.android.Phonenumber.PhoneNumber
 import java.util.regex.Pattern
 
 class Validation {
+
     var EditTextPointer: EditText? = null
     var errorMessage: String? = null
     var phoneNumberUtil: PhoneNumberUtil? = null
+    var textViewPointer:TextView? = null
 
     /**
      * Check Validation
@@ -45,6 +47,10 @@ class Validation {
                 errorTextView.visibility = View.GONE
             }
             when (validationModel.type) {
+
+                Type.letterAndDigit -> validationCheck = isValidProductName(context,validationModel.editText)
+
+                Type.ImageSelect -> validationCheck = isImageSelected(context,validationModel.isImageSelected)
                 
                 Type.Barcode -> validationCheck = isBarCodeGenerate(context,validationModel.arrayListSize)
 
@@ -80,6 +86,19 @@ class Validation {
             }
         }
         return ResultReturn(type, validationCheck, errorMessage, parameter, errorTextView)
+    }
+
+    private fun isImageSelected(context: Context,isImageSelected:Boolean?): Boolean {
+
+        return if(isImageSelected == false){
+
+            errorMessage = context.getString(R.string.select_collection_image)
+            false
+
+        } else {
+            true
+        }
+
     }
 
     /**
@@ -171,6 +190,8 @@ class Validation {
 
         return if(textView?.text?.isEmpty() == true){
             errorMessage = context.getString(R.string.empty_error)
+//            this@Validation.textView = textView
+            textViewPointer = textView
             false
 
         } else {
@@ -313,6 +334,25 @@ class Validation {
                 return false
             }
             true
+        }
+    }
+
+    private fun isValidProductName(context: Context, editText: EditText?): Boolean {
+        return if (editText?.text == null || TextUtils.isEmpty(editText.text)) {
+            errorMessage = context.getString(R.string.empty_error)
+            EditTextPointer = editText
+            false
+        }  else {
+            val p = Pattern.compile("^[a-zA-Z0-9]*\$")
+            val s = editText.text.toString().trim { it <= ' ' }
+            val m = p.matcher(s.trim { it <= ' ' })
+            if (m.matches()) {
+                true
+            } else {
+                EditTextPointer = editText
+                errorMessage = context.getString(R.string.special_characters_are_not_allowed)
+                false
+            }
         }
     }
 
@@ -492,7 +532,7 @@ class Validation {
      */
     enum class Type(var label: String) {
 
-        Barcode("") ,AtLeastTwo("") , Email(""),EmptyTextView(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
+         letterAndDigit(""),ImageSelect(""),Barcode("") ,AtLeastTwo("") , Email(""),EmptyTextView(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
             ""
         ),
         PAN(""), IFSC(""), Empty(""), EmptyArrayList(""), AccountNumber(""), MPIN("");

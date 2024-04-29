@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemCollectionDropdownBinding
 import com.jmsoft.main.`interface`.CollectionStatusCallback
+import com.jmsoft.main.model.SelectedCollectionModel
 
 /**
  * Catalog Adapter
@@ -18,11 +20,12 @@ import com.jmsoft.main.`interface`.CollectionStatusCallback
 
 class CollectionDropdownAdapter(
     private val context: Context,
-    private var collectionList: ArrayList<String>,
-    private val collectionStatusCallback: CollectionStatusCallback
-
+    private var collectionDataList: ArrayList<CollectionDataModel>,
+    private val collectionStatusCallback: CollectionStatusCallback,
 ) :
     RecyclerView.Adapter<CollectionDropdownAdapter.MyViewHolder>() {
+
+   var selectedCollectionUUID = mutableListOf<String>()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -30,48 +33,66 @@ class CollectionDropdownAdapter(
         return MyViewHolder(view)
     }
 
-    override fun getItemCount() = collectionList.size
+    override fun getItemCount() = collectionDataList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(collectionList[position])
+        holder.bind(collectionDataList[position])
     }
 
     inner class MyViewHolder(private val binding: ItemCollectionDropdownBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        private lateinit var collection:String
+        private lateinit var collectionData:CollectionDataModel
 
-        fun bind(metalType: String) {
+        fun bind(metalType: CollectionDataModel) {
 
-            this.collection = metalType
-            setMetalType()
+            this.collectionData = metalType
+
+            setCollectionName()
+
+            setSelectedCollection()
+
 
             binding.llCollectionItem.setOnClickListener(this)
 
         }
 
-        private fun setMetalType() {
-            binding.checkBoxCollection.text = collection
+        private fun setSelectedCollection() {
+
+            if (selectedCollectionUUID.any { it == collectionData.collectionUUID }) {
+
+                binding.checkBoxCollection.isChecked = true
+                collectionStatusCallback.collectionSelected(SelectedCollectionModel(binding.checkBoxCollection,collectionData))
+
+            }
+            else {
+
+                binding.checkBoxCollection.isChecked = false
+            }
+        }
+
+        private fun setCollectionName() {
+            binding.checkBoxCollection.text = collectionData.collectionName
         }
 
         override fun onClick(v: View?) {
 
             if (v == binding.llCollectionItem) {
 
-                Utils.E("$collection")
-
-                if (binding.checkBoxCollection.isChecked == true){
+                if (binding.checkBoxCollection.isChecked){
 
                     binding.checkBoxCollection.isChecked = false
-                    Utils.E("$collection")
-                    collectionStatusCallback.collectionUnSelected(collection)
+
+                    collectionStatusCallback.collectionUnSelected(SelectedCollectionModel(binding.checkBoxCollection,collectionData))
+                    selectedCollectionUUID.remove(collectionData.collectionUUID)
 
                 }
                 else{
-                    binding.checkBoxCollection.isChecked = true
-                    Utils.E("$collection")
 
-                    collectionStatusCallback.collectionSelected(collection)
+                    binding.checkBoxCollection.isChecked = true
+                    collectionData.collectionUUID?.let { selectedCollectionUUID.add(it) }
+
+                    collectionStatusCallback.collectionSelected(SelectedCollectionModel(binding.checkBoxCollection,collectionData))
                 }
             }
 

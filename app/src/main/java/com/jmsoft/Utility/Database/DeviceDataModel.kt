@@ -40,7 +40,7 @@ class DeviceDataModel {
                     Key_deviceType + " text," +
                     Key_deviceAddress + " text," +
                     Key_userUUID + " text," +
-                    " FOREIGN KEY (" + UserDataModel.Key_userUUID + ") REFERENCES " + UserDataModel.TABLE_NAME_USER + "(" + UserDataModel.Key_userUUID + ")" +
+                    " FOREIGN KEY (" + UserDataModel.Key_userUUID + ") REFERENCES " + UserDataModel.TABLE_NAME_USER + "(" + UserDataModel.Key_userUUID + ") ON DELETE CASCADE" +
                     " )")
 
             db.execSQL(CreateTableDeviceQuery)

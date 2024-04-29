@@ -10,17 +10,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
+import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Constants
-import com.jmsoft.basic.UtilityTools.Constants.Companion.edit
+import com.jmsoft.basic.UtilityTools.Constants.Companion.currency
+import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
+import com.jmsoft.databinding.FragmentProductBinding
 import com.jmsoft.databinding.ItemProductListBinding
 import com.jmsoft.main.activity.DashboardActivity
-import com.jmsoft.main.`interface`.EditInventoryCallback
 
 /**
  * MetalType Adapter
@@ -31,7 +31,10 @@ import com.jmsoft.main.`interface`.EditInventoryCallback
 
 class ProductListAdapter(
     private val context: Context,
-    private var productList: ArrayList<String>
+    private var productDataList: ArrayList<ProductDataModel>,
+    private val collectionUUID:String?,
+    private val fragmentProductBinding: FragmentProductBinding,
+    private val selectedProductUUIDList:ArrayList<String>
 
 ) :
     RecyclerView.Adapter<ProductListAdapter.MyViewHolder>() {
@@ -41,17 +44,15 @@ class ProductListAdapter(
         return MyViewHolder(view)
     }
 
-    override fun getItemCount() = productList.size
+    override fun getItemCount() = productDataList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(productList[position],position)
+        holder.bind(productDataList[position],position)
     }
-
-
 
     // Show Category Delete Dialog
     @SuppressLint("NotifyDataSetChanged")
-    private fun showProductDeleteDialog(position: Int) {
+    private fun showProductDeleteDialog(position: Int, productUUID: String) {
 
         val dialog = Dialog(context)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -68,9 +69,20 @@ class ProductListAdapter(
         dialogBinding.mcvYes.setOnClickListener {
 
             dialog.dismiss()
-            productList.removeAt(position)
+            productDataList.removeAt(position)
+            Utils.deleteProduct(productUUID)
+
+            Utils.T(context, context.getString(R.string.deleted_successfully))
+
             notifyDataSetChanged()
 
+            if (productDataList.isEmpty()) {
+
+                fragmentProductBinding.mcvProductList?.visibility = View.GONE
+//                fragmentProductBinding.mcvFilter?.visibility = View.GONE
+                fragmentProductBinding.llEmptyProduct?.visibility = View.VISIBLE
+
+            }
         }
 
         dialogBinding.mcvNo.setOnClickListener {
@@ -87,29 +99,136 @@ class ProductListAdapter(
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         // Product Data
-        private lateinit var productData: String
+        private lateinit var productData: ProductDataModel
 
         private var position:Int = -1
 
-        fun bind(productData: String,position: Int) {
+        fun bind(productData: ProductDataModel,position: Int) {
 
             this.productData = productData
             this.position = position
 
-            //Set Category Name
-//            setCategoryName()
+            Utils.E("Collection UUID is ${productData.productName} => "+productData.collectionUUID)
+
+            checkState()
+
+            setProductImage()
+
+            setProductName()
+
+            setProductCategory()
+
+            setProductMetalType()
+
+            setProductOrigin()
+
+            setProductWeight()
+
+            setProductCarat()
+
+            setProductCost()
+
+//            setProductRFIDCode()
 
             //Setting Click on Delete Icon
             binding.mcvDelete.setOnClickListener(this)
 
             //Setting Click on Edit Icon
             binding.mcvEdit.setOnClickListener(this)
+
+            binding.mcvProduct.setOnClickListener(this)
         }
 
-        //Set Category Name
-        private fun setCategoryName() {
-//            binding.tvMetalType.text = categoryName
+        private fun setProductImage(){
+
+            val imageArray = productData.productImageUri?.split(",")
+
+            val bitmapImage =
+                imageArray?.get(0)?.let { Utils.getImageFromInternalStorage(context, it) }
+
+            binding.ivProduct.setImageBitmap(bitmapImage)
         }
+
+        private fun checkState(){
+
+            if (collectionUUID != null ) {
+
+                binding.cbProduct.visibility = View.VISIBLE
+                binding.mcvDelete.visibility = View.GONE
+
+                binding.cbProduct.setOnCheckedChangeListener { _, isChecked ->
+
+                    if (isChecked) {
+                        productData.productUUID?.let { selectedProductUUIDList.add(it) }
+
+                    } else {
+                        selectedProductUUIDList.remove(productData.productUUID)
+                    }
+                }
+            }
+        }
+
+        private fun setProductName(){
+            binding.tvProductName.text = productData.productName
+        }
+
+        private fun setProductCategory() {
+
+            if (productData.categoryUUID?.isEmpty() == true){
+
+                binding.tvProductCategory.text = context.getString(R.string.na)
+
+            }
+            else {
+
+                binding.tvProductCategory.text = productData.categoryUUID?.let {
+                    Utils.getCategoryNameThroughCategoryUUID(
+                        it
+                    )
+                }
+
+            }
+        }
+
+        private fun setProductMetalType() {
+
+            if (productData.metalTypeUUID?.isEmpty() == true){
+
+                binding.tvMetalType.text =  context.getString(R.string.na)
+
+            }
+            else {
+
+                binding.tvMetalType.text = productData.metalTypeUUID?.let {
+                    Utils.getMetalTypeNameThroughMetalTypeUUID(
+                        it
+                    )
+                }
+            }
+        }
+
+        private fun setProductOrigin(){
+            binding.tvProductOrigin.text = productData.productOrigin
+        }
+
+        @SuppressLint("SetTextI18n")
+        private fun setProductWeight(){
+            binding.tvProductWeight.text = "${productData.productWeight.toString()} $weightUnit"
+        }
+
+        private fun setProductCarat(){
+            binding.tvProductCarat.text = productData.productCarat.toString()
+        }
+
+        @SuppressLint("SetTextI18n")
+        private fun setProductCost(){
+            binding.tvProductCost.text = "${productData.productCost.toString()} $currency"
+        }
+
+//        private fun setProductRFIDCode(){
+//            binding.tvRFIDCode.text = productData.productRFIDCode.toString()
+//        }
+
 
         //Handles All the Clicks
         @SuppressLint("NotifyDataSetChanged")
@@ -119,7 +238,7 @@ class ProductListAdapter(
             if (v == binding.mcvDelete){
 
                 // Show Category Delete Dialog
-                showProductDeleteDialog(position)
+                productData.productUUID?.let { showProductDeleteDialog(position, it) }
             }
 
             // When edit button Clicked
@@ -127,14 +246,29 @@ class ProductListAdapter(
 
                 val bundle = Bundle()
                 //Giving the product UUID
-                bundle.putString(Constants.state, edit)
-
+                bundle.putString(Constants.productUUID, productData.productUUID)
 
                 (context as DashboardActivity).navController?.navigate(R.id.productInventory, bundle)
 
             }
 
+            else if (v == binding.mcvProduct) {
+
+                val bundle = Bundle()
+                //Giving the product UUID
+                bundle.putString(Constants.productUUID, productData.productUUID)
+                (context as DashboardActivity).navController?.navigate(R.id.productDetail, bundle)
+
+            }
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun filterProductDataList(productDataList: ArrayList<ProductDataModel>){
+
+        this.productDataList = productDataList
+        notifyDataSetChanged()
+
     }
 
 }

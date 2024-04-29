@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/llMetalType"
     android:paddingHorizontal="@dimen/_7sdp"
-    android:layout_marginTop="@dimen/_2sdp"
     android:orientation="vertical"
     tools:ignore="MissingDefaultResource">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="2"
         android:orientation="horizontal"
         android:weightSum="2"
@@ -30,14 +30,14 @@
             android:text="@string/silver"
             android:textColor="@color/black"
             android:paddingTop="@dimen/_4sdp"
-            android:paddingBottom="@dimen/_2sdp"
+            android:paddingBottom="@dimen/_3sdp"
             android:gravity="center_vertical"
             tools:ignore="MissingDefaultResource,NestedWeights,SmallSp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:gravity="center_vertical"
-            android:visibility="gone"
+            android:visibility="visible"
             android:id="@+id/llDelAndEditSection"
             android:layout_height="wrap_content">
 

@@ -45,8 +45,12 @@ class CatalogFragment : Fragment(), View.OnClickListener {
         // Inflate the layout for this fragment
         binding = FragmentCatalogBinding.inflate(layoutInflater)
 
+        val progressBarDialog = Utils.initProgressDialog(requireActivity())
+
         //set the Clicks And initialization
         init()
+
+        progressBarDialog.dismiss()
 
         return binding.root
     }
@@ -79,6 +83,17 @@ class CatalogFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun checkEmptyList(){
+
+        if (productList.isNotEmpty()) {
+
+            binding.llEmptyCatalog?.visibility  = View.GONE
+        }
+        else {
+            binding.llEmptyCatalog?.visibility  = View.VISIBLE
+        }
+    }
+
     // Getting all the Product list
     private fun getAllProducts() {
         productList = Utils.getAllProducts()
@@ -87,6 +102,7 @@ class CatalogFragment : Fragment(), View.OnClickListener {
     // Setting the RecyclerView
     private fun setRecyclerView() {
 
+        checkEmptyList()
         binding.rvCatalog?.layoutManager = GridLayoutManager(requireActivity(), 3) // Span Count is set to 3
         binding.rvCatalog?.adapter = catalogAdapter
     }
@@ -131,8 +147,6 @@ class CatalogFragment : Fragment(), View.OnClickListener {
 
     }
 
-
-
     // Set the Search
     private fun setSearch(){
 
@@ -154,6 +168,8 @@ class CatalogFragment : Fragment(), View.OnClickListener {
                             filterProductList.add(product)
                         }
                     }
+
+                    checkEmptyList()
                     catalogAdapter?.addFilterList(filterProductList)
                 }
 

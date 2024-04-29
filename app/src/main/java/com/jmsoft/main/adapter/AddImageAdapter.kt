@@ -7,6 +7,7 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemAddImageProductBinding
@@ -23,7 +24,8 @@ class AddImageAdapter(
 
     private val context: Context,
     private var productImageList: ArrayList<Any>,
-    private val productInventoryFragment: ProductInventoryFragment
+    private val productInventoryFragment: ProductInventoryFragment,
+    private val selectedProductImageBitmap:ArrayList<Bitmap>
 ) :
     RecyclerView.Adapter<AddImageAdapter.MyViewHolder>() {
 
@@ -64,6 +66,10 @@ class AddImageAdapter(
 
                 this.productImage = productImage
 
+                if (position == 0){
+                    selectedProductImageBitmap.clear()
+                }
+
 
                 setImage()
 
@@ -87,6 +93,8 @@ class AddImageAdapter(
 
             binding.mcvCrossBtn.visibility = View.VISIBLE
             binding.llAddImageSection.visibility = View.GONE
+
+            selectedProductImageBitmap.add(binding.ivProductImage.drawable.toBitmap())
         }
 
         @SuppressLint("NotifyDataSetChanged")
@@ -100,6 +108,7 @@ class AddImageAdapter(
             else if (v == binding.mcvCrossBtn){
 
                 productImageList.removeAt(position)
+                selectedProductImageBitmap.removeAt(position)
 
                 productInventoryFragment.setProductImageRecyclerView()
             }

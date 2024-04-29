@@ -64,6 +64,7 @@ import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.DeviceDataModel
+import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.loadingButton.LoadingButton
 import com.jmsoft.basic.Database.DatabaseHelper
@@ -93,10 +94,25 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 
 object Utils {
+
+    fun getPictureUri(context: Context,bitmap: Bitmap): String {
+
+        val pictureUri = generateUUId()
+
+        saveToInternalStorage(context, bitmap,pictureUri)
+
+        return pictureUri
+    }
+
+    @SuppressLint("DefaultLocale")
+    fun capitalizeData(data:String): String {
+        return data.trim().lowercase(Locale.getDefault()).capitalize(Locale.ROOT)
+    }
 
     fun showError(context: Context,textView: TextView,msg: String) {
 
@@ -183,7 +199,7 @@ object Utils {
 
     // Get thousand separate price
     fun getThousandSeparate(price: Double): String {
-        val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
+        val numberFormat = NumberFormat.getNumberInstance(Locale.ENGLISH)
         return numberFormat.format(price).toString()
     }
 
@@ -242,7 +258,7 @@ object Utils {
 
     //    generate UUIDs (Universally Unique Identifiers) using the UUID
     fun generateUUId(): String {
-        return UUID.randomUUID().toString()
+        return UUID.randomUUID().toString().trim()
     }
 
     //encode the text
@@ -417,6 +433,11 @@ object Utils {
         return DatabaseHelper.instance.getUserDetailsThroughUserUUID(userUUID)
     }
 
+    // update collection in the product
+    fun updateCollectionInProduct(productDataModel: ProductDataModel) {
+        return DatabaseHelper.instance.updateCollectionInProduct(productDataModel)
+    }
+
     // insert Data in the Session Table
     fun insertDataInSessionTable(userDataModel: UserDataModel) {
         DatabaseHelper.instance.insertDataInSessionTable(userDataModel)
@@ -462,52 +483,115 @@ object Utils {
         DatabaseHelper.instance.updateUserDetails(userDataModel)
     }
 
-    // Add Collection in Collection table
-    fun addCollectionInCollectionTable(collectionDataModel: CollectionDataModel) {
-        DatabaseHelper.instance.addCollectionInCollectionTable(collectionDataModel)
+    // Add Collection in the Collection table
+    fun addCollection(collectionDataModel: CollectionDataModel) {
+        DatabaseHelper.instance.addCollection(collectionDataModel)
     }
 
-    // Inserting Category in Category table
-    fun insertCategoryInCategoryTable(categoryDataModel: CategoryDataModel) {
-        DatabaseHelper.instance.insertCategoryInCategoryTable(categoryDataModel)
+    // Get All collection from the collection table
+    fun getAllCollection(): ArrayList<CollectionDataModel> {
+        return DatabaseHelper.instance.getAllCollection()
     }
 
-    // Inserting Product in Product table
-    fun insertProductInProductTable(
-        categoryName: String,
-        productName: String,
-        productPrice: Double,
-        bitmapOne: Bitmap,
-        bitmapTwo: Bitmap,
-        context: Context
-    ) {
-
-        val productDataModel = ProductDataModel()
-        productDataModel.productUUId = Utils.generateUUId()
-        productDataModel.categoryUUID = Utils.getCategoryUUIDThroughCategoryName(categoryName)
-        productDataModel.productName = productName
-
-        val nameOfImageOne = Utils.getImageFileName()
-        val nameOfImageTwo = Utils.getImageFileName()
-
-        bitmapOne.let { Utils.saveToInternalStorage(context, it, nameOfImageOne) }
-        bitmapTwo.let { Utils.saveToInternalStorage(context, it, nameOfImageTwo) }
+    // Check if Category exist in the category table
+    fun isCategoryExist(categoryName: String): Boolean? {
+        return DatabaseHelper.instance.isCategoryExist(categoryName)
+    }
 
 
-        productDataModel.productImage = "$nameOfImageOne,$nameOfImageTwo"
+    // Check if Collection exist in the category table
+    fun isCollectionExist(collectionName: String): Boolean? {
+        return DatabaseHelper.instance.isCollectionExist(collectionName)
+    }
 
-        productDataModel.productPrice = productPrice
-        productDataModel.productDescription = "No Description"
-        productDataModel.productWeight = 2.5
-        productDataModel.productMetalType = "Gold"
-        productDataModel.productUnitOfMeasurement = "g"
-        productDataModel.productCarat = 24.0
-        productDataModel.productRFID = "100"
-        productDataModel.productCategory = categoryName
-        productDataModel.collectionUUID = getCollectionUUIDThroughCollectionName("wedding")
+    // Check if Collection exist in the product section
+    fun isCollectionExistInTheProduct(productUUID: String, collectionUUID: String): Boolean? {
+        return DatabaseHelper.instance.isCollectionExistInTheProduct(productUUID,collectionUUID)
+    }
+
+    // add Category in the Category table
+    fun addCategory(categoryDataModel: CategoryDataModel) {
+        DatabaseHelper.instance.addCategory(categoryDataModel)
+    }
+
+    // update Category in the Category table
+    fun updateCategory(categoryDataModel: CategoryDataModel) {
+        DatabaseHelper.instance.updateCategory(categoryDataModel)
+    }
+
+    //Get All Products of particular category and collection  from the Product table
+    fun getAllProductsThroughCategoryAndCollection(categoryUUID: String,
+           collectionUUID: String): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsThroughCategoryAndCollection(categoryUUID,collectionUUID)
+    }
+
+    // get collection through Collection UUID
+    fun getCollectionThroughUUID(collectionUUID: String): CollectionDataModel {
+        return DatabaseHelper.instance.getCollectionThroughUUID(collectionUUID)
+    }
+
+    // Get All Category of the Particular Collection
+    fun getAllCategoryOfParticularCollection(collectionUUID: String): ArrayList<CategoryDataModel> {
+        return DatabaseHelper.instance.getAllCategoryOfParticularCollection(collectionUUID)
+
+    }
+
+    // Updating Collection in the Collection table
+    fun updateCollection(collectionDataModel: CollectionDataModel) {
+        DatabaseHelper.instance.updateCollection(collectionDataModel)
+    }
 
 
-        DatabaseHelper.instance.insertProductInProductTable(productDataModel)
+    // Delete Category from the Category table
+    fun deleteCategory(categoryUUID: String) {
+        DatabaseHelper.instance.deleteCategory(categoryUUID)
+    }
+
+    // Delete Collection from the Collection table
+    fun deleteCollection(collectionUUID: String) {
+        DatabaseHelper.instance.deleteCollection(collectionUUID)
+    }
+
+
+    // Get all the category form the category table
+    fun getAllCategory(): ArrayList<CategoryDataModel> {
+        return  DatabaseHelper.instance.getAllCategory()
+    }
+
+    // Check if Metal type already Exit in the metal Type Table
+    fun isMetalTypeExist(metalTypeName:String): Boolean? {
+        return  DatabaseHelper.instance.isMetalTypeExist(metalTypeName)
+    }
+
+    // Delete Metal Type from the metal type table
+    fun deleteMetalType(metalTypeUUID:String) {
+        DatabaseHelper.instance.deleteMetalType(metalTypeUUID)
+    }
+
+    // Delete Product from the product table
+    fun deleteProduct(productUUID: String) {
+        DatabaseHelper.instance.deleteProduct(productUUID)
+    }
+
+    // Get All the metal type from the metal type table
+    fun getAllMetalType(): ArrayList<MetalTypeDataModel> {
+        return DatabaseHelper.instance.getAllMetalType()
+    }
+
+    // Updating metal type from the metal type table
+    fun updateMetalType(metalTypeUUID:String,metalTypeName: String){
+        DatabaseHelper.instance.updateMetalType(metalTypeUUID,metalTypeName)
+    }
+
+    // Add Metal type in Metal_Type table
+    fun addMetalTypeInTheMetalTypeTable(metalTypeDataModel: MetalTypeDataModel) {
+
+        DatabaseHelper.instance.addMetalTypeInTheMetalTypeTable(metalTypeDataModel)
+    }
+
+    // Add Product in Product table
+    fun addProduct(productDataModel: ProductDataModel) {
+        DatabaseHelper.instance.addProduct(productDataModel)
     }
 
     // Checks if Product is Exist in Cart table
@@ -525,27 +609,18 @@ object Utils {
         DatabaseHelper.instance.insertProductInCartTable(cardDataModel)
     }
 
-    //Get All Products of particular category  from the Product table
-    fun getProductsThroughCategory(
-        productCategory: String,
+    //Get All Products of particular Collection  from the Product table
+    fun getProductsThroughCollection(
+        collectionUUIDList: List<String>,
         productUUID: String
     ): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getProductsThroughCategory(productCategory, productUUID)
+        return DatabaseHelper.instance.getProductsThroughCollection(collectionUUIDList, productUUID)
     }
 
-    // Check if Category exist in the category table
-    fun isCategoryExist(categoryName: String): Boolean? {
-        return DatabaseHelper.instance.isCategoryExist(categoryName)
-    }
 
     //Getting the Category UUId through Category Name
     fun getCategoryUUIDThroughCategoryName(categoryName: String): String? {
         return DatabaseHelper.instance.getCategoryUUIDThroughCategoryName(categoryName)
-    }
-
-    //Getting the Collection UUId through collection Name
-    fun getCollectionUUIDThroughCollectionName(categoryName: String): String? {
-        return DatabaseHelper.instance.getCollectionUUIDThroughCollectionName(categoryName)
     }
 
     //Get All Products from the Product table
@@ -553,14 +628,30 @@ object Utils {
         return DatabaseHelper.instance.getAllProducts()
     }
 
+    //Get All Products Accept one Product from product table
+    fun getAllProductsAcceptProduct(productUUID: String): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsAcceptProduct(productUUID)
+    }
+
+
+    /* Get All Products from the Product table Accept the collection */
+    fun getAllProductsAcceptCollection(collectionUUID: String): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUID)
+    }
+
     //Get All Products from the Product table Accept Category one Category
-    fun getAllProductsAcceptCategory(categoryName: String): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProductsAcceptCategory(categoryName)
+    fun getAllProductsAcceptCollection(collectionUUIDList:List<String>): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUIDList)
     }
 
     //Getting the Category Name through Category UUID
-    fun getCategoryNameThroughCategoryUUID(categoryUUID: String): String {
+    fun getCategoryNameThroughCategoryUUID(categoryUUID: String): String? {
         return DatabaseHelper.instance.getCategoryNameThroughCategoryUUID(categoryUUID)
+    }
+
+    //Getting the MetalType Name through MetalType UUID
+    fun getMetalTypeNameThroughMetalTypeUUID(metalTypeUUID: String): String? {
+        return DatabaseHelper.instance.getMetalTypeNameThroughMetalTypeUUID(metalTypeUUID)
     }
 
     //Inserting Address in Address table
@@ -606,6 +697,11 @@ object Utils {
     //Getting the Product through Product UUID
     fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
         return DatabaseHelper.instance.getProductThroughProductUUID(productUUID)
+    }
+
+    // update Product in the Product table
+    fun updateProduct(productDataModel: ProductDataModel) {
+         DatabaseHelper.instance.updateProduct(productDataModel)
     }
 
     @JvmStatic
@@ -829,7 +925,7 @@ object Utils {
     }
 
 
-    fun textChanger(editText: EditText, errorTextView: TextView) {
+    fun addTextChangedListener(editText: EditText, errorTextView: TextView) {
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -1339,7 +1435,6 @@ object Utils {
         dialog.show()
         return dialog
     }
-
 
     fun videoProgressDialog(c: Context?): Dialog {
         val dialog = Dialog(c!!)

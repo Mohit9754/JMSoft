@@ -24,7 +24,7 @@ class CategoryDataModel {
 
             val CreateTableCategoryQuery = ("create table " + TABLE_NAME_CATEGORY + " ("
                 + Key_categoryId + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                Key_categoryUUID + " text," +
+                Key_categoryUUID + " text UNIQUE," +
                 Key_categoryName + " text" +
                 " )")
 

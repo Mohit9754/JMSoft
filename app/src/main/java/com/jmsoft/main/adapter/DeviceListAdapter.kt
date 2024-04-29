@@ -2,10 +2,8 @@ package com.jmsoft.main.adapter
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
-import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -14,12 +12,9 @@ import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
-import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rotation
 import com.jmsoft.basic.UtilityTools.Utils
 
@@ -27,8 +22,6 @@ import com.jmsoft.databinding.ItemDeviceListBinding
 import com.jmsoft.main.`interface`.DeviceConnectedCallback
 import com.jmsoft.main.`interface`.PairStatusCallback
 import com.jmsoft.main.model.DeviceModel
-import java.io.IOException
-import java.util.UUID
 
 
 /**

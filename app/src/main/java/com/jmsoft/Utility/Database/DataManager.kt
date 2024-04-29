@@ -9,7 +9,9 @@ import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.DeviceDataModel
+import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.basic.UtilityTools.Utils
 
 /**
  * Created by Hritik on 2/10/2023.
@@ -49,7 +51,17 @@ class DataManager
         // Creating Collection table
         CollectionDataModel.CreateTable(db)
 
+        // Creating Metal_Type table
+        MetalTypeDataModel.CreateTable(db)
+
     }
+//    override fun onOpen(db: SQLiteDatabase) {
+//        super.onOpen(db)
+//        db.execSQL("PRAGMA foreign_keys=ON")
+//
+//        Utils.E("Foreign key is enabled") // Assuming Utils.E logs a message
+//    }
+
 
     /**
      * @param db        //
@@ -79,12 +91,15 @@ class DataManager
         // Drop Collection table
         CollectionDataModel.dropTable(db)
 
+        // Drop Metal_Type table
+        MetalTypeDataModel.dropTable(db)
+
         onCreate(db)
     }
 
     companion object {
 
-        const val DATABASE_VERSION = 31
+        const val DATABASE_VERSION = 79
         const val DATABASE_NAME = "JM_Soft"
     }
 }

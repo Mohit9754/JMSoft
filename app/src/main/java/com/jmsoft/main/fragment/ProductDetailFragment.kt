@@ -1,6 +1,7 @@
 package com.jmsoft.main.fragment
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context.WINDOW_SERVICE
 import android.graphics.Bitmap
 import android.os.Build
@@ -20,7 +21,7 @@ import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
-import com.jmsoft.databinding.FragmentProductBinding
+import com.jmsoft.databinding.FragmentProductDetailBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CatalogAdapter
 import com.jmsoft.main.adapter.ProductCollectionAdapter
@@ -29,7 +30,7 @@ import com.jmsoft.main.adapter.ProductImageAdapter
 @Suppress("DEPRECATION")
 class ProductDetailFragment : Fragment(), View.OnClickListener {
 
-    private lateinit var binding: FragmentProductBinding
+    private lateinit var binding: FragmentProductDetailBinding
 
     //Product Data
     private lateinit var productData: ProductDataModel
@@ -37,13 +38,15 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     // Flag variable for checking if Product Exist In Cart
     private var isProductExistInCart = false
 
+    private var progressBarDialog:Dialog? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
         // Inflate the layout for this fragment
-        binding = FragmentProductBinding.inflate(layoutInflater)
+        binding = FragmentProductDetailBinding.inflate(layoutInflater)
 
         // Hide the Search option
         (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.GONE
@@ -53,6 +56,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
         return binding.root
     }
+
 
     // Setup Product Image Recycler View
     private fun setUpProductImageRecyclerView(productImages: String) {
@@ -86,37 +90,73 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     }
 
     // Set up collection Recycler view
-    private fun setUpCollectionItemRecyclerView(productCategory: String, productUUID: String) {
+    private fun setUpCollectionItemRecyclerView(collectionUUID: String, productUUID: String) {
 
-        val productList = Utils.getProductsThroughCategory(productCategory, productUUID)
+        if (collectionUUID.isNotEmpty()) {
 
-        val adapter = ProductCollectionAdapter(requireActivity(), productList)
+            val collectionUUIDList = productData.collectionUUID?.split(",")
 
-        binding.rvCollection?.layoutManager =
-            LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
-        binding.rvCollection?.adapter = adapter
+            val productList =
+                collectionUUIDList?.let { Utils.getProductsThroughCollection(it, productUUID) }
 
+            if (productList?.isNotEmpty() == true) {
+
+                binding.mcvCollection?.visibility  = View.VISIBLE
+
+                val adapter = ProductCollectionAdapter(requireActivity(), productList)
+
+                binding.rvCollection?.layoutManager =
+                    LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
+                binding.rvCollection?.adapter = adapter
+
+            }
+            else {
+                binding.mcvCollection?.visibility  = View.GONE
+            }
+        }
+        else {
+            binding.mcvCollection?.visibility  = View.GONE
+        }
     }
 
     // Setting the May also like RecyclerView
     private fun setUpMayLikeRecyclerView() {
 
-        val productList =
-            productData.productCategory?.let { Utils.getAllProductsAcceptCategory(it) }
+        val collectionUUIDList = productData.collectionUUID?.split(",")
 
-        val catalogAdapter = productList?.let { CatalogAdapter(requireActivity(), it) }
+        val productList = if (productData.collectionUUID?.isNotEmpty() == true) {
 
-        binding.rvCatalog?.layoutManager =
-            GridLayoutManager(requireActivity(), 3) // Span Count is set to 3
-        binding.rvCatalog?.adapter = catalogAdapter
+            collectionUUIDList.let {
+                collectionUUIDList.let { it1 ->
+                    it1?.let { it2 ->
+                        Utils.getAllProductsAcceptCollection(
+                            it2
+                        )
+                    }
+                }
+            } }  else {
+
+            productData.productUUID?.let { Utils.getAllProductsAcceptProduct(it) }
+        }
+
+        if (productList?.isNotEmpty() == true) {
+
+            val catalogAdapter = CatalogAdapter(requireActivity(), productList)
+
+            binding.rvCatalog?.layoutManager =
+                GridLayoutManager(requireActivity(), 3) // Span Count is set to 3
+            binding.rvCatalog?.adapter = catalogAdapter
+        }
+        else {
+            binding.tvMayLike?.visibility  = View.GONE
+        }
     }
-
 
     // Checks if Product Already Added in card
     private fun isProductAlreadyAddedInCard() {
 
         val isExistInCart = Utils.GetSession().userUUID?.let {
-            productData.productUUId?.let { it1 ->
+            productData.productUUID?.let { it1 ->
                 Utils.isProductExistInCartTable(
                     it,
                     it1
@@ -142,7 +182,6 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
             binding.tvCartStatus?.text = requireActivity().getString(R.string.remove_from_cart)
             binding.llCartStatus?.setBackgroundResource(R.drawable.bg_button)
         } else {
-
             binding.tvCartStatus?.text = requireActivity().getString(R.string.add_to_cart)
             binding.llCartStatus?.setBackgroundResource(R.drawable.bg_add_to_card)
         }
@@ -155,28 +194,32 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
         productData = Utils.getProductThroughProductUUID(productUUID)
 
         // Setup Product Image Recycler View
-        productData.productImage?.let { setUpProductImageRecyclerView(it) }
+        productData.productImageUri?.let { setUpProductImageRecyclerView(it) }
 
         binding.tvProductName?.text = productData.productName
         binding.tvProductWeight?.text =
-            "${productData.productWeight} ${productData.productUnitOfMeasurement} "
+            "${productData.productWeight} ${Constants.weightUnit}"
 
         binding.tvProductCarat?.text = productData.productCarat.toString()
-        binding.tvProductType?.text = productData.productMetalType
+        binding.tvProductType?.text = productData.metalTypeUUID?.let {
+            Utils.getMetalTypeNameThroughMetalTypeUUID(
+                it
+            )
+        }
 
         binding.tvProductCategory?.text =
             productData.categoryUUID?.let { Utils.getCategoryNameThroughCategoryUUID(it) }
 
         binding.tvProductDescription?.text = productData.productDescription
-        binding.tvProductPrice?.text = productData.productPrice?.let {
+        binding.tvProductPrice?.text = productData.productCost?.let {
             Utils.roundToTwoDecimalPlaces(
                 it
             )
         }?.let { Utils.getThousandSeparate(it) }
 
         // Set up collection Recycler view
-        productData.productCategory?.let {
-            productData.productUUId?.let { it1 ->
+        productData.collectionUUID?.let {
+            productData.productUUID?.let { it1 ->
                 setUpCollectionItemRecyclerView(
                     it,
                     it1
@@ -221,6 +264,8 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     // Set the Clicks , initialization And Setup
     private fun init() {
 
+        progressBarDialog = Utils.initProgressDialog(requireActivity())
+
         //Setting the Product Section Height through Screen height
         setProductSectionHeight()
 
@@ -239,6 +284,8 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
         // Set Click on Cart Status button
         binding.llCartStatus?.setOnClickListener(this)
 
+        progressBarDialog?.dismiss()
+
     }
 
     // Handle all the clicks
@@ -250,7 +297,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
             if (isProductExistInCart) {
 
                 val cardUUID = Utils.GetSession().userUUID?.let {
-                    productData.productUUId?.let { it1 ->
+                    productData.productUUID?.let { it1 ->
                         Utils.getCartUUID(
                             it,
                             it1
@@ -269,7 +316,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
                 val cardDataModel = CartDataModel()
                 cardDataModel.cartUUID = Utils.generateUUId()
-                cardDataModel.productUUID = productData.productUUId
+                cardDataModel.productUUID = productData.productUUID
                 cardDataModel.userUUID = Utils.GetSession().userUUID
                 cardDataModel.productQuantity = 1
 

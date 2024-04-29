@@ -29,7 +29,8 @@ interface Constants {
         const val video = "Video"
         const val CONTENT_ALL_DOC = "application/pdf"
         const val Unauthorized = 401
-        const val currency = "₦"
+        const val currency = "DH"
+        const val weightUnit = "g"
         const val doc = "doc"
         const val docx = "docx"
         const val jpg = "jpg"
@@ -86,8 +87,7 @@ interface Constants {
         const val loginDeviceType = "loginDeviceType"
         const val device_type = "device_type"
         const val user = "user"
-        const val userUUID = "userUUID"
-        const val productUUID = "productUUID"
+
 
         const val admin = "admin"
         const val loginType = "loginType"
@@ -221,9 +221,11 @@ interface Constants {
         const val edit = "edit"
         const val add = "add"
 
+        const val userUUID = "userUUID"
+        const val productUUID = "productUUID"
+        const val collectionUUID = "collectionUUID"
 
         // State
-
         const val bluetoothUuid = "00001101-0000-1000-8000-00805F9B34FB"
         const val rotation = "rotation"
         const val updateInSession = "updateInSession"

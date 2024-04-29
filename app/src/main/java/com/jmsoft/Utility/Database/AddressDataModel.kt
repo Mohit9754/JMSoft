@@ -42,7 +42,7 @@ class AddressDataModel {
                     Key_phoneNumber + " text," +
                     Key_zipCode + " text," +
                     Key_userUUID + " text," +
-                    " FOREIGN KEY (" + CartDataModel.Key_userUUID + ") REFERENCES " + UserDataModel.TABLE_NAME_USER + "(" + UserDataModel.Key_userUUID + ")" +
+                    " FOREIGN KEY (" + CartDataModel.Key_userUUID + ") REFERENCES " + UserDataModel.TABLE_NAME_USER + "(" + UserDataModel.Key_userUUID + ") ON DELETE CASCADE" +
                     " )")
 
             db.execSQL(CreateTableAddressQuery)

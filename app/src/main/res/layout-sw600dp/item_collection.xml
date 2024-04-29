@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/_100sdp"
@@ -19,7 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="@dimen/_7sdp"
         tools:ignore="RtlSymmetry">
 
         <TextView
@@ -27,11 +27,150 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_9sdp"
             android:id="@+id/tvProductName"
+            android:paddingStart="@dimen/_7sdp"
             android:fontFamily="@font/montserrat_arabic_bold"
             android:text="@string/royal_gold_ring"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rlCollectionDetail"
+            android:paddingStart="@dimen/_7sdp"
+            android:weightSum="2"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/_6sdp"
+            tools:ignore="DisableBaselineAlignment">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:text="@string/weight"
+                        android:textColor="@color/text_color"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_1sdp"
+                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:text="@string/_2_5_g"
+                        android:id="@+id/tvProductWeight"
+                        android:textColor="@color/text_color"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:text="@string/type"
+                        android:textColor="@color/text_color"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_1sdp"
+                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:text="@string/gold"
+                        android:id="@+id/tvProductType"
+                        android:textColor="@color/text_color"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/_7sdp"
+                android:orientation="vertical"
+                tools:ignore="RelativeOverlap">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cat"
+                        android:textColor="@color/text_color"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_1sdp"
+                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:text="@string/rings"
+                        android:id="@+id/tvProductCategory"
+                        android:textColor="@color/text_color"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:text="@string/carat"
+                        android:textColor="@color/text_color"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_1sdp"
+                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:text="@string/_0_75"
+                        android:id="@+id/tvProductCarat"
+                        android:textColor="@color/text_color"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
@@ -55,14 +194,40 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/_7sdp"
             android:layout_marginTop="@dimen/_9sdp"
             android:layout_marginBottom="@dimen/_5sdp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvDelete"
+                android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                android:outlineSpotShadowColor="@color/spotShadowColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                android:visibility="gone"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="@dimen/_4sdp"
+                tools:ignore="UnusedAttribute">
+
+                <ImageView
+                    android:layout_width="@dimen/_8sdp"
+                    android:layout_height="@dimen/_8sdp"
+                    android:id="@+id/ivDelete"
+                    android:src="@drawable/icon_delete"
+                    android:layout_marginHorizontal="@dimen/_4sdp"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    tools:ignore="ContentDescription" />
+
+            </com.google.android.material.card.MaterialCardView>
+
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/mcvCartStatus"
                 android:outlineAmbientShadowColor="@color/ambientShadowColor"
                 android:outlineSpotShadowColor="@color/spotShadowColor"
                 android:layout_width="wrap_content"
+                android:visibility="visible"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/black"
                 app:cardElevation="@dimen/_1sdp"

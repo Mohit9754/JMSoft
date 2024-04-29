@@ -11,7 +11,10 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
+import com.jmsoft.Utility.Database.MetalTypeDataModel
+import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
+import com.jmsoft.databinding.FragmentMetalTypeBinding
 import com.jmsoft.databinding.ItemInventoryBinding
 import com.jmsoft.main.`interface`.EditInventoryCallback
 
@@ -24,8 +27,9 @@ import com.jmsoft.main.`interface`.EditInventoryCallback
 
 class MetalTypeListAdapter(
     private val context: Context,
-    private var metalTypeList: ArrayList<String>,
-    private val editInventoryCallback: EditInventoryCallback
+    private var metalTypeList: ArrayList<MetalTypeDataModel>,
+    private val fragmentMetalTypeBinding: FragmentMetalTypeBinding,
+    private val editInventoryCallback: EditInventoryCallback,
 ) :
     RecyclerView.Adapter<MetalTypeListAdapter.MyViewHolder>() {
 
@@ -42,7 +46,7 @@ class MetalTypeListAdapter(
 
     // Show Metal Type Delete Dialog
     @SuppressLint("NotifyDataSetChanged")
-    private fun showMetalTypeDeleteDialog(position: Int) {
+    private fun showMetalTypeDeleteDialog(metalTypeUUID: String,position: Int) {
 
         val dialog = Dialog(context)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -59,9 +63,21 @@ class MetalTypeListAdapter(
         dialogBinding.mcvYes.setOnClickListener {
 
             dialog.dismiss()
-            
+            Utils.deleteMetalType(metalTypeUUID)
+
+            Utils.T(context, context.getString(R.string.deleted_successfully))
             metalTypeList.removeAt(position)
+
+            if (metalTypeList.isEmpty()){
+
+                fragmentMetalTypeBinding.mcvMetalTypeList?.visibility = View.GONE
+                fragmentMetalTypeBinding.llEmptyInventory?.visibility = View.VISIBLE
+                fragmentMetalTypeBinding.tvEmptyMsg?.text = context.getString(R.string.metal_type_is_empty)
+
+            }
+
             notifyDataSetChanged()
+
         }
 
         dialogBinding.mcvNo.setOnClickListener {
@@ -78,13 +94,13 @@ class MetalTypeListAdapter(
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         // Product Data
-        private lateinit var metalName: String
+        private lateinit var metalTypeData: MetalTypeDataModel
 
         private var position:Int = -1
 
-        fun bind(metalName: String,position: Int) {
+        fun bind(metalTypeData: MetalTypeDataModel,position: Int) {
 
-            this.metalName = metalName
+            this.metalTypeData = metalTypeData
             this.position = position
 
             //Set Metal Type
@@ -99,7 +115,7 @@ class MetalTypeListAdapter(
 
         //Set Metal Type
         private fun setMetalType() {
-            binding.tvMetalType.text = metalName
+            binding.tvMetalType.text = metalTypeData.metalTypeName
 
         }
 
@@ -111,12 +127,13 @@ class MetalTypeListAdapter(
             if (v == binding.mcvDelete){
                 
                 // Show Metal Type Delete Dialog
-                showMetalTypeDeleteDialog(position)
+                metalTypeData.metalTypeUUID?.let { showMetalTypeDeleteDialog(it,position) }
             }
 
             // When edit button Clicked
             else if(v == binding.mcvEdit) {
-                editInventoryCallback.editInventory(position)
+
+                metalTypeData.metalTypeUUID?.let { editInventoryCallback.editInventory(it,position) }
             }
 
         }

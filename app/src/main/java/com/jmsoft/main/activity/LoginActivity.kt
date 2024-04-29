@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
@@ -16,10 +15,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
@@ -61,98 +58,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         //set the Clicks And initialization
         init()
 
-        val collectionDataModel = CollectionDataModel()
-        collectionDataModel.collectionUUID = Utils.generateUUId()
-        collectionDataModel.collectionName = "wedding"
-
-        Utils.addCollectionInCollectionTable(collectionDataModel)
-
-        val categoryDataModel = CategoryDataModel()
-        categoryDataModel.categoryUUID = Utils.generateUUId()
-        categoryDataModel.categoryName = "Ring"
-
-
-        val categoryDataModel2 = CategoryDataModel()
-        categoryDataModel2.categoryUUID = Utils.generateUUId()
-        categoryDataModel2.categoryName = "necklace"
-
-
-        val categoryDataModel3 = CategoryDataModel()
-        categoryDataModel3.categoryUUID = Utils.generateUUId()
-        categoryDataModel3.categoryName = "earrings"
-
-
-        Utils.insertCategoryInCategoryTable(categoryDataModel)
-        Utils.insertCategoryInCategoryTable(categoryDataModel2)
-        Utils.insertCategoryInCategoryTable(categoryDataModel3)
-
-
-        val bitmapOne = getDrawable(R.drawable.img_ring)?.toBitmap()
-        val bitmapTwo = getDrawable(R.drawable.img_ring_product)?.toBitmap()
-
-        bitmapOne?.let { bitmapTwo?.let { it1 ->
-            Utils.insertProductInProductTable("Ring","Royal Gold Ring",12000.5, it,
-                it1,
-                activity
-            )
-        } }
-
-        val bitmapThree = getDrawable(R.drawable.ring_one)?.toBitmap()
-        val bitmapFour = getDrawable(R.drawable.ring_two)?.toBitmap()
-
-        bitmapFour?.let { bitmapThree?.let { it1 ->
-            Utils.insertProductInProductTable("Ring","Royal Silver Ring",10000.65, it,
-                it1,
-                activity
-            )
-        } }
-
-        val bitmapFive = getDrawable(R.drawable.necklace_one)?.toBitmap()
-//        val bitmapSix = getDrawable(R.drawable.necklace_one)?.toBitmap()
-
-        bitmapFive?.let { bitmapFive?.let { it1 ->
-            Utils.insertProductInProductTable("necklace","Royal Gold necklace",25000.55, it,
-                it1,
-                activity
-            )
-        } }
-
-        val bitmapSix = getDrawable(R.drawable.necklane_two)?.toBitmap()
-
-        bitmapSix?.let { bitmapSix?.let { it1 ->
-            Utils.insertProductInProductTable("necklace","Royal Silver necklace",15000.45, it,
-                it1,
-                activity
-            )
-        } }
-
-        val bitmapEight = getDrawable(R.drawable.necklane_three)?.toBitmap()
-
-        bitmapEight?.let { bitmapEight?.let { it1 ->
-            Utils.insertProductInProductTable("necklace","Royal Diamond necklace",50000.21, it,
-                it1,
-                activity
-            )
-        } }
-
-        val bitmapSeven = getDrawable(R.drawable.earing_one)?.toBitmap()
-
-        bitmapSeven?.let { bitmapSeven?.let { it1 ->
-            Utils.insertProductInProductTable("earrings","Royal Gold earrings",30000.85, it,
-                it1,
-                activity
-            )
-        } }
-
-        val bitmapNine = getDrawable(R.drawable.earing_two)?.toBitmap()
-
-        bitmapNine?.let { bitmapNine?.let { it1 ->
-            Utils.insertProductInProductTable("earrings","Royal Solver earrings",34000.22, it,
-                it1,
-                activity
-            )
-        } }
     }
+
 
     //setting the selector on material card view
     private fun setFocusChangeLis(editText: EditText, materialCardView: MaterialCardView) {

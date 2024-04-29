@@ -6,13 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Constants
+import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
 import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.databinding.FragmentCatalogBinding
 import com.jmsoft.databinding.ItemCatalogBinding
 import com.jmsoft.main.activity.DashboardActivity
 
@@ -25,10 +26,9 @@ import com.jmsoft.main.activity.DashboardActivity
 
 class CatalogAdapter(
     private val context: Context,
-    private var productList: ArrayList<ProductDataModel>
+    private var productList: ArrayList<ProductDataModel>,
 ) :
     RecyclerView.Adapter<CatalogAdapter.MyViewHolder>() {
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemCatalogBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -97,7 +97,7 @@ class CatalogAdapter(
             if (isProductExistInCart == true) {
 
                 cartProductUUID = Utils.GetSession().userUUID?.let {
-                    productData.productUUId?.let { it1 ->
+                    productData.productUUID?.let { it1 ->
                         Utils.getCartUUID(
                             it,
                             it1
@@ -111,7 +111,7 @@ class CatalogAdapter(
         private fun setCartStatus() {
 
             isProductExistInCart = Utils.GetSession().userUUID?.let {
-                productData.productUUId?.let { it1 ->
+                productData.productUUID?.let { it1 ->
                     Utils.isProductExistInCartTable(
                         it,
                         it1
@@ -120,9 +120,9 @@ class CatalogAdapter(
             }
 
             if (isProductExistInCart == true) {
-                binding.ivCartStatus.setImageResource(R.drawable.icon_cart_white)
+                binding.ivCartStatus.setImageResource(R.drawable.icon_cross)
             } else if (isProductExistInCart == false) {
-                binding.ivCartStatus.setImageResource(R.drawable.icon_add)
+                binding.ivCartStatus.setImageResource(R.drawable.icon_cart_white)
 
             }
         }
@@ -130,7 +130,7 @@ class CatalogAdapter(
         //Set the Product image
         private fun setProductImage() {
 
-            val arrayOfImages = productData.productImage?.split(",")?.toTypedArray()
+            val arrayOfImages = productData.productImageUri?.split(",")?.toTypedArray()
 
             val bitmap = Utils.getImageFromInternalStorage(
                 context,
@@ -143,11 +143,11 @@ class CatalogAdapter(
         //Set the Product price
         private fun setProductPrice() {
 
-            binding.tvProductPrice.text = productData.productPrice?.let {
-                Utils.roundToTwoDecimalPlaces(
+            binding.tvProductPrice.text = productData.productCost?.let {
+                Utils.getThousandSeparate(
                     it
                 )
-            }?.let { Utils.getThousandSeparate(it.toDouble()) }
+            }
         }
 
         //Set the Product carat
@@ -164,14 +164,19 @@ class CatalogAdapter(
 
         //Set the Product type
         private fun setProductType() {
-            binding.tvProductType.text = productData.productMetalType
+            binding.tvProductType.text = productData.metalTypeUUID?.let {
+                Utils.getMetalTypeNameThroughMetalTypeUUID(
+                    it
+                )
+            }
         }
 
         //Set the Product weight
         @SuppressLint("SetTextI18n")
         private fun setProductWeight() {
+
             binding.tvProductWeight.text =
-                "${productData.productWeight} ${productData.productUnitOfMeasurement} "
+                "${productData.productWeight} $weightUnit"
         }
 
         //Set the Product name
@@ -188,8 +193,8 @@ class CatalogAdapter(
 
                 val bundle = Bundle()
                 //Giving the product UUID
-                bundle.putString(Constants.productUUID, productData.productUUId)
-                (context as DashboardActivity).navController?.navigate(R.id.product, bundle)
+                bundle.putString(Constants.productUUID, productData.productUUID)
+                (context as DashboardActivity).navController?.navigate(R.id.productDetail, bundle)
 
             }
             // Click on Cart Status
@@ -202,32 +207,29 @@ class CatalogAdapter(
                     Utils.T(context, context.getString(R.string.removed_from_the_cart))
 
                     isProductExistInCart = false
-                    binding.ivCartStatus.setImageResource(R.drawable.icon_add)
+                    binding.ivCartStatus.setImageResource(R.drawable.icon_cart_white)
 
                 } else if (isProductExistInCart == false) {
 
                     val cardDataModel = CartDataModel()
                     cardDataModel.cartUUID = Utils.generateUUId()
-                    cardDataModel.productUUID = productData.productUUId
+                    cardDataModel.productUUID = productData.productUUID
                     cardDataModel.userUUID = Utils.GetSession().userUUID
                     cardDataModel.productQuantity = 1
 
                     Utils.insertProductInCartTable(cardDataModel)
 
                     isProductExistInCart = true
-                    binding.ivCartStatus.setImageResource(R.drawable.icon_cart_white)
+                    binding.ivCartStatus.setImageResource(R.drawable.icon_cross)
 
                     // Getting Cart Product UUID for Deleting the product from the cart
                     getCartProductUUID()
 
                     Utils.T(context, context.getString(R.string.added_in_the_cart))
 
-
                 }
             }
-
         }
-
     }
 
     @SuppressLint("NotifyDataSetChanged")

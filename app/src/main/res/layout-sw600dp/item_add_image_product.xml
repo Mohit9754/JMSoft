@@ -9,6 +9,7 @@
     android:layout_marginBottom="@dimen/_6sdp"
     android:layout_marginHorizontal="@dimen/_2sdp"
     app:strokeWidth="0.7dp"
+    app:cardCornerRadius="@dimen/_3sdp"
     android:id="@+id/mcvAddImage"
     app:strokeColor="@color/theme"
     app:cardElevation="0dp"

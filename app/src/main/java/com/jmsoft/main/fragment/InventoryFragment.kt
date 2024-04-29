@@ -91,10 +91,7 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
 
         else if (v == binding.mcvProduct) {
 
-            //Giving the fragment status
-            bundle.putString(Constants.state, product)
-
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.metalType,bundle)
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.product)
 
         }
 

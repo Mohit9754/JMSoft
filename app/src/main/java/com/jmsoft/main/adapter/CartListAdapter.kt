@@ -73,7 +73,7 @@ class CartListAdapter(
             }
 
             // Calculating price of each product for storing in cartPrice array
-            val price = cartData.productQuantity?.let { productData?.productPrice?.times(it) }
+            val price = cartData.productQuantity?.let { productData?.productCost?.times(it) }
             price?.let { cartPrice.add(it) }
 
             // At the last Set Total Price
@@ -122,7 +122,7 @@ class CartListAdapter(
         //Set the Product price
         private fun setProductPrice() {
 
-            val price = cartData.productQuantity?.let { productData.productPrice?.times(it) }
+            val price = cartData.productQuantity?.let { productData.productCost?.times(it) }
 
             if (price != null) {
 
@@ -148,7 +148,7 @@ class CartListAdapter(
         //Set the product image
         private fun setProductImage() {
 
-            val arrayOfImages = productData.productImage?.split(",")?.toTypedArray()
+            val arrayOfImages = productData.productImageUri?.split(",")?.toTypedArray()
 
             val bitmap = Utils.getImageFromInternalStorage(
                 context,
@@ -233,8 +233,8 @@ class CartListAdapter(
 
                 val bundle = Bundle()
                 //Giving the product UUID
-                bundle.putString(Constants.productUUID, productData.productUUId)
-                (context as DashboardActivity).navController?.navigate(R.id.product,bundle)
+                bundle.putString(Constants.productUUID, productData.productUUID)
+                (context as DashboardActivity).navController?.navigate(R.id.productDetail,bundle)
 
             }
         }

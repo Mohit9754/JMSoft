@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/_8sdp"
     android:layout_marginVertical="@dimen/_8sdp"
@@ -16,10 +17,10 @@
     tools:ignore="MissingDefaultResource,UnusedAttribute">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="@dimen/_7sdp">
+        tools:ignore="RtlSymmetry">
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,19 +28,25 @@
             android:layout_marginTop="@dimen/_9sdp"
             android:fontFamily="@font/montserrat_arabic_bold"
             android:text="@string/royal_gold_ring"
+            android:paddingStart="@dimen/_7sdp"
             android:textColor="@color/black"
             android:id="@+id/tvProductName"
             android:textSize="14sp" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_6sdp">
+            android:weightSum="2"
+            android:paddingStart="@dimen/_7sdp"
+            android:layout_marginTop="@dimen/_6sdp"
+            tools:ignore="DisableBaselineAlignment">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_weight="2"
+                android:orientation="vertical"
+                tools:ignore="NestedWeights">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -49,7 +56,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:fontFamily="@font/montserrat_arabic_medium"
                         android:text="@string/weight"
                         android:textColor="@color/text_color"
                         android:textSize="11sp"
@@ -77,7 +84,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:fontFamily="@font/montserrat_arabic_medium"
                         android:text="@string/type"
                         android:textColor="@color/text_color"
                         android:textSize="11sp"
@@ -101,7 +108,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/_7sdp"
                 android:orientation="vertical">
 
@@ -114,6 +120,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/cat"
+                        android:fontFamily="@font/montserrat_arabic_medium"
                         android:textColor="@color/text_color"
                         android:textSize="11sp"
                         />
@@ -141,7 +148,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:fontFamily="@font/montserrat_arabic_medium"
                         android:text="@string/carat"
                         android:textColor="@color/text_color"
                         android:textSize="11sp"
@@ -162,28 +169,31 @@
 
             </LinearLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center"
             android:layout_marginTop="@dimen/_14sdp"
             app:cardElevation="0dp"
             app:cardBackgroundColor="@color/off_white"
-            app:cardCornerRadius="@dimen/_50sdp">
+            app:cardCornerRadius="@dimen/_35sdp">
 
             <ImageView
                 android:layout_width="@dimen/_70sdp"
                 android:layout_height="@dimen/_70sdp"
                 android:id="@+id/tvProductImage"
-                android:src="@drawable/img_ring_product" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_ring_product"
+                tools:ignore="ContentDescription" />
 
         </com.google.android.material.card.MaterialCardView>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/_7sdp"
             android:layout_marginTop="@dimen/_9sdp"
             android:layout_marginBottom="@dimen/_5sdp">
 

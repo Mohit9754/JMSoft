@@ -43,10 +43,10 @@
         tool:layout="@layout/fragment_edit_profile"/>
 
     <fragment
-        android:id="@+id/product"
+        android:id="@+id/productDetail"
         android:name="com.jmsoft.main.fragment.ProductDetailFragment"
         android:label="Product"
-        tool:layout="@layout/fragment_product"/>
+        tool:layout="@layout/fragment_product_detail"/>
 
     <fragment
         android:id="@+id/cart"
@@ -77,5 +77,12 @@
         android:name="com.jmsoft.main.fragment.CollectionDetailFragment"
         android:label="Collection Detail"
         tool:layout="@layout/fragment_collection_detail"/>
+
+    <fragment
+        android:id="@+id/product"
+        android:name="com.jmsoft.main.fragment.ProductFragment"
+        android:label="Product"
+        tool:layout="@layout/fragment_product"/>
+
 
 </navigation>

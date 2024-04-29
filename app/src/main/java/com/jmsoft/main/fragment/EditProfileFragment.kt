@@ -1,7 +1,6 @@
 package com.jmsoft.main.fragment
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -31,7 +30,6 @@ import com.jmsoft.databinding.FragmentEditProfileBinding
 import java.util.ArrayList
 import com.jmsoft.basic.UtilityTools.Constants.Companion.userUUID
 import com.jmsoft.main.activity.DashboardActivity
-import java.util.Locale
 
 @Suppress("LABEL_NAME_CLASH")
 class EditProfileFragment : Fragment(), View.OnClickListener {
