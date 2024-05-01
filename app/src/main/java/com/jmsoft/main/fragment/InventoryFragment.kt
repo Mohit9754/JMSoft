@@ -23,6 +23,7 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         // Inflate the layout for this fragment
         binding = FragmentInventoryBinding.inflate(layoutInflater)
 
@@ -71,6 +72,7 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.metalType,bundle)
         }
 
+        // Clicked on collection
         else if(v == binding.mcvCollection){
 
             //Giving the fragment status
@@ -80,6 +82,7 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
 
         }
 
+        // Clicked on Category
         else if (v == binding.mcvCategory) {
 
             //Giving the fragment status
@@ -89,6 +92,7 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
 
         }
 
+        // Clicked on product
         else if (v == binding.mcvProduct) {
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.product)

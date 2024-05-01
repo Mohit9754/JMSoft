@@ -15,7 +15,6 @@ import com.jmsoft.main.adapter.UserManagementAdapter
 class UserManagementFragment : Fragment(),View.OnClickListener {
 
     lateinit var binding:FragmentUserManagementBinding
-
     override fun onCreateView(
 
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,10 +24,8 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
 
         binding = FragmentUserManagementBinding.inflate(layoutInflater)
 
-
         // set the Clicks , initialization And Setup
         init()
-
 
         return binding.root
     }
@@ -62,24 +59,25 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
         // set the Recycler View of User List
         setRecyclerView()
 
-        //set Click on add user btn
+        // set Click on add user btn
         binding.mcvAddUser?.setOnClickListener(this)
 
-        //set Click on Back Btn
+        // set Click on Back Btn
         binding.mcvBackBtn?.setOnClickListener(this)
 
     }
 
-    //Handles All the Clicks
+    // Handles All the Clicks
     override fun onClick(v: View?) {
 
-        //Click on Add user button
+        // Click on Add user button
         if (v == binding.mcvAddUser) {
+
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.editProfile)
         }
 
-        //Click on Back button
-        else if(v == binding.mcvBackBtn){
+        // Click on Back button
+        else if(v == binding.mcvBackBtn) {
 
             (requireActivity() as DashboardActivity).navController?.popBackStack()
         }

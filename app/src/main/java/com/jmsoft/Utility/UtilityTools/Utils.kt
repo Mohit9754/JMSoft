@@ -34,7 +34,9 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
 import android.text.Editable
+import android.text.InputFilter
 import android.text.InputType
+import android.text.Spanned
 import android.text.TextWatcher
 import android.text.format.DateFormat
 import android.util.Base64
@@ -94,12 +96,36 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 
 object Utils {
 
+    // Decimal digit filter (2 digit after point)
+    class DecimalDigitsInputFilter : InputFilter {
+
+        private val pattern: Pattern = Pattern.compile("[0-9]*+((\\.[0-9]?)?)||(\\.)?")
+
+        override fun filter(
+            source: CharSequence,
+            start: Int,
+            end: Int,
+            dest: Spanned,
+            dstart: Int,
+            dend: Int
+        ): CharSequence? {
+            val matcher: Matcher = pattern.matcher(dest)
+            if (!matcher.matches()) {
+                return ""
+            }
+            return null
+        }
+    }
+
+    // Save picture in internal storage and return the uri
     fun getPictureUri(context: Context,bitmap: Bitmap): String {
 
         val pictureUri = generateUUId()
@@ -109,6 +135,7 @@ object Utils {
         return pictureUri
     }
 
+    // Capitalize the string data
     @SuppressLint("DefaultLocale")
     fun capitalizeData(data:String): String {
         return data.trim().lowercase(Locale.getDefault()).capitalize(Locale.ROOT)
@@ -197,6 +224,24 @@ object Utils {
         return 0000.00
     }
 
+    // Get the Screen height
+    fun getScreenHeight(context: Context): Int {
+
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display: Display = windowManager.defaultDisplay
+        val displayMetrics = context.resources.displayMetrics
+
+        val screenHeight = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = windowManager.currentWindowMetrics
+            windowMetrics.bounds.height()
+        } else {
+            @Suppress("DEPRECATION")
+            display.getRealMetrics(displayMetrics)
+            displayMetrics.heightPixels
+        }
+        return screenHeight
+    }
+
     // Get thousand separate price
     fun getThousandSeparate(price: Double): String {
         val numberFormat = NumberFormat.getNumberInstance(Locale.ENGLISH)
@@ -204,7 +249,7 @@ object Utils {
     }
 
     // Get Status bar height
-    @SuppressLint("InternalInsetResource")
+    @SuppressLint("InternalInsetResource", "DiscouragedApi")
     fun getStatusbarHeight(context: Context): Int {
         val resourceId = context.resources.getIdentifier(statusBarHeight, dimen, Constants.android)
         return if (resourceId > 0) {
@@ -408,6 +453,12 @@ object Utils {
         return DatabaseHelper.instance.isPhoneNumberExistInAddressTableAcceptMine(phoneNumber,addressUUID)
     }
 
+    // Delete collection uuid from the product table
+    fun deleteCollectionUUIDFromProductTable(collectionUUID: String) {
+        DatabaseHelper.instance.deleteCollectionUUIDFromProductTable(collectionUUID)
+
+    }
+
     // Checks is Phone Number Already Exist in the Address table
     fun isPhoneNumberExistInAddressTable(phoneNumber: String): Boolean {
         return DatabaseHelper.instance.isPhoneNumberExistInAddressTable(phoneNumber)
@@ -498,10 +549,19 @@ object Utils {
         return DatabaseHelper.instance.isCategoryExist(categoryName)
     }
 
+    /* Check if Category exist in the category table accept category uuid */
+    fun isCategoryExistAccept(categoryDataModel: CategoryDataModel): Boolean? {
+        return DatabaseHelper.instance.isCategoryExistAccept(categoryDataModel)
+    }
 
     // Check if Collection exist in the category table
     fun isCollectionExist(collectionName: String): Boolean? {
         return DatabaseHelper.instance.isCollectionExist(collectionName)
+    }
+
+    /* Check if Collection exist in the category table accept collectionUUID */
+    fun isCollectionExistAccept(collectionDataModel: CollectionDataModel): Boolean? {
+        return DatabaseHelper.instance.isCollectionExistAccept(collectionDataModel)
     }
 
     // Check if Collection exist in the product section
@@ -563,6 +623,11 @@ object Utils {
         return  DatabaseHelper.instance.isMetalTypeExist(metalTypeName)
     }
 
+    // Check if Metal type exist in the metal type table accept metalTypeUUId
+    fun isMetalTypeExistAccept(metalTypeDataModel: MetalTypeDataModel): Boolean? {
+        return  DatabaseHelper.instance.isMetalTypeExistAccept(metalTypeDataModel)
+    }
+
     // Delete Metal Type from the metal type table
     fun deleteMetalType(metalTypeUUID:String) {
         DatabaseHelper.instance.deleteMetalType(metalTypeUUID)
@@ -612,9 +677,10 @@ object Utils {
     //Get All Products of particular Collection  from the Product table
     fun getProductsThroughCollection(
         collectionUUIDList: List<String>,
-        productUUID: String
+        productUUID: String,
+        numberOfItems:Int
     ): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getProductsThroughCollection(collectionUUIDList, productUUID)
+        return DatabaseHelper.instance.getProductsThroughCollection(collectionUUIDList, productUUID,numberOfItems)
     }
 
 

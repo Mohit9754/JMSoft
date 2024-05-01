@@ -19,12 +19,6 @@ import com.jmsoft.databinding.ItemProductImageBinding
 import com.jmsoft.main.activity.DashboardActivity
 import okio.Utf8
 
-/**
- * Product Image Adapter
- *
- * Showing the catalog details
- *
- */
 
 class ProductImageAdapter(
     private val context: Context,

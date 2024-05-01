@@ -73,14 +73,15 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
 
     private lateinit var editProfileDialog: Dialog
 
-    private lateinit var dialogMetalBinding: DialogAddMetalTypeBinding
+    private val dialogMetalBinding by lazy {
+        DialogAddMetalTypeBinding.inflate(LayoutInflater.from(context))
+    }
 
     private var dialogInventory: Dialog? = null
 
     private var isCollectionImageSelected = false
 
-
-    //Gallery Permission Launcher
+    // Gallery Permission Launcher
     private var galleryPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean? ->
@@ -143,7 +144,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
             }
         }
 
-    //Camera Launcher
+    // Camera Launcher
     private var cameraActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -169,8 +170,12 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
         // Inflate the layout for this fragment
         binding = FragmentMetalTypeBinding.inflate(layoutInflater)
 
+        val progressBar = Utils.initProgressDialog(requireActivity())
+
         //set the Clicks And initialization
         init()
+
+        progressBar.dismiss()
 
         return binding.root
     }
@@ -275,7 +280,6 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
             binding.tvEmptyMsg?.text = getString(R.string.metal_type_is_empty)
 
         }
-
     }
 
     // Set Collection Recycler View
@@ -312,7 +316,6 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
             binding.tvEmptyMsg?.text = getString(R.string.collection_is_empty)
 
         }
-
     }
 
     //setting the selector on material card view
@@ -328,17 +331,36 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // Update metal type
     private fun updateMetalType(metalTypeUUID: String, position: Int) {
 
-        Utils.updateMetalType(
-            metalTypeUUID,
-            Utils.capitalizeData(dialogMetalBinding.etMetalType.text.toString())
-        )
-        metalTypeDataList[position].metalTypeName =
-            Utils.capitalizeData(dialogMetalBinding.etMetalType.text.toString())
-        metalTypeAdapter?.notifyItemChanged(position)
+        val metalTypeDataModel = MetalTypeDataModel()
+        metalTypeDataModel.metalTypeUUID = metalTypeUUID
+        metalTypeDataModel.metalTypeName = Utils.capitalizeData(dialogMetalBinding.etMetalType.text.toString())
+
+        val isCollectionExistAccept = Utils.isMetalTypeExistAccept(metalTypeDataModel)
+
+        if (isCollectionExistAccept == true) {
+
+            Utils.showError(
+                requireActivity(), dialogMetalBinding.tvMetalTypeError,
+                getString(R.string.metal_type_already_exist)
+            )
+        } else {
+
+            Utils.updateMetalType(
+                metalTypeUUID,
+                Utils.capitalizeData(dialogMetalBinding.etMetalType.text.toString())
+            )
+            metalTypeDataList[position].metalTypeName =
+                Utils.capitalizeData(dialogMetalBinding.etMetalType.text.toString())
+            metalTypeAdapter?.notifyItemChanged(position)
+
+            dialogInventory?.dismiss()
+        }
     }
 
+    // Update category
     private fun updateCategory(categoryUUID: String, position: Int) {
 
         val categoryDataModel = CategoryDataModel()
@@ -346,15 +368,31 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
         categoryDataModel.categoryName =
             Utils.capitalizeData(dialogMetalBinding.etMetalType.text.toString())
 
-        Utils.updateCategory(categoryDataModel)
+        val isCategoryExistAccept = Utils.isCategoryExistAccept(categoryDataModel)
 
-        categoryDataList[position].categoryName =
-            Utils.capitalizeData(dialogMetalBinding.etMetalType.text.toString())
-        categoryAdapter?.notifyItemChanged(position)
+        if (isCategoryExistAccept == true) {
 
-        Utils.T(requireActivity(), requireActivity().getString(R.string.updated_successfully))
+            Utils.showError(
+                requireActivity(), dialogMetalBinding.tvMetalTypeError,
+                getString(R.string.category_already_exist)
+            )
+        }
+        else {
+
+            Utils.updateCategory(categoryDataModel)
+
+            categoryDataList[position].categoryName =
+                Utils.capitalizeData(dialogMetalBinding.etMetalType.text.toString())
+            categoryAdapter?.notifyItemChanged(position)
+
+            Utils.T(requireActivity(), requireActivity().getString(R.string.updated_successfully))
+
+            dialogInventory?.dismiss()
+        }
     }
 
+
+    // Update collection
     private fun updateCollection(collectionUUID: String, position: Int) {
 
         val collectionDataModel = CollectionDataModel()
@@ -362,16 +400,46 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
         collectionDataModel.collectionName =
             Utils.capitalizeData(dialogMetalBinding.etMetalType.text.toString())
 
-        Utils.updateCollection(collectionDataModel)
+        val imageUri = Utils.getPictureUri(requireActivity(),dialogMetalBinding.ivCollectionImage.drawable.toBitmap())
 
-        collectionDataList[position].collectionName =
-            Utils.capitalizeData(dialogMetalBinding.etMetalType.text.toString())
-        collectionAdapter?.notifyItemChanged(position)
+        collectionDataModel.collectionImageUri = imageUri
 
-        Utils.T(requireActivity(), requireActivity().getString(R.string.updated_successfully))
+//        val progressBar = Utils.initProgressDialog(requireActivity())
+
+        val isCollectionExitAccept = Utils.isCollectionExistAccept(collectionDataModel)
+
+        if (isCollectionExitAccept == true ) {
+
+            Utils.showError(
+                requireActivity(), dialogMetalBinding.tvMetalTypeError,
+                getString(R.string.collection_already_exist)
+            )
+        }
+        else {
+
+            collectionDataList[position].collectionImageUri?.let {
+                Utils.deleteImageFromInternalStorage(requireActivity(),
+                    it ) }
+
+            Utils.updateCollection(collectionDataModel)
+
+            collectionDataList[position].collectionName =
+                Utils.capitalizeData(dialogMetalBinding.etMetalType.text.toString())
+
+            collectionDataList[position].collectionImageUri = imageUri
+
+            collectionAdapter?.notifyItemChanged(position)
+
+            Utils.T(requireActivity(), requireActivity().getString(R.string.updated_successfully))
+
+            dialogInventory?.dismiss()
+
+        }
+//        progressBar.dismiss()
 
     }
 
+    // add metal type
     private fun addMetalType() {
 
         val isMetalTypeExist =
@@ -404,6 +472,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // add category
     private fun addCategory() {
 
         val isCategoryExist =
@@ -435,6 +504,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // Set state of the inventory dialog
     private fun setInventoryDialogState(inventoryUUID: String?, position: Int?) {
 
         if (fragmentState == metalType) {
@@ -474,6 +544,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
                 })
 
             } else {
+
                 dialogMetalBinding.tvTitle.text =
                     requireActivity().getString(R.string.add_collection)
             }
@@ -519,6 +590,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // add collection
     @SuppressLint("NotifyDataSetChanged")
     private fun addCollection() {
 
@@ -549,19 +621,6 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
                 requireActivity().getString(R.string.added_successfully)
             )
 
-//            if (collectionDataList.isEmpty()) {
-//                binding.mcvMetalTypeList?.visibility = View.VISIBLE
-//                binding.llEmptyInventory?.visibility = View.GONE
-//            }
-
-//            collectionDataList.add(0, collectionDataModel)
-//            collectionAdapter?.notifyItemInserted(0)
-            // Use notifyItemInserted for adding at a specific position
-
-            // If needed, scroll the RecyclerView to the added item position
-//            binding.rvMetalType?.scrollToPosition(0)
-
-//            collectionAdapter?.notifyDataSetChanged()
             setCollectionRecyclerView()
 
             dialogInventory?.dismiss()
@@ -578,7 +637,9 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
         dialogInventory?.setCanceledOnTouchOutside(true)
         dialogInventory?.requestWindowFeature(Window.FEATURE_NO_TITLE)
 
-        dialogMetalBinding = DialogAddMetalTypeBinding.inflate(LayoutInflater.from(context))
+        val parent = dialogMetalBinding.root.parent as? ViewGroup
+        parent?.removeView(dialogMetalBinding.root)
+
         dialogInventory?.setContentView(dialogMetalBinding.root)
 
         setInventoryDialogState(inventoryUUID, position)
@@ -597,7 +658,6 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
                     )
                 )
             }
-
 
             errorValidationModels.add(
                 ValidationModel(
@@ -618,7 +678,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
 
                         updateMetalType(inventoryUUID, position)
 
-                        dialogInventory?.dismiss()
+//                        dialogInventory?.dismiss()
 
                     } else {
 
@@ -631,7 +691,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
 
                         updateCollection(inventoryUUID, position)
 
-                        dialogInventory?.dismiss()
+//                        dialogInventory?.dismiss()
 
 
                     } else {
@@ -646,7 +706,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
 
                         updateCategory(inventoryUUID, position)
 
-                        dialogInventory?.dismiss()
+//                        dialogInventory?.dismiss()
 
                     } else {
 
@@ -682,6 +742,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Checks state of the fragment
     private fun checkState() {
 
         // getting the state
@@ -713,10 +774,10 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Set category recycler view
     private fun setCategoryRecyclerView() {
 
         categoryDataList = Utils.getAllCategory()
-
 
         if (categoryDataList.isNotEmpty()) {
 
@@ -748,12 +809,12 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
             binding.tvEmptyMsg?.text = getString(R.string.category_is_empty)
 
         }
-
     }
 
     //set the Clicks And initialization
     private fun init() {
 
+        // Checks state of the fragment
         checkState()
 
         // Set Click on Back Button
@@ -764,6 +825,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Handle all the clicks
     override fun onClick(v: View?) {
 
         // When Back button clicked
@@ -774,6 +836,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
         // When Add Metal type Button click
         else if (v == binding.mcvAddMetalType) {
 
+            // Add Add and Update inventory Dialog
             showInventoryDialog(null, null)
 
         }

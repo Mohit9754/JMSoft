@@ -40,7 +40,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
 
     // For Showing the error
     private var errorValidationModels: MutableList<ValidationModel> = ArrayList()
+
     private lateinit var binding: ActivityLoginBinding
+
     private var isPasswordVisible = false
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -135,7 +137,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
 
     }
 
-    //Validating Login details
+    // Validating Login details
     private fun validate() {
 
         errorValidationModels.clear()
@@ -250,10 +252,5 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         outState.putString(password, binding.etPassword?.text.toString())
         super.onSaveInstanceState(outState)
     }
-
-
-
-
-
 
 }

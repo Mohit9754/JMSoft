@@ -53,7 +53,7 @@
     <string name="device_management">إدارة الجهاز</string>
     <string name="logout">تسجيل خروج</string>
     <string name="royal_gold_ring">خاتم الذهب الملكي</string>
-    <string name="weight">وزن :</string>
+    <string name="weight">الوزن :</string>
     <string name="_2_5_g">2.5 جرام</string>
     <string name="type">يكتب :</string>
     <string name="gold">ذهب</string>
@@ -146,6 +146,7 @@
     <string name="enter_a_valid_zipcode">أدخل رمزًا بريديًا صالحًا</string>
     <string name="added_in_the_cart">تمت إضافته في سلة التسوق</string>
     <string name="removed_from_the_cart">تمت إزالتها من العربة</string>
+    <string name="in_the_same_collection">المجموعة في نفس</string>
     <string name="are_you_sure_you_want_to_delete_this_address_this_action_cannot_be_undone">هل أنت متأكد من حذفهذا العنوان ؟ لا يمكن التراجع عن هذا الإجراء.</string>
 
     <string name="hello_blank_fragment">مرحبا جزء فارغ</string>
@@ -163,7 +164,7 @@
     <string name="edit_collection">تحرير المجموعة</string>
     <string name="enter_collection">أدخل المجموعة</string>
     <string name="are_you_sure_you_want_to_delete_this_collection_this_action_cannot_be_undone">هل أنت متأكد من حذف هذه المجموعة ؟ لا يمكن التراجع عن هذا الإجراء.</string>
-    <string name="add_category">إضافة فئة</string>
+    <string name="add_category">إضافة الفئة</string>
     <string name="edit_category">تحرير الفئة</string>
     <string name="enter_category_name">أدخل اسم الفئة</string>
     <string name="are_you_sure_you_want_to_delete_this_category_this_action_cannot_be_undone">هل أنت متأكد من حذف هذه الفئة ؟ لا يمكن التراجع عن هذا الإجراء.</string>
@@ -185,12 +186,12 @@
     <string name="enter_description">أدخل الوصف</string>
     <string name="silver">فضة</string>
     <string name="select_collections">حدد المجموعات</string>
-    <string name="enter_origin">أدخل الأصل</string>
-    <string name="weight_">الوزن (جرام)</string>
+    <string name="enter_origin">أدخل المصدر</string>
+    <string name="weight_">الوزن (ز)</string>
     <string name="carat_">قيراط</string>
     <string name="enter_product_cost">أدخل تكلفة المنتج</string>
     <string name="enter_product_carat">أدخل قيراط المنتج</string>
-    <string name="enter_product_weight">أدخل وزن المنتج</string>
+    <string name="enter_product_weight">أدخل الوزن المنتج</string>
     <string name="rfid_code">رمز RFID</string>
     <string name="enter_rfid_code">أدخل رمز RFID</string>
     <string name="barcode">الباركود</string>

@@ -13,12 +13,6 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
 import com.jmsoft.databinding.FragmentHomeBinding
 import com.jmsoft.main.activity.DashboardActivity
 
-/**
- * Home Fragment
- *
- * Showing the List Of Options
- *
- */
 class HomeFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentHomeBinding
@@ -33,6 +27,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         // Hide the Search option
         (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.INVISIBLE
 
+        // Set current sate to verification
         (requireActivity() as DashboardActivity).currentState = verification
 
         //set the Clicks And initialization

@@ -1,11 +1,14 @@
 package com.jmsoft.main.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +19,7 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.All
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentProductBinding
 import com.jmsoft.main.activity.DashboardActivity
+import com.jmsoft.main.adapter.CatalogAdapter
 import com.jmsoft.main.adapter.ProductListAdapter
 
 class ProductFragment : Fragment(), View.OnClickListener {
@@ -28,18 +32,24 @@ class ProductFragment : Fragment(), View.OnClickListener {
 
     private var productDataList = ArrayList<ProductDataModel>()
 
+    private var categoryFilterList = ArrayList<ProductDataModel>()
+
     private var selectedProductUUIDList = ArrayList<String>()
 
     private var isRunFilter = false
+
+    private val searchFilterList  = ArrayList<ProductDataModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         // Inflate the layout for this fragment
 
         binding = FragmentProductBinding.inflate(layoutInflater)
 
+        // Show progress bar
         val progressBarDialog = Utils.pdfProgressDialog(requireActivity())
 
         init()
@@ -49,6 +59,7 @@ class ProductFragment : Fragment(), View.OnClickListener {
         return binding.root
     }
 
+    // Set the spinner
     private fun setSpinner() {
 
         val categoryDataList = Utils.getAllCategory()
@@ -80,30 +91,26 @@ class ProductFragment : Fragment(), View.OnClickListener {
                         binding.llEmptyProduct?.visibility = View.GONE
 
                         productListAdapter?.filterProductDataList(productDataList)
-                    } else {
+                        categoryFilterList = productDataList
 
+                        binding.etSearch?.text?.clear()
+
+                    } else {
                         isRunFilter = true
                     }
+
                 } else {
 
-                    val filterDataList =
+                    categoryFilterList =
                         productDataList.filter { it.categoryUUID == categoryDataList[position - 1].categoryUUID } as ArrayList<ProductDataModel>
 
-                    if (filterDataList.isNotEmpty()) {
+                    setCategoryFilterList()
 
-                        binding.mcvProductList?.visibility = View.VISIBLE
-                        binding.llEmptyProduct?.visibility = View.GONE
+                    isRunFilter = true
+                    binding.etSearch?.text?.clear()
 
-                        productListAdapter?.filterProductDataList(filterDataList)
-                    } else {
-
-                        binding.mcvProductList?.visibility = View.GONE
-                        binding.llEmptyProduct?.visibility = View.VISIBLE
-
-                    }
                 }
 
-                // Do something with the selected item
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -112,6 +119,23 @@ class ProductFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // Set category filter list
+    private fun setCategoryFilterList() {
+
+        if (categoryFilterList.isNotEmpty()) {
+
+            binding.mcvProductList?.visibility = View.VISIBLE
+            binding.llEmptyProduct?.visibility = View.GONE
+
+            productListAdapter?.filterProductDataList(categoryFilterList)
+
+        } else {
+            binding.mcvProductList?.visibility = View.GONE
+            binding.llEmptyProduct?.visibility = View.VISIBLE
+        }
+    }
+
+    // Checks fragment state
     private fun checkState() {
 
         collectionUUID = arguments?.getString(Constants.collectionUUID)
@@ -122,20 +146,114 @@ class ProductFragment : Fragment(), View.OnClickListener {
         } else {
             binding.tvTitle?.text = getString(R.string.product)
         }
+
+    }
+
+    // make the isRunFilter false
+    override fun onResume() {
+        super.onResume()
+        isRunFilter = false
+    }
+
+    // Set search
+    private fun setSearch() {
+
+        binding.etSearch?.addTextChangedListener( object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                searchFilterList.clear()
+
+                if (binding.etSearch?.text?.isNotEmpty() == true) {
+
+                    for (product in categoryFilterList) {
+
+                        if (product.productName?.contains(
+                                binding.etSearch?.text.toString().trim(),
+                                true
+                            ) == true
+                            ||
+                            product.productDescription?.contains(
+                                binding.etSearch?.text.toString().trim(),
+                                true
+                            ) == true
+                            ||
+                            product.productOrigin?.contains(
+                                binding.etSearch?.text.toString().trim(),
+                                true
+                            ) == true
+                            ||
+                            product.productRFIDCode?.contains(
+                                binding.etSearch?.text.toString().trim(),
+                                true
+                            ) == true
+                            ||
+                            product.productBarcodeData?.contains(
+                                binding.etSearch?.text.toString().trim(),
+                                true
+                            ) == true
+
+                        ) {
+                            searchFilterList.add(product)
+                        }
+                    }
+
+                    if (searchFilterList.isNotEmpty()) {
+
+                        binding.mcvProductList?.visibility = View.VISIBLE
+                        binding.llEmptyProduct?.visibility = View.GONE
+
+                        productListAdapter?.filterProductDataList(searchFilterList)
+
+                    }
+                    else {
+
+                        binding.mcvProductList?.visibility = View.GONE
+                        binding.llEmptyProduct?.visibility = View.VISIBLE
+                    }
+                }
+
+                else {
+                    setCategoryFilterList()
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+
+        })
     }
 
     private fun init() {
 
+        // Checks fragment state
         checkState()
 
-        setSpinner()
-
+        // Set Product Recycler View
         setProductRecyclerView()
 
+        // Set the spinner
+        setSpinner()
+
+        // Set search
+        setSearch()
+
+        // Set focus change listener on edittext search
+        binding.etSearch?.let {
+            binding.mcvSearch?.let { it1 ->
+                Utils.setFocusChangeListener(requireActivity(),
+                    it, it1
+                )
+            }
+        }
+
+        // Set click on back button
         binding.mcvBackBtn?.setOnClickListener(this)
 
+        // Set click on add product button
         binding.mcvAddProduct?.setOnClickListener(this)
 
+        // Set click on add button
         binding.mcvAdd?.setOnClickListener(this)
 
     }
@@ -146,6 +264,8 @@ class ProductFragment : Fragment(), View.OnClickListener {
         productDataList = if (collectionUUID != null) Utils.getAllProductsAcceptCollection(
             collectionUUID!!
         ) else Utils.getAllProducts()
+
+        categoryFilterList = productDataList
 
         if (productDataList.isNotEmpty()) {
 
@@ -173,14 +293,22 @@ class ProductFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // Handle all the clicks
     override fun onClick(v: View?) {
 
+        // Clicked on back button
         if (v == binding.mcvBackBtn) {
             (requireActivity() as DashboardActivity).navController?.popBackStack()
 
-        } else if (v == binding.mcvAddProduct) {
+        }
+
+        // Clicked on add product button
+        else if (v == binding.mcvAddProduct) {
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.productInventory)
-        } else if (v == binding.mcvAdd) {
+        }
+
+        // Clicked on add button
+        else if (v == binding.mcvAdd) {
 
             for (selectedUUID in selectedProductUUIDList) {
 
@@ -200,7 +328,6 @@ class ProductFragment : Fragment(), View.OnClickListener {
                             productDataModel.productUUID = selectedUUID
                             productDataModel.collectionUUID =
                                 listOfCollection?.joinToString()?.replace(" ", "")
-
 
                             Utils.updateCollectionInProduct(productDataModel)
 

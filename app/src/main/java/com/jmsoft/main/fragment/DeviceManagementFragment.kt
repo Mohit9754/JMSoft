@@ -43,15 +43,6 @@ import com.jmsoft.main.`interface`.DeviceFoundCallback
 import com.jmsoft.main.model.BluetoothScanModel
 import com.jmsoft.main.model.DeviceModel
 
-/**
- * DeviceManagement Fragment
- *
- * Showing the Connected Device list
- * Ask for bluetooth permission if require
- * Turn on bluetooth
- *
- */
-
 class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentDeviceManagementBinding
@@ -63,6 +54,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     private var isAddDeviceClicked = false
     private var addedDeviceList: ArrayList<DeviceModel> = ArrayList()
 
+    // Permission for above 11 version
     @RequiresApi(Build.VERSION_CODES.S)
     val permissionsForVersionAbove11 = arrayOf(
         Manifest.permission.BLUETOOTH,
@@ -73,6 +65,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         Manifest.permission.ACCESS_FINE_LOCATION
     )
 
+    // Permission for below 12 version
     private val permissionsForVersionBelow12 = arrayOf(
 
         Manifest.permission.BLUETOOTH,
@@ -88,12 +81,11 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             if (result.resultCode == AppCompatActivity.RESULT_OK) {
 
                 //if Add device clicked
-                if (isAddDeviceClicked){
+                if (isAddDeviceClicked) {
                     // Show Add device bottom sheet
                     addDeviceBottomSheet()
                     isAddDeviceClicked = false
-                }
-                else {
+                } else {
 
                     //set Up the Device list
                     setRecyclerOfDeviceList()
@@ -114,10 +106,11 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
         //set the Clicks And initialization
         init()
+
         return binding.root
     }
 
-    // Setting the Device list through Recycler View
+    // Set the Device list through Recycler View
     private fun setRecyclerOfDeviceList() {
 
         //get User UserId
@@ -148,8 +141,8 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    //Set the Status of the connected device
-    private fun  setDeviceStatus() {
+    // Set the Status of the connected device
+    private fun setDeviceStatus() {
 
         BluetoothUtils.getConnectedDevice(requireActivity(), object : ConnectedDeviceCallback {
 
@@ -170,7 +163,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         })
     }
 
-    //Checks All the necessary permission related to bluetooth
+    // Checks All the necessary permission related to bluetooth
     private var customPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -208,12 +201,11 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             if (BluetoothUtils.isEnableBluetooth(requireActivity())) {
 
                 //if Add device clicked
-                if (isAddDeviceClicked){
+                if (isAddDeviceClicked) {
                     // Show Add device bottom sheet
                     addDeviceBottomSheet()
                     isAddDeviceClicked = false
-                }
-                else {
+                } else {
                     //set Up the Device list
                     setRecyclerOfDeviceList()
                 }
@@ -252,17 +244,20 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         dialog.show()
     }
 
-    //set the Clicks And initialization
+    // set the Clicks And initialization
     private fun init() {
 
         //Checks the Android Version And  Launch Custom Permission ,according to Version
         checkAndroidVersionAndLaunchPermission()
 
-        //set click on Add device button
+        // Set click on Add device button
         binding.mcvAddDevice?.setOnClickListener(this)
-        //set click on add device button when no device is there
+
+        // Set click on add device button when no device is there
         binding.mcvAddFirstDevice?.setOnClickListener(this)
+
         binding.mcvNoDeviceBackBtn?.setOnClickListener(this)
+
         binding.mcvBackBtn?.setOnClickListener(this)
     }
 
@@ -329,7 +324,12 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
 
         val bluetoothScanList = ArrayList<BluetoothScanModel>()
-        val adapter = BluetoothScanAdapter(requireActivity(), bluetoothScanList, deviceType,bottomSheetBluetoothScan)
+        val adapter = BluetoothScanAdapter(
+            requireActivity(),
+            bluetoothScanList,
+            deviceType,
+            bottomSheetBluetoothScan
+        )
         bottomSheetBinding.rvBtScanList.layoutManager =
             LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         bottomSheetBinding.rvBtScanList.adapter = adapter
@@ -383,7 +383,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             isAddDeviceClicked = true
             //Checks the Android Version And  Launch Custom Permission ,according to Version
             checkAndroidVersionAndLaunchPermission()
-        }else if (v == binding.mcvBackBtn || v == binding.mcvNoDeviceBackBtn) {
+        } else if (v == binding.mcvBackBtn || v == binding.mcvNoDeviceBackBtn) {
 
             (requireActivity() as DashboardActivity).navController?.popBackStack()
         }

@@ -42,10 +42,10 @@ class CartFragment : Fragment(), View.OnClickListener {
 
     var binding: FragmentCartBinding? = null
 
-    //Validation Mode object
+    // Validation Mode object
     private var errorValidationModels: MutableList<ValidationModel> = ArrayList()
 
-    //Current state for recreating the fragment
+    // Current state for recreating the fragment
     private var currentState: String = verification
 
     // Selected Address Data Model

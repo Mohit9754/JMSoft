@@ -122,7 +122,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    //set the Clicks And initialization
+    // set the Clicks And initialization
     private fun init() {
 
         //set Password for  current Language
@@ -137,39 +137,39 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         // getting the userUUID
         val userUUID = arguments?.getString(Constants.userUUID)
 
-        //if userId is not null then we have to update the user details
+        // if userId is not null then we have to update the user details
         if (userUUID != null) {
             // Setting the user details
             setUserDetails(userUUID)
         }
 
-        //Setting  Click on Save Button
+        // Setting  Click on Save Button
         binding.mcvSave?.setOnClickListener(this)
 
-        //Removing the Error When text Entered
+        // Removing the Error When text Entered
         setTextChangeLis(binding.etFirstName!!, binding.tvFirstNameError!!)
         setTextChangeLis(binding.etLastName!!, binding.tvLastNameError!!)
         setTextChangeLis(binding.etPhoneNumber!!, binding.tvPhoneNumberError!!)
         setTextChangeLis(binding.etEmailAddress!!, binding.tvEmailAddressError!!)
         setTextChangeLis(binding.etPassword!!, binding.tvPasswordError!!)
 
-        //Setting the Selector on Material Card View When EditText has focus
+        // Setting the Selector on Material Card View When EditText has focus
         setFocusChangeLis(binding.etFirstName!!, binding.mcvFirstName!!)
         setFocusChangeLis(binding.etLastName!!, binding.mcvLastName!!)
         setFocusChangeLis(binding.etPhoneNumber!!, binding.mcvPhoneNumber!!)
         setFocusChangeLis(binding.etEmailAddress!!, binding.mcvEmailAddress!!)
         setFocusChangeLis(binding.etPassword!!, binding.mcvPassword!!)
 
-        //Setting Click on password Visibility icon
+        // Setting Click on password Visibility icon
         binding.ivPasswordVisibility?.setOnClickListener(this)
 
-        //set Click on Back Btn
+        // set Click on Back Btn
         binding.mcvBackBtn?.setOnClickListener(this)
 
     }
 
 
-    //Validating Sign Up details
+    // Validating Sign Up details
     private fun validate() {
 
         errorValidationModels.clear()
@@ -278,23 +278,23 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
                     if (updateInSession){
 
-                        //Updating user details in the session table
+                        // Updating user details in the session table
                         val updatedUserData = Utils.getUserDetailsThroughUserUUID(userUUID)
                         Utils.insertDataInSessionTable(updatedUserData)
                     }
                 }
-                //Back to Setting fragment
+                // Back to Setting fragment
                 (context as DashboardActivity).navController?.popBackStack()
 
 
             } else {
-                //Showing Email Already Exist Error
+                // Showing Email Already Exist Error
                 showAlreadyExistError(
                     binding.tvEmailAddressError!!, getString(R.string.email_already_exist)
                 )
             }
         } else {
-            //Showing Mobile Number Already Exist Error
+            // Showing Mobile Number Already Exist Error
             showAlreadyExistError(
                 binding.tvPhoneNumberError!!, getString(R.string.mobile_number_already_exist)
             )
@@ -310,7 +310,6 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     }
 
     // Handles All the Clicks
-
     override fun onClick(v: View?) {
 
         //when Save button Click
@@ -329,10 +328,12 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
             (requireActivity() as DashboardActivity).navController?.popBackStack()
         }
 
+        // Clicked on phone number
         else if (v == binding.etPhoneNumber){
             Utils.T(requireActivity(), getString(R.string.only_admin_can_edit_phone_number))
         }
 
+        // Clicked on email address
         else if (v == binding.etEmailAddress){
             Utils.T(requireActivity(), getString(R.string.only_admin_can_edit_email_address))
         }

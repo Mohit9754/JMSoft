@@ -19,9 +19,8 @@ import com.jmsoft.databinding.ItemInventoryBinding
 import com.jmsoft.main.`interface`.EditInventoryCallback
 
 /**
- * MetalType Adapter
+ * Category List Adapter
  *
- * Showing the catalog details
  *
  */
 
@@ -44,8 +43,6 @@ class CategoryListAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(categoryList[position],position)
     }
-
-
 
     // Show Category Delete Dialog
     @SuppressLint("NotifyDataSetChanged")
@@ -97,11 +94,13 @@ class CategoryListAdapter(
     inner class MyViewHolder(private val binding: ItemInventoryBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        // Product Data
+        // Category Data
         private lateinit var categoryData: CategoryDataModel
 
+        // Category position
         private var position:Int = -1
 
+        // Bind method
         fun bind(categoryData: CategoryDataModel,position: Int) {
 
             this.categoryData = categoryData
@@ -123,7 +122,7 @@ class CategoryListAdapter(
             binding.tvMetalType.text = categoryData.categoryName
         }
 
-        //Handles All the Clicks
+        // Handle All the Clicks
         @SuppressLint("NotifyDataSetChanged")
         override fun onClick(v: View?) {
 

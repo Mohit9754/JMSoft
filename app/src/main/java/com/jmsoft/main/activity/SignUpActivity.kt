@@ -60,9 +60,11 @@ class SignUpActivity : BaseActivity(), View.OnClickListener {
         binding.etEmailAddress!!.setText(savedInstanceState?.getString(email) ?: "")
         binding.etPassword!!.setText(savedInstanceState?.getString(password) ?: "")
 
+        setContentView(binding.root)
+
         //set the Clicks And initialization
         init()
-        setContentView(binding.root)
+
     }
 
     // Removing Error when text entered
@@ -252,8 +254,9 @@ class SignUpActivity : BaseActivity(), View.OnClickListener {
                 getString(R.string.mobile_number_already_exist))
         }
     }
+
     // Showing email and phone number already exist error
-    fun showAlreadyExistError(textView: TextView,msg:String){
+    private fun showAlreadyExistError(textView: TextView,msg:String){
 
         textView.visibility  = View.VISIBLE
         textView.text  = msg

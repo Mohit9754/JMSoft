@@ -31,6 +31,7 @@ import com.jmsoft.databinding.ActivityDashboardBinding
 class DashboardActivity : BaseActivity(), View.OnClickListener {
 
     private val activity: Activity = this@DashboardActivity
+
     var binding: ActivityDashboardBinding? = null
     var navController: NavController? = null
 
@@ -158,7 +159,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
     }
 
     //Managing Back press
-    val onBackPressedCallback = object : OnBackPressedCallback(true) {
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
 
         override fun handleOnBackPressed() {
 

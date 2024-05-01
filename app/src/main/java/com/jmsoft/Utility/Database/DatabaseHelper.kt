@@ -120,6 +120,23 @@ class DatabaseHelper(cx: Context) {
         return result
     }
 
+    // Check if Metal type exist in the metal type table accept metalTypeUUId
+    fun isMetalTypeExistAccept(metalTypeDataModel: MetalTypeDataModel): Boolean? {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT * FROM ${MetalTypeDataModel.TABLE_NAME_METAL_TYPE} WHERE ${MetalTypeDataModel.Key_metalTypeUUID} != ? AND ${MetalTypeDataModel.Key_metalTypeName} == ?",
+            arrayOf(metalTypeDataModel.metalTypeUUID,metalTypeDataModel.metalTypeName)
+        )
+
+        val result = cursor?.moveToFirst()
+
+        cursor?.close()
+
+        return result
+    }
+
 
     // Deleting Metal Type from the Product table
     private fun deleteMetalTypeUUIDFromProductTable(metalTypeUUID: String){
@@ -549,7 +566,8 @@ class DatabaseHelper(cx: Context) {
     @SuppressLint("Range")
     fun getProductsThroughCollection(
         collectionUUIDList: List<String>,
-        productUUID: String
+        productUUID: String,
+        numberOfItems:Int
     ): ArrayList<ProductDataModel> {
 
         read()
@@ -559,9 +577,10 @@ class DatabaseHelper(cx: Context) {
             "${ProductDataModel.Key_collectionUUID} LIKE ?"
         }
 
-        val query = "SELECT DISTINCT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} != ? AND $likeConditions"
+        val query = "SELECT DISTINCT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} != ? AND $likeConditions LIMIT $numberOfItems"
 
         val queryArgs = mutableListOf<String>()
+
         queryArgs.add(productUUID)  // Add the productUUID as the first argument
 
         // Add the LIKE pattern arguments for collectionUUIDList
@@ -1117,6 +1136,8 @@ class DatabaseHelper(cx: Context) {
         val collectionValue = ContentValues().apply {
 
             put(CollectionDataModel.Key_collectionName, collectionDataModel.collectionName)
+            put(CollectionDataModel.Key_collectionImageUri, collectionDataModel.collectionImageUri)
+
         }
 
         db?.update(
@@ -1171,15 +1192,15 @@ class DatabaseHelper(cx: Context) {
         return result
     }
 
-    private fun deleteCategoryUUIDFromProductTable(categoryUUID: String){
-
+    // Delete collection uuid from the product table
+    fun deleteCollectionUUIDFromProductTable(collectionUUID: String){
         open()
 
         val contentValues = ContentValues()
-        contentValues.put(ProductDataModel.Key_categoryUUID,"")
+        contentValues.put(ProductDataModel.Key_collectionUUID,"")
 
-        db?.update(ProductDataModel.TABLE_NAME_PRODUCT,contentValues,"${ProductDataModel.Key_categoryUUID} = ?",
-            arrayOf(categoryUUID)
+        db?.update(ProductDataModel.TABLE_NAME_PRODUCT,contentValues,"${ProductDataModel.Key_collectionUUID} LIKE ?",
+            arrayOf("%$collectionUUID%")
         )
 
     }
@@ -1322,6 +1343,22 @@ class DatabaseHelper(cx: Context) {
         return result
     }
 
+    /* Check if Category exist in the category table accept category uuid */
+    @SuppressLint("Recycle")
+    fun isCategoryExistAccept(categoryDataModel: CategoryDataModel): Boolean? {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT * FROM ${CategoryDataModel.TABLE_NAME_CATEGORY} WHERE ${CategoryDataModel.Key_categoryUUID} != ? AND ${CategoryDataModel.Key_categoryName} == ?",
+            arrayOf(categoryDataModel.categoryUUID,categoryDataModel.categoryName)
+        )
+
+        val result = cursor?.moveToFirst()
+        cursor?.close()
+        return result
+    }
+
     // Check if Collection exist in the category table
     @SuppressLint("Recycle")
     fun isCollectionExist(collectionName:String): Boolean? {
@@ -1331,6 +1368,22 @@ class DatabaseHelper(cx: Context) {
         val cursor = db?.rawQuery(
             "SELECT * FROM ${CollectionDataModel.TABLE_NAME_COLLECTION} WHERE ${CollectionDataModel.Key_collectionName} == ?",
             arrayOf(collectionName)
+        )
+
+        val result = cursor?.moveToFirst()
+        cursor?.close()
+        return result
+    }
+
+    /* Check if Collection exist in the category table accept collectionUUID */
+    @SuppressLint("Recycle")
+    fun isCollectionExistAccept(collectionDataModel: CollectionDataModel): Boolean? {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT * FROM ${CollectionDataModel.TABLE_NAME_COLLECTION} WHERE ${CollectionDataModel.Key_collectionUUID} != ? AND ${CollectionDataModel.Key_collectionName} == ?",
+            arrayOf(collectionDataModel.collectionUUID,collectionDataModel.collectionName)
         )
 
         val result = cursor?.moveToFirst()

@@ -20,12 +20,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/**
- * Catalog Fragment
- *
- * Showing the Catalog Details
- *
- */
 class CatalogFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentCatalogBinding
@@ -45,6 +39,7 @@ class CatalogFragment : Fragment(), View.OnClickListener {
         // Inflate the layout for this fragment
         binding = FragmentCatalogBinding.inflate(layoutInflater)
 
+        // Show progress bar
         val progressBarDialog = Utils.initProgressDialog(requireActivity())
 
         //set the Clicks And initialization
@@ -83,6 +78,7 @@ class CatalogFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // check if catalog list is empty
     private fun checkEmptyList(){
 
         if (productList.isNotEmpty()) {
@@ -159,8 +155,6 @@ class CatalogFragment : Fragment(), View.OnClickListener {
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
                     filterProductList.clear()
-
-                    Utils.E(s.toString())
 
                     for (product in productList){
 

@@ -224,6 +224,8 @@
     <string name="special_characters_are_not_allowed">Special characters are not allowed</string>
     <string name="price">Price</string>
     <string name="enter_product_price">Enter product price</string>
+    <string name="in_the_same_collection">In the same collection</string>
+    <string name="explore_collection">Explore Collection</string>
 
 
 </resources>

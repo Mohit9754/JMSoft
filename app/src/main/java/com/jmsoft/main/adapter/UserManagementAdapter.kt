@@ -24,14 +24,6 @@ import com.jmsoft.databinding.ItemUserManagementBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.fragment.UserManagementFragment
 
-
-/**
- * UserManagement list Adapter
- *
- *
- *
- */
-
 class UserManagementAdapter(
     private val context: Context,
     private val userList: ArrayList<UserDataModel>,
@@ -50,8 +42,9 @@ class UserManagementAdapter(
         holder.bind(userList[position],position)
     }
 
+    // Show delete user dialog
     @SuppressLint("NotifyDataSetChanged")
-    private fun showDeleteDialog(userUUID:String,position: Int){
+    private fun showDeleteUserDialog(userUUID:String,position: Int){
 
         val dialog = Dialog(context)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -130,8 +123,8 @@ class UserManagementAdapter(
             // Click on Delete Button
             if (v == binding.ivDelete) {
 
-                //Showing Delete Dialog
-                showDeleteDialog(userDataModel.userUUID!!,position)
+                // Show delete user dialog
+                userDataModel.userUUID?.let { showDeleteUserDialog(it,position) }
             }
 
             //Click on Edit Profile Button
@@ -140,7 +133,7 @@ class UserManagementAdapter(
                 val bundle = Bundle()
 
                 //Giving the userUUID
-                bundle.putString(userUUID, userDataModel.userUUID!!)
+                bundle.putString(userUUID, userDataModel.userUUID)
 
                 //Navigate to Edit Profile
                 (context as DashboardActivity).navController?.navigate(R.id.editProfile,bundle)
