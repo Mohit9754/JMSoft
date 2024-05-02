@@ -52,7 +52,7 @@ class Validation {
 
                 Type.ImageSelect -> validationCheck = isImageSelected(context,validationModel.isImageSelected)
                 
-                Type.Barcode -> validationCheck = isBarCodeGenerate(context,validationModel.arrayListSize)
+                Type.Barcode -> validationCheck = isBarCodeGenerate(context,validationModel.arrayListSize,validationModel.editText)
 
                 Type.AtLeastTwo -> validationCheck = isTwoImageSelected(context,validationModel.arrayListSize)
 
@@ -138,10 +138,12 @@ class Validation {
         }
     }
     
-    private fun isBarCodeGenerate(context: Context,arrayListSize: Int?): Boolean {
+    private fun isBarCodeGenerate(context: Context,arrayListSize: Int?,editText: EditText?): Boolean {
         
         return if(arrayListSize == 0){
             errorMessage = context.getString(R.string.please_generate_barcode)
+            EditTextPointer = editText
+
             false
 
         } else {

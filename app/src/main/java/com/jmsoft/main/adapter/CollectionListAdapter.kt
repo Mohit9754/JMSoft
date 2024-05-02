@@ -13,6 +13,7 @@ import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CollectionDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
@@ -177,6 +178,8 @@ class CollectionListAdapter(
 
             // Clicked on collection
             else if (v == binding.mcvInventory) {
+
+                GetProgressBar.getInstance(context)?.show()
 
                 val bundle = Bundle()
 

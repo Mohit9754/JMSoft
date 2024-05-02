@@ -20,12 +20,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_Scanner
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_tag_Printer
 import com.jmsoft.basic.UtilityTools.Constants.Companion.ticket_Printer
@@ -42,6 +44,8 @@ import com.jmsoft.main.`interface`.ConnectedDeviceCallback
 import com.jmsoft.main.`interface`.DeviceFoundCallback
 import com.jmsoft.main.model.BluetoothScanModel
 import com.jmsoft.main.model.DeviceModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
@@ -105,7 +109,10 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         binding = FragmentDeviceManagementBinding.inflate(layoutInflater)
 
         //set the Clicks And initialization
-        init()
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            init()
+        }
 
         return binding.root
     }
@@ -245,10 +252,12 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     }
 
     // set the Clicks And initialization
-    private fun init() {
+    private suspend fun init() {
 
         //Checks the Android Version And  Launch Custom Permission ,according to Version
-        checkAndroidVersionAndLaunchPermission()
+        val job = lifecycleScope.launch(Dispatchers.Main) {
+            checkAndroidVersionAndLaunchPermission()
+        }
 
         // Set click on Add device button
         binding.mcvAddDevice?.setOnClickListener(this)
@@ -259,6 +268,11 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         binding.mcvNoDeviceBackBtn?.setOnClickListener(this)
 
         binding.mcvBackBtn?.setOnClickListener(this)
+
+        job.join()
+
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
+
     }
 
     //Checks the Android Version And  Launch Custom Permission ,according to Version

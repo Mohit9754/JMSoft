@@ -18,6 +18,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.Database.UserDataModel
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
@@ -166,6 +167,8 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         // set Click on Back Btn
         binding.mcvBackBtn?.setOnClickListener(this)
 
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
+
     }
 
 
@@ -203,7 +206,6 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 Validation.Type.Empty, binding.etPassword, binding.tvPasswordError
             )
         )
-
 
         val validation: Validation? = Validation.instance
         val resultReturn: ResultReturn? =

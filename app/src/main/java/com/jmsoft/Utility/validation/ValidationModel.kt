@@ -36,10 +36,11 @@ class ValidationModel {
         this.editText1 = editText1
     }
 
-    constructor(type: Validation.Type?, arrayListSize:Int?, textView: TextView?) {
+    constructor(type: Validation.Type?, arrayListSize:Int?, textView: TextView?,editText: EditText?) {
         this.type = type
         this.arrayListSize = arrayListSize
         this.errorTextView = textView
+        this.editText = editText
     }
 
     constructor(type: Validation.Type?, field: String?, errorMessage: String?) {

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.jmsoft.R
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
 import com.jmsoft.databinding.FragmentHomeBinding
@@ -51,6 +52,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
         // Set Click on Inventory option
         binding.mcvInventory?.setOnClickListener(this)
 
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
+
     }
 
     //Handles All the Clicks
@@ -58,6 +61,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         // Navigate to Catalog Fragment
         if (v == binding.mcvCatalog) {
+
+            // Show progress bar
+            GetProgressBar.getInstance(requireActivity())?.show()
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.catalog)
         }
@@ -69,6 +75,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         // Navigate to Cart Fragment
         else if (v == binding.mcvPurchasing) {
+
+            GetProgressBar.getInstance(requireActivity())?.show()
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.cart)
 

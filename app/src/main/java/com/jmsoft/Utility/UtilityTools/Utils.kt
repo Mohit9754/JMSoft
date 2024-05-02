@@ -655,7 +655,7 @@ object Utils {
     }
 
     // Add Product in Product table
-    fun addProduct(productDataModel: ProductDataModel) {
+    suspend fun addProduct(productDataModel: ProductDataModel) {
         DatabaseHelper.instance.addProduct(productDataModel)
     }
 
@@ -675,7 +675,7 @@ object Utils {
     }
 
     //Get All Products of particular Collection  from the Product table
-    fun getProductsThroughCollection(
+    suspend fun getProductsThroughCollection(
         collectionUUIDList: List<String>,
         productUUID: String,
         numberOfItems:Int
@@ -690,7 +690,7 @@ object Utils {
     }
 
     //Get All Products from the Product table
-    fun getAllProducts(): ArrayList<ProductDataModel> {
+    suspend fun getAllProducts(): ArrayList<ProductDataModel> {
         return DatabaseHelper.instance.getAllProducts()
     }
 
@@ -701,7 +701,7 @@ object Utils {
 
 
     /* Get All Products from the Product table Accept the collection */
-    fun getAllProductsAcceptCollection(collectionUUID: String): ArrayList<ProductDataModel> {
+     suspend fun getAllProductsAcceptCollection(collectionUUID: String): ArrayList<ProductDataModel> {
         return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUID)
     }
 
@@ -761,12 +761,12 @@ object Utils {
     }
 
     //Getting the Product through Product UUID
-    fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
+    suspend fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
         return DatabaseHelper.instance.getProductThroughProductUUID(productUUID)
     }
 
     // update Product in the Product table
-    fun updateProduct(productDataModel: ProductDataModel) {
+    suspend fun updateProduct(productDataModel: ProductDataModel) {
          DatabaseHelper.instance.updateProduct(productDataModel)
     }
 
@@ -1498,7 +1498,6 @@ object Utils {
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setCanceledOnTouchOutside(false)
         dialog.setCancelable(false)
-        dialog.show()
         return dialog
     }
 

@@ -564,7 +564,7 @@ class DatabaseHelper(cx: Context) {
 
     //Get All Products of particular Collection  from the Product table
     @SuppressLint("Range")
-    fun getProductsThroughCollection(
+    suspend fun getProductsThroughCollection(
         collectionUUIDList: List<String>,
         productUUID: String,
         numberOfItems:Int
@@ -860,7 +860,7 @@ class DatabaseHelper(cx: Context) {
 
     //Get All Products from the Product table
     @SuppressLint("Range")
-    fun getAllProducts(): ArrayList<ProductDataModel> {
+    suspend fun getAllProducts(): ArrayList<ProductDataModel> {
 
         read()
 
@@ -983,7 +983,7 @@ class DatabaseHelper(cx: Context) {
 
     /* Get All Products from the Product table Accept the collection */
     @SuppressLint("Range")
-    fun getAllProductsAcceptCollection(collectionUUID: String): ArrayList<ProductDataModel> {
+    suspend fun getAllProductsAcceptCollection(collectionUUID: String): ArrayList<ProductDataModel> {
 
         read()
 
@@ -1044,7 +1044,7 @@ class DatabaseHelper(cx: Context) {
 
     //Getting the Product through Product UUID
     @SuppressLint("Range", "Recycle")
-    fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
+    suspend fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
 
         read()
 
@@ -1271,7 +1271,7 @@ class DatabaseHelper(cx: Context) {
 
 
     //add Product in the Product table
-    fun addProduct(productDataModel: ProductDataModel) {
+    suspend fun addProduct(productDataModel: ProductDataModel) {
 
         open()
 
@@ -1299,7 +1299,7 @@ class DatabaseHelper(cx: Context) {
     }
 
     // update Product in the Product table
-    fun updateProduct(productDataModel: ProductDataModel) {
+    suspend fun updateProduct(productDataModel: ProductDataModel) {
 
         open()
 

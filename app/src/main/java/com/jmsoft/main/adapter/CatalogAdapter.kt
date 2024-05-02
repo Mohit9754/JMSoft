@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
 import com.jmsoft.basic.UtilityTools.Utils
@@ -38,7 +39,7 @@ class CatalogAdapter(
     override fun getItemCount() = productList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(productList[position])
+        holder.bind(productList[position],position)
     }
 
     inner class MyViewHolder(private val binding: ItemCatalogBinding) :
@@ -53,9 +54,12 @@ class CatalogAdapter(
         // Cart Product UUID
         private var cartProductUUID: String? = null
 
-        fun bind(productData: ProductDataModel) {
+        private var position = -1
+
+        fun bind(productData: ProductDataModel,position: Int) {
 
             this.productData = productData
+            this.position = position
 
             //Set the Product name
             setProductName()
@@ -89,6 +93,17 @@ class CatalogAdapter(
 
             //Setting Click on CartStatus
             binding.mcvCartStatus.setOnClickListener(this)
+
+            // Dismiss progress bar
+            dismissProgressBar()
+        }
+
+        // Dismiss progress bar
+        private fun dismissProgressBar() {
+
+            if (position+1 == productList.size) {
+                GetProgressBar.getInstance(context)?.dismiss()
+            }
         }
 
         // Getting Cart Product UUID for Deleting the product from the cart
@@ -190,6 +205,8 @@ class CatalogAdapter(
 
             // Click on Catalog item
             if (v == binding.mcvCatalogItem) {
+
+                GetProgressBar.getInstance(context)?.show()
 
                 val bundle = Bundle()
                 //Giving the product UUID

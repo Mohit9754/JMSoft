@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.productSectionHeight
 import com.jmsoft.basic.UtilityTools.Utils
@@ -29,7 +30,9 @@ import com.jmsoft.main.adapter.CatalogAdapter
 import com.jmsoft.main.adapter.ProductCollectionAdapter
 import com.jmsoft.main.adapter.ProductImageAdapter
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -43,8 +46,6 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
     // Flag variable for checking if Product Exist In Cart
     private var isProductExistInCart = false
-
-    private var progressBarDialog:Dialog? = null
 
     private var heightOfllProductSection:Int? = null
 
@@ -79,7 +80,9 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
         (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.GONE
 
         // set the Clicks , initialization And Setup
-        init()
+        lifecycleScope.launch(Dispatchers.Main){
+            init()
+        }
 
         return binding.root
     }
@@ -117,7 +120,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     }
 
     // Set up collection Recycler view
-    private fun setUpCollectionItemRecyclerView(collectionUUID: String, productUUID: String) {
+    private suspend fun setUpCollectionItemRecyclerView(collectionUUID: String, productUUID: String) {
 
         if (collectionUUID.isNotEmpty()) {
 
@@ -127,36 +130,48 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
             collectionUUIDData = collectionUUIDList?.get(0).toString()
 
-            binding.ivCollectionImage?.setImageBitmap(collectionData?.collectionImageUri?.let {
-                Utils.getImageFromInternalStorage(requireActivity(),
-                    it
-                )
-            })
-
             val totalScreenWidth = Utils.getScreenWidth(requireActivity())
 
             val noOfItems = if (totalScreenWidth > 1600) 3 else 2
 
-            val productList =
-                collectionUUIDList?.let { Utils.getProductsThroughCollection(it, productUUID,noOfItems) }
+            val result =
+                collectionUUIDList?.let { lifecycleScope.async(Dispatchers.IO) {
+                    return@async Utils.getProductsThroughCollection(it, productUUID,noOfItems)
+                } }
 
-            if (productList?.isNotEmpty() == true) {
+            val productList = result?.await()
 
-                binding.mcvCollection?.visibility  = View.VISIBLE
+            withContext(Dispatchers.Main) {
 
-                val adapter = ProductCollectionAdapter(requireActivity(), productList)
+                binding.ivCollectionImage?.setImageBitmap(collectionData?.collectionImageUri?.let {
+                    Utils.getImageFromInternalStorage(requireActivity(),
+                        it
+                    )
+                })
 
-                binding.rvCollection?.layoutManager =
-                    LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
-                binding.rvCollection?.adapter = adapter
+                if (productList?.isNotEmpty() == true) {
+
+                    binding.mcvCollection?.visibility  = View.VISIBLE
+
+                    val adapter = ProductCollectionAdapter(requireActivity(), productList)
+
+                    binding.rvCollection?.layoutManager =
+                        LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
+                    binding.rvCollection?.adapter = adapter
+
+                }
+                else {
+                    binding.mcvCollection?.visibility  = View.GONE
+                }
 
             }
-            else {
-                binding.mcvCollection?.visibility  = View.GONE
-            }
+
         }
         else {
-            binding.mcvCollection?.visibility  = View.GONE
+
+            withContext(Dispatchers.Main) {
+                binding.mcvCollection?.visibility  = View.GONE
+            }
         }
     }
 
@@ -230,9 +245,13 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
     // Set the Product Details
     @SuppressLint("SetTextI18n")
-    private fun setUpProductDetails(productUUID: String) {
+    private suspend fun setUpProductDetails(productUUID: String) {
 
-        productData = Utils.getProductThroughProductUUID(productUUID)
+        val result = lifecycleScope.async(Dispatchers.IO) {
+            return@async Utils.getProductThroughProductUUID(productUUID)
+        }
+
+        productData = result.await()
 
         // Setup Product Image Recycler View
         productData.productImageUri?.let { setUpProductImageRecyclerView(it) }
@@ -258,15 +277,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
             )
         }?.let { Utils.getThousandSeparate(it) }
 
-        // Set up collection Recycler view
-        productData.collectionUUID?.let {
-            productData.productUUID?.let { it1 ->
-                setUpCollectionItemRecyclerView(
-                    it,
-                    it1
-                )
-            }
-        }
+
     }
 
     // Setting the Product Section Height through Screen height
@@ -294,28 +305,46 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     }
 
     // Set the Clicks , initialization And Setup
-    private fun init() {
-
-        progressBarDialog = Utils.initProgressDialog(requireActivity())
+    private suspend fun init() {
 
         // getting the product UUID
         val productUUID = arguments?.getString(Constants.productUUID)
 
         // Set the Product Details
-        productUUID?.let { setUpProductDetails(it) }
+        val job = productUUID?.let { lifecycleScope.launch(Dispatchers.Main){ setUpProductDetails(it) } }
+
+        job?.join()
 
         // Checks if Product Already Added in card
         isProductAlreadyAddedInCard()
 
+        // Set up collection Recycler view
+        val jobCollection = lifecycleScope.launch(Dispatchers.IO) {
+            productData.collectionUUID?.let {
+                productData.productUUID?.let { it1 ->
+                    setUpCollectionItemRecyclerView(
+                        it,
+                        it1
+                    )
+                }
+            }
+        }
+
         // Setting the May also like RecyclerView
-        setUpMayLikeRecyclerView()
+
+        val jobMayLike = lifecycleScope.launch(Dispatchers.Main) {
+            setUpMayLikeRecyclerView()
+        }
 
         // Set Click on Cart Status button
         binding.llCartStatus?.setOnClickListener(this)
 
         binding.mcvExploreCollection?.setOnClickListener(this)
 
-        progressBarDialog?.dismiss()
+        jobCollection.join()
+        jobMayLike.join()
+
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
 
     }
 
@@ -367,6 +396,8 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
         }
 
         else if (v == binding.mcvExploreCollection){
+
+            GetProgressBar.getInstance(requireActivity())?.show()
 
             val bundle = Bundle()
 

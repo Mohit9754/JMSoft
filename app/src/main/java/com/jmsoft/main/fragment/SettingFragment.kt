@@ -22,6 +22,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.Database.DatabaseHelper
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
@@ -253,6 +254,9 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
         //Set Click on Back Button
         binding.mcvUserName?.setOnClickListener(this)
+
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
+
 
     }
 

@@ -64,7 +64,6 @@
                     android:scaleType="centerCrop"
                     android:layout_marginHorizontal="@dimen/_22sdp"
                     android:layout_toEndOf="@+id/llLeftBtn"
-                    android:src="@drawable/icon_tag_printer"
                     tools:ignore="ContentDescription" />
 
                 <LinearLayout
@@ -115,7 +114,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_9sdp"
                         android:fontFamily="@font/montserrat_arabic_bold"
-                        android:text="@string/royal_gold_ring"
                         android:textColor="@color/black"
                         android:textSize="17sp" />
 
@@ -150,7 +148,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:text="@string/_2_5_g"
                                     android:textColor="@color/text_color"
                                     android:textSize="11sp"
                                     tools:ignore="SmallSp" />
@@ -178,7 +175,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:text="@string/gold"
                                     android:textColor="@color/text_color"
                                     android:textSize="11sp"
                                     tools:ignore="SmallSp" />
@@ -213,7 +209,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:text="@string/rings"
                                     android:textColor="@color/text_color"
                                     android:textSize="11sp" />
 
@@ -241,7 +236,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_1sdp"
                                     android:fontFamily="@font/montserrat_arabic_regular"
-                                    android:text="@string/_0_75"
                                     android:textColor="@color/text_color"
                                     android:textSize="11sp"
                                     tools:ignore="SmallSp" />
@@ -274,7 +268,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_5sdp"
                             android:fontFamily="@font/montserrat_arabic_regular"
-                            android:text="@string/are_you_sure_you_want_to_delete_this_user_this_action_cannot_be_undone"
                             android:textColor="@color/text_color"
                             android:textSize="11sp"
                             tools:ignore="SmallSp" />
@@ -305,7 +298,6 @@
                             android:layout_marginHorizontal="@dimen/_5sdp"
                             android:layout_marginVertical="@dimen/_6sdp"
                             android:fontFamily="@font/montserrat_arabic_semibold"
-                            android:text="@string/add_to_cart"
                             android:textColor="@color/white"
                             android:id="@+id/tvCartStatus"
                             android:textSize="10sp"
@@ -325,7 +317,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/_1sdp"
                             android:fontFamily="@font/montserrat_arabic_regular"
-                            android:text="@string/_12_000"
                             android:id="@+id/tvProductPrice"
                             android:textColor="@color/selected"
                             android:textSize="14sp"

@@ -24,12 +24,14 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.category
 import com.jmsoft.basic.UtilityTools.Constants.Companion.collection
@@ -46,6 +48,8 @@ import com.jmsoft.main.adapter.CategoryListAdapter
 import com.jmsoft.main.adapter.CollectionListAdapter
 import com.jmsoft.main.adapter.MetalTypeListAdapter
 import com.jmsoft.main.`interface`.EditInventoryCallback
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MetalTypeFragment : Fragment(), View.OnClickListener {
 
@@ -73,9 +77,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
 
     private lateinit var editProfileDialog: Dialog
 
-    private val dialogMetalBinding by lazy {
-        DialogAddMetalTypeBinding.inflate(LayoutInflater.from(context))
-    }
+    private lateinit var dialogMetalBinding: DialogAddMetalTypeBinding
 
     private var dialogInventory: Dialog? = null
 
@@ -173,7 +175,10 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
         val progressBar = Utils.initProgressDialog(requireActivity())
 
         //set the Clicks And initialization
-        init()
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            init()
+        }
 
         progressBar.dismiss()
 
@@ -390,7 +395,6 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
             dialogInventory?.dismiss()
         }
     }
-
 
     // Update collection
     private fun updateCollection(collectionUUID: String, position: Int) {
@@ -633,6 +637,9 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
     private fun showInventoryDialog(inventoryUUID: String?, position: Int?) {
 
         dialogInventory = Dialog(requireActivity())
+
+        dialogMetalBinding = DialogAddMetalTypeBinding.inflate(LayoutInflater.from(context))
+
         dialogInventory?.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialogInventory?.setCanceledOnTouchOutside(true)
         dialogInventory?.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -812,16 +819,22 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
     }
 
     //set the Clicks And initialization
-    private fun init() {
+    private suspend fun init() {
 
         // Checks state of the fragment
-        checkState()
+        val job = lifecycleScope.launch(Dispatchers.Main) {
+            checkState()
+        }
 
         // Set Click on Back Button
         binding.mcvBackBtn?.setOnClickListener(this)
 
         // Set Click on Add Metal Type Button
         binding.mcvAddMetalType?.setOnClickListener(this)
+
+        job.join()
+
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
 
     }
 

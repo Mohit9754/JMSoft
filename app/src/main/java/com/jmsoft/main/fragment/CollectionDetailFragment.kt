@@ -5,14 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentCollectionDetailBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CollectionDetailAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CollectionDetailFragment : Fragment(),View.OnClickListener {
 
@@ -28,12 +32,9 @@ class CollectionDetailFragment : Fragment(),View.OnClickListener {
         // Inflate the layout for this fragment
         binding = FragmentCollectionDetailBinding.inflate(layoutInflater)
 
-        // Show progress dialog
-        val progressBarDialog = Utils.initProgressDialog(requireActivity())
-
-        init()
-
-        progressBarDialog.dismiss()
+        lifecycleScope.launch(Dispatchers.Main) {
+            init()
+        }
 
         return binding.root
     }
@@ -47,7 +48,7 @@ class CollectionDetailFragment : Fragment(),View.OnClickListener {
 
             binding.llEmptyInventory?.visibility = View.GONE
 
-            Utils.E("${categoryDataList.size} ${categoryDataList[0].categoryName} ${collectionUUID}")
+//            Utils.E("${categoryDataList.size} ${categoryDataList[0].categoryName} ${collectionUUID}")
 
             val adapter =
                 collectionUUID?.let {
@@ -87,19 +88,24 @@ class CollectionDetailFragment : Fragment(),View.OnClickListener {
         }
     }
 
-    private fun init() {
+    private suspend fun init() {
 
         // Set name and image of the collection
         setCollectionNameAndImage()
 
         // Set Collection Detail recycler view
-        setCollectionDetailRecyclerView()
+        val job = lifecycleScope.launch (Dispatchers.Main){
+            setCollectionDetailRecyclerView()
+        }
 
         // Set click on back button
         binding.mcvBackBtn?.setOnClickListener(this)
 
         // Set click on add product button
         binding.mcvAddProduct?.setOnClickListener(this)
+
+        job.join()
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
 
     }
 
@@ -109,11 +115,15 @@ class CollectionDetailFragment : Fragment(),View.OnClickListener {
         // Clicked on back button
         if (v == binding.mcvBackBtn) {
 
+            GetProgressBar.getInstance(requireActivity())?.show()
+
             (requireActivity() as DashboardActivity).navController?.popBackStack()
         }
 
         // Clicked on Add product button
         else if (v == binding.mcvAddProduct){
+
+            GetProgressBar.getInstance(requireActivity())?.show()
 
             //Giving the fragment status
             val bundle = Bundle()

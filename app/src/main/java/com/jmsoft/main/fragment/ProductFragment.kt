@@ -1,5 +1,6 @@
 package com.jmsoft.main.fragment
 
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,10 +11,12 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.All
 import com.jmsoft.basic.UtilityTools.Utils
@@ -21,6 +24,10 @@ import com.jmsoft.databinding.FragmentProductBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CatalogAdapter
 import com.jmsoft.main.adapter.ProductListAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ProductFragment : Fragment(), View.OnClickListener {
 
@@ -46,77 +53,76 @@ class ProductFragment : Fragment(), View.OnClickListener {
     ): View {
 
         // Inflate the layout for this fragment
-
         binding = FragmentProductBinding.inflate(layoutInflater)
 
-        // Show progress bar
-        val progressBarDialog = Utils.pdfProgressDialog(requireActivity())
-
         init()
-
-        progressBarDialog.dismiss()
 
         return binding.root
     }
 
     // Set the spinner
-    private fun setSpinner() {
+    private suspend fun setSpinner() {
 
-        val categoryDataList = Utils.getAllCategory()
+        val result =  lifecycleScope.async(Dispatchers.IO) {
+            return@async Utils.getAllCategory() }
+
+        val categoryDataList = result.await()
 
         val listSpinner = mutableListOf<String?>()
         listSpinner.add(All)
         categoryDataList.map { it.categoryName }.let { listSpinner.addAll(it) }
 
-        val spinnerAdapter = ArrayAdapter(requireActivity(), R.layout.item_spinner, listSpinner)
+        withContext(Dispatchers.Main){
 
-        spinnerAdapter.setDropDownViewResource(R.layout.item_custom_spinner_list)
+            val spinnerAdapter = ArrayAdapter(requireActivity(), R.layout.item_spinner, listSpinner)
+            spinnerAdapter.setDropDownViewResource(R.layout.item_custom_spinner_list)
+            binding.spinner?.adapter = spinnerAdapter
 
-        binding.spinner?.adapter = spinnerAdapter
+            binding.spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
-        binding.spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
 
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
+                    if (position == 0) {
 
-                if (position == 0) {
+                        if (isRunFilter) {
 
-                    if (isRunFilter) {
+                            binding.mcvProductList?.visibility = View.VISIBLE
+                            binding.llEmptyProduct?.visibility = View.GONE
 
-                        binding.mcvProductList?.visibility = View.VISIBLE
-                        binding.llEmptyProduct?.visibility = View.GONE
+                            productListAdapter?.filterProductDataList(productDataList)
+                            categoryFilterList = productDataList
 
-                        productListAdapter?.filterProductDataList(productDataList)
-                        categoryFilterList = productDataList
+                            binding.etSearch?.text?.clear()
 
-                        binding.etSearch?.text?.clear()
+                        } else {
+                            isRunFilter = true
+                        }
 
                     } else {
+
+                        categoryFilterList =
+                            productDataList.filter { it.categoryUUID == categoryDataList[position - 1].categoryUUID } as ArrayList<ProductDataModel>
+
+                        setCategoryFilterList()
+
                         isRunFilter = true
+                        binding.etSearch?.text?.clear()
+
                     }
-
-                } else {
-
-                    categoryFilterList =
-                        productDataList.filter { it.categoryUUID == categoryDataList[position - 1].categoryUUID } as ArrayList<ProductDataModel>
-
-                    setCategoryFilterList()
-
-                    isRunFilter = true
-                    binding.etSearch?.text?.clear()
 
                 }
 
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Handle case when nothing is selected (optional)
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    // Handle case when nothing is selected (optional)
+                }
             }
         }
+
     }
 
     // Set category filter list
@@ -130,6 +136,7 @@ class ProductFragment : Fragment(), View.OnClickListener {
             productListAdapter?.filterProductDataList(categoryFilterList)
 
         } else {
+
             binding.mcvProductList?.visibility = View.GONE
             binding.llEmptyProduct?.visibility = View.VISIBLE
         }
@@ -153,6 +160,7 @@ class ProductFragment : Fragment(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
         isRunFilter = false
+
     }
 
     // Set search
@@ -230,13 +238,19 @@ class ProductFragment : Fragment(), View.OnClickListener {
         checkState()
 
         // Set Product Recycler View
-        setProductRecyclerView()
+        lifecycleScope.launch(Dispatchers.IO) {
+            setProductRecyclerView()
+        }
 
         // Set the spinner
-        setSpinner()
+        lifecycleScope.launch(Dispatchers.Default) {
+            setSpinner()
+        }
 
         // Set search
-        setSearch()
+//        lifecycleScope.launch(Dispatchers.Default) {
+            setSearch()
+//        }
 
         // Set focus change listener on edittext search
         binding.etSearch?.let {
@@ -259,36 +273,57 @@ class ProductFragment : Fragment(), View.OnClickListener {
     }
 
     // Set Product Recycler View
-    private fun setProductRecyclerView() {
+    private suspend fun setProductRecyclerView() {
 
-        productDataList = if (collectionUUID != null) Utils.getAllProductsAcceptCollection(
-            collectionUUID!!
-        ) else Utils.getAllProducts()
+        val job = if (collectionUUID != null) {
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                productDataList = Utils.getAllProductsAcceptCollection(
+                    collectionUUID!!
+                )
+            }
+        }
+        else {
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                productDataList = Utils.getAllProducts()
+            }
+        }
+
+        job.join()
 
         categoryFilterList = productDataList
 
-        if (productDataList.isNotEmpty()) {
+        withContext(Dispatchers.Main) {
 
-            binding.mcvProductList?.visibility = View.VISIBLE
-            binding.llEmptyProduct?.visibility = View.GONE
+            if (productDataList.isNotEmpty()) {
 
-            productListAdapter = ProductListAdapter(
-                requireActivity(),
-                productDataList,
-                collectionUUID,
-                binding,
-                selectedProductUUIDList
-            )
+                binding.mcvProductList?.visibility = View.VISIBLE
+                binding.llEmptyProduct?.visibility = View.GONE
 
-            binding.rvProduct?.layoutManager =
-                LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
-            binding.rvProduct?.adapter = productListAdapter
+                productListAdapter = ProductListAdapter(
+                    requireActivity(),
+                    productDataList,
+                    collectionUUID,
+                    binding,
+                    selectedProductUUIDList
+                )
 
-        } else {
+                binding.rvProduct?.layoutManager =
+                    LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+                binding.rvProduct?.adapter = productListAdapter
 
-            binding.mcvProductList?.visibility = View.GONE
-            binding.mcvFilter?.visibility = View.GONE
-            binding.llEmptyProduct?.visibility = View.VISIBLE
+            }
+
+            else {
+                binding.mcvProductList?.visibility = View.GONE
+                binding.mcvFilter?.visibility = View.GONE
+                binding.llEmptyProduct?.visibility = View.VISIBLE
+
+                // Dismiss progress bar
+                GetProgressBar.getInstance(requireActivity())?.dismiss()
+            }
+
 
         }
     }
@@ -309,6 +344,8 @@ class ProductFragment : Fragment(), View.OnClickListener {
 
         // Clicked on add button
         else if (v == binding.mcvAdd) {
+
+            GetProgressBar.getInstance(requireActivity())?.show()
 
             for (selectedUUID in selectedProductUUIDList) {
 

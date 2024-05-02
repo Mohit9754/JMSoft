@@ -5,12 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.jmsoft.R
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentUserManagementBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.UserManagementAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class UserManagementFragment : Fragment(),View.OnClickListener {
 
@@ -25,7 +29,10 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
         binding = FragmentUserManagementBinding.inflate(layoutInflater)
 
         // set the Clicks , initialization And Setup
-        init()
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            init()
+        }
 
         return binding.root
     }
@@ -54,16 +61,22 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
     }
 
     // set the Clicks , initialization And Setup
-    private fun init(){
+    private suspend fun init(){
 
         // set the Recycler View of User List
-        setRecyclerView()
+        val job = lifecycleScope.launch(Dispatchers.Main) {
+            setRecyclerView()
+        }
 
         // set Click on add user btn
         binding.mcvAddUser?.setOnClickListener(this)
 
         // set Click on Back Btn
         binding.mcvBackBtn?.setOnClickListener(this)
+
+        job.join()
+
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
 
     }
 

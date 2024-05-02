@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
 import com.jmsoft.basic.UtilityTools.Utils
@@ -22,8 +23,6 @@ import com.jmsoft.databinding.FragmentCollectionDetailBinding
 import com.jmsoft.databinding.ItemCollectionBinding
 import com.jmsoft.main.activity.DashboardActivity
 import java.util.UUID
-
-
 
 class ProductCategoryCollectionAdapter(
     private val context: Context,
@@ -224,6 +223,8 @@ class ProductCategoryCollectionAdapter(
 
             // Clicked on Collection item
             if (v == binding.mcvCollectionItem) {
+
+                GetProgressBar.getInstance(context)?.show()
 
                 val bundle = Bundle()
                 //Giving the product UUID

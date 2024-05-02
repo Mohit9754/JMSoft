@@ -13,6 +13,7 @@ import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.currency
 import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
@@ -64,6 +65,8 @@ class ProductListAdapter(
 
             dialog.dismiss()
 
+            GetProgressBar.getInstance(context)?.show()
+
             Utils.deleteImageFromInternalStorage(context,barcodeImageUri)
 
             val productImages = barcodeImageUri.split(",")
@@ -78,6 +81,8 @@ class ProductListAdapter(
             Utils.T(context, context.getString(R.string.deleted_successfully))
 
             notifyDataSetChanged()
+
+//            GetProgressBar.getInstance(context)?.dismiss()
 
             if (productDataList.isEmpty()) {
 
@@ -140,6 +145,9 @@ class ProductListAdapter(
             // Set product cost
             setProductCost()
 
+            // Dismiss progress bar
+            dismissProgressBar()
+
             // Set Click on Delete Icon
             binding.mcvDelete.setOnClickListener(this)
 
@@ -148,6 +156,18 @@ class ProductListAdapter(
 
             // Set Click on product
             binding.mcvProduct.setOnClickListener(this)
+
+        }
+
+        // Dismiss progress bar
+        private fun dismissProgressBar() {
+
+            if (position+1 == productDataList.size ) {
+
+                // Dismiss progress bar
+                GetProgressBar.getInstance(context)?.dismiss()
+
+            }
 
         }
 
@@ -263,6 +283,8 @@ class ProductListAdapter(
             // When edit button Clicked
             else if (v == binding.mcvEdit) {
 
+                GetProgressBar.getInstance(context)?.show()
+
                 val bundle = Bundle()
                 //Giving the product UUID
                 bundle.putString(Constants.productUUID, productData.productUUID)
@@ -275,6 +297,8 @@ class ProductListAdapter(
             }
             // Clicked on product
             else if (v == binding.mcvProduct) {
+
+                GetProgressBar.getInstance(context)?.show()
 
                 val bundle = Bundle()
                 //Giving the product UUID

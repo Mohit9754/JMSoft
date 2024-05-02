@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.R.color
 import com.jmsoft.Utility.Database.AddressDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
 import com.jmsoft.databinding.FragmentCartBinding
@@ -191,6 +192,9 @@ class CartAddressAdapter(
             // Setting Click on Address Section
             binding.mcvAddress.setOnClickListener(this)
 
+            if (position+1 == addressList.size) {
+                GetProgressBar.getInstance(context)?.dismiss()
+            }
         }
 
         // Select new added address
