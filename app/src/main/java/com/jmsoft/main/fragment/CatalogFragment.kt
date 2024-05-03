@@ -149,6 +149,11 @@ class CatalogFragment : Fragment(), View.OnClickListener {
     // Set the Clicks And initialization
     private suspend fun init() {
 
+//        val displayMetrics = resources.displayMetrics
+//        val densityDpi = displayMetrics.densityDpi
+//
+//        Utils.E("$densityDpi Width : ${Utils.getScreenWidth(requireActivity())} , Height: ${Utils.getScreenHeight(requireActivity())}")
+
         // Getting all the Product list
         val job = lifecycleScope.launch(Dispatchers.Main) { getAllProducts() }
 

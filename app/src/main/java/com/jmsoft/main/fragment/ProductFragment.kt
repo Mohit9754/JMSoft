@@ -323,8 +323,7 @@ class ProductFragment : Fragment(), View.OnClickListener {
                 // Dismiss progress bar
                 GetProgressBar.getInstance(requireActivity())?.dismiss()
             }
-
-
+            
         }
     }
 

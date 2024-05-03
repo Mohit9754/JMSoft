@@ -50,7 +50,7 @@
     <string name="inventory">جرد</string>
     <string name="settings">إعدادات</string>
     <string name="vendors_and_customers">إدارة العملاء</string>
-    <string name="device_management">إدارة الجهاز</string>
+    <string name="device_management">إدارة الاجهزة</string>
     <string name="logout">تسجيل خروج</string>
     <string name="royal_gold_ring">خاتم الذهب الملكي</string>
     <string name="weight">الوزن :</string>
@@ -99,7 +99,7 @@
     <string name="active">نشيط</string>
     <string name="signup_successfully">تم التسجيل بنجاح</string>
     <string name="already_connected">متصل بالفعل</string>
-    <string name="user_management"> إدار ةالمستخدم</string>
+    <string name="user_management">إدارة المستخدمين</string>
     <string name="add_user">إضافة مستخدم</string>
     <string name="jenny_wilson">Jenny Wilson</string>
     <string name="jenny_123gmail_com">jenny@123gmail.com</string>
@@ -146,9 +146,8 @@
     <string name="enter_a_valid_zipcode">أدخل رمزًا بريديًا صالحًا</string>
     <string name="added_in_the_cart">تمت إضافته في سلة التسوق</string>
     <string name="removed_from_the_cart">تمت إزالتها من العربة</string>
-    <string name="in_the_same_collection">المجموعة في نفس</string>
+    <string name="in_the_same_collection">لمجموعة نفس في </string>
     <string name="are_you_sure_you_want_to_delete_this_address_this_action_cannot_be_undone">هل أنت متأكد من حذفهذا العنوان ؟ لا يمكن التراجع عن هذا الإجراء.</string>
-
     <string name="hello_blank_fragment">مرحبا جزء فارغ</string>
     <string name="metal_type">نوع المعدن</string>
     <string name="address_updated_successfully">تم تحديث العنوان بنجاح</string>
@@ -170,13 +169,12 @@
     <string name="are_you_sure_you_want_to_delete_this_category_this_action_cannot_be_undone">هل أنت متأكد من حذف هذه الفئة ؟ لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="are_you_sure_you_want_to_delete_this_product_this_action_cannot_be_undone"> هل أنت متأكد من حذفهذا المنتج ؟ لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="to_proceed_with_adding_or_updating_your_product_n_picture_please_select_an_image_source">لمتابعة إضافة أو تحديث صورة المنتج \n، الرجاء تحديد مصدر الصورة</string>
-
     <string name="enter_collection_name">أدخل اسم المجموعة</string>
     <string name="product_name">اسم المنتج</string>
     <string name="add_product">أضف منتج</string>
     <string name="uom">UOM</string>
-    <string name="cost">ثمن البيع</string>
-    <string name="action">فعل</string>
+    <string name="cost">الشراء ثمن</string>
+    <string name="action">إجراءات</string>
     <string name="origin">المصدر</string>
     <string name="add_image">إضافة صورة</string>
     <string name="update_collection">تحديث المجموعة</string>
@@ -187,7 +185,7 @@
     <string name="silver">فضة</string>
     <string name="select_collections">حدد المجموعات</string>
     <string name="enter_origin">أدخل المصدر</string>
-    <string name="weight_">الوزن (ز)</string>
+    <string name="weight_">الوزن (غ)</string>
     <string name="carat_">قيراط</string>
     <string name="enter_product_cost">أدخل تكلفة المنتج</string>
     <string name="enter_product_carat">أدخل قيراط المنتج</string>
@@ -222,6 +220,11 @@
     <string name="are_you_sure_you_want_to_remove_this_product_from_the_collection">هل أنت متأكد أنك تريد إزالة هذا المنتج من المجموعة؟</string>
     <string name="na">غير متوفر</string>
     <string name="catalog_is_empty">الكتالوج فارغ</string>
-
+    <string name="price">يع ثمن</string>
+    <string name="select_products_to_add">حدد المنتجات المراد إضافتها</string>
+    <string name="enter_barcode">أدخل الباركود</string>
+    <string name="special_characters_are_not_allowed">يمنع استعمال الرموز</string>
+    <string name="enter_product_price">أدخل سعر المنتج</string>
+    <string name="explore_collection">استكشاف المجموعة</string>
 
 </resources>

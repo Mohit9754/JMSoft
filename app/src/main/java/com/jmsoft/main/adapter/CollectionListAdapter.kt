@@ -135,6 +135,12 @@ class CollectionListAdapter(
 
             // Set click on collection
             binding.mcvInventory.setOnClickListener(this)
+
+            if (position+1 == collectionDataList.size) {
+
+                GetProgressBar.getInstance(context)?.dismiss()
+            }
+
         }
 
         // Set collection image

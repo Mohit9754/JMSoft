@@ -240,7 +240,9 @@ class Validation {
      * @param editText Edit Text To Check
      * @return true/false
      */
+
     private fun isValidPhoneNumber(context: Context, editText: EditText?): Boolean {
+
         return if (editText?.text == null || TextUtils.isEmpty(editText.text)) {
             errorMessage = context.getString(R.string.empty_error)
             EditTextPointer = editText
@@ -340,12 +342,12 @@ class Validation {
     }
 
     private fun isValidProductName(context: Context, editText: EditText?): Boolean {
-        return if (editText?.text == null || TextUtils.isEmpty(editText.text)) {
+        return if (editText?.text == null || editText.text.toString().trim().isEmpty()) {
             errorMessage = context.getString(R.string.empty_error)
             EditTextPointer = editText
             false
         }  else {
-            val p = Pattern.compile("^[a-zA-Z0-9]*\$")
+            val p = Pattern.compile("^[a-zA-Z0-9 ]*\$")
             val s = editText.text.toString().trim { it <= ' ' }
             val m = p.matcher(s.trim { it <= ' ' })
             if (m.matches()) {

@@ -37,14 +37,15 @@
                         android:layout_height="@dimen/_26sdp"
                         android:layout_marginHorizontal="@dimen/_10sdp"
                         android:layout_marginTop="@dimen/_10sdp"
-                        android:src="@drawable/icon_catalog" />
+                        android:src="@drawable/icon_catalog"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_6sdp"
                         android:layout_marginBottom="@dimen/_9sdp"
-                        android:fontFamily="@font/montserrat_arabic_medium"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
                         android:text="@string/catalog"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp" />
@@ -82,7 +83,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_6sdp"
                         android:layout_marginBottom="@dimen/_9sdp"
-                        android:fontFamily="@font/montserrat_arabic_medium"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
                         android:text="@string/purchasing"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp" />
@@ -115,7 +116,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_6sdp"
                         android:layout_marginBottom="@dimen/_9sdp"
-                        android:fontFamily="@font/montserrat_arabic_medium"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
                         android:text="@string/reports"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp" />
@@ -156,7 +157,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_6sdp"
                         android:layout_marginBottom="@dimen/_9sdp"
-                        android:fontFamily="@font/montserrat_arabic_medium"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
                         android:text="@string/audit"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp" />
@@ -193,7 +194,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_6sdp"
                         android:layout_marginBottom="@dimen/_9sdp"
-                        android:fontFamily="@font/montserrat_arabic_medium"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
                         android:text="@string/inventory"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp" />
@@ -227,7 +228,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_6sdp"
                         android:layout_marginBottom="@dimen/_9sdp"
-                        android:fontFamily="@font/montserrat_arabic_medium"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
                         android:text="@string/settings"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp" />

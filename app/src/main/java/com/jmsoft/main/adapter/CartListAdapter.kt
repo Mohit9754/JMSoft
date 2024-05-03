@@ -87,7 +87,7 @@ class CartListAdapter(
             }
 
             // Calculating price of each product for storing in cartPrice array
-            val price = cartData.productQuantity?.let { productData?.productCost?.times(it) }
+            val price = cartData.productQuantity?.let { productData?.productPrice?.times(it) }
             price?.let { cartPrice.add(it) }
 
             // At the last Set Total Price
@@ -138,7 +138,7 @@ class CartListAdapter(
         //Set the Product price
         private fun setProductPrice() {
 
-            val price = cartData.productQuantity?.let { productData.productCost?.times(it) }
+            val price = cartData.productQuantity?.let { productData.productPrice?.times(it) }
 
             if (price != null) {
 

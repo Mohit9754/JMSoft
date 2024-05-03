@@ -351,6 +351,8 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
                 requireActivity(), dialogMetalBinding.tvMetalTypeError,
                 getString(R.string.metal_type_already_exist)
             )
+
+
         } else {
 
             Utils.updateMetalType(
@@ -418,6 +420,9 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
                 requireActivity(), dialogMetalBinding.tvMetalTypeError,
                 getString(R.string.collection_already_exist)
             )
+
+            GetProgressBar.getInstance(requireContext())?.dismiss()
+
         }
         else {
 
@@ -437,6 +442,8 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
             Utils.T(requireActivity(), requireActivity().getString(R.string.updated_successfully))
 
             dialogInventory?.dismiss()
+
+            GetProgressBar.getInstance(requireContext())?.dismiss()
 
         }
 //        progressBar.dismiss()
@@ -607,6 +614,10 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
                 requireActivity(), dialogMetalBinding.tvMetalTypeError,
                 getString(R.string.collection_already_exist)
             )
+
+            GetProgressBar.getInstance(requireContext())?.dismiss()
+
+
         } else {
 
             val collectionDataModel = CollectionDataModel()
@@ -628,6 +639,8 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
             setCollectionRecyclerView()
 
             dialogInventory?.dismiss()
+//            GetProgressBar.getInstance(requireContext())?.dismiss()
+
 
         }
     }
@@ -693,6 +706,8 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
                     }
 
                 } else if (fragmentState == collection) {
+
+                    GetProgressBar.getInstance(requireContext())?.show()
 
                     if (position != null && inventoryUUID != null) {
 
@@ -808,6 +823,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
             binding.rvMetalType?.layoutManager =
                 GridLayoutManager(requireActivity(), 2) // Span Count is set to 3
             binding.rvMetalType?.adapter = categoryAdapter
+
 
         } else {
 

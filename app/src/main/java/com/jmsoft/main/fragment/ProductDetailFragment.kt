@@ -297,9 +297,10 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
         val layoutParams = binding.llProductSection?.layoutParams as LinearLayout.LayoutParams
 
         if (heightOfToolbarAndBottom != null) {
-            layoutParams.height = (screenHeight - heightOfToolbarAndBottom) - statusBarHeight
-            heightOfllProductSection = (screenHeight - heightOfToolbarAndBottom) - statusBarHeight
+            layoutParams.height = (screenHeight - heightOfToolbarAndBottom) - statusBarHeight - dashboardActivity.binding?.rlBottom?.height!!
+            heightOfllProductSection = (screenHeight - heightOfToolbarAndBottom) - statusBarHeight - dashboardActivity.binding?.rlBottom?.height!!
         }
+
         binding.llProductSection?.setLayoutParams(layoutParams)
 
     }

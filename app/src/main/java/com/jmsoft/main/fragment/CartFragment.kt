@@ -116,6 +116,8 @@ class CartFragment : Fragment(), View.OnClickListener {
         // If cart is empty
         else {
 
+            GetProgressBar.getInstance(requireActivity())?.dismiss()
+
             binding?.rlCartManagement?.visibility = View.GONE
             binding?.llCartEmpty?.visibility = View.VISIBLE
 

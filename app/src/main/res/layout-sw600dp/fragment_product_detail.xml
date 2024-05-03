@@ -28,58 +28,57 @@
                 android:layout_weight="1.8"
                 android:background="@color/product_background_color">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvProductImage"
-                    android:layout_width="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/_18sdp"
-                    android:layout_marginStart="@dimen/_18sdp"
-                    android:layout_marginEnd="@dimen/_12sdp"
-                    tools:listitem="@layout/item_product_image" />
-
                 <LinearLayout
-                    android:id="@+id/llLeftBtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_toEndOf="@+id/rvProductImage"
-                    android:background="@drawable/bg_button">
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvProductImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/_12sdp"
+                        tools:ignore="SpeakableTextPresentCheck"
+                        tools:listitem="@layout/item_product_image" />
+
+                    <LinearLayout
+                        android:id="@+id/llLeftBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_button">
+
+                        <ImageView
+                            android:layout_width="@dimen/_9sdp"
+                            android:layout_height="@dimen/_9sdp"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:src="@drawable/icon_arrow_left"
+                            tools:ignore="ContentDescription" />
+
+                    </LinearLayout>
 
                     <ImageView
-                        android:layout_width="@dimen/_9sdp"
-                        android:layout_height="@dimen/_9sdp"
-                        android:layout_margin="@dimen/_5sdp"
-                        android:src="@drawable/icon_arrow_left"
+                        android:id="@+id/ivProduct"
+                        android:layout_width="@dimen/_130sdp"
+                        android:layout_height="@dimen/_130sdp"
+                        android:scaleType="centerCrop"
+                        android:layout_marginHorizontal="@dimen/_10sdp"
                         tools:ignore="ContentDescription" />
 
-                </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/llRightBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_button">
 
-                <ImageView
-                    android:id="@+id/ivProduct"
-                    android:layout_width="@dimen/_85sdp"
-                    android:layout_height="@dimen/_85sdp"
-                    android:layout_centerVertical="true"
-                    android:scaleType="centerCrop"
-                    android:layout_marginHorizontal="@dimen/_22sdp"
-                    android:layout_toEndOf="@+id/llLeftBtn"
-                    tools:ignore="ContentDescription" />
+                        <ImageView
+                            android:layout_width="@dimen/_9sdp"
+                            android:layout_height="@dimen/_9sdp"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:src="@drawable/icon_arrow_right"
+                            tools:ignore="ContentDescription" />
 
-                <LinearLayout
-                    android:id="@+id/llRightBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/ivProduct"
-                    android:background="@drawable/bg_button">
-
-                    <ImageView
-                        android:layout_width="@dimen/_9sdp"
-                        android:layout_height="@dimen/_9sdp"
-                        android:layout_margin="@dimen/_5sdp"
-                        android:src="@drawable/icon_arrow_right"
-                        tools:ignore="ContentDescription" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -136,7 +135,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:fontFamily="@font/montserrat_arabic_semibold"
                                     android:text="@string/weight"
                                     android:textColor="@color/text_color"
                                     android:textSize="11sp"
@@ -147,7 +146,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_1sdp"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:fontFamily="@font/montserrat_arabic_medium"
                                     android:textColor="@color/text_color"
                                     android:textSize="11sp"
                                     tools:ignore="SmallSp" />
@@ -163,7 +162,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:fontFamily="@font/montserrat_arabic_semibold"
                                     android:text="@string/type"
                                     android:textColor="@color/text_color"
                                     android:textSize="11sp"
@@ -174,7 +173,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_1sdp"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:fontFamily="@font/montserrat_arabic_medium"
                                     android:textColor="@color/text_color"
                                     android:textSize="11sp"
                                     tools:ignore="SmallSp" />
@@ -198,7 +197,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:fontFamily="@font/montserrat_arabic_semibold"
                                     android:text="@string/cat"
                                     android:textColor="@color/text_color"
                                     android:textSize="11sp" />
@@ -208,7 +207,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_1sdp"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:fontFamily="@font/montserrat_arabic_medium"
                                     android:textColor="@color/text_color"
                                     android:textSize="11sp" />
 
@@ -224,7 +223,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:fontFamily="@font/montserrat_arabic_semibold"
                                     android:text="@string/carat"
                                     android:textColor="@color/text_color"
                                     android:textSize="11sp"
@@ -235,7 +234,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_1sdp"
-                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:fontFamily="@font/montserrat_arabic_medium"
                                     android:textColor="@color/text_color"
                                     android:textSize="11sp"
                                     tools:ignore="SmallSp" />

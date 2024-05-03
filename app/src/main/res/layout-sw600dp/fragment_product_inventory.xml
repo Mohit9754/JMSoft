@@ -578,7 +578,8 @@
                         android:layout_marginTop="@dimen/_1sdp"
                         app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
-                        app:strokeWidth="1dp">
+                        app:strokeWidth="1dp"
+                        tools:ignore="UnusedAttribute">
 
                         <EditText
                             android:id="@+id/etCarat"
@@ -664,6 +665,69 @@
 
                         <TextView
                             android:id="@+id/tvPriceError"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_1sdp"
+                            android:layout_marginTop="@dimen/_1sdp"
+                            android:fontFamily="@font/montserrat_arabic_regular"
+                            android:textColor="@color/red"
+                            android:textSize="10sp"
+                            android:visibility="gone"
+                            tools:ignore="SmallSp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:orientation="vertical"
+                    tools:ignore="UselessParent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_arabic_medium"
+                        android:text="@string/cost"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/mcvCost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
+                        android:layout_marginStart="1dp"
+                        android:layout_marginTop="@dimen/_1sdp"
+                        app:cardCornerRadius="@dimen/_3sdp"
+                        app:strokeColor="@color/text_hint"
+                        app:strokeWidth="1dp"
+                        tools:ignore="UnusedAttribute">
+
+                        <EditText
+                            android:id="@+id/etCost"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:fontFamily="@font/montserrat_arabic_medium"
+                            android:hint="@string/enter_product_cost"
+                            android:inputType="numberDecimal"
+                            android:paddingHorizontal="@dimen/_5sdp"
+                            android:paddingVertical="@dimen/_7sdp"
+                            android:textSize="10sp"
+                            tools:ignore="Autofill,SmallSp,TouchTargetSizeCheck" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvCostError"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_1sdp"

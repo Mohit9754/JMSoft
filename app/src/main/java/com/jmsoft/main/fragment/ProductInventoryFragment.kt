@@ -124,6 +124,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
     private var dialogCategory:Dialog? = null
 
+
     // Gallery result launcher
     @SuppressLint("NotifyDataSetChanged")
     private var galleryActivityResultLauncher: ActivityResultLauncher<Intent?>? = registerForActivityResult(
@@ -481,6 +482,14 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
                 )
             }
         }
+
+        binding.etCost?.let {
+            binding.mcvCost?.let { it1 ->
+                Utils.setFocusChangeListener(requireActivity(),
+                    it, it1
+                )
+            }
+        }
     }
 
     // Set text change listener
@@ -527,6 +536,13 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
                 it1
             )
         } }
+
+        binding.etCost?.let { binding.tvCostError?.let { it1 ->
+            Utils.setTextChangeListener(it,
+                it1
+            )
+        } }
+
     }
 
     // Check add or edit status
@@ -557,7 +573,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
                 binding.etOrigin?.setText(productData.productOrigin)
                 binding.etWeight?.setText(productData.productWeight.toString())
                 binding.etCarat?.setText(productData.productCarat.toString())
-                binding.etPrice?.setText(productData.productCost.toString())
+                binding.etPrice?.setText(productData.productPrice.toString())
+                binding.etCost?.setText(productData.productCost.toString())
 
 //            binding.mcvCategoryList?.visibility = View.VISIBLE
                 selectedCategoryUUID = productData.categoryUUID
@@ -618,6 +635,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         // Set filter of only 2 digit after point
         binding.etPrice?.setFilters(arrayOf<InputFilter>(DecimalDigitsInputFilter()))
 
+        // Set filter of only 2 digit after point
+        binding.etCost?.setFilters(arrayOf<InputFilter>(DecimalDigitsInputFilter()))
+
         // Set metal type dropdown
         setMetalTypeRecyclerView()
 
@@ -657,7 +677,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         binding.mcvAddCategory?.setOnClickListener(this)
 
         if (productDataModel != null) {
-
             showOrHideCollectionDropDown()
             showOrHideCollectionDropDown()
         }
@@ -735,7 +754,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
             productData.productOrigin = binding.etOrigin?.text.toString().trim()
             productData.productCarat = binding.etCarat?.text.toString().toInt()
             productData.productWeight = Utils.roundToTwoDecimalPlaces(binding.etWeight?.text.toString().toDouble())
-            productData.productCost = Utils.roundToTwoDecimalPlaces(binding.etPrice?.text.toString().toDouble())
+            productData.productPrice = Utils.roundToTwoDecimalPlaces(binding.etPrice?.text.toString().toDouble())
+            productData.productCost = Utils.roundToTwoDecimalPlaces(binding.etCost?.text.toString().toDouble())
             productData.productDescription = binding.etDescription?.text.toString().trim()
             productData.productRFIDCode = binding.etRFIDCode?.text.toString().trim()
 
@@ -765,7 +785,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
             lifecycleScope.launch(Dispatchers.IO) {
 
-                Utils.E("Name of the thread ${Thread.currentThread().name}")
+//                Utils.E("Name of the thread ${Thread.currentThread().name}")
                 Utils.updateProduct(productData)
             }
 
@@ -840,7 +860,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
     }
 
     /* validate input details */
-    private fun validate(){
+    private fun validate() {
 
         val errorValidationModel: MutableList<ValidationModel> = ArrayList()
 
@@ -877,6 +897,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         errorValidationModel.add(
             ValidationModel(
                 Validation.Type.Empty, binding.etPrice, binding.tvPriceError
+            )
+        )
+
+        errorValidationModel.add(
+            ValidationModel(
+                Validation.Type.Empty, binding.etCost, binding.tvCostError
             )
         )
 

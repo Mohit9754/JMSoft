@@ -218,13 +218,13 @@
     <string name="are_you_sure_you_want_to_remove_this_product_from_the_collection">Are you sure you want to remove this product from the collection ?</string>
     <string name="na">NA</string>
     <string name="catalog_is_empty">Catalog is empty</string>
+    <string name="price">Price</string>
+    <string name="are_you_sure_you_want_to_end_your_current_session">Are you sure you want to end your current session ?</string>
+    <string name="in_the_same_collection">In the same collection</string>
     <string name="select_products_to_add">Select products to add</string>
     <string name="enter_barcode">Enter barcode</string>
-    <string name="are_you_sure_you_want_to_end_your_current_session">Are you sure you want to end your current session ?</string>
     <string name="special_characters_are_not_allowed">Special characters are not allowed</string>
-    <string name="price">Price</string>
     <string name="enter_product_price">Enter product price</string>
-    <string name="in_the_same_collection">In the same collection</string>
     <string name="explore_collection">Explore Collection</string>
 
 

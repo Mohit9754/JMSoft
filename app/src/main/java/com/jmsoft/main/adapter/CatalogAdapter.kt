@@ -158,7 +158,7 @@ class CatalogAdapter(
         //Set the Product price
         private fun setProductPrice() {
 
-            binding.tvProductPrice.text = productData.productCost?.let {
+            binding.tvProductPrice.text = productData.productPrice?.let {
                 Utils.getThousandSeparate(
                     it
                 )

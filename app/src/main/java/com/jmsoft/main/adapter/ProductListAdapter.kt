@@ -260,7 +260,7 @@ class ProductListAdapter(
         // Set product cost
         @SuppressLint("SetTextI18n")
         private fun setProductCost() {
-            binding.tvProductCost.text = "${productData.productCost.toString()} $currency"
+            binding.tvProductCost.text = "${productData.productPrice.toString()} $currency"
         }
 
         // Handle All the Clicks
