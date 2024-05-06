@@ -271,7 +271,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
             productData.categoryUUID?.let { Utils.getCategoryNameThroughCategoryUUID(it) }
 
         binding.tvProductDescription?.text = productData.productDescription
-        binding.tvProductPrice?.text = productData.productCost?.let {
+        binding.tvProductPrice?.text = productData.productPrice?.let {
             Utils.roundToTwoDecimalPlaces(
                 it
             )

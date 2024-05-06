@@ -145,6 +145,9 @@ class ProductListAdapter(
             // Set product cost
             setProductCost()
 
+            // Set product price
+            setProductPrice()
+
             // Dismiss progress bar
             dismissProgressBar()
 
@@ -260,7 +263,13 @@ class ProductListAdapter(
         // Set product cost
         @SuppressLint("SetTextI18n")
         private fun setProductCost() {
-            binding.tvProductCost.text = "${productData.productPrice.toString()} $currency"
+            binding.tvProductCost.text = "${productData.productCost.toString()} $currency"
+        }
+
+        // Set product price
+        @SuppressLint("SetTextI18n")
+        private fun setProductPrice() {
+            binding.tvProductPrice.text = "${productData.productPrice.toString()} $currency"
         }
 
         // Handle All the Clicks
