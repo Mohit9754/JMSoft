@@ -764,7 +764,8 @@
                                 android:paddingVertical="@dimen/_5sdp"
                                 android:text="@string/print"
                                 android:textColor="@color/white"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                tools:ignore="TooManyViews" />
 
                         </com.google.android.material.card.MaterialCardView>
 

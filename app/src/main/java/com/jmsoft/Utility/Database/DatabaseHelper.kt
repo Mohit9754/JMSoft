@@ -895,6 +895,8 @@ class DatabaseHelper(cx: Context) {
                     cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
                 productData.productPrice =
                     cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                productData.productCost =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
                 productData.categoryUUID =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
                 productData.productDescription =
@@ -956,6 +958,8 @@ class DatabaseHelper(cx: Context) {
                     cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
                 productData.productPrice =
                     cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                productData.productCost =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
                 productData.categoryUUID =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
                 productData.productDescription =
