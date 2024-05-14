@@ -800,7 +800,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         else {
 
             lifecycleScope.launch(Dispatchers.IO) {
-                Utils.E("Name of the thread ${Thread.currentThread().name}")
+//                Utils.E("Name of the thread ${Thread.currentThread().name}")
 
                 Utils.addProduct(productData)
             }
@@ -866,7 +866,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         errorValidationModel.add(
             ValidationModel(
-                Validation.Type.letterAndDigit, binding.etProductName, binding.tvProductNameError
+                Validation.Type.NoSpecialChar, binding.etProductName, binding.tvProductNameError
             )
         )
 
@@ -878,7 +878,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         errorValidationModel.add(
             ValidationModel(
-                Validation.Type.letterAndDigit, binding.etOrigin, binding.tvOriginError
+                Validation.Type.NoSpecialChar, binding.etOrigin, binding.tvOriginError
             )
         )
 
@@ -920,7 +920,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         errorValidationModel.add(
             ValidationModel(
-                Validation.Type.letterAndDigit, binding.etRFIDCode, binding.tvRFIDCodeError
+                Validation.Type.NoSpecialChar, binding.etRFIDCode, binding.tvRFIDCodeError
             )
         )
 

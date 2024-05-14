@@ -146,7 +146,7 @@
     <string name="enter_a_valid_zipcode">أدخل رمزًا بريديًا صالحًا</string>
     <string name="added_in_the_cart">تمت إضافته في سلة التسوق</string>
     <string name="removed_from_the_cart">تمت إزالتها من العربة</string>
-    <string name="in_the_same_collection">لمجموعة نفس في </string>
+    <string name="in_the_same_collection">في نفس المجموعة</string>
     <string name="are_you_sure_you_want_to_delete_this_address_this_action_cannot_be_undone">هل أنت متأكد من حذفهذا العنوان ؟ لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="hello_blank_fragment">مرحبا جزء فارغ</string>
     <string name="metal_type">نوع المعدن</string>
@@ -173,7 +173,7 @@
     <string name="product_name">اسم المنتج</string>
     <string name="add_product">أضف منتج</string>
     <string name="uom">UOM</string>
-    <string name="cost">الشراء ثمن</string>
+    <string name="cost">ثمن الشراء</string>
     <string name="action">إجراءات</string>
     <string name="origin">المصدر</string>
     <string name="add_image">إضافة صورة</string>
@@ -198,7 +198,6 @@
     <string name="please_select_at_least_two_images">الرجاء اختيار صورتين على الأقل</string>
     <string name="collection_name">اسم المجموعة</string>
     <string name="please_generate_barcode">يرجى إنشاء الباركود</string>
-
     <string name="ring">جرس</string>
     <string name="_50g">50 غ</string>
     <string name="_23">ثلاثة وعشرون</string>
@@ -220,11 +219,11 @@
     <string name="are_you_sure_you_want_to_remove_this_product_from_the_collection">هل أنت متأكد أنك تريد إزالة هذا المنتج من المجموعة؟</string>
     <string name="na">غير متوفر</string>
     <string name="catalog_is_empty">الكتالوج فارغ</string>
-    <string name="price">يع ثمن</string>
+    <string name="price">ثمن البيع</string>
     <string name="select_products_to_add">حدد المنتجات المراد إضافتها</string>
     <string name="enter_barcode">أدخل الباركود</string>
     <string name="special_characters_are_not_allowed">يمنع استعمال الرموز</string>
-    <string name="enter_product_price">أدخل سعر المنتج</string>
+    <string name="enter_product_price">أدخل سعر ثمن البيع</string>
     <string name="explore_collection">استكشاف المجموعة</string>
 
 </resources>

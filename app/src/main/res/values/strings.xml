@@ -226,6 +226,12 @@
     <string name="special_characters_are_not_allowed">Special characters are not allowed</string>
     <string name="enter_product_price">Enter product price</string>
     <string name="explore_collection">Explore Collection</string>
+    <string name="total_">TOTAL</string>
+    <string name="scanned">SCANNED</string>
+    <string name="missing">MISSING</string>
+    <string name="selected">SELECTED</string>
+    <string name="unknown">UNKNOWN</string>
+    <string name="expected">EXPECTED</string>
 
 
 </resources>

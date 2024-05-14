@@ -84,5 +84,11 @@
         android:label="Product"
         tool:layout="@layout/fragment_product"/>
 
+    <fragment
+        android:id="@+id/audit"
+        android:name="com.jmsoft.main.fragment.AuditFragment"
+        android:label="Audit"
+        tool:layout="@layout/fragment_audit"/>
+
 
 </navigation>

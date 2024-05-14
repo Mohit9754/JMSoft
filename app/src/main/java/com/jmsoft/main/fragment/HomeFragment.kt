@@ -52,6 +52,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
         // Set Click on Inventory option
         binding.mcvInventory?.setOnClickListener(this)
 
+        // Set Click on Audit option
+        binding.mcvAudit?.setOnClickListener(this)
+
+
         GetProgressBar.getInstance(requireActivity())?.dismiss()
 
     }
@@ -89,6 +93,12 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         }
 
+        else if(v == binding.mcvAudit) {
+
+//            GetProgressBar.getInstance(requireActivity())?.show()
+//            (requireActivity() as DashboardActivity).navController?.navigate(R.id.audit)
+
+        }
     }
 
 }
