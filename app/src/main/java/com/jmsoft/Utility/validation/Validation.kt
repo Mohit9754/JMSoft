@@ -247,6 +247,7 @@ class Validation {
             errorMessage = context.getString(R.string.empty_error)
             EditTextPointer = editText
             false
+
         } else {
             if (validateMobileNumber(editText.text.toString().trim { it <= ' ' })) {
                 true
@@ -515,22 +516,24 @@ class Validation {
 
     fun validateMobileNumber(phoneNo: String): Boolean {
 
-        val phonenumber: PhoneNumber
-        val regionalCode = getCountryRegion()
-        E("regionalCode::$regionalCode")
-        val NationalPhoneNumber: String
-        try {
-            phonenumber = phoneNumberUtil!!.parse(phoneNo, regionalCode)
-            NationalPhoneNumber = phonenumber.nationalNumber.toString()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
-        }
-        return if (NationalPhoneNumber == phoneNo) {
-            phoneNumberUtil!!.isValidNumber(phonenumber)
-        } else {
-            false
-        }
+        return phoneNo.length <= 10
+
+//        val phonenumber: PhoneNumber
+//        val regionalCode = getCountryRegion()
+////        E("regionalCode::$regionalCode")
+//        val NationalPhoneNumber: String
+//        try {
+//            phonenumber = phoneNumberUtil!!.parse(phoneNo, regionalCode)
+//            NationalPhoneNumber = phonenumber.nationalNumber.toString()
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            return false
+//        }
+//        return if (NationalPhoneNumber == phoneNo) {
+//            phoneNumberUtil!!.isValidNumber(phonenumber)
+//        } else {
+//            false
+//        }
     }
 
     /**
