@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withCreated
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,9 +37,11 @@ import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.KeyboardUtils.hideKeyboard
 import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.basic.UtilityTools.Utils.DecimalDigitsInputFilter
 import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation
 import com.jmsoft.basic.validation.ValidationModel
@@ -53,6 +58,13 @@ import com.jmsoft.main.adapter.SelectedCollectionAdapter
 import com.jmsoft.main.`interface`.CollectionStatusCallback
 import com.jmsoft.main.`interface`.SelectedCallback
 import com.jmsoft.main.model.SelectedCollectionModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
+import org.jetbrains.annotations.Async
+import kotlin.system.measureTimeMillis
 
 class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
@@ -74,7 +86,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
     private var addImageAdapter:AddImageAdapter? = null
 
-    private var productUUID:String? = null
+    private var productDataModel:ProductDataModel? = null
 
     private var metalTypeDropdownAdapter:MetalTypeDropdownAdapter? = null
 
@@ -97,6 +109,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
     private var selectedCategoryUUID:String? = null
 
     private var collectionDropdownAdapter:CollectionDropdownAdapter? = null
+
     private var categoryDropdownAdapter:CategoryDropdownAdapter? = null
 
     private var barcodeData:String? = null
@@ -107,8 +120,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
     private var isCollectionShow = false
 
-    private var prgogressBarDialog:Dialog? = null
+    private var dialogMetalType:Dialog? = null
 
+    private var dialogCategory:Dialog? = null
+
+
+    // Gallery result launcher
     @SuppressLint("NotifyDataSetChanged")
     private var galleryActivityResultLauncher: ActivityResultLauncher<Intent?>? = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -131,25 +148,14 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
                 }
             }
             // Check if selected images meet the minimum and maximum limits
-
-//            if (selectedUris.size < minImageLimit - selectedImage.size ) {
-//
-//                Utils.T(requireActivity(), "Please select at least ${minImageLimit - selectedImage.size} images")
-//                return@registerForActivityResult
-//            }
-
             if (selectedUris.size > maxImageLimit - selectedProductImage.size){
 
                 Utils.T(requireActivity(), "Maximum ${maxImageLimit - selectedProductImage.size} images allowed")
                 return@registerForActivityResult
             }
 
-
-
             // Update selectedImageUris list with valid selections
-//            selectedImage.clear()
             selectedProductImage.addAll(selectedUris)
-
 
             addImageAdapter?.notifyDataSetChanged()
             binding.tvProductImageError?.visibility = View.GONE
@@ -212,25 +218,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         }
     }
 
-
-    //Gallery  Launcher
-//    @SuppressLint("NotifyDataSetChanged")
-//    private var galleryActivityResultLauncher: ActivityResultLauncher<Intent?>? =
-//        registerForActivityResult(
-//            ActivityResultContracts.StartActivityForResult()
-//        ) { result ->
-//            if (result.resultCode == Activity.RESULT_OK) {
-//                val image_uri: Uri? = result.data?.data
-//
-//                    binding.tvProductImageError?.visibility = View.GONE
-//                    productImageView?.setImageURI(image_uri)
-//                    productImageView?.drawable?.let { productImageBitmap.add(it.toBitmap()) }
-//                    addImageAdapter?.notifyDataSetChanged()
-//
-//            }
-//        }
-
-    //Camera Launcher
+    // Camera result Launcher
     @SuppressLint("NotifyDataSetChanged")
     private var cameraActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -257,16 +245,15 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentProductInventoryBinding.inflate(layoutInflater)
 
-        val progressBarDialog = Utils.pdfProgressDialog(requireActivity())
-
         //set the Clicks And initialization
-        init()
-
-        progressBarDialog.dismiss()
+        lifecycleScope.launch(Dispatchers.Main) {
+            init()
+        }
 
         return binding.root
     }
 
+    // Set metal type dropdown
     private fun setMetalTypeRecyclerView() {
 
         metalTypeDropdownList = Utils.getAllMetalType()
@@ -301,7 +288,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         )
 
         if (selectedMetalTypeUUID != null) {
-            metalTypeDropdownAdapter?.selectedPosition = metalTypeDropdownList.indexOfFirst { it.metalTypeUUID == selectedMetalTypeUUID }
+            metalTypeDropdownAdapter?.selectedMetalTypePosition = metalTypeDropdownList.indexOfFirst { it.metalTypeUUID == selectedMetalTypeUUID }
         }
 
         binding.rvMetalType?.layoutManager =
@@ -310,6 +297,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Set category dropdown
     private fun setCategoryRecyclerView() {
 
         categoryDropdownList = Utils.getAllCategory()
@@ -356,6 +344,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Set collection drop down
     private fun setCollectionRecyclerView() {
 
         collectionDataList = Utils.getAllCollection()
@@ -372,6 +361,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
                     if(!selectedCollectionList.contains(selectedCollectionModel)){
 
+                        selectedCollectionList.clear()
                         selectedCollectionList.add(selectedCollectionModel)
                         selectedCollectionAdapter?.notifyDataSetChanged()
                     }
@@ -404,6 +394,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Set selected collection item
     private fun setSelectedCollectionRecyclerView() {
 
         selectedCollectionAdapter =
@@ -418,13 +409,14 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Set product images
     fun setProductImageRecyclerView() {
-
         addImageAdapter = AddImageAdapter(requireActivity(),selectedProductImage,this,selectedProductImageBitmap)
         binding.rvProductImage?.layoutManager = GridLayoutManager(requireActivity(), 3) // Span Count is set to 3
         binding.rvProductImage?.adapter = addImageAdapter
     }
 
+    // Set focus change listener
     private fun setFocusChangeListener(){
 
         binding.etProductName?.let {
@@ -490,9 +482,18 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
                 )
             }
         }
+
+        binding.etCost?.let {
+            binding.mcvCost?.let { it1 ->
+                Utils.setFocusChangeListener(requireActivity(),
+                    it, it1
+                )
+            }
+        }
     }
 
-    private fun setTextChangeListener(){
+    // Set text change listener
+    private fun setTextChangeListener() {
 
         binding.etProductName?.let { binding.tvProductNameError?.let { it1 ->
             Utils.setTextChangeListener(it,
@@ -535,75 +536,121 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
                 it1
             )
         } }
+
+        binding.etCost?.let { binding.tvCostError?.let { it1 ->
+            Utils.setTextChangeListener(it,
+                it1
+            )
+        } }
+
     }
 
-    private fun checkAddOrEditState() {
+    // Check add or edit status
+    private suspend fun checkAddOrEditState() {
 
-        productUUID = arguments?.getString(Constants.productUUID)
+        val productUUID = arguments?.getString(Constants.productUUID)
 
         if (productUUID != null) {
 
-            val productData = Utils.getProductThroughProductUUID(productUUID!!)
+            val result = lifecycleScope.async(Dispatchers.IO) {
+                return@async Utils.getProductThroughProductUUID(productUUID)
+            }
 
-            binding.etProductName?.setText(productData.productName)
-            binding.etProductName?.setText(productData.productName)
+            val productData = result.await()
 
-            binding.mcvMetalTypeList?.visibility = View.VISIBLE
-            selectedMetalTypeUUID = productData.metalTypeUUID
+            productDataModel = productData
 
-            selectedCollectionUUID = productData.collectionUUID?.split(",")?.toMutableList() ?: mutableListOf()
+            withContext(Dispatchers.Main) {
 
-            binding.etOrigin?.setText(productData.productOrigin)
-            binding.etWeight?.setText(productData.productWeight.toString())
-            binding.etCarat?.setText(productData.productCarat.toString())
-            binding.etPrice?.setText(productData.productCost.toString())
+                binding.etProductName?.setText(productData.productName)
+                binding.etProductName?.setText(productData.productName)
+
+                binding.mcvMetalTypeList?.visibility = View.VISIBLE
+                selectedMetalTypeUUID = productData.metalTypeUUID
+
+                selectedCollectionUUID = productData.collectionUUID?.split(",")?.toMutableList() ?: mutableListOf()
+
+                binding.etOrigin?.setText(productData.productOrigin)
+                binding.etWeight?.setText(productData.productWeight.toString())
+                binding.etCarat?.setText(productData.productCarat.toString())
+                binding.etPrice?.setText(productData.productPrice.toString())
+                binding.etCost?.setText(productData.productCost.toString())
 
 //            binding.mcvCategoryList?.visibility = View.VISIBLE
-            selectedCategoryUUID = productData.categoryUUID
+                selectedCategoryUUID = productData.categoryUUID
 
-            binding.etDescription?.setText(productData.productDescription)
-            binding.etRFIDCode?.setText(productData.productRFIDCode)
-            binding.etRFIDCode?.setText(productData.productRFIDCode)
+                binding.etDescription?.setText(productData.productDescription)
+                binding.etRFIDCode?.setText(productData.productRFIDCode)
+                binding.etRFIDCode?.setText(productData.productRFIDCode)
 
-            binding.mcvBarcodeImage?.visibility  = View.VISIBLE
+                binding.mcvBarcodeImage?.visibility  = View.VISIBLE
 
-            val barcodeBitmap = productData.productBarcodeUri?.let {
-                Utils.getImageFromInternalStorage(requireActivity(),
-                    it
-                )
+                val barcodeBitmap = productData.productBarcodeUri?.let {
+                    Utils.getImageFromInternalStorage(requireActivity(),
+                        it
+                    )
+                }
+                val productImageUri = productData.productImageUri?.split(",") ?: listOf()
+
+
+                for (imageUri in productImageUri) {
+                    Utils.getImageFromInternalStorage(requireActivity(),imageUri.trim())
+                        ?.let { selectedProductImage.add(it) }
+                }
+                binding.ivBarcodeImage?.setImageBitmap(barcodeBitmap)
+                barcodeBitmap?.let { barcodeImage.add(it) }
+
+                binding.etBarcode?.setText(productData.productBarcodeData)
+                barcodeData = productData.productBarcodeData
+
+                GetProgressBar.getInstance(requireActivity())?.dismiss()
+
             }
-            binding.ivBarcodeImage?.setImageBitmap(barcodeBitmap)
-            barcodeBitmap?.let { barcodeImage.add(it) }
+        }
+        else {
 
-            binding.etBarcode?.setText(productData.productBarcodeData)
-            barcodeData = productData.productBarcodeData
-
-            val productImageUri = productData.productImageUri?.split(",") ?: listOf()
-
-            for (imageUri in productImageUri) {
-                Utils.getImageFromInternalStorage(requireActivity(),imageUri.trim())
-                    ?.let { selectedProductImage.add(it) }
-            }
+            GetProgressBar.getInstance(requireActivity())?.dismiss()
         }
     }
 
     //set the Clicks And initialization
-    private fun init() {
+    private suspend fun init() {
 
-        checkAddOrEditState()
+        // Check add or edit status
+        val job = lifecycleScope.launch(Dispatchers.Main) {
+            checkAddOrEditState()
+        }
 
+        job.join()
+
+        // Set focus change listener
         setFocusChangeListener()
 
+        // Set text change listener
         setTextChangeListener()
 
+        // Set filter of only 2 digit after point
+        binding.etWeight?.setFilters(arrayOf<InputFilter>(DecimalDigitsInputFilter()))
+
+        // Set filter of only 2 digit after point
+        binding.etPrice?.setFilters(arrayOf<InputFilter>(DecimalDigitsInputFilter()))
+
+        // Set filter of only 2 digit after point
+        binding.etCost?.setFilters(arrayOf<InputFilter>(DecimalDigitsInputFilter()))
+
+        // Set metal type dropdown
         setMetalTypeRecyclerView()
 
+        // Set category dropdown
         setCategoryRecyclerView()
 
+        // Set collection drop down
         setCollectionRecyclerView()
 
+        // Set selected collection item
         setSelectedCollectionRecyclerView()
 
+        // Set product images
         setProductImageRecyclerView()
 
         binding.llMetalType?.setOnClickListener(this)
@@ -629,15 +676,15 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         binding.mcvAddCategory?.setOnClickListener(this)
 
-        if (productUUID != null) {
+        if (productDataModel != null) {
             showOrHideCollectionDropDown()
             showOrHideCollectionDropDown()
-
         }
     }
 
     // Edit Profile Dialog
     fun showImageSelectionDialog(imageView: ImageView?) {
+
         productImageView = imageView
 
         val dialog = Dialog(requireActivity())
@@ -670,19 +717,19 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         dialog.show()
     }
 
+    // make a single string of selected collection uuid list
     private fun getSelectedCollectionUUID(): String {
 
         val collectionUUID = ArrayList<String>()
 
         for (collectionData in selectedCollectionList) {
-
             collectionData.collectionDataModel.collectionUUID?.let { collectionUUID.add(it) }
-
         }
         return collectionUUID.joinToString().replace(" ", "")
 
     }
 
+    // make a single string of selected product uuid list
     private fun getProductImageUri(): String {
 
         val imageUri = ArrayList<String>()
@@ -693,37 +740,81 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         return imageUri.joinToString().replace(" ", "")
     }
 
+    // Add or update product
     @SuppressLint("NotifyDataSetChanged")
-    private fun addOrUpdateProduct(productUUID:String?){
+    private suspend fun addOrUpdateProduct(productDataModel: ProductDataModel?){
 
-        val productDataModel = ProductDataModel()
+        val productData = ProductDataModel()
 
-        productDataModel.productUUID = productUUID ?: Utils.generateUUId()
-        productDataModel.productName = binding.etProductName?.text.toString().trim()
-        productDataModel.metalTypeUUID = selectedMetalTypeUUID
-        productDataModel.collectionUUID = getSelectedCollectionUUID()
-        productDataModel.productOrigin = binding.etOrigin?.text.toString().trim()
-        productDataModel.productWeight = Utils.roundToTwoDecimalPlaces(binding.etWeight?.text.toString().toDouble())
-        productDataModel.productCarat = binding.etCarat?.text.toString().toInt()
-        productDataModel.productCost = Utils.roundToTwoDecimalPlaces(binding.etPrice?.text.toString().toDouble())
-        productDataModel.categoryUUID = selectedCategoryUUID
-        productDataModel.productDescription = binding.etDescription?.text.toString().trim()
-        productDataModel.productRFIDCode = binding.etRFIDCode?.text.toString().trim()
-        productDataModel.productBarcodeData = barcodeData
-        productDataModel.productBarcodeUri = Utils.getPictureUri(requireActivity(), barcodeImage[0])
-        productDataModel.productImageUri = getProductImageUri()
+        productData.productUUID = if (productDataModel != null) productDataModel.productUUID else Utils.generateUUId()
 
-        if (productUUID != null) {
-            Utils.updateProduct(productDataModel)
-            Utils.T(requireActivity(),requireActivity().getString(R.string.updated_successfully))
+        withContext(Dispatchers.Main) {
+
+            productData.productName = binding.etProductName?.text.toString().trim()
+            productData.productOrigin = binding.etOrigin?.text.toString().trim()
+            productData.productCarat = binding.etCarat?.text.toString().toInt()
+            productData.productWeight = Utils.roundToTwoDecimalPlaces(binding.etWeight?.text.toString().toDouble())
+            productData.productPrice = Utils.roundToTwoDecimalPlaces(binding.etPrice?.text.toString().toDouble())
+            productData.productCost = Utils.roundToTwoDecimalPlaces(binding.etCost?.text.toString().toDouble())
+            productData.productDescription = binding.etDescription?.text.toString().trim()
+            productData.productRFIDCode = binding.etRFIDCode?.text.toString().trim()
+
+        }
+
+        productData.metalTypeUUID = selectedMetalTypeUUID
+        productData.collectionUUID = getSelectedCollectionUUID()
+        productData.categoryUUID = selectedCategoryUUID
+        productData.productBarcodeData = barcodeData
+        productData.productBarcodeUri = Utils.getPictureUri(requireActivity(), barcodeImage[0])
+        productData.productImageUri = getProductImageUri()
+
+        if (productDataModel != null) {
+
+            productDataModel.productBarcodeUri?.let {
+                Utils.deleteImageFromInternalStorage(requireActivity(),
+                    it
+                ) }
+
+            val productImages = productDataModel.productImageUri?.split(",")
+
+            if (productImages != null) {
+                for (product in productImages) {
+                    Utils.deleteImageFromInternalStorage(requireActivity(),product)
+                }
+            }
+
+            lifecycleScope.launch(Dispatchers.IO) {
+
+//                Utils.E("Name of the thread ${Thread.currentThread().name}")
+                Utils.updateProduct(productData)
+            }
+
+            withContext(Dispatchers.Main) {
+                Utils.T(
+                    requireActivity(),
+                    requireActivity().getString(R.string.updated_successfully)
+                )
+            }
         }
 
         else {
-            Utils.addProduct(productDataModel)
-            Utils.T(requireActivity(),requireActivity().getString(R.string.added_successfully))
+
+            lifecycleScope.launch(Dispatchers.IO) {
+//                Utils.E("Name of the thread ${Thread.currentThread().name}")
+
+                Utils.addProduct(productData)
+            }
+
+            withContext(Dispatchers.Main) {
+                Utils.T(requireActivity(),requireActivity().getString(R.string.added_successfully))
+            }
+
         }
 
-        (requireActivity() as DashboardActivity).navController?.popBackStack()
+        withContext(Dispatchers.Main) {
+            (requireActivity() as DashboardActivity).navController?.popBackStack()
+        }
+
 
     }
 
@@ -768,13 +859,14 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         dialog.show()
     }
 
-    private fun validate(){
+    /* validate input details */
+    private fun validate() {
 
         val errorValidationModel: MutableList<ValidationModel> = ArrayList()
 
         errorValidationModel.add(
             ValidationModel(
-                Validation.Type.letterAndDigit, binding.etProductName, binding.tvProductNameError
+                Validation.Type.NoSpecialChar, binding.etProductName, binding.tvProductNameError
             )
         )
 
@@ -786,7 +878,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         errorValidationModel.add(
             ValidationModel(
-                Validation.Type.letterAndDigit, binding.etOrigin, binding.tvOriginError
+                Validation.Type.NoSpecialChar, binding.etOrigin, binding.tvOriginError
             )
         )
 
@@ -810,6 +902,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         errorValidationModel.add(
             ValidationModel(
+                Validation.Type.Empty, binding.etCost, binding.tvCostError
+            )
+        )
+
+        errorValidationModel.add(
+            ValidationModel(
                 Validation.Type.EmptyTextView, binding.tvCategory, binding.tvCategoryError
             )
         )
@@ -822,19 +920,19 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         errorValidationModel.add(
             ValidationModel(
-                Validation.Type.letterAndDigit, binding.etRFIDCode, binding.tvRFIDCodeError
+                Validation.Type.NoSpecialChar, binding.etRFIDCode, binding.tvRFIDCodeError
             )
         )
 
         errorValidationModel.add(
             ValidationModel(
-                Validation.Type.Barcode, barcodeImage.size, binding.tvBarcodeError
+                Validation.Type.Barcode, barcodeImage.size, binding.tvBarcodeError,binding.etBarcode
             )
         )
 
         errorValidationModel.add(
             ValidationModel(
-                Validation.Type.AtLeastTwo, selectedProductImage.size, binding.tvProductImageError
+                Validation.Type.AtLeastTwo, selectedProductImage.size, binding.tvProductImageError,null
             )
         )
 
@@ -842,13 +940,16 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         val resultReturn: ResultReturn? =
             validation?.CheckValidation(requireActivity(), errorValidationModel)
+
         if (resultReturn?.aBoolean == true) {
 
-            addOrUpdateProduct(productUUID)
+            lifecycleScope.launch(Dispatchers.Default) {
+                addOrUpdateProduct(productDataModel)
+            }
 
         } else {
 
-            prgogressBarDialog?.dismiss()
+            GetProgressBar.getInstance(requireActivity())?.dismiss()
 
             resultReturn?.errorTextView?.visibility = View.VISIBLE
 
@@ -891,12 +992,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        prgogressBarDialog?.dismiss()
-    }
-
-    private fun addCategory(dialog: Dialog) {
+    // Add category
+    private fun addCategory() {
 
         val isCategoryExist =
             Utils.isCategoryExist(Utils.capitalizeData(dialogAddCategoryBinding?.etMetalType?.text.toString()))
@@ -928,11 +1025,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
             binding.mcvCategoryList?.visibility  = View.GONE
             showOrHideCategoryDropDown()
 
-            dialog.dismiss()
+            dialogCategory?.dismiss()
         }
     }
 
-    private fun addMetalType(dialog: Dialog) {
+    // Add metal type
+    private fun addMetalType() {
 
         val isMetalTypeExist =
             Utils.isMetalTypeExist(Utils.capitalizeData(dialogAddMetalTypeBinding?.etMetalType?.text.toString()))
@@ -963,20 +1061,53 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
             binding.mcvMetalTypeList?.visibility  = View.GONE
             showOrHideMetalTypeDropDown()
 
-            dialog.dismiss()
+            dialogMetalType?.dismiss()
         }
     }
 
+    // Update metal type
+    private fun updateMetalType(metalTypeUUID: String, position: Int) {
+
+        val metalTypeDataModel = MetalTypeDataModel()
+        metalTypeDataModel.metalTypeUUID = metalTypeUUID
+        metalTypeDataModel.metalTypeName = Utils.capitalizeData(dialogAddMetalTypeBinding?.etMetalType?.text.toString())
+
+        val isCollectionExistAccept = Utils.isMetalTypeExistAccept(metalTypeDataModel)
+
+        if (isCollectionExistAccept == true) {
+
+            dialogAddMetalTypeBinding?.let {
+
+                Utils.showError(
+                    requireActivity(), it.tvMetalTypeError,
+                    getString(R.string.metal_type_already_exist)
+                )
+            }
+        } else {
+
+            Utils.updateMetalType(
+                metalTypeUUID,
+                Utils.capitalizeData(dialogAddMetalTypeBinding?.etMetalType?.text.toString())
+            )
+            metalTypeDropdownList[position].metalTypeName =
+                Utils.capitalizeData(dialogAddMetalTypeBinding?.etMetalType?.text.toString())
+            metalTypeDropdownAdapter?.notifyItemChanged(position)
+
+            dialogMetalType?.dismiss()
+        }
+    }
+
+    // Metal type dialog for add or edit
     @SuppressLint("NotifyDataSetChanged")
     fun showAddOrEditMetalTypeDialog(position: Int?,metalTypeUUID: String?) {
 
-        val dialog = Dialog(requireActivity())
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setCanceledOnTouchOutside(true)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialogMetalType = Dialog(requireActivity())
+        dialogMetalType?.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogMetalType?.setCanceledOnTouchOutside(true)
+        dialogMetalType?.requestWindowFeature(Window.FEATURE_NO_TITLE)
 
         dialogAddMetalTypeBinding = DialogAddMetalTypeBinding.inflate(LayoutInflater.from(context))
-        dialog.setContentView(dialogAddMetalTypeBinding!!.root)
+        dialogMetalType?.setContentView(dialogAddMetalTypeBinding!!.root)
 
         if (position != null && metalTypeUUID != null ) {
             dialogAddMetalTypeBinding!!.tvTitle.text = getString(R.string.edit_metal_type)
@@ -1000,8 +1131,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
             errorValidationModels.add(
                 ValidationModel(
                     Validation.Type.Empty, dialogAddMetalTypeBinding!!.etMetalType, dialogAddMetalTypeBinding!!.tvMetalTypeError
-                )
-            )
+                ))
 
             val validation: Validation? = Validation.instance
             val resultReturn: ResultReturn? =
@@ -1010,24 +1140,16 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
                 if (position != null && metalTypeUUID != null) {
 
-                    Utils.updateMetalType(
-                        metalTypeUUID,
-                        Utils.capitalizeData(dialogAddMetalTypeBinding!!.etMetalType.text.toString())
-                    )
-                    metalTypeDropdownList[position].metalTypeName =
-                        Utils.capitalizeData(dialogAddMetalTypeBinding!!.etMetalType.text.toString())
-                    metalTypeDropdownAdapter?.notifyItemChanged(position)
-
-                    dialog.dismiss()
-
+                    updateMetalType(metalTypeUUID,position)
 
                 } else {
 
-                    addMetalType(dialog)
+                    // add metal type
+                    addMetalType()
                 }
 
-
             } else {
+
                 resultReturn?.errorTextView?.visibility = View.VISIBLE
                 if (resultReturn?.type === Validation.Type.EmptyString) {
                     resultReturn.errorTextView?.text = resultReturn.errorMessage
@@ -1048,22 +1170,56 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         }
 
         dialogAddMetalTypeBinding!!.mcvCancel.setOnClickListener {
-            dialog.dismiss()
+            dialogMetalType?.dismiss()
         }
 
-        dialog.setCancelable(true)
-        dialog.show()
+        dialogMetalType?.setCancelable(true)
+        dialogMetalType?.show()
     }
 
+    // Update category
+    private fun updateCategory(categoryUUID: String, position: Int) {
+
+        val categoryDataModel = CategoryDataModel()
+        categoryDataModel.categoryUUID = categoryUUID
+        categoryDataModel.categoryName =
+            Utils.capitalizeData(dialogAddCategoryBinding?.etMetalType?.text.toString())
+
+        val isCategoryExistAccept = Utils.isCategoryExistAccept(categoryDataModel)
+
+        if (isCategoryExistAccept == true) {
+
+            dialogAddCategoryBinding?.let {
+                Utils.showError(
+                    requireActivity(), it.tvMetalTypeError,
+                    getString(R.string.category_already_exist)
+                )
+            }
+        }
+        else {
+
+            Utils.updateCategory(categoryDataModel)
+
+            categoryDropdownList[position].categoryName =
+                Utils.capitalizeData(dialogAddCategoryBinding?.etMetalType?.text.toString())
+            categoryDropdownAdapter?.notifyItemChanged(position)
+
+            Utils.T(requireActivity(), requireActivity().getString(R.string.updated_successfully))
+
+            dialogCategory?.dismiss()
+        }
+    }
+
+    // Category dialog for add or edit
     fun showAddOrEditCategoryDialog(position: Int?, categoryUUID: String?) {
 
-        val dialog = Dialog(requireActivity())
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setCanceledOnTouchOutside(true)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialogCategory = Dialog(requireActivity())
+        dialogCategory?.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogCategory?.setCanceledOnTouchOutside(true)
+        dialogCategory?.requestWindowFeature(Window.FEATURE_NO_TITLE)
 
         dialogAddCategoryBinding = DialogAddMetalTypeBinding.inflate(LayoutInflater.from(context))
-        dialog.setContentView(dialogAddCategoryBinding!!.root)
+        dialogCategory?.setContentView(dialogAddCategoryBinding!!.root)
 
         if (position != null && categoryUUID != null ) {
             dialogAddCategoryBinding!!.tvTitle.text = getString(R.string.edit_category)
@@ -1097,20 +1253,11 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
                 if (position != null && categoryUUID != null) {
 
-                    val categoryDataModel = CategoryDataModel()
-                    categoryDataModel.categoryUUID = categoryUUID
-                    categoryDataModel.categoryName = Utils.capitalizeData(dialogAddCategoryBinding!!.etMetalType.text.toString())
+                    updateCategory(categoryUUID,position)
 
-                    Utils.updateCategory(categoryDataModel)
-
-                    categoryDropdownList[position].categoryName =
-                        Utils.capitalizeData(dialogAddCategoryBinding!!.etMetalType.text.toString())
-                    categoryDropdownAdapter?.notifyItemChanged(position)
-
-                    dialog.dismiss()
 
                 } else {
-                    addCategory(dialog)
+                    addCategory()
                 }
 
 
@@ -1135,14 +1282,15 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         }
 
         dialogAddCategoryBinding!!.mcvCancel.setOnClickListener {
-            dialog.dismiss()
+            dialogCategory?.dismiss()
         }
 
-        dialog.setCancelable(true)
-        dialog.show()
+        dialogCategory?.setCancelable(true)
+        dialogCategory?.show()
 
     }
 
+    // Convert data to barcode
     private fun genBarcodeBitmap(data:String):Bitmap? {
 
         // Getting input value from the EditText
@@ -1177,7 +1325,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         return null
     }
 
-    private fun showOrHideMetalTypeDropDown(){
+    // Show or hide metal type drop down
+    private fun showOrHideMetalTypeDropDown() {
 
         if (binding.mcvMetalTypeList?.visibility == View.VISIBLE) {
 
@@ -1192,6 +1341,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // Show or hide collection drop down
     private fun showOrHideCollectionDropDown() {
 
         if (collectionDataList.isNotEmpty()) {
@@ -1221,6 +1371,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // Show or hide category drop down
     private fun showOrHideCategoryDropDown() {
 
         if (binding.mcvCategoryList?.visibility == View.VISIBLE) {
@@ -1258,12 +1409,17 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
 
         else if (v == binding.mcvSave) {
 
-            prgogressBarDialog = Utils.initProgressDialog(requireActivity())
+            // Dismiss progress bar
+            GetProgressBar.getInstance(requireActivity())?.show()
+
             validate()
         }
 
         // When Back button clicked
         else if (v == binding.mcvBackBtn) {
+
+            GetProgressBar.getInstance(requireActivity())?.show()
+
             (requireActivity() as DashboardActivity).navController?.popBackStack()
         }
 
@@ -1311,7 +1467,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         }
 
         else if (v == binding.root){
-
             hideKeyboard(requireActivity())
         }
     }

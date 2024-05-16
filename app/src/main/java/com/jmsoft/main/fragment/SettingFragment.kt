@@ -22,6 +22,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.Database.DatabaseHelper
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
@@ -32,15 +33,6 @@ import com.jmsoft.databinding.FragmentSettingBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.activity.LoginActivity
 
-/**
- * Setting Fragment
- *
- * Showing the Vendors and Customers option
- * Showing the Device Management option
- * Shows profile picture ,name And also edit it
- * Removing the Session when logOut button clicked
- *
- */
 class SettingFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentSettingBinding
@@ -52,7 +44,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
     // for Opening the Gallery Dialog
     private var forGallerySettingDialog = 200
 
-    //Gallery Permission Launcher
+    // Gallery Permission Launcher
     private var galleryPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean? ->
@@ -80,7 +72,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    //Camera Permission Launcher
+    // Camera Permission Launcher
     private var cameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean? ->
@@ -97,7 +89,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    //Gallery  Launcher
+    // Gallery result  Launcher
     private var galleryActivityResultLauncher: ActivityResultLauncher<Intent?>? =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -111,7 +103,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
             }
         }
 
-    //Camera Launcher
+    //Camera result Launcher
     private var cameraActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -135,8 +127,8 @@ class SettingFragment : Fragment(), View.OnClickListener {
         // Hide the Search option
         (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.GONE
 
+        // make current state to verification
         (requireActivity() as DashboardActivity).currentState = Constants.verification
-
 
         //set the Clicks And initialization
         init()
@@ -263,6 +255,9 @@ class SettingFragment : Fragment(), View.OnClickListener {
         //Set Click on Back Button
         binding.mcvUserName?.setOnClickListener(this)
 
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
+
+
     }
 
     // Edit Profile Dialog
@@ -318,7 +313,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
         dialog.show()
     }
 
-    //Handles All the Clicks
+    // Handles All the Clicks
     override fun onClick(v: View?) {
 
         // Click on Device Management
@@ -339,7 +334,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
             (requireActivity() as DashboardActivity).navController?.popBackStack(R.id.home, false)
         }
-        //Click on Username
+        // Click on Username
         else if (v == binding.mcvUserName) {
 
             //Navigate to Edit Profile

@@ -11,21 +11,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentCatalogBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CatalogAdapter
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/**
- * Catalog Fragment
- *
- * Showing the Catalog Details
- *
- */
 class CatalogFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentCatalogBinding
@@ -42,15 +39,14 @@ class CatalogFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+
         // Inflate the layout for this fragment
         binding = FragmentCatalogBinding.inflate(layoutInflater)
 
-        val progressBarDialog = Utils.initProgressDialog(requireActivity())
-
-        //set the Clicks And initialization
-        init()
-
-        progressBarDialog.dismiss()
+        // Set the Clicks And initialization
+        lifecycleScope.launch(Dispatchers.Main) {
+            init()
+        }
 
         return binding.root
     }
@@ -75,7 +71,10 @@ class CatalogFragment : Fragment(), View.OnClickListener {
             etSearch = binding.etSearch
 
             // Set the Search when come back from product fragment and activity recreate
-            setSearchWhenBackPressed()
+
+            lifecycleScope.launch(Dispatchers.Default) {
+                setSearchWhenBackPressed()
+            }
 
             // Set the Search
             setSearch()
@@ -83,6 +82,7 @@ class CatalogFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // check if catalog list is empty
     private fun checkEmptyList(){
 
         if (productList.isNotEmpty()) {
@@ -90,13 +90,22 @@ class CatalogFragment : Fragment(), View.OnClickListener {
             binding.llEmptyCatalog?.visibility  = View.GONE
         }
         else {
+
             binding.llEmptyCatalog?.visibility  = View.VISIBLE
+            GetProgressBar.getInstance(requireActivity())?.dismiss()
+
         }
     }
 
     // Getting all the Product list
-    private fun getAllProducts() {
-        productList = Utils.getAllProducts()
+    private suspend fun getAllProducts() {
+
+        val result = lifecycleScope.async(Dispatchers.IO) {
+             return@async Utils.getAllProducts()
+        }
+
+        productList = result.await()
+
     }
 
     // Setting the RecyclerView
@@ -108,37 +117,47 @@ class CatalogFragment : Fragment(), View.OnClickListener {
     }
 
     // Set the Search when come back from product fragment and activity recreate
-    private fun setSearchWhenBackPressed(){
+    private suspend fun setSearchWhenBackPressed(){
 
         filterProductList.clear()
 
-        if (etSearch?.text?.isNotEmpty() == true){
+        withContext(Dispatchers.Main) {
 
-            for (product in productList){
+            if (etSearch?.text?.isNotEmpty() == true){
 
-                if (product.productName?.contains(etSearch?.text.toString(),true) == true){
-                    filterProductList.add(product)
+                for (product in productList) {
+
+                    if (product.productName?.contains(etSearch?.text.toString(),true) == true){
+                        filterProductList.add(product)
+                    }
                 }
+
+                // Setting the RecyclerView with filtered product list
+                catalogAdapter = CatalogAdapter(requireActivity(), filterProductList)
+                setRecyclerView()
+
             }
+            else {
 
-            // Setting the RecyclerView with filtered product list
-            catalogAdapter = CatalogAdapter(requireActivity(), filterProductList)
-            setRecyclerView()
-
-        }
-        else {
-
-            // Setting the RecyclerView with All the Product
-            catalogAdapter = CatalogAdapter(requireActivity(), productList)
-            setRecyclerView()
+                // Setting the RecyclerView with All the Product
+                catalogAdapter = CatalogAdapter(requireActivity(), productList)
+                setRecyclerView()
+            }
         }
     }
 
     // Set the Clicks And initialization
-    private fun init() {
+    private suspend fun init() {
+
+//        val displayMetrics = resources.displayMetrics
+//        val densityDpi = displayMetrics.densityDpi
+//
+//        Utils.E("$densityDpi Width : ${Utils.getScreenWidth(requireActivity())} , Height: ${Utils.getScreenHeight(requireActivity())}")
 
         // Getting all the Product list
-        getAllProducts()
+        val job = lifecycleScope.launch(Dispatchers.Main) { getAllProducts() }
+
+        job.join()
 
         // Show the Search And Set the Search
         lifecycleScope.launch {
@@ -159,8 +178,6 @@ class CatalogFragment : Fragment(), View.OnClickListener {
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
                     filterProductList.clear()
-
-                    Utils.E(s.toString())
 
                     for (product in productList){
 

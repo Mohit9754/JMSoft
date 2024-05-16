@@ -6,15 +6,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentCartBinding
 import com.jmsoft.databinding.ItemCardListBinding
 import com.jmsoft.main.activity.DashboardActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 /**
  * Cart list Adapter
@@ -25,7 +31,8 @@ import com.jmsoft.main.activity.DashboardActivity
 
 class CartListAdapter(
     private val context: Context, private val cardList: ArrayList<CartDataModel>,
-    private val fragmentCartBinding: FragmentCartBinding
+    private val fragmentCartBinding: FragmentCartBinding,
+    private val coroutineScope:CoroutineScope
 ) :
     RecyclerView.Adapter<CartListAdapter.MyViewHolder>() {
 
@@ -42,7 +49,9 @@ class CartListAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         // bind method
-        holder.bind(cardList[position], position)
+        coroutineScope.launch(Dispatchers.Main) {
+            holder.bind(cardList[position], position)
+        }
 
     }
 
@@ -59,26 +68,33 @@ class CartListAdapter(
         private var position: Int = 0
 
         // bind method
-        fun bind(cartData: CartDataModel, position: Int) {
+        suspend fun bind(cartData: CartDataModel, position: Int) {
 
             this.cartData = cartData
             this.position = position
 
             //Getting the product data from cart's present cartUUID
-            val productData = cartData.productUUID?.let { Utils.getProductThroughProductUUID(it) }
+            val productData = cartData.productUUID?.let {  Utils.getProductThroughProductUUID(it) }
 
+            if (cartData.productUUID != null) {
 
-            if (productData != null) {
-                this.productData = productData
+                val result = coroutineScope.async(Dispatchers.IO) {
+                    return@async Utils.getProductThroughProductUUID(cartData.productUUID!!)
+                }
+
+                this.productData = result.await()
+
             }
 
             // Calculating price of each product for storing in cartPrice array
-            val price = cartData.productQuantity?.let { productData?.productCost?.times(it) }
+            val price = cartData.productQuantity?.let { productData?.productPrice?.times(it) }
             price?.let { cartPrice.add(it) }
 
             // At the last Set Total Price
             if (cardList.size - 1 == position) {
                 setTotalPrice()
+                GetProgressBar.getInstance(context)?.dismiss()
+
             }
 
             //Set the Product image
@@ -122,7 +138,7 @@ class CartListAdapter(
         //Set the Product price
         private fun setProductPrice() {
 
-            val price = cartData.productQuantity?.let { productData.productCost?.times(it) }
+            val price = cartData.productQuantity?.let { productData.productPrice?.times(it) }
 
             if (price != null) {
 
@@ -230,6 +246,8 @@ class CartListAdapter(
 
             // Clicked on cart product
             else if(v == binding.mcvCartProduct) {
+
+                GetProgressBar.getInstance(context)?.show()
 
                 val bundle = Bundle()
                 //Giving the product UUID

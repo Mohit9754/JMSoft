@@ -19,9 +19,8 @@ import com.jmsoft.databinding.ItemInventoryBinding
 import com.jmsoft.main.`interface`.EditInventoryCallback
 
 /**
- * MetalType Adapter
+ * MetalType List Adapter
  *
- * Showing the catalog details
  *
  */
 
@@ -93,11 +92,13 @@ class MetalTypeListAdapter(
     inner class MyViewHolder(private val binding: ItemInventoryBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        // Product Data
+        // Metal Type Data
         private lateinit var metalTypeData: MetalTypeDataModel
 
+        // Metal Type position
         private var position:Int = -1
 
+        // bind method
         fun bind(metalTypeData: MetalTypeDataModel,position: Int) {
 
             this.metalTypeData = metalTypeData

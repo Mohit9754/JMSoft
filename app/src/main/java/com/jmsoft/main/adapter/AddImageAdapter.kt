@@ -13,15 +13,7 @@ import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemAddImageProductBinding
 import com.jmsoft.main.fragment.ProductInventoryFragment
 
-/**
- * Catalog Adapter
- *
- * Showing the catalog details
- *
- */
-
 class AddImageAdapter(
-
     private val context: Context,
     private var productImageList: ArrayList<Any>,
     private val productInventoryFragment: ProductInventoryFragment,
@@ -34,12 +26,13 @@ class AddImageAdapter(
         return MyViewHolder(view)
     }
 
+    // if product image list is less than 5 it returns (productImageListSize + 1)  for showing Add Image Button
     override fun getItemCount() = if(productImageList.size < 5 ) productImageList.size + 1 else productImageList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
+        // At the last time it will pass null
         if (position == productImageList.size){
-
             holder.bind(null,position)
         }
 
@@ -54,34 +47,38 @@ class AddImageAdapter(
         // Product Data
         private  var productImage: Any? = null
 
+        // Product position
         private var position:Int = -1
 
+        // bind method
         fun bind(productImage: Any?,position: Int) {
 
             this.position = position
-
-            Utils.E("$position")
 
             if (productImage != null) {
 
                 this.productImage = productImage
 
-                if (position == 0){
+                // At the fire time
+                if (position == 0) {
+                    // Clear the selected product image list
                     selectedProductImageBitmap.clear()
                 }
 
-
+                // Set product image
                 setImage()
 
+                // Set click on cross button
                 binding.mcvCrossBtn.setOnClickListener(this)
 
             }
 
+            // Set click on Add Image button
             binding.mcvAddImage.setOnClickListener(this)
 
-            //Setting Click on CartStatus
         }
 
+        // Set product image
         private fun setImage(){
 
             if (productImage is Uri){
@@ -94,17 +91,21 @@ class AddImageAdapter(
             binding.mcvCrossBtn.visibility = View.VISIBLE
             binding.llAddImageSection.visibility = View.GONE
 
+            // Add in the selected product image list
             selectedProductImageBitmap.add(binding.ivProductImage.drawable.toBitmap())
         }
 
+        // Handle all the clicks
         @SuppressLint("NotifyDataSetChanged")
         override fun onClick(v: View?) {
 
+            // Add image button clicked
             if (v == binding.mcvAddImage && productImage == null) {
 
                 productInventoryFragment.showImageSelectionDialog(binding.ivProductImage)
 
             }
+            // Cross button clicked
             else if (v == binding.mcvCrossBtn){
 
                 productImageList.removeAt(position)

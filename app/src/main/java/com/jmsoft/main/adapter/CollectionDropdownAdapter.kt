@@ -1,5 +1,6 @@
 package com.jmsoft.main.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +13,8 @@ import com.jmsoft.main.`interface`.CollectionStatusCallback
 import com.jmsoft.main.model.SelectedCollectionModel
 
 /**
- * Catalog Adapter
+ * Collection Dropdown Adapter
  *
- * Showing the catalog details
  *
  */
 
@@ -25,8 +25,8 @@ class CollectionDropdownAdapter(
 ) :
     RecyclerView.Adapter<CollectionDropdownAdapter.MyViewHolder>() {
 
+   // Selected collection uuid list
    var selectedCollectionUUID = mutableListOf<String>()
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemCollectionDropdownBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -42,21 +42,26 @@ class CollectionDropdownAdapter(
     inner class MyViewHolder(private val binding: ItemCollectionDropdownBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
+        // Collection data
         private lateinit var collectionData:CollectionDataModel
 
+        // Bind method
         fun bind(metalType: CollectionDataModel) {
 
             this.collectionData = metalType
 
+            // Set collection name
             setCollectionName()
 
+            // Set selected collection
             setSelectedCollection()
 
-
+            // Set click on collection
             binding.llCollectionItem.setOnClickListener(this)
 
         }
 
+        // Set selected collection
         private fun setSelectedCollection() {
 
             if (selectedCollectionUUID.any { it == collectionData.collectionUUID }) {
@@ -71,12 +76,16 @@ class CollectionDropdownAdapter(
             }
         }
 
+        // Set collection name
         private fun setCollectionName() {
             binding.checkBoxCollection.text = collectionData.collectionName
         }
 
+        // Handle all the click
+        @SuppressLint("NotifyDataSetChanged")
         override fun onClick(v: View?) {
 
+            // Clicked on collection
             if (v == binding.llCollectionItem) {
 
                 if (binding.checkBoxCollection.isChecked){
@@ -87,12 +96,13 @@ class CollectionDropdownAdapter(
                     selectedCollectionUUID.remove(collectionData.collectionUUID)
 
                 }
-                else{
+                else {
 
                     binding.checkBoxCollection.isChecked = true
+                    selectedCollectionUUID.clear()
                     collectionData.collectionUUID?.let { selectedCollectionUUID.add(it) }
-
                     collectionStatusCallback.collectionSelected(SelectedCollectionModel(binding.checkBoxCollection,collectionData))
+                    notifyDataSetChanged()
                 }
             }
 

@@ -14,11 +14,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.AddressDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants.Companion.address
 import com.jmsoft.basic.UtilityTools.Constants.Companion.confirmation
 import com.jmsoft.basic.UtilityTools.Constants.Companion.firstName
@@ -37,15 +39,19 @@ import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CartListAdapter
 import com.jmsoft.main.adapter.CartAddressAdapter
 import com.jmsoft.main.`interface`.AddressSelectionStatus
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class CartFragment : Fragment(), View.OnClickListener {
 
     var binding: FragmentCartBinding? = null
 
-    //Validation Mode object
+    // Validation Mode object
     private var errorValidationModels: MutableList<ValidationModel> = ArrayList()
 
-    //Current state for recreating the fragment
+    // Current state for recreating the fragment
     private var currentState: String = verification
 
     // Selected Address Data Model
@@ -75,7 +81,10 @@ class CartFragment : Fragment(), View.OnClickListener {
         (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.INVISIBLE
 
         //set the Clicks , initialization and setup
-        init()
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            init()
+        }
 
         return binding?.root
     }
@@ -91,7 +100,8 @@ class CartFragment : Fragment(), View.OnClickListener {
                 binding?.let { it1 ->
                     CartListAdapter(
                         requireActivity(), it,
-                        it1
+                        it1,
+                        CoroutineScope(SupervisorJob() + Dispatchers.Default)
                     )
                 }
             }
@@ -105,6 +115,8 @@ class CartFragment : Fragment(), View.OnClickListener {
         }
         // If cart is empty
         else {
+
+            GetProgressBar.getInstance(requireActivity())?.dismiss()
 
             binding?.rlCartManagement?.visibility = View.GONE
             binding?.llCartEmpty?.visibility = View.VISIBLE
@@ -168,7 +180,7 @@ class CartFragment : Fragment(), View.OnClickListener {
     }
 
     // Make empty all the edittext
-    private fun removeData(){
+    private fun removeData() {
 
         binding?.etFirstName?.setText("")
         binding?.etLastName?.setText("")
@@ -252,7 +264,7 @@ class CartFragment : Fragment(), View.OnClickListener {
     }
 
     //set the Clicks , initialization and setup
-    private fun init() {
+    private suspend fun init() {
 
         //Set underline on Back to Home page
         setUnderLine()
@@ -321,10 +333,10 @@ class CartFragment : Fragment(), View.OnClickListener {
         }
 
         //Setting Up Card List Recycler View
-        setUpCardListRecyclerView()
+        val jobCart = lifecycleScope.launch(Dispatchers.Main) { setUpCardListRecyclerView() }
 
         //Setting Up Address List Recycler View
-        setUpAddressListRecyclerView()
+        val jobAddress = lifecycleScope.launch(Dispatchers.Main) { setUpAddressListRecyclerView() }
 
         // Set progress value to 33 percent
         binding?.progressBar?.progress = 33
@@ -343,6 +355,12 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         // Set Click on Radio Button
         binding?.llRadioButton?.setOnClickListener(this)
+
+        jobCart.join()
+        jobAddress.join()
+
+//        GetProgressBar.getInstance(requireActivity())?.dismiss()
+
     }
 
     // Add new Address

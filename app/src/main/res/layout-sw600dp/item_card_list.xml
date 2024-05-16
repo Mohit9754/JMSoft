@@ -44,7 +44,6 @@
                 android:scaleType="centerCrop"
                 android:id="@+id/ivProduct"
                 android:elevation="0dp"
-                android:src="@drawable/img_ring_product"
                 tools:ignore="ContentDescription" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -54,7 +53,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_8sdp"
             android:fontFamily="@font/montserrat_arabic_bold"
-            android:text="@string/royal_gold_ring"
             android:id="@+id/tvName"
             android:textColor="@color/black"
             android:textSize="13sp" />
@@ -83,7 +81,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/_1"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/tvQuantity"
                 android:layout_marginHorizontal="@dimen/_2sdp"
@@ -129,7 +126,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/_1sdp"
                     android:fontFamily="@font/montserrat_arabic_medium"
-                    android:text="@string/_12_000"
                     android:id="@+id/tvPrice"
                     android:textColor="@color/black"
                     android:textSize="14sp"

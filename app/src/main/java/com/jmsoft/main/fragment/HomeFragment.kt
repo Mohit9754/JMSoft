@@ -8,17 +8,12 @@ import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.jmsoft.R
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
 import com.jmsoft.databinding.FragmentHomeBinding
 import com.jmsoft.main.activity.DashboardActivity
 
-/**
- * Home Fragment
- *
- * Showing the List Of Options
- *
- */
 class HomeFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentHomeBinding
@@ -33,6 +28,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         // Hide the Search option
         (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.INVISIBLE
 
+        // Set current sate to verification
         (requireActivity() as DashboardActivity).currentState = verification
 
         //set the Clicks And initialization
@@ -56,6 +52,12 @@ class HomeFragment : Fragment(), View.OnClickListener {
         // Set Click on Inventory option
         binding.mcvInventory?.setOnClickListener(this)
 
+        // Set Click on Audit option
+        binding.mcvAudit?.setOnClickListener(this)
+
+
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
+
     }
 
     //Handles All the Clicks
@@ -63,6 +65,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         // Navigate to Catalog Fragment
         if (v == binding.mcvCatalog) {
+
+            // Show progress bar
+            GetProgressBar.getInstance(requireActivity())?.show()
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.catalog)
         }
@@ -75,6 +80,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
         // Navigate to Cart Fragment
         else if (v == binding.mcvPurchasing) {
 
+            GetProgressBar.getInstance(requireActivity())?.show()
+
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.cart)
 
         }
@@ -86,6 +93,12 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         }
 
+        else if(v == binding.mcvAudit) {
+
+//            GetProgressBar.getInstance(requireActivity())?.show()
+//            (requireActivity() as DashboardActivity).navController?.navigate(R.id.audit)
+
+        }
     }
 
 }

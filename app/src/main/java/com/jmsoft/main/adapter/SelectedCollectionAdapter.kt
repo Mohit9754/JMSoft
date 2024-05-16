@@ -12,12 +12,6 @@ import com.jmsoft.databinding.FragmentProductInventoryBinding
 import com.jmsoft.databinding.ItemSelectedCollectionBinding
 import com.jmsoft.main.model.SelectedCollectionModel
 
-/**
- * Catalog Adapter
- *
- * Showing the catalog details
- *
- */
 
 class SelectedCollectionAdapter(
 
@@ -42,28 +36,36 @@ class SelectedCollectionAdapter(
     inner class MyViewHolder(private val binding: ItemSelectedCollectionBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
+        // Selected collection data
         private lateinit var selectedCollectionData:SelectedCollectionModel
 
+        // Selected collection position
         private var position = -1
 
+        // Bind method
         fun bind(selectedCollectionData: SelectedCollectionModel,position: Int) {
 
             this.selectedCollectionData = selectedCollectionData
             this.position = position
 
+            // Set collection name
             setCollectionName()
 
+            // Set click on cross button
             binding.ivCross.setOnClickListener(this)
 
         }
 
+        // Set collection name
         private fun setCollectionName() {
             binding.tvCollectionName.text = selectedCollectionData.collectionDataModel.collectionName
         }
 
+        // Handle all the clicks
         @SuppressLint("NotifyDataSetChanged")
         override fun onClick(v: View?) {
 
+            // Clicked on cross button
             if (v == binding.ivCross) {
 
                 selectedCollectionDataList.removeAt(position)

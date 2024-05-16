@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.jmsoft.R
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.category
 import com.jmsoft.basic.UtilityTools.Constants.Companion.collection
@@ -23,6 +24,7 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         // Inflate the layout for this fragment
         binding = FragmentInventoryBinding.inflate(layoutInflater)
 
@@ -50,6 +52,8 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
         // Set Click on Product option
         binding.mcvProduct?.setOnClickListener(this)
 
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
+
     }
 
     //Handles All the Clicks
@@ -65,13 +69,18 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
         // When metal type clicked
         else if(v == binding.mcvMetalType) {
 
+            GetProgressBar.getInstance(requireActivity())?.show()
+
             //Giving the fragment status
             bundle.putString(Constants.state, metalType)
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.metalType,bundle)
         }
 
-        else if(v == binding.mcvCollection){
+        // Clicked on collection
+        else if(v == binding.mcvCollection) {
+
+            GetProgressBar.getInstance(requireActivity())?.show()
 
             //Giving the fragment status
             bundle.putString(Constants.state, collection)
@@ -80,7 +89,10 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
 
         }
 
+        // Clicked on Category
         else if (v == binding.mcvCategory) {
+
+            GetProgressBar.getInstance(requireActivity())?.show()
 
             //Giving the fragment status
             bundle.putString(Constants.state, category)
@@ -89,7 +101,11 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
 
         }
 
+        // Clicked on product
         else if (v == binding.mcvProduct) {
+
+            // Show progress bar
+            GetProgressBar.getInstance(requireActivity())?.show()
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.product)
 

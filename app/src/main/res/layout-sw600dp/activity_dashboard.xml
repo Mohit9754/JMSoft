@@ -8,7 +8,6 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-
     <RelativeLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -63,12 +62,15 @@
             android:layout_toStartOf="@+id/ivCard"
             android:layout_marginEnd="@dimen/_7sdp"
             android:id="@+id/mcvSearch"
+            android:outlineAmbientShadowColor="@color/ambientShadowColor"
+            android:outlineSpotShadowColor="@color/spotShadowColor"
             android:visibility="invisible"
             app:strokeWidth="1dp"
             app:strokeColor="@color/text_hint"
             app:cardCornerRadius="@dimen/_8sdp"
             android:layout_centerVertical="true"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:ignore="UnusedAttribute">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -81,13 +83,14 @@
                     android:textSize="10sp"
                     android:hint="@string/search_here"
                     android:maxLines="1"
+                    android:fontFamily="@font/montserrat_arabic_regular"
                     android:inputType="text"
                     android:id="@+id/etSearch"
                     android:paddingVertical="@dimen/_5sdp"
                     android:layout_marginStart="@dimen/_5sdp"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/_22sdp"
-                    tools:ignore="SmallSp,TextFields" />
+                    tools:ignore="Autofill,SmallSp,TextFields" />
 
                 <ImageView
                     android:layout_width="@dimen/_16sdp"
@@ -96,7 +99,8 @@
                     android:layout_marginEnd="@dimen/_4sdp"
                     android:layout_alignParentEnd="true"
                     android:padding="@dimen/_3sdp"
-                    android:src="@drawable/icon_search" />
+                    android:src="@drawable/icon_search"
+                    tools:ignore="ContentDescription" />
 
             </RelativeLayout>
 
@@ -111,7 +115,8 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/rlBottom"
         android:layout_below="@+id/toolbar"
-        app:navGraph="@navigation/nav" />
+        app:navGraph="@navigation/nav"
+        tools:ignore="FragmentTagUsage" />
 
     <RelativeLayout
         android:id="@+id/rlBottom"

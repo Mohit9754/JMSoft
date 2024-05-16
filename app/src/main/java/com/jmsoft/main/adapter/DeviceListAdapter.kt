@@ -67,6 +67,7 @@ class DeviceListAdapter(
         //Device for reconnecting
         lateinit var device: BluetoothDevice
 
+        // Bind method
         fun bind(data: DeviceModel, position: Int) {
             this.deviceModel = data
             this.position = position

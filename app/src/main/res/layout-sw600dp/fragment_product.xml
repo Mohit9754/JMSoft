@@ -65,15 +65,67 @@
             </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
+                android:layout_width="@dimen/_100sdp"
+                android:layout_marginEnd="@dimen/_7sdp"
+                android:id="@+id/mcvSearch"
+                android:visibility="visible"
+                app:strokeWidth="0.7dp"
+                android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                android:outlineSpotShadowColor="@color/spotShadowColor"
+                android:layout_gravity="center_vertical"
+                app:strokeColor="@color/text_hint"
+                app:cardCornerRadius="@dimen/_5sdp"
+                android:layout_height="wrap_content"
+                tools:ignore="UnusedAttribute">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:textSize="10sp"
+                        android:hint="@string/search_here"
+                        android:maxLines="1"
+                        android:inputType="text"
+                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:id="@+id/etSearch"
+                        android:paddingVertical="@dimen/_6sdp"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/_22sdp"
+                        tools:ignore="Autofill,SmallSp,TextFields" />
+
+                    <ImageView
+                        android:layout_width="@dimen/_16sdp"
+                        android:layout_height="@dimen/_16sdp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/_4sdp"
+                        android:layout_alignParentEnd="true"
+                        android:padding="@dimen/_3sdp"
+                        android:src="@drawable/icon_search"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/mcvFilter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/white"
+                android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                android:outlineSpotShadowColor="@color/spotShadowColor"
                 app:cardCornerRadius="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_8sdp"
                 android:layout_marginVertical="1dp"
                 app:strokeWidth="0.7dp"
-                app:strokeColor="@color/selected_drop_down_color">
+                app:strokeColor="@color/selected_drop_down_color"
+                tools:ignore="UnusedAttribute">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -116,6 +168,7 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/mcvAddProduct"
                 android:layout_width="wrap_content"
@@ -155,7 +208,6 @@
 
 
             </com.google.android.material.card.MaterialCardView>
-
 
         </LinearLayout>
 
@@ -204,7 +256,7 @@
                                 android:layout_marginVertical="@dimen/_9sdp"
                                 android:layout_marginTop="@dimen/_5sdp"
                                 android:orientation="horizontal"
-                                android:weightSum="9"
+                                android:weightSum="10"
                                 tools:ignore="UselessLeaf">
 
                                 <TextView
@@ -269,6 +321,17 @@
                                     android:layout_weight="1"
                                     android:fontFamily="@font/montserrat_arabic_regular"
                                     android:text="@string/carat_"
+                                    android:gravity="center"
+                                    android:textColor="@color/black"
+                                    android:textSize="10sp"
+                                    tools:ignore="SmallSp" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/montserrat_arabic_regular"
+                                    android:text="@string/cost"
                                     android:gravity="center"
                                     android:textColor="@color/black"
                                     android:textSize="10sp"

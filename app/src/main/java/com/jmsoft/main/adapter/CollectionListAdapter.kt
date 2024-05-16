@@ -13,6 +13,7 @@ import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CollectionDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
@@ -23,9 +24,8 @@ import com.jmsoft.main.`interface`.EditInventoryCallback
 import java.util.UUID
 
 /**
- * MetalType Adapter
+ * Collection List Adapter
  *
- * Showing the catalog details
  *
  */
 
@@ -48,9 +48,9 @@ class CollectionListAdapter(
         holder.bind(collectionDataList[position],position)
     }
 
-    // Show Metal Type Delete Dialog
+    // Show Collection Delete Dialog
     @SuppressLint("NotifyDataSetChanged")
-    private fun showCollectionDeleteDialog(position: Int,collectionUUID: String) {
+    private fun showCollectionDeleteDialog(position: Int,collectionUUID: String,collectionImageUri:String) {
 
         val dialog = Dialog(context)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -68,6 +68,10 @@ class CollectionListAdapter(
         dialogBinding.mcvYes.setOnClickListener {
 
             dialog.dismiss()
+
+            Utils.deleteCollectionUUIDFromProductTable(collectionUUID)
+
+            Utils.deleteImageFromInternalStorage(context,collectionImageUri)
 
             // Delete the collection first
             Utils.deleteCollection(collectionUUID)
@@ -104,31 +108,42 @@ class CollectionListAdapter(
     inner class MyViewHolder(private val binding: ItemInventoryBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        // Product Data
+        // Collection Data
         private lateinit var collectionData: CollectionDataModel
 
+        // Collection position
         private var position:Int = -1
 
+        // Bind method
         @SuppressLint("NotifyDataSetChanged")
         fun bind(collectionData: CollectionDataModel, position: Int) {
 
             this.collectionData = collectionData
             this.position = position
 
+            // Set collection image
             setCollectionImage()
 
+            // Set collection name
             setCollectionName()
 
-            //Setting Click on Delete Icon
+            // Set click on Delete Icon
             binding.mcvDelete.setOnClickListener(this)
 
-            //Setting Click on Edit Icon
+            // Set click on Edit Icon
             binding.mcvEdit.setOnClickListener(this)
 
+            // Set click on collection
             binding.mcvInventory.setOnClickListener(this)
+
+            if (position+1 == collectionDataList.size) {
+
+                GetProgressBar.getInstance(context)?.dismiss()
+            }
+
         }
 
-
+        // Set collection image
         private fun setCollectionImage(){
 
              binding.mcvCollectionImage.visibility = View.VISIBLE
@@ -141,20 +156,25 @@ class CollectionListAdapter(
             
         }
 
-        //Set Metal Type
+        // Set Metal Type
         private fun setCollectionName(){
             binding.tvMetalType.text = collectionData.collectionName
 
         }
 
-        //Handles All the Clicks
+        // Handles All the Clicks
         @SuppressLint("NotifyDataSetChanged")
         override fun onClick(v: View?) {
 
             // When delete button Clicked
-            if (v == binding.mcvDelete){
+            if (v == binding.mcvDelete) {
+
                 // Show Metal Type Delete Dialog
-                collectionData.collectionUUID?.let { showCollectionDeleteDialog(position, it) }
+                collectionData.collectionUUID?.let { collectionData.collectionImageUri?.let { it1 ->
+                    showCollectionDeleteDialog(position, it,
+                        it1
+                    )
+                } }
             }
 
             // When edit button Clicked
@@ -162,9 +182,13 @@ class CollectionListAdapter(
                 collectionData.collectionUUID?.let { editCollectionCallback.editInventory(it,position) }
             }
 
+            // Clicked on collection
             else if (v == binding.mcvInventory) {
 
+                GetProgressBar.getInstance(context)?.show()
+
                 val bundle = Bundle()
+
                 //Giving the collection UUID
                 bundle.putString(Constants.collectionUUID,collectionData.collectionUUID)
 

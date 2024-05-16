@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
 import com.jmsoft.basic.UtilityTools.Utils
@@ -22,13 +23,6 @@ import com.jmsoft.databinding.FragmentCollectionDetailBinding
 import com.jmsoft.databinding.ItemCollectionBinding
 import com.jmsoft.main.activity.DashboardActivity
 import java.util.UUID
-
-/**
- * Collection Adapter
- *
- * Showing the catalog details
- *
- */
 
 class ProductCategoryCollectionAdapter(
     private val context: Context,
@@ -126,22 +120,28 @@ class ProductCategoryCollectionAdapter(
         // Product Data
         private lateinit var productData: ProductDataModel
 
+        // Product position
         private var position:Int = -1
 
+        // Bind method
         fun bind(productData: ProductDataModel,position: Int) {
 
             this.productData = productData
             this.position = position
 
-            //Set the Product image
+            // Set the Product image
             setProductName()
 
+            // Set product weight
             setProductWeight()
 
+            // Set product category
             setProductCategory()
 
+            // Set product type
             setProductType()
 
+            // Set product carat
             setProductCarat()
 
             //Set the Product price
@@ -150,26 +150,31 @@ class ProductCategoryCollectionAdapter(
             //Set the Product image
             setProductImage()
 
+            // Hide views
             binding.mcvDelete.visibility = View.VISIBLE
             binding.rlCollectionDetail.visibility = View.VISIBLE
 
             binding.mcvCartStatus.visibility = View.GONE
 
+            // Set click on delete button
             binding.mcvDelete.setOnClickListener(this)
 
-            //Setting Click on Collection Item
+            // Set Click on Collection Item
             binding.mcvCollectionItem.setOnClickListener(this)
 
         }
 
+        // Set product carat
         private fun setProductCarat(){
             binding.tvProductCarat.text = productData.productCarat.toString()
         }
 
+        // Set product category
         private fun setProductCategory() {
             binding.tvProductCategory.text = productCategory
         }
 
+        // Set product type
         private fun setProductType(){
             binding.tvProductType.text = productData.metalTypeUUID?.let {
                 Utils.getMetalTypeNameThroughMetalTypeUUID(
@@ -178,6 +183,7 @@ class ProductCategoryCollectionAdapter(
             }
         }
 
+        // Set product weight
         @SuppressLint("SetTextI18n")
         private fun setProductWeight() {
             binding.tvProductWeight.text = "${productData.productWeight} $weightUnit"
@@ -198,7 +204,7 @@ class ProductCategoryCollectionAdapter(
         //Set the Product price
         private fun setProductPrice() {
 
-            binding.tvProductPrice.text = productData.productCost?.let {
+            binding.tvProductPrice.text = productData.productPrice?.let {
                 Utils.roundToTwoDecimalPlaces(
                     it
                 )
@@ -212,11 +218,13 @@ class ProductCategoryCollectionAdapter(
             binding.tvProductName.text = productData.productName
         }
 
-        //Handles All the Clicks
+        // Handle All the Clicks
         override fun onClick(v: View?) {
 
-            //Click on Collection item
+            // Clicked on Collection item
             if (v == binding.mcvCollectionItem) {
+
+                GetProgressBar.getInstance(context)?.show()
 
                 val bundle = Bundle()
                 //Giving the product UUID
@@ -227,6 +235,7 @@ class ProductCategoryCollectionAdapter(
 
             }
 
+            // Clicked on delete button
             else if (v == binding.mcvDelete){
 
                 productData.productUUID?.let { productData.collectionUUID?.let { it1 ->

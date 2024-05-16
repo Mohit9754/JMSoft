@@ -19,9 +19,8 @@ import com.jmsoft.main.fragment.ProductInventoryFragment
 import com.jmsoft.main.`interface`.SelectedCallback
 
 /**
- * Catalog Adapter
+ * MetalType Dropdown Adapter
  *
- * Showing the catalog details
  *
  */
 
@@ -34,7 +33,8 @@ class MetalTypeDropdownAdapter(
 ) :
     RecyclerView.Adapter<MetalTypeDropdownAdapter.MyViewHolder>() {
 
-    var selectedPosition:Int = -1
+    // Selected metal type position
+    var selectedMetalTypePosition:Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemMetalTypeDropdownBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -72,7 +72,7 @@ class MetalTypeDropdownAdapter(
 
             Utils.T(context, context.getString(R.string.deleted_successfully))
 
-            selectedPosition = -1
+            selectedMetalTypePosition = -1
             selectedCallback.unselect()
 
             notifyDataSetChanged()
@@ -91,31 +91,39 @@ class MetalTypeDropdownAdapter(
     inner class MyViewHolder(private val binding: ItemMetalTypeDropdownBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
+        // Metal type data
         private lateinit var metalTypeData:MetalTypeDataModel
 
+        // metal type position
         private var position = -1
 
+        // Bind method
         fun bind(metalTypeData: MetalTypeDataModel,position: Int) {
 
             this.metalTypeData = metalTypeData
             this.position = position
 
-            setMetalType()
+            // Set metal type name
+            setMetalTypeName()
 
-            setSelected()
+            // Set selected metal type
+            setSelectedMetalType()
 
+            // Set click on metal type
             binding.llMetalType.setOnClickListener(this)
 
+            // Set click on delete button
             binding.mcvDelete.setOnClickListener(this)
 
+            // Set click on edit button
             binding.mcvEdit.setOnClickListener(this)
 
         }
 
+        // Set selected metal type
+        private fun setSelectedMetalType(){
 
-        private fun setSelected(){
-
-            if (selectedPosition == position) {
+            if (selectedMetalTypePosition == position) {
 
                 binding.llMetalType.setBackgroundColor(context.getColor(R.color.selected_drop_down_color))
                 selectedCallback.selected(metalTypeData)
@@ -128,26 +136,28 @@ class MetalTypeDropdownAdapter(
             }
         }
 
-        private fun setMetalType() {
+        // Set metal type name
+        private fun setMetalTypeName() {
             binding.tvMetalType.text = metalTypeData.metalTypeName
         }
 
+        // Handle all the clicks
         @SuppressLint("NotifyDataSetChanged")
         override fun onClick(v: View?) {
 
+            // Clicked on metal type
             if (v == binding.llMetalType) {
-
-                selectedPosition = position
-//                metalTypeSelectedCallback.selectedMetalType(metalTypeData)
+                selectedMetalTypePosition = position
                 notifyDataSetChanged()
-
             }
 
+            // Clicked on delete button
             else if (v == binding.mcvDelete) {
 
                 metalTypeData.metalTypeUUID?.let { showMetalTypeDeleteDialog(position, it) }
             }
 
+            // Clicked on edit button
             else if (v == binding.mcvEdit) {
 
                 productInventoryFragment.showAddOrEditMetalTypeDialog(position,metalTypeData.metalTypeUUID)

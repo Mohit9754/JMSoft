@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
 import com.jmsoft.basic.UtilityTools.Utils
@@ -21,12 +22,6 @@ import com.jmsoft.databinding.DialogDeleteUserBinding
 import com.jmsoft.databinding.ItemCollectionBinding
 import com.jmsoft.main.activity.DashboardActivity
 
-/**
- * Collection Adapter
- *
- * Showing the catalog details
- *
- */
 
 class ProductCollectionAdapter(
     private val context: Context,
@@ -46,8 +41,6 @@ class ProductCollectionAdapter(
         holder.bind(productList[position],position)
     }
 
-
-
     inner class MyViewHolder(private val binding: ItemCollectionBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
@@ -60,6 +53,7 @@ class ProductCollectionAdapter(
         // Cart Product UUID
         private var cartProductUUID:String? = null
 
+        // Product position
         private var position:Int = -1
 
         fun bind(productData: ProductDataModel,position: Int) {
@@ -67,21 +61,13 @@ class ProductCollectionAdapter(
             this.productData = productData
             this.position = position
 
-            //Set the Product image
+            // Set the Product image
             setProductName()
 
-//            setProductWeight()
-
-//            setProductCategory()
-
-//            setProductType()
-
-//            setProductCarat()
-
-            //Set the Product price
+            // Set the Product price
             setProductPrice()
 
-            //Set the Product image
+            // Set the Product image
             setProductImage()
 
             // Set the Product Cart Status
@@ -90,33 +76,12 @@ class ProductCollectionAdapter(
             // Getting Cart Product UUID for Deleting the product from the cart
             getCartProductUUID()
 
-
-            //Setting Click on Collection Item
+            // Set Click on Collection Item
             binding.mcvCollectionItem.setOnClickListener(this)
 
-            //Setting Click on CartStatus
+            // Set Click on CartStatus
             binding.mcvCartStatus.setOnClickListener(this)
-        }
 
-        private fun setProductCarat(){
-            binding.tvProductCarat.text = productData.productCarat.toString()
-        }
-
-        private fun setProductCategory() {
-//            binding.tvProductCategory.text = productCategory
-        }
-
-        private fun setProductType(){
-            binding.tvProductType.text = productData.metalTypeUUID?.let {
-                Utils.getMetalTypeNameThroughMetalTypeUUID(
-                    it
-                )
-            }
-        }
-
-        @SuppressLint("SetTextI18n")
-        private fun setProductWeight() {
-            binding.tvProductWeight.text = "${productData.productWeight} $weightUnit"
         }
 
         // Getting Cart Product UUID for Deleting the product from the cart
@@ -156,7 +121,7 @@ class ProductCollectionAdapter(
             }
         }
 
-        //Set the Product image
+        // Set the Product image
         private fun setProductImage() {
 
             val arrayOfImages = productData.productImageUri?.split(",")?.toTypedArray()
@@ -168,7 +133,7 @@ class ProductCollectionAdapter(
             binding.ivProductImage.setImageBitmap(bitmap)
         }
 
-        //Set the Product price
+        // Set the Product price
         private fun setProductPrice() {
 
             binding.tvProductPrice.text = productData.productCost?.let {
@@ -179,17 +144,19 @@ class ProductCollectionAdapter(
         }
 
 
-        //Set the Product image
+        // Set the Product image
         private fun setProductName() {
 
             binding.tvProductName.text = productData.productName
         }
 
-        //Handles All the Clicks
+        //Handle All the Clicks
         override fun onClick(v: View?) {
 
-            //Click on Collection item
+            // Click on Collection item
             if (v == binding.mcvCollectionItem) {
+
+                GetProgressBar.getInstance(context)?.show()
 
                 val bundle = Bundle()
                 //Giving the product UUID

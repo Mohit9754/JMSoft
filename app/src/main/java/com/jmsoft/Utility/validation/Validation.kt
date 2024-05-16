@@ -48,11 +48,11 @@ class Validation {
             }
             when (validationModel.type) {
 
-                Type.letterAndDigit -> validationCheck = isValidProductName(context,validationModel.editText)
+                Type.NoSpecialChar -> validationCheck = isNoSpecialChar(context,validationModel.editText)
 
                 Type.ImageSelect -> validationCheck = isImageSelected(context,validationModel.isImageSelected)
                 
-                Type.Barcode -> validationCheck = isBarCodeGenerate(context,validationModel.arrayListSize)
+                Type.Barcode -> validationCheck = isBarCodeGenerate(context,validationModel.arrayListSize,validationModel.editText)
 
                 Type.AtLeastTwo -> validationCheck = isTwoImageSelected(context,validationModel.arrayListSize)
 
@@ -138,10 +138,12 @@ class Validation {
         }
     }
     
-    private fun isBarCodeGenerate(context: Context,arrayListSize: Int?): Boolean {
+    private fun isBarCodeGenerate(context: Context,arrayListSize: Int?,editText: EditText?): Boolean {
         
         return if(arrayListSize == 0){
             errorMessage = context.getString(R.string.please_generate_barcode)
+            EditTextPointer = editText
+
             false
 
         } else {
@@ -238,11 +240,14 @@ class Validation {
      * @param editText Edit Text To Check
      * @return true/false
      */
+
     private fun isValidPhoneNumber(context: Context, editText: EditText?): Boolean {
+
         return if (editText?.text == null || TextUtils.isEmpty(editText.text)) {
             errorMessage = context.getString(R.string.empty_error)
             EditTextPointer = editText
             false
+
         } else {
             if (validateMobileNumber(editText.text.toString().trim { it <= ' ' })) {
                 true
@@ -337,15 +342,16 @@ class Validation {
         }
     }
 
-    private fun isValidProductName(context: Context, editText: EditText?): Boolean {
-        return if (editText?.text == null || TextUtils.isEmpty(editText.text)) {
+    private fun isNoSpecialChar(context: Context, editText: EditText?): Boolean {
+        return if (editText?.text == null || editText.text.toString().trim().isEmpty()) {
             errorMessage = context.getString(R.string.empty_error)
             EditTextPointer = editText
             false
         }  else {
-            val p = Pattern.compile("^[a-zA-Z0-9]*\$")
+            val pattern = Pattern.compile("^[\\p{L}\\s\\d]+\$")
+
             val s = editText.text.toString().trim { it <= ' ' }
-            val m = p.matcher(s.trim { it <= ' ' })
+            val m = pattern.matcher(s.trim { it <= ' ' })
             if (m.matches()) {
                 true
             } else {
@@ -509,22 +515,25 @@ class Validation {
     }
 
     fun validateMobileNumber(phoneNo: String): Boolean {
-        val phonenumber: PhoneNumber
-        val regionalCode = getCountryRegion()
-        E("regionalCode::$regionalCode")
-        val NationalPhoneNumber: String
-        try {
-            phonenumber = phoneNumberUtil!!.parse(phoneNo, regionalCode)
-            NationalPhoneNumber = phonenumber.nationalNumber.toString()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
-        }
-        return if (NationalPhoneNumber == phoneNo) {
-            phoneNumberUtil!!.isValidNumber(phonenumber)
-        } else {
-            false
-        }
+
+        return phoneNo.length <= 10
+
+//        val phonenumber: PhoneNumber
+//        val regionalCode = getCountryRegion()
+////        E("regionalCode::$regionalCode")
+//        val NationalPhoneNumber: String
+//        try {
+//            phonenumber = phoneNumberUtil!!.parse(phoneNo, regionalCode)
+//            NationalPhoneNumber = phonenumber.nationalNumber.toString()
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            return false
+//        }
+//        return if (NationalPhoneNumber == phoneNo) {
+//            phoneNumberUtil!!.isValidNumber(phonenumber)
+//        } else {
+//            false
+//        }
     }
 
     /**
@@ -532,7 +541,7 @@ class Validation {
      */
     enum class Type(var label: String) {
 
-         letterAndDigit(""),ImageSelect(""),Barcode("") ,AtLeastTwo("") , Email(""),EmptyTextView(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
+         NoSpecialChar(""),ImageSelect(""),Barcode("") ,AtLeastTwo("") , Email(""),EmptyTextView(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
             ""
         ),
         PAN(""), IFSC(""), Empty(""), EmptyArrayList(""), AccountNumber(""), MPIN("");

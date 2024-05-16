@@ -13,19 +13,28 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
+import com.jmsoft.basic.UtilityTools.Constants.Companion.productSectionHeight
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentProductDetailBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CatalogAdapter
 import com.jmsoft.main.adapter.ProductCollectionAdapter
 import com.jmsoft.main.adapter.ProductImageAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Suppress("DEPRECATION")
 class ProductDetailFragment : Fragment(), View.OnClickListener {
@@ -38,7 +47,9 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     // Flag variable for checking if Product Exist In Cart
     private var isProductExistInCart = false
 
-    private var progressBarDialog:Dialog? = null
+    private var heightOfllProductSection:Int? = null
+
+    private var collectionUUIDData:String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,11 +59,30 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
         // Inflate the layout for this fragment
         binding = FragmentProductDetailBinding.inflate(layoutInflater)
 
+        // Get height
+        val height = savedInstanceState?.getInt(productSectionHeight)
+
+        if (height != null && binding.llProductSection != null) {
+
+            //Setting the Product Section Height through Screen height
+            val layoutParams = binding.llProductSection!!.layoutParams as LinearLayout.LayoutParams
+            layoutParams.height = height
+            binding.llProductSection?.setLayoutParams(layoutParams)
+            heightOfllProductSection = height
+
+        } else {
+
+            //Setting the Product Section Height through Screen height
+            setProductSectionHeight()
+        }
+
         // Hide the Search option
         (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.GONE
 
         // set the Clicks , initialization And Setup
-        init()
+        lifecycleScope.launch(Dispatchers.Main){
+            init()
+        }
 
         return binding.root
     }
@@ -90,32 +120,58 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     }
 
     // Set up collection Recycler view
-    private fun setUpCollectionItemRecyclerView(collectionUUID: String, productUUID: String) {
+    private suspend fun setUpCollectionItemRecyclerView(collectionUUID: String, productUUID: String) {
 
         if (collectionUUID.isNotEmpty()) {
 
             val collectionUUIDList = productData.collectionUUID?.split(",")
 
-            val productList =
-                collectionUUIDList?.let { Utils.getProductsThroughCollection(it, productUUID) }
+            val collectionData = collectionUUIDList?.get(0)?.let { Utils.getCollectionThroughUUID(it) }
 
-            if (productList?.isNotEmpty() == true) {
+            collectionUUIDData = collectionUUIDList?.get(0).toString()
 
-                binding.mcvCollection?.visibility  = View.VISIBLE
+            val totalScreenWidth = Utils.getScreenWidth(requireActivity())
 
-                val adapter = ProductCollectionAdapter(requireActivity(), productList)
+            val noOfItems = if (totalScreenWidth > 1600) 3 else 2
 
-                binding.rvCollection?.layoutManager =
-                    LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
-                binding.rvCollection?.adapter = adapter
+            val result =
+                collectionUUIDList?.let { lifecycleScope.async(Dispatchers.IO) {
+                    return@async Utils.getProductsThroughCollection(it, productUUID,noOfItems)
+                } }
+
+            val productList = result?.await()
+
+            withContext(Dispatchers.Main) {
+
+                binding.ivCollectionImage?.setImageBitmap(collectionData?.collectionImageUri?.let {
+                    Utils.getImageFromInternalStorage(requireActivity(),
+                        it
+                    )
+                })
+
+                if (productList?.isNotEmpty() == true) {
+
+                    binding.mcvCollection?.visibility  = View.VISIBLE
+
+                    val adapter = ProductCollectionAdapter(requireActivity(), productList)
+
+                    binding.rvCollection?.layoutManager =
+                        LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
+                    binding.rvCollection?.adapter = adapter
+
+                }
+                else {
+                    binding.mcvCollection?.visibility  = View.GONE
+                }
 
             }
-            else {
-                binding.mcvCollection?.visibility  = View.GONE
-            }
+
         }
         else {
-            binding.mcvCollection?.visibility  = View.GONE
+
+            withContext(Dispatchers.Main) {
+                binding.mcvCollection?.visibility  = View.GONE
+            }
         }
     }
 
@@ -189,9 +245,13 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
     // Set the Product Details
     @SuppressLint("SetTextI18n")
-    private fun setUpProductDetails(productUUID: String) {
+    private suspend fun setUpProductDetails(productUUID: String) {
 
-        productData = Utils.getProductThroughProductUUID(productUUID)
+        val result = lifecycleScope.async(Dispatchers.IO) {
+            return@async Utils.getProductThroughProductUUID(productUUID)
+        }
+
+        productData = result.await()
 
         // Setup Product Image Recycler View
         productData.productImageUri?.let { setUpProductImageRecyclerView(it) }
@@ -211,38 +271,19 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
             productData.categoryUUID?.let { Utils.getCategoryNameThroughCategoryUUID(it) }
 
         binding.tvProductDescription?.text = productData.productDescription
-        binding.tvProductPrice?.text = productData.productCost?.let {
+        binding.tvProductPrice?.text = productData.productPrice?.let {
             Utils.roundToTwoDecimalPlaces(
                 it
             )
         }?.let { Utils.getThousandSeparate(it) }
 
-        // Set up collection Recycler view
-        productData.collectionUUID?.let {
-            productData.productUUID?.let { it1 ->
-                setUpCollectionItemRecyclerView(
-                    it,
-                    it1
-                )
-            }
-        }
+
     }
 
-    //Setting the Product Section Height through Screen height
+    // Setting the Product Section Height through Screen height
     private fun setProductSectionHeight() {
 
-        val windowManager = requireActivity().getSystemService(WINDOW_SERVICE) as WindowManager
-        val display: Display = windowManager.defaultDisplay
-        val displayMetrics = resources.displayMetrics
-
-        val screenHeight = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val windowMetrics = windowManager.currentWindowMetrics
-            windowMetrics.bounds.height()
-        } else {
-            @Suppress("DEPRECATION")
-            display.getRealMetrics(displayMetrics)
-            displayMetrics.heightPixels
-        }
+        val screenHeight = Utils.getScreenHeight(requireActivity())
 
         val dashboardActivity = (requireActivity() as DashboardActivity)
 
@@ -254,38 +295,65 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
         // Set the height of the layout
         val layoutParams = binding.llProductSection?.layoutParams as LinearLayout.LayoutParams
+
         if (heightOfToolbarAndBottom != null) {
-            layoutParams.height = (screenHeight - heightOfToolbarAndBottom) - statusBarHeight
+            layoutParams.height = (screenHeight - heightOfToolbarAndBottom) - statusBarHeight - dashboardActivity.binding?.rlBottom?.height!!
+            heightOfllProductSection = (screenHeight - heightOfToolbarAndBottom) - statusBarHeight - dashboardActivity.binding?.rlBottom?.height!!
         }
+
         binding.llProductSection?.setLayoutParams(layoutParams)
 
     }
 
     // Set the Clicks , initialization And Setup
-    private fun init() {
-
-        progressBarDialog = Utils.initProgressDialog(requireActivity())
-
-        //Setting the Product Section Height through Screen height
-        setProductSectionHeight()
+    private suspend fun init() {
 
         // getting the product UUID
         val productUUID = arguments?.getString(Constants.productUUID)
 
         // Set the Product Details
-        productUUID?.let { setUpProductDetails(it) }
+        val job = productUUID?.let { lifecycleScope.launch(Dispatchers.Main){ setUpProductDetails(it) } }
+
+        job?.join()
 
         // Checks if Product Already Added in card
         isProductAlreadyAddedInCard()
 
+        // Set up collection Recycler view
+        val jobCollection = lifecycleScope.launch(Dispatchers.IO) {
+            productData.collectionUUID?.let {
+                productData.productUUID?.let { it1 ->
+                    setUpCollectionItemRecyclerView(
+                        it,
+                        it1
+                    )
+                }
+            }
+        }
+
         // Setting the May also like RecyclerView
-        setUpMayLikeRecyclerView()
+
+        val jobMayLike = lifecycleScope.launch(Dispatchers.Main) {
+            setUpMayLikeRecyclerView()
+        }
 
         // Set Click on Cart Status button
         binding.llCartStatus?.setOnClickListener(this)
 
-        progressBarDialog?.dismiss()
+        binding.mcvExploreCollection?.setOnClickListener(this)
 
+        jobCollection.join()
+        jobMayLike.join()
+
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
+
+    }
+
+    // Save the height of the LinearLayout (product section)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Save the height of the LinearLayout
+        heightOfllProductSection?.let { outState.putInt(productSectionHeight, it) }
     }
 
     // Handle all the clicks
@@ -311,7 +379,6 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
                 Utils.T(requireActivity(), getString(R.string.removed_successfully))
 
-
             } else {
 
                 val cardDataModel = CartDataModel()
@@ -327,6 +394,18 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
                 Utils.T(requireActivity(), getString(R.string.added_successfully))
             }
+        }
+
+        else if (v == binding.mcvExploreCollection){
+
+            GetProgressBar.getInstance(requireActivity())?.show()
+
+            val bundle = Bundle()
+
+            //Giving the collection UUID
+            bundle.putString(Constants.collectionUUID,collectionUUIDData)
+            (context as DashboardActivity).navController?.navigate(R.id.collectionDetail, bundle)
+
         }
     }
 }

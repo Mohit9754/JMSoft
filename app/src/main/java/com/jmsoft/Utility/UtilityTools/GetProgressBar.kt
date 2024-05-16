@@ -7,12 +7,13 @@ import com.jmsoft.basic.UtilityTools.Utils
 object GetProgressBar {
 
     private var progressBarDialog: Dialog? = null
-    fun getInstance(context: Context): Dialog {
+
+    fun getInstance(context: Context): Dialog? {
 
         if (progressBarDialog == null){
             progressBarDialog = Utils.initProgressDialog(context)
         }
 
-        return progressBarDialog as Dialog
+        return progressBarDialog
     }
 }

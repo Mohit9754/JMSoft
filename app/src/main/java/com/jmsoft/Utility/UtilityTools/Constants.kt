@@ -224,6 +224,7 @@ interface Constants {
         const val userUUID = "userUUID"
         const val productUUID = "productUUID"
         const val collectionUUID = "collectionUUID"
+        const val productSectionHeight = "productSectionHeight"
 
         // State
         const val bluetoothUuid = "00001101-0000-1000-8000-00805F9B34FB"

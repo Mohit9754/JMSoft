@@ -12,9 +12,8 @@ import com.jmsoft.databinding.FragmentCollectionDetailBinding
 import com.jmsoft.databinding.ItemCollectionDetailBinding
 
 /**
- * Cart list Adapter
+ * Collection Detail Adapter
  *
- * Showing the catalog details
  *
  */
 
@@ -26,6 +25,7 @@ class CollectionDetailAdapter(
 ) :
     RecyclerView.Adapter<CollectionDetailAdapter.MyViewHolder>() {
 
+    // Adapter reference
     var adapterReference = this
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -40,12 +40,12 @@ class CollectionDetailAdapter(
         holder.bind(categoryDataList[position], position)
     }
 
-    inner class MyViewHolder(private val binding: ItemCollectionDetailBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+    inner class MyViewHolder(private val binding: ItemCollectionDetailBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        //Product Data
+        // Category Data
         private lateinit var categoryData: CategoryDataModel
 
-        //Position
+        // Category Position
         private var position: Int = 0
 
         // bind method
@@ -54,16 +54,19 @@ class CollectionDetailAdapter(
             this.categoryData = categoryData
             this.position = position
 
-
+            // Set category name
             setCategoryName()
 
+            // Set collection recyclerview
             setCollectionRecyclerView()
         }
 
+        // Set category name
         private fun setCategoryName(){
             binding.tvCollectionName.text = categoryData.categoryName
         }
 
+        // Set collection recyclerview
         private fun setCollectionRecyclerView(){
 
             val productDataList = categoryData.categoryUUID?.let {
@@ -79,10 +82,6 @@ class CollectionDetailAdapter(
             binding.rvCollection.layoutManager =
                 LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             binding.rvCollection.adapter = adapter
-
-        }
-
-        override fun onClick(v: View?) {
 
         }
 

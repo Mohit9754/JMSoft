@@ -18,12 +18,6 @@ import com.jmsoft.databinding.ItemMetalTypeDropdownBinding
 import com.jmsoft.main.fragment.ProductInventoryFragment
 import com.jmsoft.main.`interface`.SelectedCallback
 
-/**
- * Catalog Adapter
- *
- * Showing the catalog details
- *
- */
 
 class CategoryDropdownAdapter(
     private val context: Context,
@@ -34,6 +28,7 @@ class CategoryDropdownAdapter(
 ) :
     RecyclerView.Adapter<CategoryDropdownAdapter.MyViewHolder>() {
 
+    // Selected category position
     var selectedPosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -47,6 +42,7 @@ class CategoryDropdownAdapter(
         holder.bind(categoryDataModelList[position],position)
     }
 
+    // Category delete dialog
     @SuppressLint("NotifyDataSetChanged")
     private fun showCategoryDeleteDialog(position: Int, categoryUUID:String) {
 
@@ -90,28 +86,37 @@ class CategoryDropdownAdapter(
     inner class MyViewHolder(private val binding: ItemMetalTypeDropdownBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
+        // Category data
         private lateinit var categoryData:CategoryDataModel
 
+        // Category position
         private var position = -1
 
+        // bind method
         fun bind(categoryData: CategoryDataModel,position: Int) {
 
             this.categoryData = categoryData
             this.position = position
 
+            // Set category name
             setCategoryName()
 
-            setSelected()
+            // Set selected category
+            setSelectedCategory()
 
+            // Set click on metal type
             binding.llMetalType.setOnClickListener(this)
 
+            // Set click on delete button
             binding.mcvDelete.setOnClickListener(this)
 
+            // Set click on edit button
             binding.mcvEdit.setOnClickListener(this)
 
         }
 
-        private fun setSelected() {
+        // Set selected category
+        private fun setSelectedCategory() {
 
             if (selectedPosition == position) {
                 binding.llMetalType.setBackgroundColor(context.getColor(R.color.selected_drop_down_color))
@@ -121,13 +126,16 @@ class CategoryDropdownAdapter(
             }
         }
 
+        // Set category name
         private fun setCategoryName() {
             binding.tvMetalType.text = categoryData.categoryName
         }
 
+        // Handle all the clicks
         @SuppressLint("NotifyDataSetChanged")
         override fun onClick(v: View?) {
 
+            // Clicked on metal type
             if (v == binding.llMetalType) {
 
                 selectedPosition = position
@@ -136,10 +144,13 @@ class CategoryDropdownAdapter(
 
                 notifyDataSetChanged()
             }
+
+            // Clicked on delete button
             else if (v == binding.mcvDelete){
                 categoryData.categoryUUID?.let { showCategoryDeleteDialog(position, it) }
             }
 
+            // Clicked on edit button
             else if (v == binding.mcvEdit) {
 
                 productInventoryFragment.showAddOrEditCategoryDialog(position,categoryData.categoryUUID)
