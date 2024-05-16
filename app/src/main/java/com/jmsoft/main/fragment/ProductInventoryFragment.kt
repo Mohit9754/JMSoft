@@ -650,7 +650,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener {
         // Set selected collection item
         setSelectedCollectionRecyclerView()
 
-        // Set product images
+        // Set product images   
         setProductImageRecyclerView()
 
         binding.llMetalType?.setOnClickListener(this)
