@@ -9,94 +9,87 @@ import com.rscja.deviceapi.RFIDWithUHFBLE
 import com.rscja.deviceapi.entity.UHFTAGInfo
 import com.rscja.deviceapi.interfaces.IUHFInventoryCallback
 
+class RFIDSetUp(private val context: Context, private val callback: RFIDCallback) {
 
-class RFIDSetUp {
-
-    private var mUHF: RFIDWithUHFBLE? = null
-    private var context:Context
-
+    private var mUHF: RFIDWithUHFBLE? = RFIDWithUHFBLE.getInstance()
     private var mIsScanning = false
-
     private var mHandler: Handler? = null
 
+    interface RFIDCallback {
+        fun onTagRead(tagInfo: UHFTAGInfo)
+        fun onError(message: String)
+    }
 
-   constructor(context: Context){
-       this.context = context
-       mUHF = RFIDWithUHFBLE.getInstance()
-       mHandler = object : Handler(Looper.getMainLooper()) {
-           override fun handleMessage(msg: Message) {
-               when (msg.what) {
-                   1 -> {
-                       val tagInfo = msg.obj as UHFTAGInfo
-                       handleTagData(tagInfo)
-                   }
+    init {
+        mHandler = object : Handler(Looper.getMainLooper()) {
+            override fun handleMessage(msg: Message) {
+                when (msg.what) {
+                    1 -> {
+                        val tagInfo = msg.obj as UHFTAGInfo
+                        handleTagData(tagInfo)
+                    }
+                    2 -> mIsScanning = false
+                    3 -> mIsScanning = true
+                }
+            }
+        }
+    }
 
-                   2 -> mIsScanning = false
-                   3 -> mIsScanning = true
-               }
-           }
-       }
-   }
-
-
-    public fun onResume() {
-        // Initialize RFID reader
+    fun onResume() {
         initRFID()
     }
 
-    public fun onPause() {
-        // Stop RFID scanning
+    fun onPause() {
         stopRFIDScan()
     }
 
     private fun initRFID() {
-        if (!mUHF!!.init(context)) {
-            Utils.E("Failed to initialize RFID reader")
-            Utils.T(context, "Failed to initialize RFID reader")
+        if (mUHF?.init(context) != true) {
+            val errorMessage = "Failed to initialize RFID reader"
+            Utils.E(errorMessage)
+            Utils.T(context, errorMessage)
+            callback.onError(errorMessage)
             return
         }
 
-        //--
         mUHF?.setInventoryCallback(IUHFInventoryCallback { uhftagInfo ->
             mHandler?.obtainMessage(1, uhftagInfo)?.sendToTarget()
         })
 
-
-        // Start RFID scanning
         startRFIDScan()
     }
 
-    private fun startRFIDScan() {
-        if (!mIsScanning) {
-            if (mUHF!!.startInventoryTag()) {
-                mHandler?.sendEmptyMessage(3) // Notify scanning started
-            } else {
-                Utils.E( "Failed to start RFID scanning")
-                Utils.T(context, "Failed to start RFID scanning")
-            }
+    fun startRFIDScan() {
+        if (!mIsScanning && mUHF?.startInventoryTag() == true) {
+            mHandler?.sendEmptyMessage(3) // Notify scanning started
+        } else {
+            val errorMessage = "Failed to start RFID scanning"
+            Utils.E(errorMessage)
+            Utils.T(context, errorMessage)
+            callback.onError(errorMessage)
         }
     }
 
-    private fun stopRFIDScan() {
-        if (mIsScanning) {
-            if (mUHF!!.stopInventory()) {
-                mHandler?.sendEmptyMessage(2) // Notify scanning stopped
-            } else {
-                Utils.E( "Failed to stop RFID scanning")
-                Utils.T(context, "Failed to stop RFID scanning")
-            }
+    fun stopRFIDScan() {
+        if (mIsScanning && mUHF?.stopInventory() == true) {
+            mHandler?.sendEmptyMessage(2) // Notify scanning stopped
+        } else {
+            val errorMessage = "Failed to stop RFID scanning"
+            Utils.E(errorMessage)
+            Utils.T(context, errorMessage)
+            callback.onError(errorMessage)
         }
     }
 
     private fun handleTagData(tagInfo: UHFTAGInfo) {
-        // Handle RFID tag data
+        callback.onTagRead(tagInfo)
         val epc = tagInfo.epc
         val tid = tagInfo.tid
         val user = tagInfo.user
         val rssi = tagInfo.rssi
-        Utils.E( "EPC: $epc")
-        Utils.E( "TID: $tid")
-        Utils.E( "User: $user")
-        Utils.E( "RSSI: $rssi")
+        Utils.E("EPC: $epc")
+        Utils.E("TID: $tid")
+        Utils.E("User: $user")
+        Utils.E("RSSI: $rssi")
     }
 }

@@ -28,6 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.UtilityTools.RFIDSetUp
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_Scanner
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_tag_Printer
 import com.jmsoft.basic.UtilityTools.Constants.Companion.ticket_Printer
