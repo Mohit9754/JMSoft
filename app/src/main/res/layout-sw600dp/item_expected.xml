@@ -28,7 +28,7 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:fontFamily="@font/montserrat_arabic_regular"
             android:textColor="@color/text_color"
-            android:id="@+id/tvName"
+            android:id="@+id/tvProductName"
             />
 
         <TextView

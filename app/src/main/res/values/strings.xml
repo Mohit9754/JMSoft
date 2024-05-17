@@ -232,6 +232,7 @@
     <string name="selected">SELECTED</string>
     <string name="unknown">UNKNOWN</string>
     <string name="expected">EXPECTED</string>
+    <string name="please_turn_on_bluetooth">"Please turn on bluetooth "</string>
 
 
 </resources>

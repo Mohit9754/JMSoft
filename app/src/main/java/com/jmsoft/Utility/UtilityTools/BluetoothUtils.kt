@@ -244,6 +244,7 @@ object BluetoothUtils {
 
         val serviceListener: BluetoothProfile.ServiceListener =
             object : BluetoothProfile.ServiceListener {
+
                 @SuppressLint("MissingPermission")
                 override fun onServiceConnected(profile: Int, proxy: BluetoothProfile) {
                     if (profile == BluetoothProfile.A2DP) {

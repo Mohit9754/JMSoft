@@ -39,7 +39,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/mcvPause"
+            android:id="@+id/mcvPlay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="1dp"
@@ -54,7 +54,7 @@
                 android:layout_width="@dimen/_9sdp"
                 android:layout_height="@dimen/_9sdp"
                 android:layout_margin="@dimen/_4sdp"
-                android:src="@drawable/icon_pause"
+                android:src="@drawable/icon_play"
                 tools:ignore="ContentDescription" />
 
         </com.google.android.material.card.MaterialCardView>

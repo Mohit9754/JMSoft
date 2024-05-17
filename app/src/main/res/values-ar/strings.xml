@@ -225,5 +225,12 @@
     <string name="special_characters_are_not_allowed">يمنع استعمال الرموز</string>
     <string name="enter_product_price">أدخل سعر ثمن البيع</string>
     <string name="explore_collection">استكشاف المجموعة</string>
+    <string name="total_">المجموع</string>
+    <string name="scanned">ممسوحة ضوئيا</string>
+    <string name="missing">مفتقد</string>
+    <string name="selected">المحدد</string>
+    <string name="unknown">مجهول</string>
+    <string name="expected">مُتوقع</string>
+    <string name="please_turn_on_bluetooth">"الرجاء تشغيل البلوتوث"</string>
 
 </resources>
