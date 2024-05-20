@@ -1168,6 +1168,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                 Utils.capitalizeData(dialogAddMetalTypeBinding?.etMetalType?.text.toString())
             metalTypeDropdownAdapter?.notifyItemChanged(position)
 
+
             dialogMetalType?.dismiss()
         }
     }
