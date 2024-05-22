@@ -1058,7 +1058,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                     val imm =
                         requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.showSoftInput(validation?.EditTextPointer, InputMethodManager.SHOW_IMPLICIT)
-
+ 
                     validation?.EditTextPointer = null
 
                 }
@@ -1167,6 +1167,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             metalTypeDropdownList[position].metalTypeName =
                 Utils.capitalizeData(dialogAddMetalTypeBinding?.etMetalType?.text.toString())
             metalTypeDropdownAdapter?.notifyItemChanged(position)
+
 
             dialogMetalType?.dismiss()
         }

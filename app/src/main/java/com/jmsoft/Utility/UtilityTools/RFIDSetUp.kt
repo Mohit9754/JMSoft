@@ -7,6 +7,8 @@ import android.os.Message
 import com.jmsoft.basic.UtilityTools.Utils
 import com.rscja.deviceapi.RFIDWithUHFBLE
 import com.rscja.deviceapi.entity.UHFTAGInfo
+import com.rscja.deviceapi.interfaces.ConnectionStatus
+import com.rscja.deviceapi.interfaces.ConnectionStatusCallback
 import com.rscja.deviceapi.interfaces.IUHFInventoryCallback
 
 class RFIDSetUp(private val context: Context, private val callback: RFIDCallback) {
@@ -29,7 +31,7 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
                         handleTagData(tagInfo)
                     }
                     2 -> mIsScanning = false
-                    3 -> mIsScanning = true
+                    3 ->{ mIsScanning = true }
                 }
             }
         }
@@ -51,7 +53,8 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
             callback.onError(errorMessage)
             return
         }
-
+        mUHF?.connect("Device Address"
+        ) { connectionStatus, value ->  }
         mUHF?.setInventoryCallback(IUHFInventoryCallback { uhftagInfo ->
             mHandler?.obtainMessage(1, uhftagInfo)?.sendToTarget()
         })
@@ -60,7 +63,7 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
     }
 
     fun startRFIDScan() {
-        if (!mIsScanning && mUHF?.startInventoryTag() == true) {
+        if (!mIsScanning && (mUHF?.startInventoryTag() == true)) {
             mHandler?.sendEmptyMessage(3) // Notify scanning started
         } else {
             val errorMessage = "Failed to start RFID scanning"
@@ -83,6 +86,7 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
 
     private fun handleTagData(tagInfo: UHFTAGInfo) {
         callback.onTagRead(tagInfo)
+
         val epc = tagInfo.epc
         val tid = tagInfo.tid
         val user = tagInfo.user
