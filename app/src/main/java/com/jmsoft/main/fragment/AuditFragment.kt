@@ -191,7 +191,6 @@ class AuditFragment : Fragment(),View.OnClickListener {
             it.layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
             it.adapter = adapterUnKnown
         }
-
     }
 
     private fun setRFIDObject(){
