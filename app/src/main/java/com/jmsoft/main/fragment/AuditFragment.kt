@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.UtilityTools.RFIDSetUp
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentAuditBinding
@@ -31,6 +32,7 @@ import com.jmsoft.main.adapter.ExpectedAdapter
 import com.jmsoft.main.adapter.ScannedAdapter
 import com.jmsoft.main.`interface`.BluetoothOffCallback
 import com.jmsoft.main.`interface`.ConnectedDeviceCallback
+import com.rscja.deviceapi.entity.UHFTAGInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -111,6 +113,8 @@ class AuditFragment : Fragment(),View.OnClickListener {
 
     val binding by lazy { FragmentAuditBinding.inflate(layoutInflater) }
 
+    private var rFIDSetUp:RFIDSetUp? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -190,7 +194,33 @@ class AuditFragment : Fragment(),View.OnClickListener {
 
     }
 
-    private suspend fun init(){
+    private fun setRFIDObject(){
+
+        rFIDSetUp = RFIDSetUp(requireActivity(), object : RFIDSetUp.RFIDCallback {
+
+            override fun onTagRead(tagInfo: UHFTAGInfo) {
+
+                Utils.T(requireActivity(),"Data is $tagInfo")
+
+            }
+            override fun onError(message: String) {
+
+                Utils.T(requireActivity(),"Error in reading")
+
+            }
+        })
+    }
+//    override fun onResume() {
+//        super.onResume()
+//        rFIDSetUp?.onResume()
+//    }
+
+    override fun onPause() {
+        super.onPause()
+        rFIDSetUp?.onPause()
+    }
+
+    private suspend fun init() {
 
         val expectedJob = lifecycleScope.launch(Dispatchers.Main) {
             setExpectedRecyclerView()
@@ -204,9 +234,14 @@ class AuditFragment : Fragment(),View.OnClickListener {
             setUnKnownRecyclerView()
         }
 
+        val setRFIDObject = lifecycleScope.launch(Dispatchers.Main) {
+            setRFIDObject()
+        }
+
         expectedJob.join()
         scannedJob.join()
         unKnownJob.join()
+        setRFIDObject.join()
 
         GetProgressBar.getInstance(requireActivity())?.dismiss()
 
@@ -233,7 +268,11 @@ class AuditFragment : Fragment(),View.OnClickListener {
             @SuppressLint("MissingPermission")
             override fun onDeviceFound(device: ArrayList<BluetoothDevice>) {
 
-                Utils.T(requireActivity(),"Connected Device is ${device[0].name}")
+//                Utils.T(requireActivity(),"Connected Device is ${device[0].name}")
+                Utils.T(requireActivity(),"Scanning started")
+
+                rFIDSetUp?.startRFIDScan()
+
             }
 
             override fun onDeviceNotFound() {

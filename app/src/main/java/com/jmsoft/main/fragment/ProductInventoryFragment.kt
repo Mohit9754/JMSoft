@@ -4,6 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -25,6 +27,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -40,6 +44,7 @@ import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.Utility.UtilityTools.RFIDSetUp
 import com.jmsoft.basic.UtilityTools.Constants
@@ -60,6 +65,7 @@ import com.jmsoft.main.adapter.CollectionDropdownAdapter
 import com.jmsoft.main.adapter.MetalTypeDropdownAdapter
 import com.jmsoft.main.adapter.SelectedCollectionAdapter
 import com.jmsoft.main.`interface`.CollectionStatusCallback
+import com.jmsoft.main.`interface`.ConnectedDeviceCallback
 import com.jmsoft.main.`interface`.SelectedCallback
 import com.jmsoft.main.model.SelectedCollectionModel
 import com.rscja.deviceapi.entity.UHFTAGInfo
@@ -243,6 +249,78 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                 addImageAdapter?.notifyDataSetChanged()
                 binding.tvProductImageError?.visibility = View.GONE
 
+            }
+        }
+    }
+
+    // Permission for above 11 version
+    @RequiresApi(Build.VERSION_CODES.S)
+    val permissionsForVersionAbove11 = arrayOf(
+
+        Manifest.permission.BLUETOOTH,
+        Manifest.permission.BLUETOOTH_CONNECT,
+        Manifest.permission.BLUETOOTH_SCAN,
+        Manifest.permission.BLUETOOTH_ADMIN,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
+
+    // Permission for below 12 version
+    private val permissionsForVersionBelow12 = arrayOf(
+
+        Manifest.permission.BLUETOOTH,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.BLUETOOTH_ADMIN
+    )
+
+    // Bluetooth Intent for turn on the bluetooth
+    private var bluetoothIntent: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+
+                checkConnectedDevice()
+
+            } else {
+                Utils.T(requireActivity(), getString(R.string.please_turn_on_bluetooth))
+            }
+        }
+
+    // Checks All the necessary permission related to bluetooth
+    private var customPermissionLauncher = registerForActivityResult(
+
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        var allPermissionsGranted = true // Flag to track permission status
+        permissions.entries.forEach { entry ->
+            val permission = entry.key
+            val isGranted = entry.value
+            if (!isGranted) {
+                // If any permission is not granted, set the flag to false
+                allPermissionsGranted = false
+                // Permission is not granted
+                // Handle the denied permission accordingly
+                if (!shouldShowRequestPermissionRationale(permission)) {
+                    // Permission denied ,Show Open Setting Dialog
+                    showOpenSettingDialog()
+
+                }
+            } else {
+                Utils.E(permission)
+            }
+        }
+
+        // Check if all permissions are granted or not
+        if (allPermissionsGranted) {
+
+            if (BluetoothUtils.isEnableBluetooth(requireActivity())) {
+
+                checkConnectedDevice()
+
+
+            } else {
+                bluetoothIntent.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
             }
         }
     }
@@ -674,18 +752,19 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         }
 
         job.join()
+
         //Initialize RFID
         rfidSetUp = RFIDSetUp(requireContext(), this)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireContext() as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_CODE)
-            } else {
-                rfidSetUp.onResume()
-            }
-        } else {
-            rfidSetUp.onResume()
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(requireContext() as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_CODE)
+//            } else {
+//                rfidSetUp.onResume()
+//            }
+//        } else {
+//            rfidSetUp.onResume()
+//        }
 
         // Set focus change listener
         setFocusChangeListener()
@@ -742,10 +821,13 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         binding.mcvAddCategory?.setOnClickListener(this)
 
+        binding.mcvRFIDCodeBtn?.setOnClickListener(this)
+
         if (productDataModel != null) {
             showOrHideCollectionDropDown()
             showOrHideCollectionDropDown()
         }
+
     }
 
     // Edit Profile Dialog
@@ -885,8 +967,34 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         withContext(Dispatchers.Main) {
             (requireActivity() as DashboardActivity).navController?.popBackStack()
         }
+    }
 
+    // Open Setting Dialog
+    private fun showOpenSettingDialog() {
 
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogBinding = DialogOpenSettingBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.tvTitle.text = getString(R.string.permission_request)
+        dialogBinding.tvMessage.text =
+            getString(R.string.we_need_your_permission_to_access_bluetooth_and_location_services_in_order_to_provide_the_full_functionality_of_our_app)
+
+        dialogBinding.mcvCancel.setOnClickListener {
+
+            dialog.dismiss()
+        }
+        dialogBinding.mcvOpenSetting.setOnClickListener {
+
+            dialog.dismiss()
+            Utils.openAppSettings(requireActivity())
+        }
+
+        dialog.setCancelable(true)
+        dialog.show()
     }
 
     // Open Setting Dialog
@@ -1476,6 +1584,41 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         }
     }
 
+    //Checks the Android Version And  Launch Custom Permission ,according to Version
+    private fun checkAndroidVersionAndLaunchPermission() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+
+            customPermissionLauncher.launch(permissionsForVersionAbove11)
+        } else {
+            customPermissionLauncher.launch(permissionsForVersionBelow12)
+
+        }
+    }
+
+    private fun checkConnectedDevice() {
+
+        BluetoothUtils.getConnectedDevice(requireActivity(), object : ConnectedDeviceCallback {
+
+            @SuppressLint("MissingPermission")
+            override fun onDeviceFound(device: ArrayList<BluetoothDevice>) {
+
+//               Utils.T(requireActivity(),"Scanning started")
+                 rfidSetUp.onResume(device[0].address)
+
+            }
+
+            override fun onDeviceNotFound() {
+
+                if (requireActivity() != null) {
+
+                    Utils.T(requireActivity(),"No device is Connected ")
+                }
+            }
+        })
+
+    }
+
     //Handles All the Clicks
     @SuppressLint("NotifyDataSetChanged")
     override fun onClick(v: View?) {
@@ -1485,7 +1628,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         } else if (v == binding.llCategory) {
             showOrHideCategoryDropDown()
         } else if (v == binding.mcvRFIDCodeBtn) {
-            //scanRfid()
+
+            checkAndroidVersionAndLaunchPermission()
+
         } else if (v == binding.mcvCollection || v == binding.ivCollection) {
             showOrHideCollectionDropDown()
         } else if (v == binding.mcvAddCategory) {
@@ -1545,9 +1690,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         } else if (v == binding.root) {
             hideKeyboard(requireActivity())
         }
+
     }
-
-
 
     override fun onTagRead(tagInfo: UHFTAGInfo) {
         // Handle RFID tag data

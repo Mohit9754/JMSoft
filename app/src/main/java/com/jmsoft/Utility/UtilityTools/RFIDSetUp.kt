@@ -20,11 +20,14 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
     interface RFIDCallback {
         fun onTagRead(tagInfo: UHFTAGInfo)
         fun onError(message: String)
+
     }
 
     init {
+
         mHandler = object : Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: Message) {
+
                 when (msg.what) {
                     1 -> {
                         val tagInfo = msg.obj as UHFTAGInfo
@@ -37,15 +40,16 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
         }
     }
 
-    fun onResume() {
-        initRFID()
+    fun onResume(macAddress:String) {
+        initRFID(macAddress)
     }
 
     fun onPause() {
         stopRFIDScan()
     }
 
-    private fun initRFID() {
+    private fun initRFID(macAddress:String) {
+
         if (mUHF?.init(context) != true) {
             val errorMessage = "Failed to initialize RFID reader"
             Utils.E(errorMessage)
@@ -53,10 +57,14 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
             callback.onError(errorMessage)
             return
         }
-        mUHF?.connect("Device Address"
-        ) { connectionStatus, value ->  }
+
+        Utils.E("MAC Address is : + $macAddress")
+
+        mUHF?.connect(macAddress)
+
         mUHF?.setInventoryCallback(IUHFInventoryCallback { uhftagInfo ->
             mHandler?.obtainMessage(1, uhftagInfo)?.sendToTarget()
+
         })
 
         startRFIDScan()

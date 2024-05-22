@@ -1016,7 +1016,8 @@
                             android:layout_weight="2"
                             app:cardCornerRadius="@dimen/_3sdp"
                             app:strokeColor="@color/text_hint"
-                            app:strokeWidth="1dp">
+                            app:strokeWidth="1dp"
+                            tools:ignore="UnusedAttribute">
 
                             <EditText
                                 android:id="@+id/etRFIDCode"
@@ -1043,7 +1044,8 @@
                             android:layout_marginStart="@dimen/_3sdp"
                             app:cardBackgroundColor="@color/mcv_background_color"
                             app:cardCornerRadius="@dimen/_4sdp"
-                            app:cardElevation="0dp">
+                            app:cardElevation="0dp"
+                            tools:ignore="UnusedAttribute">
 
                             <ImageView
                                 android:layout_width="@dimen/_12sdp"
