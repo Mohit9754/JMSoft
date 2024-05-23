@@ -18,32 +18,36 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
     interface RFIDCallback {
         fun onTagRead(tagInfo: UHFTAGInfo)
         fun onError(message: String)
+
     }
 
     init {
+
         mHandler = object : Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: Message) {
+
                 when (msg.what) {
                     1 -> {
                         val tagInfo = msg.obj as UHFTAGInfo
                         handleTagData(tagInfo)
                     }
                     2 -> mIsScanning = false
-                    3 -> mIsScanning = true
+                    3 ->{ mIsScanning = true }
                 }
             }
         }
     }
 
-    fun onResume() {
-        initRFID()
+    fun onResume(macAddress:String) {
+        initRFID(macAddress)
     }
 
     fun onPause() {
         stopRFIDScan()
     }
 
-    private fun initRFID() {
+    private fun initRFID(macAddress:String) {
+
         if (mUHF?.init(context) != true) {
             val errorMessage = "Failed to initialize RFID reader"
             Utils.E(errorMessage)
@@ -52,15 +56,21 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
             return
         }
 
+        Utils.E("MAC Address is : + $macAddress")
+
+        mUHF?.connect(macAddress)
+
         mUHF?.setInventoryCallback(IUHFInventoryCallback { uhftagInfo ->
             mHandler?.obtainMessage(1, uhftagInfo)?.sendToTarget()
+
         })
 
         startRFIDScan()
     }
 
     fun startRFIDScan() {
-        if (!mIsScanning && mUHF?.startInventoryTag() == true) {
+
+        if (!mIsScanning && (mUHF?.startInventoryTag() == true)) {
             mHandler?.sendEmptyMessage(3) // Notify scanning started
         } else {
             val errorMessage = "Failed to start RFID scanning"
@@ -81,8 +91,13 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
         }
     }
 
+    fun getScanningStatus(): Boolean {
+        return mIsScanning
+    }
+
     private fun handleTagData(tagInfo: UHFTAGInfo) {
         callback.onTagRead(tagInfo)
+
         val epc = tagInfo.epc
         val tid = tagInfo.tid
         val user = tagInfo.user

@@ -4,9 +4,10 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -22,11 +23,10 @@ import android.view.Window
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -40,6 +40,7 @@ import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.Utility.UtilityTools.RFIDSetUp
 import com.jmsoft.basic.UtilityTools.Constants
@@ -60,6 +61,7 @@ import com.jmsoft.main.adapter.CollectionDropdownAdapter
 import com.jmsoft.main.adapter.MetalTypeDropdownAdapter
 import com.jmsoft.main.adapter.SelectedCollectionAdapter
 import com.jmsoft.main.`interface`.CollectionStatusCallback
+import com.jmsoft.main.`interface`.ConnectedDeviceCallback
 import com.jmsoft.main.`interface`.SelectedCallback
 import com.jmsoft.main.model.SelectedCollectionModel
 import com.rscja.deviceapi.entity.UHFTAGInfo
@@ -126,10 +128,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     private var dialogCategory: Dialog? = null
 
-    lateinit var rfidSetUp : RFIDSetUp
+    var rfidSetUp : RFIDSetUp? = null
 
     private val PERMISSIONS_REQUEST_CODE = 100
-
 
     // Gallery result launcher
     @SuppressLint("NotifyDataSetChanged")
@@ -236,13 +237,85 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         if (result != null) {
             if (result.resultCode == Activity.RESULT_OK) {
 
-                binding.tvProductImageError?.visibility = View.GONE
+                binding.tvProductImageError.visibility = View.GONE
                 productImageView?.setImageBitmap(result.data?.extras?.get("data") as Bitmap?)
                 productImageView?.drawable?.let { selectedProductImage.add(it.toBitmap()) }
 
                 addImageAdapter?.notifyDataSetChanged()
-                binding.tvProductImageError?.visibility = View.GONE
+                binding.tvProductImageError.visibility = View.GONE
 
+            }
+        }
+    }
+
+    // Permission for above 11 version
+    @RequiresApi(Build.VERSION_CODES.S)
+    val permissionsForVersionAbove11 = arrayOf(
+
+        Manifest.permission.BLUETOOTH,
+        Manifest.permission.BLUETOOTH_CONNECT,
+        Manifest.permission.BLUETOOTH_SCAN,
+        Manifest.permission.BLUETOOTH_ADMIN,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
+
+    // Permission for below 12 version
+    private val permissionsForVersionBelow12 = arrayOf(
+
+        Manifest.permission.BLUETOOTH,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.BLUETOOTH_ADMIN
+    )
+
+    // Bluetooth Intent for turn on the bluetooth
+    private var bluetoothIntent: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+
+                checkConnectedDevice()
+
+            } else {
+                Utils.T(requireActivity(), getString(R.string.please_turn_on_bluetooth))
+            }
+        }
+
+    // Checks All the necessary permission related to bluetooth
+    private var customPermissionLauncher = registerForActivityResult(
+
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        var allPermissionsGranted = true // Flag to track permission status
+        permissions.entries.forEach { entry ->
+            val permission = entry.key
+            val isGranted = entry.value
+            if (!isGranted) {
+                // If any permission is not granted, set the flag to false
+                allPermissionsGranted = false
+                // Permission is not granted
+                // Handle the denied permission accordingly
+                if (!shouldShowRequestPermissionRationale(permission)) {
+                    // Permission denied ,Show Open Setting Dialog
+                    showOpenSettingDialog()
+
+                }
+            } else {
+                Utils.E(permission)
+            }
+        }
+
+        // Check if all permissions are granted or not
+        if (allPermissionsGranted) {
+
+            if (BluetoothUtils.isEnableBluetooth(requireActivity())) {
+
+                checkConnectedDevice()
+
+
+            } else {
+                bluetoothIntent.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
             }
         }
     }
@@ -279,17 +352,17 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                     val metalTypeDataModel = data as MetalTypeDataModel
 
                     selectedMetalTypeUUID = metalTypeDataModel.metalTypeUUID
-                    binding.tvMetalType?.text = metalTypeDataModel.metalTypeName
-                    binding.tvMetalTypeError?.visibility = View.GONE
-                    binding.ivMetalType?.let { Utils.rotateView(it, 0f) }
-                    binding.mcvMetalTypeList?.let { Utils.collapseView(it) }
+                    binding.tvMetalType.text = metalTypeDataModel.metalTypeName
+                    binding.tvMetalTypeError.visibility = View.GONE
+                    binding.ivMetalType.let { Utils.rotateView(it, 0f) }
+                    binding.mcvMetalTypeList.let { Utils.collapseView(it) }
                 }
 
                 override fun unselect() {
 
                     selectedMetalTypeUUID = null
-                    binding.tvMetalType?.text = ""
-                    binding.tvMetalTypeError?.visibility = View.GONE
+                    binding.tvMetalType.text = ""
+                    binding.tvMetalTypeError.visibility = View.GONE
 //                    binding.mcvMetalTypeList?.visibility = View.GONE
                     showOrHideMetalTypeDropDown()
 
@@ -302,9 +375,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                 metalTypeDropdownList.indexOfFirst { it.metalTypeUUID == selectedMetalTypeUUID }
         }
 
-        binding.rvMetalType?.layoutManager =
+        binding.rvMetalType.layoutManager =
             LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
-        binding.rvMetalType?.adapter = metalTypeDropdownAdapter
+        binding.rvMetalType.adapter = metalTypeDropdownAdapter
 
     }
 
@@ -324,18 +397,18 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                     val categoryDataModel = data as CategoryDataModel
 
                     selectedCategoryUUID = categoryDataModel.categoryUUID
-                    binding.tvCategory?.text = categoryDataModel.categoryName
-                    binding.tvCategoryError?.visibility = View.GONE
-                    binding.ivCategory?.let { Utils.rotateView(it, 0f) }
-                    binding.mcvCategoryList?.let { Utils.collapseView(it) }
+                    binding.tvCategory.text = categoryDataModel.categoryName
+                    binding.tvCategoryError.visibility = View.GONE
+                    binding.ivCategory.let { Utils.rotateView(it, 0f) }
+                    binding.mcvCategoryList.let { Utils.collapseView(it) }
 
                 }
 
                 override fun unselect() {
 
                     selectedCategoryUUID = null
-                    binding.tvCategory?.text = ""
-                    binding.tvCategoryError?.visibility = View.GONE
+                    binding.tvCategory.text = ""
+                    binding.tvCategoryError.visibility = View.GONE
 
                     showOrHideCategoryDropDown()
 
@@ -347,12 +420,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             val position =
                 categoryDropdownList.indexOfFirst { it.categoryUUID == selectedCategoryUUID }
             categoryDropdownAdapter?.selectedPosition = position
-            binding.tvCategory?.text = categoryDropdownList[position].categoryName
+            binding.tvCategory.text = categoryDropdownList[position].categoryName
         }
 
-        binding.rvCategory?.layoutManager =
+        binding.rvCategory.layoutManager =
             LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
-        binding.rvCategory?.adapter = categoryDropdownAdapter
+        binding.rvCategory.adapter = categoryDropdownAdapter
 
     }
 
@@ -368,8 +441,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                 @SuppressLint("NotifyDataSetChanged")
                 override fun collectionSelected(selectedCollectionModel: SelectedCollectionModel) {
 
-                    binding.tvCollection?.visibility = View.GONE
-                    binding.tvCollectionError?.visibility = View.GONE
+                    binding.tvCollection.visibility = View.GONE
+                    binding.tvCollectionError.visibility = View.GONE
 
                     if (!selectedCollectionList.contains(selectedCollectionModel)) {
 
@@ -386,7 +459,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                     selectedCollectionList.remove(selectedCollectionModel)
 
                     if (selectedCollectionList.isEmpty()) {
-                        binding.tvCollection?.visibility = View.VISIBLE
+                        binding.tvCollection.visibility = View.VISIBLE
                     }
 
                     selectedCollectionAdapter?.notifyDataSetChanged()
@@ -399,10 +472,10 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             collectionDropdownAdapter?.selectedCollectionUUID = selectedCollectionUUID
         }
 
-        binding.rvCollectionList?.layoutManager =
+        binding.rvCollectionList.layoutManager =
             LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
 
-        binding.rvCollectionList?.adapter = collectionDropdownAdapter
+        binding.rvCollectionList.adapter = collectionDropdownAdapter
 
     }
 
@@ -412,12 +485,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         selectedCollectionAdapter =
             SelectedCollectionAdapter(requireActivity(), selectedCollectionList, binding)
 
-        binding.rvCollectionSelectedList?.layoutManager =
+        binding.rvCollectionSelectedList.layoutManager =
             LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
 
-        binding.rvCollectionSelectedList?.adapter = selectedCollectionAdapter
+        binding.rvCollectionSelectedList.adapter = selectedCollectionAdapter
 
-        binding.mcvCollectionList?.visibility = View.GONE
+        binding.mcvCollectionList.visibility = View.GONE
 
     }
 
@@ -429,16 +502,16 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             this,
             selectedProductImageBitmap
         )
-        binding.rvProductImage?.layoutManager =
+        binding.rvProductImage.layoutManager =
             GridLayoutManager(requireActivity(), 3) // Span Count is set to 3
-        binding.rvProductImage?.adapter = addImageAdapter
+        binding.rvProductImage.adapter = addImageAdapter
     }
 
     // Set focus change listener
     private fun setFocusChangeListener() {
 
-        binding.etProductName?.let {
-            binding.mcvProductName?.let { it1 ->
+        binding.etProductName.let {
+            binding.mcvProductName.let { it1 ->
                 Utils.setFocusChangeListener(
                     requireActivity(),
                     it, it1
@@ -446,8 +519,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etOrigin?.let {
-            binding.mcvOrigin?.let { it1 ->
+        binding.etOrigin.let {
+            binding.mcvOrigin.let { it1 ->
                 Utils.setFocusChangeListener(
                     requireActivity(),
                     it, it1
@@ -455,8 +528,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etWeight?.let {
-            binding.mcvWeight?.let { it1 ->
+        binding.etWeight.let {
+            binding.mcvWeight.let { it1 ->
                 Utils.setFocusChangeListener(
                     requireActivity(),
                     it, it1
@@ -464,8 +537,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etCarat?.let {
-            binding.mcvCarat?.let { it1 ->
+        binding.etCarat.let {
+            binding.mcvCarat.let { it1 ->
                 Utils.setFocusChangeListener(
                     requireActivity(),
                     it, it1
@@ -473,8 +546,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etPrice?.let {
-            binding.mcvPrice?.let { it1 ->
+        binding.etPrice.let {
+            binding.mcvPrice.let { it1 ->
                 Utils.setFocusChangeListener(
                     requireActivity(),
                     it, it1
@@ -482,8 +555,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etDescription?.let {
-            binding.mcvDescription?.let { it1 ->
+        binding.etDescription.let {
+            binding.mcvDescription.let { it1 ->
                 Utils.setFocusChangeListener(
                     requireActivity(),
                     it, it1
@@ -491,8 +564,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etRFIDCode?.let {
-            binding.mcvRFIDCode?.let { it1 ->
+        binding.etRFIDCode.let {
+            binding.mcvRFIDCode.let { it1 ->
                 Utils.setFocusChangeListener(
                     requireActivity(),
                     it, it1
@@ -500,8 +573,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etBarcode?.let {
-            binding.mcvBarcode?.let { it1 ->
+        binding.etBarcode.let {
+            binding.mcvBarcode.let { it1 ->
                 Utils.setFocusChangeListener(
                     requireActivity(),
                     it, it1
@@ -509,8 +582,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etCost?.let {
-            binding.mcvCost?.let { it1 ->
+        binding.etCost.let {
+            binding.mcvCost.let { it1 ->
                 Utils.setFocusChangeListener(
                     requireActivity(),
                     it, it1
@@ -522,8 +595,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
     // Set text change listener
     private fun setTextChangeListener() {
 
-        binding.etProductName?.let {
-            binding.tvProductNameError?.let { it1 ->
+        binding.etProductName.let {
+            binding.tvProductNameError.let { it1 ->
                 Utils.setTextChangeListener(
                     it,
                     it1
@@ -531,8 +604,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etOrigin?.let {
-            binding.tvOriginError?.let { it1 ->
+        binding.etOrigin.let {
+            binding.tvOriginError.let { it1 ->
                 Utils.setTextChangeListener(
                     it,
                     it1
@@ -540,8 +613,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etWeight?.let {
-            binding.tvWeightError?.let { it1 ->
+        binding.etWeight.let {
+            binding.tvWeightError.let { it1 ->
                 Utils.setTextChangeListener(
                     it,
                     it1
@@ -549,8 +622,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etCarat?.let {
-            binding.tvCaratError?.let { it1 ->
+        binding.etCarat.let {
+            binding.tvCaratError.let { it1 ->
                 Utils.setTextChangeListener(
                     it,
                     it1
@@ -558,8 +631,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etPrice?.let {
-            binding.tvPriceError?.let { it1 ->
+        binding.etPrice.let {
+            binding.tvPriceError.let { it1 ->
                 Utils.setTextChangeListener(
                     it,
                     it1
@@ -567,8 +640,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etDescription?.let {
-            binding.tvDescriptionError?.let { it1 ->
+        binding.etDescription.let {
+            binding.tvDescriptionError.let { it1 ->
                 Utils.setTextChangeListener(
                     it,
                     it1
@@ -576,8 +649,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etRFIDCode?.let {
-            binding.tvRFIDCodeError?.let { it1 ->
+        binding.etRFIDCode.let {
+            binding.tvRFIDCodeError.let { it1 ->
                 Utils.setTextChangeListener(
                     it,
                     it1
@@ -585,8 +658,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         }
 
-        binding.etCost?.let {
-            binding.tvCostError?.let { it1 ->
+        binding.etCost.let {
+            binding.tvCostError.let { it1 ->
                 Utils.setTextChangeListener(
                     it,
                     it1
@@ -613,29 +686,29 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
             withContext(Dispatchers.Main) {
 
-                binding.etProductName?.setText(productData.productName)
-                binding.etProductName?.setText(productData.productName)
+                binding.etProductName.setText(productData.productName)
+                binding.etProductName.setText(productData.productName)
 
-                binding.mcvMetalTypeList?.visibility = View.VISIBLE
+                binding.mcvMetalTypeList.visibility = View.VISIBLE
                 selectedMetalTypeUUID = productData.metalTypeUUID
 
                 selectedCollectionUUID =
                     productData.collectionUUID?.split(",")?.toMutableList() ?: mutableListOf()
 
-                binding.etOrigin?.setText(productData.productOrigin)
-                binding.etWeight?.setText(productData.productWeight.toString())
-                binding.etCarat?.setText(productData.productCarat.toString())
-                binding.etPrice?.setText(productData.productPrice.toString())
-                binding.etCost?.setText(productData.productCost.toString())
+                binding.etOrigin.setText(productData.productOrigin)
+                binding.etWeight.setText(productData.productWeight.toString())
+                binding.etCarat.setText(productData.productCarat.toString())
+                binding.etPrice.setText(productData.productPrice.toString())
+                binding.etCost.setText(productData.productCost.toString())
 
 //            binding.mcvCategoryList?.visibility = View.VISIBLE
                 selectedCategoryUUID = productData.categoryUUID
 
-                binding.etDescription?.setText(productData.productDescription)
-                binding.etRFIDCode?.setText(productData.productRFIDCode)
-                binding.etRFIDCode?.setText(productData.productRFIDCode)
+                binding.etDescription.setText(productData.productDescription)
+                binding.etRFIDCode.setText(productData.productRFIDCode)
+                binding.etRFIDCode.setText(productData.productRFIDCode)
 
-                binding.mcvBarcodeImage?.visibility = View.VISIBLE
+                binding.mcvBarcodeImage.visibility = View.VISIBLE
 
                 val barcodeBitmap = productData.productBarcodeUri?.let {
                     Utils.getImageFromInternalStorage(
@@ -650,10 +723,10 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                     Utils.getImageFromInternalStorage(requireActivity(), imageUri.trim())
                         ?.let { selectedProductImage.add(it) }
                 }
-                binding.ivBarcodeImage?.setImageBitmap(barcodeBitmap)
+                binding.ivBarcodeImage.setImageBitmap(barcodeBitmap)
                 barcodeBitmap?.let { barcodeImage.add(it) }
 
-                binding.etBarcode?.setText(productData.productBarcodeData)
+                binding.etBarcode.setText(productData.productBarcodeData)
                 barcodeData = productData.productBarcodeData
 
                 GetProgressBar.getInstance(requireActivity())?.dismiss()
@@ -674,18 +747,19 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         }
 
         job.join()
+
         //Initialize RFID
         rfidSetUp = RFIDSetUp(requireContext(), this)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireContext() as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_CODE)
-            } else {
-                rfidSetUp.onResume()
-            }
-        } else {
-            rfidSetUp.onResume()
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(requireContext() as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_CODE)
+//            } else {
+//                rfidSetUp.onResume()
+//            }
+//        } else {
+//            rfidSetUp.onResume()
+//        }
 
         // Set focus change listener
         setFocusChangeListener()
@@ -694,13 +768,13 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         setTextChangeListener()
 
         // Set filter of only 2 digit after point
-        binding.etWeight?.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter())
+        binding.etWeight.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter())
 
         // Set filter of only 2 digit after point
-        binding.etPrice?.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter())
+        binding.etPrice.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter())
 
         // Set filter of only 2 digit after point
-        binding.etCost?.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter())
+        binding.etCost.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter())
 
         // Set metal type dropdown
         setMetalTypeRecyclerView()
@@ -717,35 +791,38 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         // Set product images   
         setProductImageRecyclerView()
 
-        binding.llMetalType?.setOnClickListener(this)
+        binding.llMetalType.setOnClickListener(this)
 
-        binding.mcvCollection?.setOnClickListener(this)
+        binding.mcvCollection.setOnClickListener(this)
 
-        binding.mcvRFIDCodeBtn?.setOnClickListener(this)
+        binding.mcvRFIDCodeBtn.setOnClickListener(this)
 
-        binding.llCategory?.setOnClickListener(this)
+        binding.llCategory.setOnClickListener(this)
 
-        binding.ivCollection?.setOnClickListener(this)
+        binding.ivCollection.setOnClickListener(this)
 
-        binding.mcvSave?.setOnClickListener(this)
+        binding.mcvSave.setOnClickListener(this)
 
         // Set Click on Back Button
-        binding.mcvBackBtn?.setOnClickListener(this)
+        binding.mcvBackBtn.setOnClickListener(this)
 
-        binding.mcvAddMetalType?.setOnClickListener(this)
+        binding.mcvAddMetalType.setOnClickListener(this)
 
-        binding.mcvBarcodeBtn?.setOnClickListener(this)
+        binding.mcvBarcodeBtn.setOnClickListener(this)
 
-        binding.ivCross?.setOnClickListener(this)
+        binding.ivCross.setOnClickListener(this)
 
         binding.root.setOnClickListener(this)
 
-        binding.mcvAddCategory?.setOnClickListener(this)
+        binding.mcvAddCategory.setOnClickListener(this)
+
+        binding.mcvRFIDCodeBtn.setOnClickListener(this)
 
         if (productDataModel != null) {
             showOrHideCollectionDropDown()
             showOrHideCollectionDropDown()
         }
+
     }
 
     // Edit Profile Dialog
@@ -818,17 +895,17 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         withContext(Dispatchers.Main) {
 
-            productData.productName = binding.etProductName?.text.toString().trim()
-            productData.productOrigin = binding.etOrigin?.text.toString().trim()
-            productData.productCarat = binding.etCarat?.text.toString().toInt()
+            productData.productName = binding.etProductName.text.toString().trim()
+            productData.productOrigin = binding.etOrigin.text.toString().trim()
+            productData.productCarat = binding.etCarat.text.toString().toInt()
             productData.productWeight =
-                Utils.roundToTwoDecimalPlaces(binding.etWeight?.text.toString().toDouble())
+                Utils.roundToTwoDecimalPlaces(binding.etWeight.text.toString().toDouble())
             productData.productPrice =
-                Utils.roundToTwoDecimalPlaces(binding.etPrice?.text.toString().toDouble())
+                Utils.roundToTwoDecimalPlaces(binding.etPrice.text.toString().toDouble())
             productData.productCost =
-                Utils.roundToTwoDecimalPlaces(binding.etCost?.text.toString().toDouble())
-            productData.productDescription = binding.etDescription?.text.toString().trim()
-            productData.productRFIDCode = binding.etRFIDCode?.text.toString().trim()
+                Utils.roundToTwoDecimalPlaces(binding.etCost.text.toString().toDouble())
+            productData.productDescription = binding.etDescription.text.toString().trim()
+            productData.productRFIDCode = binding.etRFIDCode.text.toString().trim()
 
         }
 
@@ -885,8 +962,34 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         withContext(Dispatchers.Main) {
             (requireActivity() as DashboardActivity).navController?.popBackStack()
         }
+    }
 
+    // Open Setting Dialog
+    private fun showOpenSettingDialog() {
 
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogBinding = DialogOpenSettingBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.tvTitle.text = getString(R.string.permission_request)
+        dialogBinding.tvMessage.text =
+            getString(R.string.we_need_your_permission_to_access_bluetooth_and_location_services_in_order_to_provide_the_full_functionality_of_our_app)
+
+        dialogBinding.mcvCancel.setOnClickListener {
+
+            dialog.dismiss()
+        }
+        dialogBinding.mcvOpenSetting.setOnClickListener {
+
+            dialog.dismiss()
+            Utils.openAppSettings(requireActivity())
+        }
+
+        dialog.setCancelable(true)
+        dialog.show()
     }
 
     // Open Setting Dialog
@@ -991,9 +1094,15 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         errorValidationModel.add(
             ValidationModel(
-                Validation.Type.NoSpecialChar, binding.etRFIDCode, binding.tvRFIDCodeError
+                Validation.Type.Empty, binding.etRFIDCode, binding.tvRFIDCodeError
             )
         )
+
+//        errorValidationModel.add(
+//            ValidationModel(
+//                Validation.Type.NoSpecialChar, binding.etRFIDCode, binding.tvRFIDCodeError
+//            )
+//        )
 
         errorValidationModel.add(
             ValidationModel(
@@ -1042,12 +1151,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
                     if (validation.textViewPointer == binding.tvMetalType) {
 
-                        binding.ivMetalType?.let { Utils.rotateView(it, 0f) }
-                        binding.mcvMetalTypeList?.let { Utils.expandView(it) }
+                        binding.ivMetalType.let { Utils.rotateView(it, 0f) }
+                        binding.mcvMetalTypeList.let { Utils.expandView(it) }
                     } else if (validation.textViewPointer == binding.tvCategory) {
 
-                        binding.ivCategory?.let { Utils.rotateView(it, 0f) }
-                        binding.mcvCategoryList?.let { Utils.expandView(it) }
+                        binding.ivCategory.let { Utils.rotateView(it, 0f) }
+                        binding.mcvCategoryList.let { Utils.expandView(it) }
                     }
 
                     validation.textViewPointer = null
@@ -1058,7 +1167,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                     val imm =
                         requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.showSoftInput(validation?.EditTextPointer, InputMethodManager.SHOW_IMPLICIT)
-
+ 
                     validation?.EditTextPointer = null
 
                 }
@@ -1132,7 +1241,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             )
             setMetalTypeRecyclerView()
 
-            binding.mcvMetalTypeList?.visibility = View.GONE
+            binding.mcvMetalTypeList.visibility = View.GONE
             showOrHideMetalTypeDropDown()
 
             dialogMetalType?.dismiss()
@@ -1167,6 +1276,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             metalTypeDropdownList[position].metalTypeName =
                 Utils.capitalizeData(dialogAddMetalTypeBinding?.etMetalType?.text.toString())
             metalTypeDropdownAdapter?.notifyItemChanged(position)
+
 
             dialogMetalType?.dismiss()
         }
@@ -1419,15 +1529,15 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
     // Show or hide metal type drop down
     private fun showOrHideMetalTypeDropDown() {
 
-        if (binding.mcvMetalTypeList?.visibility == View.VISIBLE) {
+        if (binding.mcvMetalTypeList.visibility == View.VISIBLE) {
 
-            binding.ivMetalType?.let { Utils.rotateView(it, 0f) }
-            binding.mcvMetalTypeList?.let { Utils.collapseView(it) }
+            binding.ivMetalType.let { Utils.rotateView(it, 0f) }
+            binding.mcvMetalTypeList.let { Utils.collapseView(it) }
 
         } else {
 
-            binding.ivMetalType?.let { Utils.rotateView(it, 180f) }
-            binding.mcvMetalTypeList?.let { Utils.expandView(it) }
+            binding.ivMetalType.let { Utils.rotateView(it, 180f) }
+            binding.mcvMetalTypeList.let { Utils.expandView(it) }
 
         }
     }
@@ -1437,23 +1547,23 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         if (collectionDataList.isNotEmpty()) {
 
-            if (binding.mcvCollectionList?.visibility == View.VISIBLE) {
+            if (binding.mcvCollectionList.visibility == View.VISIBLE) {
 
-                binding.ivCollection?.let { Utils.rotateView(it, 0f) }
-                binding.mcvCollectionList?.let { Utils.collapseView(it) }
+                binding.ivCollection.let { Utils.rotateView(it, 0f) }
+                binding.mcvCollectionList.let { Utils.collapseView(it) }
 
             } else {
 
-                binding.ivCollection?.let { Utils.rotateView(it, 180f) }
-                binding.mcvCollectionList?.let { Utils.expandView(it) }
+                binding.ivCollection.let { Utils.rotateView(it, 180f) }
+                binding.mcvCollectionList.let { Utils.expandView(it) }
             }
         } else {
 
             if (isCollectionShow) {
-                binding.ivCollection?.let { Utils.rotateView(it, 0f) }
+                binding.ivCollection.let { Utils.rotateView(it, 0f) }
                 isCollectionShow = false
             } else {
-                binding.ivCollection?.let { Utils.rotateView(it, 180f) }
+                binding.ivCollection.let { Utils.rotateView(it, 180f) }
                 isCollectionShow = true
             }
         }
@@ -1462,17 +1572,63 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
     // Show or hide category drop down
     private fun showOrHideCategoryDropDown() {
 
-        if (binding.mcvCategoryList?.visibility == View.VISIBLE) {
+        if (binding.mcvCategoryList.visibility == View.VISIBLE) {
 
-            binding.ivCategory?.let { Utils.rotateView(it, 0f) }
-            binding.mcvCategoryList?.let { Utils.collapseView(it) }
+            binding.ivCategory.let { Utils.rotateView(it, 0f) }
+            binding.mcvCategoryList.let { Utils.collapseView(it) }
 
         } else {
 
-            binding.ivCategory?.let { Utils.rotateView(it, 180f) }
-            binding.mcvCategoryList?.let { Utils.expandView(it) }
+            binding.ivCategory.let { Utils.rotateView(it, 180f) }
+            binding.mcvCategoryList.let { Utils.expandView(it) }
 
         }
+    }
+
+    //Checks the Android Version And  Launch Custom Permission ,according to Version
+    private fun checkAndroidVersionAndLaunchPermission() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+
+            customPermissionLauncher.launch(permissionsForVersionAbove11)
+        } else {
+            customPermissionLauncher.launch(permissionsForVersionBelow12)
+
+        }
+    }
+
+    private fun checkConnectedDevice() {
+
+        BluetoothUtils.getConnectedDevice(requireActivity(), object : ConnectedDeviceCallback {
+
+            @SuppressLint("MissingPermission")
+            override fun onDeviceFound(device: ArrayList<BluetoothDevice>) {
+
+//               Utils.T(requireActivity(),"Scanning started")
+                rfidSetUp?.onResume(device[0].address)
+
+            }
+
+            override fun onDeviceNotFound() {
+
+                if (requireActivity() != null) {
+
+                    Utils.T(requireActivity(),"No device is Connected ")
+                }
+            }
+        })
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        rfidSetUp?.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        rfidSetUp?.onPause()
+
     }
 
     //Handles All the Clicks
@@ -1484,7 +1640,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         } else if (v == binding.llCategory) {
             showOrHideCategoryDropDown()
         } else if (v == binding.mcvRFIDCodeBtn) {
-            //scanRfid()
+
+            checkAndroidVersionAndLaunchPermission()
+
         } else if (v == binding.mcvCollection || v == binding.ivCollection) {
             showOrHideCollectionDropDown()
         } else if (v == binding.mcvAddCategory) {
@@ -1508,27 +1666,27 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             showAddOrEditMetalTypeDialog(null, null)
         } else if (v == binding.mcvBarcodeBtn) {
 
-            if (binding.etBarcode?.text?.isNotEmpty() == true) {
+            if (binding.etBarcode.text?.isNotEmpty() == true) {
 
                 if (binding.etBarcode != null && binding.ivBarcodeImage != null) {
 
-                    val barcodeBitmap = genBarcodeBitmap(binding.etBarcode!!.text.toString().trim())
+                    val barcodeBitmap = genBarcodeBitmap(binding.etBarcode.text.toString().trim())
 
                     if (barcodeBitmap != null) {
 
-                        barcodeData = binding.etBarcode!!.text.toString().trim()
+                        barcodeData = binding.etBarcode.text.toString().trim()
 
-                        binding.mcvBarcodeImage?.visibility = View.VISIBLE
-                        binding.tvBarcodeError?.visibility = View.GONE
+                        binding.mcvBarcodeImage.visibility = View.VISIBLE
+                        binding.tvBarcodeError.visibility = View.GONE
 
-                        binding.ivBarcodeImage!!.setImageBitmap(barcodeBitmap)
+                        binding.ivBarcodeImage.setImageBitmap(barcodeBitmap)
                         barcodeBitmap.let { barcodeImage.add(it) }
 
                     }
                 }
             } else {
 
-                binding.tvBarcodeError?.let {
+                binding.tvBarcodeError.let {
                     Utils.showError(
                         requireActivity(),
                         it, requireActivity().getString(R.string.empty_error)
@@ -1538,19 +1696,23 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         } else if (v == binding.ivCross) {
 
             barcodeImage.clear()
-            binding.etBarcode?.setText("")
-            binding.mcvBarcodeImage?.visibility = View.GONE
+            binding.etBarcode.setText("")
+            binding.mcvBarcodeImage.visibility = View.GONE
 
         } else if (v == binding.root) {
             hideKeyboard(requireActivity())
         }
+
     }
 
-
-
     override fun onTagRead(tagInfo: UHFTAGInfo) {
+
         // Handle RFID tag data
         Utils.T(requireContext(), "Tag read: ${tagInfo.epc}")
+        binding.etRFIDCode.setText(tagInfo.epc)
+
+        rfidSetUp?.onPause()
+
     }
 
     override fun onError(message: String) {

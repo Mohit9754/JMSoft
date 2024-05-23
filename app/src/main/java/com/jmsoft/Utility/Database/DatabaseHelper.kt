@@ -1103,7 +1103,83 @@ class DatabaseHelper(cx: Context) {
         return productData
     }
 
-    //Add Category in the Category table
+
+    // Checks if rFIDCode Exist in the product table
+    @SuppressLint("Range", "Recycle")
+     fun isRFIDExist(rFIDCode: String): Boolean? {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} == ?",
+            arrayOf(rFIDCode)
+        )
+
+        val result = cursor?.moveToFirst()
+        cursor?.close()
+
+        close()
+
+        return result
+    }
+
+    // Getting the Product through RFIDCode
+    @SuppressLint("Range", "Recycle")
+    fun getProductThroughRFIDCode(rFIDCode: String): ProductDataModel {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} == ?",
+            arrayOf(rFIDCode)
+        )
+
+        val productData = ProductDataModel()
+
+        if (cursor != null && cursor.moveToFirst()) {
+
+            productData.productUUID =
+                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+            productData.productName =
+                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
+            productData.metalTypeUUID =
+                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_metalTypeUUID))
+            productData.collectionUUID =
+                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_collectionUUID))
+            productData.productOrigin =
+                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productOrigin))
+            productData.productWeight =
+                cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+            productData.productCarat =
+                cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+            productData.productPrice =
+                cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+            productData.productCost =
+                cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+            productData.categoryUUID =
+                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+            productData.productDescription =
+                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
+            productData.productRFIDCode =
+                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFIDCode))
+            productData.productBarcodeUri =
+                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeUri))
+
+            productData.productBarcodeData =
+                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeData))
+
+            productData.productImageUri =
+                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
+
+        }
+        cursor?.close()
+        close()
+
+        return productData
+    }
+
+
+    // Add Category in the Category table
     fun addCategory(categoryDataModel: CategoryDataModel) {
 
         open()

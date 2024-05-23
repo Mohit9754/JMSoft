@@ -95,8 +95,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         else if(v == binding.mcvAudit) {
 
-//            GetProgressBar.getInstance(requireActivity())?.show()
-//            (requireActivity() as DashboardActivity).navController?.navigate(R.id.audit)
+            GetProgressBar.getInstance(requireActivity())?.show()
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.audit)
 
         }
     }

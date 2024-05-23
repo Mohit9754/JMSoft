@@ -42,6 +42,8 @@ class DeviceListAdapter(
     //Bluetooth Manager for getting adapter
     val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
 
+    var connectedDeviceModel: DeviceModel? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemDeviceListBinding.inflate(LayoutInflater.from(context), parent, false)
         return MyViewHolder(view)
@@ -55,10 +57,12 @@ class DeviceListAdapter(
     }
 
     inner class MyViewHolder(private var binding: ItemDeviceListBinding) :
+
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         // Store DeviceModel data
         private lateinit var deviceModel: DeviceModel
+
         private val rotateAnimator = ObjectAnimator.ofFloat(binding.ivReconnect, rotation, 360f, 0f)
 
         //position of DeviceModel
@@ -138,10 +142,14 @@ class DeviceListAdapter(
 
             //Check if device is connected or not
             if (deviceModel.isConnected) {
+
                 binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
                 binding.tvStatus.text = context.getString(R.string.active)
                 binding.tvStatus.setTextColor(context.getColor(R.color.green))
                 binding.mcvReconnect.visibility = View.GONE
+
+                connectedDeviceModel = deviceModel
+
             } else {
 
                 binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.dark_red))
@@ -239,16 +247,23 @@ class DeviceListAdapter(
         }
 
         //This method is called when the device is reconnected
-        @SuppressLint("MissingPermission")
+        @SuppressLint("MissingPermission", "NotifyDataSetChanged")
         private fun onConnectSuccess() {
 
             Utils.E("Connected to Device ::::: ${device.name}")
 
+            connectedDeviceModel?.isConnected = false
+
+            deviceList[position].isConnected = true
+
             rotateAnimator.cancel()
-            binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
-            binding.tvStatus.text = context.getString(R.string.active)
-            binding.tvStatus.setTextColor(context.getColor(R.color.green))
-            binding.mcvReconnect.visibility = View.GONE
+
+//            binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
+//            binding.tvStatus.text = context.getString(R.string.active)
+//            binding.tvStatus.setTextColor(context.getColor(R.color.green))
+//            binding.mcvReconnect.visibility = View.GONE
+
+            notifyDataSetChanged()
         }
     }
 

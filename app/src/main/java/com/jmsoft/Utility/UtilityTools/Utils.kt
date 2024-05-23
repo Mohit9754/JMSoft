@@ -125,6 +125,7 @@ object Utils {
         }
     }
 
+
     // Save picture in internal storage and return the uri
     fun getPictureUri(context: Context,bitmap: Bitmap): String {
 
@@ -447,6 +448,17 @@ object Utils {
     fun isPhoneNumberExist(phoneNumber: String): Boolean {
         return DatabaseHelper.instance.isPhoneNumberExist(phoneNumber)
     }
+
+    // Checks if rFIDCode Exist in the product table
+    fun isRFIDExist(rFIDCode: String): Boolean? {
+        return DatabaseHelper.instance.isRFIDExist(rFIDCode)
+    }
+
+    // Getting the Product through RFIDCode
+    fun getProductThroughRFIDCode(rFIDCode: String): ProductDataModel {
+        return DatabaseHelper.instance.getProductThroughRFIDCode(rFIDCode)
+    }
+
 
     // Checks is Phone Number Already Exist in the Address table accept my phone number
     fun isPhoneNumberExistInAddressTableAcceptMine(phoneNumber: String, addressUUID: String): Boolean {

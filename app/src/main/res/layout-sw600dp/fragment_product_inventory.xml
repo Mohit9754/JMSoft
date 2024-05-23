@@ -1016,16 +1016,18 @@
                             android:layout_weight="2"
                             app:cardCornerRadius="@dimen/_3sdp"
                             app:strokeColor="@color/text_hint"
-                            app:strokeWidth="1dp">
+                            app:strokeWidth="1dp"
+                            tools:ignore="UnusedAttribute">
 
                             <EditText
                                 android:id="@+id/etRFIDCode"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@null"
+                                android:inputType="text"
+                                android:enabled="false"
                                 android:fontFamily="@font/montserrat_arabic_medium"
                                 android:hint="@string/enter_rfid_code"
-                                android:inputType="text"
                                 android:paddingHorizontal="@dimen/_5sdp"
                                 android:paddingVertical="@dimen/_7sdp"
                                 android:textSize="10sp"
@@ -1043,7 +1045,8 @@
                             android:layout_marginStart="@dimen/_3sdp"
                             app:cardBackgroundColor="@color/mcv_background_color"
                             app:cardCornerRadius="@dimen/_4sdp"
-                            app:cardElevation="0dp">
+                            app:cardElevation="0dp"
+                            tools:ignore="UnusedAttribute">
 
                             <ImageView
                                 android:layout_width="@dimen/_12sdp"

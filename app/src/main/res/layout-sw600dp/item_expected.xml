@@ -16,31 +16,30 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/_5sdp"
+        android:paddingHorizontal="@dimen/_5sdp"
         android:orientation="vertical"
         tools:ignore="RtlSymmetry,UselessLeaf">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Royal Gold Ring"
             android:textSize="16sp"
             android:layout_marginTop="@dimen/_5sdp"
             android:fontFamily="@font/montserrat_arabic_regular"
             android:textColor="@color/text_color"
-            android:id="@+id/tvName"
+            android:id="@+id/tvProductName"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="9754009298"
             android:textSize="12sp"
+            android:maxLines="1"
             android:layout_marginTop="@dimen/_2sdp"
             android:layout_marginBottom="@dimen/_5sdp"
             android:fontFamily="@font/montserrat_arabic_regular"
             android:textColor="@color/text_color"
-            android:id="@+id/tvMobileNo"
+            android:id="@+id/tvRFIDCode"
             />
 
     </LinearLayout>

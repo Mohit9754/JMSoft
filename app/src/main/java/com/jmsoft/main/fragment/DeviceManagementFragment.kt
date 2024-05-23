@@ -173,6 +173,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
     // Checks All the necessary permission related to bluetooth
     private var customPermissionLauncher = registerForActivityResult(
+
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         var allPermissionsGranted = true // Flag to track permission status
@@ -197,7 +198,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         // Check if all permissions are granted or not
         if (allPermissionsGranted) {
 
-            //Checks Continuously Bluetooth is on or off
+            // Checks Continuously Bluetooth is on or off
             BluetoothUtils.registerBluetoothStateReceiver(requireActivity(),
                 object : BluetoothOffCallback {
 
