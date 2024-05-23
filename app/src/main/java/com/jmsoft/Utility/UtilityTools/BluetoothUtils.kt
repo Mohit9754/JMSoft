@@ -232,39 +232,73 @@ object BluetoothUtils {
     }
 
     //get all connected Device
+    @SuppressLint("MissingPermission")
     fun getConnectedDevice(context: Context, callback: ConnectedDeviceCallback) {
 
         val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         val bluetoothAdapter = bluetoothManager.adapter
 
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
-//            callback.onError("Bluetooth is either not supported or disabled")
+            // callback.onError("Bluetooth is either not supported or disabled")
             return
         }
 
-        val serviceListener: BluetoothProfile.ServiceListener =
-            object : BluetoothProfile.ServiceListener {
+        val pairedDevices: Set<BluetoothDevice> = bluetoothAdapter.bondedDevices
 
-                @SuppressLint("MissingPermission")
-                override fun onServiceConnected(profile: Int, proxy: BluetoothProfile) {
-                    if (profile == BluetoothProfile.A2DP) {
-                        val a2dp = proxy as BluetoothA2dp
-                        val connectedDevices = a2dp.connectedDevices
-                        if (connectedDevices.isNotEmpty()) {
-                            // Get the first connected device (you may handle multiple devices if needed)
-                            val connectedDevice =  ArrayList(connectedDevices)
-                            callback.onDeviceFound(connectedDevice)
-                        } else {
-                            callback.onDeviceNotFound()
-                        }
-                    }
-                }
+        if (pairedDevices.isNotEmpty()) {
+            // Here you get all paired devices, you may need to filter based on the device type or name
+            val connectedDevices = ArrayList<BluetoothDevice>()
 
-                override fun onServiceDisconnected(profile: Int) {
-                    // Handle disconnection if needed
-                }
+            for (device in pairedDevices) {
+                // Assuming the RFID device has a specific name or type, filter accordingly
+                // e.g., if (device.name.contains("RFID")) or other criteria
+                connectedDevices.add(device)
             }
-        bluetoothAdapter.getProfileProxy(context, serviceListener, BluetoothProfile.A2DP)
+
+            if (connectedDevices.isNotEmpty()) {
+                callback.onDeviceFound(connectedDevices)
+            } else {
+                callback.onDeviceNotFound()
+            }
+        } else {
+            callback.onDeviceNotFound()
+        }
     }
+
+    //get all connected Device
+//    fun getConnectedDevice(context: Context, callback: ConnectedDeviceCallback) {
+//
+//        val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+//        val bluetoothAdapter = bluetoothManager.adapter
+//
+//        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
+////            callback.onError("Bluetooth is either not supported or disabled")
+//            return
+//        }
+//
+//        val serviceListener: BluetoothProfile.ServiceListener =
+//            object : BluetoothProfile.ServiceListener {
+//
+//                @SuppressLint("MissingPermission")
+//                override fun onServiceConnected(profile: Int, proxy: BluetoothProfile) {
+//                    if (profile == BluetoothProfile.A2DP) {
+//                        val a2dp = proxy as BluetoothA2dp
+//                        val connectedDevices = a2dp.connectedDevices
+//                        if (connectedDevices.isNotEmpty()) {
+//                            // Get the first connected device (you may handle multiple devices if needed)
+//                            val connectedDevice =  ArrayList(connectedDevices)
+//                            callback.onDeviceFound(connectedDevice)
+//                        } else {
+//                            callback.onDeviceNotFound()
+//                        }
+//                    }
+//                }
+//
+//                override fun onServiceDisconnected(profile: Int) {
+//                    // Handle disconnection if needed
+//                }
+//            }
+//        bluetoothAdapter.getProfileProxy(context, serviceListener, BluetoothProfile.A2DP)
+//    }
 
 }

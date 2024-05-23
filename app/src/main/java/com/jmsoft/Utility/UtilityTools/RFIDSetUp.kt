@@ -7,8 +7,6 @@ import android.os.Message
 import com.jmsoft.basic.UtilityTools.Utils
 import com.rscja.deviceapi.RFIDWithUHFBLE
 import com.rscja.deviceapi.entity.UHFTAGInfo
-import com.rscja.deviceapi.interfaces.ConnectionStatus
-import com.rscja.deviceapi.interfaces.ConnectionStatusCallback
 import com.rscja.deviceapi.interfaces.IUHFInventoryCallback
 
 class RFIDSetUp(private val context: Context, private val callback: RFIDCallback) {
@@ -71,6 +69,7 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
     }
 
     fun startRFIDScan() {
+
         if (!mIsScanning && (mUHF?.startInventoryTag() == true)) {
             mHandler?.sendEmptyMessage(3) // Notify scanning started
         } else {
@@ -90,6 +89,10 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
             Utils.T(context, errorMessage)
             callback.onError(errorMessage)
         }
+    }
+
+    fun getScanningStatus(): Boolean {
+        return mIsScanning
     }
 
     private fun handleTagData(tagInfo: UHFTAGInfo) {

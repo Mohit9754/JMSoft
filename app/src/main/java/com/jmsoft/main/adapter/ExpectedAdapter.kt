@@ -52,11 +52,18 @@ class ExpectedAdapter(
 
             // Set product name
             setProductName()
+
+            setRFIDCode()
+
         }
 
         // Set product name
         private fun setProductName(){
             binding.tvProductName.text = productDataModel.productName
+        }
+
+        private fun setRFIDCode() {
+            binding.tvRFIDCode.text = productDataModel.productRFIDCode
         }
 
         override fun onClick(v: View?) {
