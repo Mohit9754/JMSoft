@@ -353,6 +353,7 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
             adapterScanned?.notifyDataSetChanged()
 
         }
+
     }
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
