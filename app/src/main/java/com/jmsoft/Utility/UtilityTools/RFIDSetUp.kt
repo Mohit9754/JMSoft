@@ -31,14 +31,17 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
                         val tagInfo = msg.obj as UHFTAGInfo
                         handleTagData(tagInfo)
                     }
+
                     2 -> mIsScanning = false
-                    3 ->{ mIsScanning = true }
+                    3 -> {
+                        mIsScanning = true
+                    }
                 }
             }
         }
     }
 
-    fun onResume(macAddress:String) {
+    fun onResume(macAddress: String) {
         initRFID(macAddress)
     }
 
@@ -46,7 +49,7 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
         stopRFIDScan()
     }
 
-    private fun initRFID(macAddress:String) {
+    private fun initRFID(macAddress: String) {
 
         if (mUHF?.init(context) != true) {
             val errorMessage = "Failed to initialize RFID reader"
@@ -81,8 +84,11 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
     }
 
     fun stopRFIDScan() {
-        if (mIsScanning && mUHF?.stopInventory() == true) {
-            mHandler?.sendEmptyMessage(2) // Notify scanning stopped
+        if (mIsScanning) {
+            mUHF?.disconnect()
+            if (mUHF?.stopInventory() == true) {
+                mHandler?.sendEmptyMessage(2) // Notify scanning stopped
+            }
         } else {
             val errorMessage = "Failed to stop RFID scanning"
             Utils.E(errorMessage)

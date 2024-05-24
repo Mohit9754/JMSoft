@@ -126,6 +126,8 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
 
     private var adapterUnKnown:UnknownAdapter? = null
 
+    private var expectedProductList = ArrayList<ProductDataModel>()
+
     override fun onCreateView (
 
         inflater: LayoutInflater, container: ViewGroup?,
@@ -174,14 +176,16 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
         val result =  lifecycleScope.async(Dispatchers.IO) {
             return@async Utils.getAllProducts() }
 
-        val productList = result.await()
+        expectedProductList = result.await()
 
-        val adapterExpected = ExpectedAdapter(requireContext(), productList)
+        val adapterExpected = ExpectedAdapter(requireContext(), expectedProductList)
 
         binding.rvExpected?.also {
             it.layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
             it.adapter = adapterExpected
         }
+
+        binding.tvTotal?.text  = expectedProductList.size.toString()
 
 //        val list = ArrayList<String>()
 //        list.add("test")
@@ -270,6 +274,9 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
 
         GetProgressBar.getInstance(requireActivity())?.dismiss()
 
+        binding.tvMissing?.text =  expectedProductList.size.toString()
+        binding.tvTotal?.text =  expectedProductList.size.toString()
+
         binding.mcvScan?.setOnClickListener(this)
 
         binding.mcvRefresh?.setOnClickListener(this)
@@ -342,16 +349,20 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
         }
         else if (v == binding.mcvRefresh){
 
-            binding.tvTotal?.text = requireActivity().getString(R.string._0)
+//            binding.tvTotal?.text = requireActivity().getString(R.string._0)
             binding.tvSelected?.text = requireActivity().getString(R.string._0)
-            binding.tvMissing?.text = requireActivity().getString(R.string._0)
+//            binding.tvMissing?.text = requireActivity().getString(R.string._0)
             binding.tvUnknown?.text = requireActivity().getString(R.string._0)
 
             unKnownList.clear()
             scannedProductList.clear()
 
-            adapterUnKnown?.notifyDataSetChanged()
-            adapterScanned?.notifyDataSetChanged()
+//            adapterUnKnown?.notifyDataSetChanged()
+//            adapterScanned?.notifyDataSetChanged()
+
+            lifecycleScope.launch(Dispatchers.Main) {
+                init()
+            }
 
         }
 
@@ -366,7 +377,18 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
 
             val productDataModel = Utils.getProductThroughRFIDCode(tagInfo.epc)
 
-            if (!scannedProductList.contains(productDataModel)) {
+            val result = scannedProductList.any { it.productRFIDCode == productDataModel.productRFIDCode }
+
+            if (!result) {
+
+//                Utils.E("product name is ${productDataModel.productName}")
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    expectedProductList.removeIf { it.productRFIDCode == tagInfo.epc }
+                }
+                else{
+                    expectedProductList.forEach { if(it.productRFIDCode == tagInfo.epc){ expectedProductList.remove(it)}  }
+                }
 
                 scannedProductList.add(0,productDataModel)
                 adapterScanned?.notifyItemInserted(0)
@@ -388,7 +410,7 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
             }
         }
 
-        binding.tvTotal?.text  = (scannedProductList.size + unKnownList.size).toString()
+        binding.tvMissing?.text =  expectedProductList.size.toString()
     }
 
     override fun onError(message: String) {
