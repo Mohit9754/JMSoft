@@ -314,6 +314,7 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
 
                     if (rFIDSetUp?.getScanningStatus() == true) {
 
+
                         Utils.T(requireActivity(),"Scanning started")
                         binding.ivScan?.setImageResource(R.drawable.icon_pause)
                     }
