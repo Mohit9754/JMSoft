@@ -12,7 +12,7 @@ import com.rscja.deviceapi.interfaces.IUHFInventoryCallback
 class RFIDSetUp(private val context: Context, private val callback: RFIDCallback) {
 
     private var mUHF: RFIDWithUHFBLE? = RFIDWithUHFBLE.getInstance()
-    private var mIsScanning = false
+    public var mIsScanning = false
     private var mHandler: Handler? = null
 
     interface RFIDCallback {
@@ -68,7 +68,18 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
 
         })
 
-        startRFIDScan()
+        val thread: Thread = object : Thread() {
+            override fun run() {
+                try {
+                    sleep(2000)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    startRFIDScan()
+                }
+            }
+        }
+        thread.start()
     }
 
     fun startRFIDScan() {
@@ -78,7 +89,7 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
         } else {
             val errorMessage = "Failed to start RFID scanning"
             Utils.E(errorMessage)
-            Utils.T(context, errorMessage)
+            //  Utils.T(context, errorMessage)
             callback.onError(errorMessage)
         }
     }
@@ -92,7 +103,7 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
         } else {
             val errorMessage = "Failed to stop RFID scanning"
             Utils.E(errorMessage)
-            Utils.T(context, errorMessage)
+            //   Utils.T(context, errorMessage)
             callback.onError(errorMessage)
         }
     }

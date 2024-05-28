@@ -795,7 +795,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         binding.mcvCollection.setOnClickListener(this)
 
-        binding.mcvRFIDCodeBtn.setOnClickListener(this)
 
         binding.llCategory.setOnClickListener(this)
 
@@ -1708,7 +1707,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
     override fun onTagRead(tagInfo: UHFTAGInfo) {
 
         // Handle RFID tag data
-        Utils.T(requireContext(), "Tag read: ${tagInfo.epc}")
+     //   Utils.T(requireContext(), "Tag read: ${tagInfo.epc}")
         binding.etRFIDCode.setText(tagInfo.epc)
 
         rfidSetUp?.onPause()
@@ -1717,6 +1716,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     override fun onError(message: String) {
         // Handle errors
-        Utils.T(requireContext(), message)
+        Utils.E( message)
     }
 }
