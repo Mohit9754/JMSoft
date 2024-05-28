@@ -79,6 +79,7 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
                 }
             }
         }
+
         thread.start()
     }
 
@@ -113,6 +114,7 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
     }
 
     private fun handleTagData(tagInfo: UHFTAGInfo) {
+
         callback.onTagRead(tagInfo)
 
         val epc = tagInfo.epc

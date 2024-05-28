@@ -1,6 +1,7 @@
 package com.jmsoft.main.fragment
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.bluetooth.BluetoothAdapter
@@ -14,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.animation.LinearInterpolator
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -26,6 +28,7 @@ import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.Utility.UtilityTools.RFIDSetUp
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentAuditBinding
@@ -135,7 +138,6 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
     ): View {
 
         lifecycleScope.launch(Dispatchers.Main) {
-
             init()
         }
 
@@ -242,6 +244,7 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
     }
 
     override fun onPause() {
+
         super.onPause()
         rFIDSetUp?.onPause()
         binding.ivScan?.setImageResource(R.drawable.icon_play)
@@ -250,6 +253,8 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
     override fun onDestroy() {
         super.onDestroy()
         rFIDSetUp?.onPause()
+        binding.ivScan?.setImageResource(R.drawable.icon_play)
+
     }
 
     private suspend fun init() {
@@ -317,13 +322,32 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
                 }
                 else {
 
+                    binding.ivScan?.setImageResource(R.drawable.reconnect)
+
+                    val rotateAnimator = ObjectAnimator.ofFloat(binding.ivScan,
+                        Constants.rotation, 360f, 0f)
+
+                    rotateAnimator.duration = 1000 // Duration in milliseconds
+                    rotateAnimator.repeatCount = ObjectAnimator.INFINITE // Repeat indefinitely
+                    rotateAnimator.interpolator = LinearInterpolator() // Linear interpolation
+                    rotateAnimator.start()
+
                     rFIDSetUp?.onResume(device[0].address)
 
                     if (rFIDSetUp?.getScanningStatus() == true) {
 
+                        rotateAnimator.cancel()
 
                         Utils.T(requireActivity(),"Scanning started")
+
                         binding.ivScan?.setImageResource(R.drawable.icon_pause)
+                    }
+                    else {
+
+                        rotateAnimator.cancel()
+
+                        binding.ivScan?.setImageResource(R.drawable.icon_play)
+
                     }
                 }
             }
@@ -347,25 +371,26 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
                 checkAndroidVersionAndLaunchPermission()
             }
         }
-        else if (v == binding.mcvRefresh){
+        else if (v == binding.mcvRefresh) {
 
-//            binding.tvTotal?.text = requireActivity().getString(R.string._0)
-            binding.tvSelected?.text = requireActivity().getString(R.string._0)
-//            binding.tvMissing?.text = requireActivity().getString(R.string._0)
-            binding.tvUnknown?.text = requireActivity().getString(R.string._0)
+            rFIDSetUp?.onPause()
 
-            unKnownList.clear()
-            scannedProductList.clear()
+            if (rFIDSetUp?.getScanningStatus() == false) {
 
-//            adapterUnKnown?.notifyDataSetChanged()
-//            adapterScanned?.notifyDataSetChanged()
+                binding.ivScan?.setImageResource(R.drawable.icon_play)
+                binding.tvSelected?.text = requireActivity().getString(R.string._0)
+                binding.tvUnknown?.text = requireActivity().getString(R.string._0)
 
-            lifecycleScope.launch(Dispatchers.Main) {
-                init()
+                unKnownList.clear()
+                scannedProductList.clear()
+
+                lifecycleScope.launch(Dispatchers.Main) {
+                    init()
+                }
+
             }
 
         }
-
     }
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
