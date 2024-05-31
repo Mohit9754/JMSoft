@@ -95,7 +95,6 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
         val bitmapImages = ArrayList<Bitmap>()
 
-
         for (image in arrayOfImages) {
 
             Utils.getImageFromInternalStorage(requireActivity(), image)
@@ -163,9 +162,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
                 else {
                     binding.mcvCollection?.visibility  = View.GONE
                 }
-
             }
-
         }
         else {
 

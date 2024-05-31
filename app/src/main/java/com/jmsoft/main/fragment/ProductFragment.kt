@@ -1,35 +1,54 @@
 package com.jmsoft.main.fragment
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
+import android.content.ContentResolver
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.webkit.MimeTypeMap
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.ExcelReader
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.All
 import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentProductBinding
 import com.jmsoft.main.activity.DashboardActivity
-import com.jmsoft.main.adapter.CatalogAdapter
 import com.jmsoft.main.adapter.ProductListAdapter
+import com.jmsoft.main.`interface`.ExcelReadSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
 
-class ProductFragment : Fragment(), View.OnClickListener {
+class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
     private var productListAdapter: ProductListAdapter? = null
 
@@ -47,6 +66,26 @@ class ProductFragment : Fragment(), View.OnClickListener {
 
     private val searchFilterList  = ArrayList<ProductDataModel>()
 
+    private lateinit var excelReader: ExcelReader
+
+    private var file: File? = null
+
+    private var fileUri: Uri? = null
+
+    // Storage Permission Launcher
+    private var storagePermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean? ->
+
+        if (isGranted == true) {
+
+            openDocument()
+
+        } else {
+             showOpenSettingDialog()
+          }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,6 +97,143 @@ class ProductFragment : Fragment(), View.OnClickListener {
         init()
 
         return binding.root
+    }
+
+    private fun openDocument() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            type = "*/*"
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            addCategory(Intent.CATEGORY_OPENABLE)
+        }
+        filePickerLauncher.launch(intent)
+    }
+
+     private fun Uri.getExtension(context: Context): String? {
+        var extension: String? = ""
+        extension = if (this.scheme == ContentResolver.SCHEME_CONTENT) {
+            val mime = MimeTypeMap.getSingleton()
+            mime.getExtensionFromMimeType(context.contentResolver.getType(this))
+        } else {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                MimeTypeMap.getFileExtensionFromUrl(
+                    FileProvider.getUriForFile(
+                        context,
+                        context.packageName + ".provider",
+                        File(this.path)
+                    )
+                        .toString()
+                )
+            } else {
+                MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(File(this.path)).toString())
+            }
+        }
+        return extension
+    }
+
+    // Gallery result launcher
+    @SuppressLint("NotifyDataSetChanged")
+    val filePickerLauncher = registerForActivityResult(
+    ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.also { uri ->
+//                Log.e("MainActivity", "Selected file Uri: $uri")
+                val mimeTypeExtension = uri.getExtension(requireActivity())
+//                Log.e("MainActivity", "Selected file mimeTypeExtension: $mimeTypeExtension")
+
+                if (!mimeTypeExtension.isNullOrEmpty()) {
+                    if (mimeTypeExtension == "xlsx" || mimeTypeExtension == "xls") {
+//                        Log.e("MainActivity", "Selected file mimeTypeExtension valid: $mimeTypeExtension")
+                        copyFileAndExtract(uri, mimeTypeExtension)
+                    } else {
+                        Utils.T(requireActivity(), getString(R.string.invalid_file_selected))
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getContentFileName(uri: Uri): String? = runCatching {
+        requireContext().contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
+                    .let(cursor::getString)
+            } else {
+                null
+            }
+        }
+    }.getOrNull()
+
+
+    fun getFileName(uri: Uri): String? = when (uri.scheme) {
+        ContentResolver.SCHEME_CONTENT -> getContentFileName(uri)
+        else -> uri.path?.let(::File)?.name
+    }
+    private fun copyFileAndExtract(uri: Uri, extension: String) {
+        GetProgressBar.getInstance(requireActivity())?.show()
+
+        val dir = File(requireActivity().filesDir, "doc")
+        dir.mkdirs()
+        val fileName = getFileName(uri)
+        file = File(dir, fileName)
+        file?.createNewFile()
+        val fout = FileOutputStream(file)
+        try {
+            requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
+                fout.use { output ->
+                    inputStream.copyTo(output)
+                    output.flush()
+                }
+            }
+            fileUri = FileProvider.getUriForFile(requireActivity(), requireContext().packageName + ".provider", file!!)
+        } catch (e: Exception) {
+//            hideProgress()
+            fileUri = uri
+            e.printStackTrace()
+        }
+        fileUri?.apply {
+            file?.apply {
+                Log.e(tag, this.absolutePath)
+                if (excelReader.isEncrypt(this.absolutePath)) {
+
+                    GetProgressBar.getInstance(requireActivity())?.dismiss()
+
+                    Utils.T(requireContext(), getString(R.string.document_is_encrypted))
+
+                } else {
+                    excelReader.readExcelFileFromAssets(requireActivity(),this.absolutePath)
+                }
+            }
+        }
+    }
+
+    // Open Setting Dialog
+    private fun showOpenSettingDialog() {
+
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogBinding = DialogOpenSettingBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.tvTitle.text = getString(R.string.storage_permission)
+
+        dialogBinding.tvMessage.text =
+            getString(R.string.storage_permission_access_is_needed_in_order_to_import_excel_sheet_please_enable_it_from_the_settings)
+
+        dialogBinding.mcvCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogBinding.mcvOpenSetting.setOnClickListener {
+            dialog.dismiss()
+            Utils.openAppSettings(requireActivity())
+        }
+
+        dialog.setCancelable(true)
+
+        dialog.show()
     }
 
     // Set the spinner
@@ -237,6 +413,21 @@ class ProductFragment : Fragment(), View.OnClickListener {
         // Checks fragment state
         checkState()
 
+        excelReader = ExcelReader(this)
+
+        System.setProperty(
+            "org.apache.poi.javax.xml.stream.XMLInputFactory",
+            "com.fasterxml.aalto.stax.InputFactoryImpl"
+        );
+        System.setProperty(
+            "org.apache.poi.javax.xml.stream.XMLOutputFactory",
+            "com.fasterxml.aalto.stax.OutputFactoryImpl"
+        );
+        System.setProperty(
+            "org.apache.poi.javax.xml.stream.XMLEventFactory",
+            "com.fasterxml.aalto.stax.EventFactoryImpl"
+        );
+
         // Set Product Recycler View
         lifecycleScope.launch(Dispatchers.IO) {
             setProductRecyclerView()
@@ -269,6 +460,8 @@ class ProductFragment : Fragment(), View.OnClickListener {
 
         // Set click on add button
         binding.mcvAdd?.setOnClickListener(this)
+
+        binding.mcvImport?.setOnClickListener(this)
 
     }
 
@@ -327,6 +520,29 @@ class ProductFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    override fun onReadSuccess(productList :ArrayList<ProductDataModel>) {
+
+        Utils.T(requireActivity(), getString(R.string.readed_successfully))
+
+        for (product in productList) {
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                Utils.addProduct(product)
+            }
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            setProductRecyclerView()
+        }
+
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
+
+    }
+
+    override fun onReadFail(){
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
+    }
+
     // Handle all the clicks
     override fun onClick(v: View?) {
 
@@ -379,6 +595,11 @@ class ProductFragment : Fragment(), View.OnClickListener {
 
             (requireActivity() as DashboardActivity).navController?.popBackStack()
 
+        }
+
+        else if(v == binding.mcvImport) {
+
+            storagePermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
 
     }

@@ -60,6 +60,8 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.card.MaterialCardView
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.AddressDataModel
 import com.jmsoft.Utility.Database.CartDataModel
@@ -140,6 +142,41 @@ object Utils {
     @SuppressLint("DefaultLocale")
     fun capitalizeData(data:String): String {
         return data.trim().lowercase(Locale.getDefault()).capitalize(Locale.ROOT)
+    }
+
+    // Convert data to barcode
+     fun genBarcodeBitmap(context: Context,data: String): Bitmap? {
+
+        // Getting input value from the EditText
+        if (data.isNotEmpty()) {
+            // Initializing a MultiFormatWriter to encode the input value
+            val mwriter = MultiFormatWriter()
+
+            try {
+                // Generating a barcode matrix
+                val matrix = mwriter.encode(data, BarcodeFormat.CODE_128, 60, 30)
+
+                // Creating a bitmap to represent the barcode
+                val bitmap = Bitmap.createBitmap(60, 30, Bitmap.Config.RGB_565)
+
+                // Iterating through the matrix and set pixels in the bitmap
+                for (i in 0 until 60) {
+                    for (j in 0 until 30) {
+                        bitmap.setPixel(i, j, if (matrix[i, j]) Color.BLACK else Color.WHITE)
+                    }
+                }
+                // Setting the bitmap as the image resource of the ImageView
+                return bitmap
+
+            } catch (e: Exception) {
+
+                Utils.T(context, "Exception $e")
+
+            }
+        } else {
+            // Showing an error message if the EditText is empty
+        }
+        return null
     }
 
     fun showError(context: Context,textView: TextView,msg: String) {
@@ -730,6 +767,16 @@ object Utils {
     //Getting the MetalType Name through MetalType UUID
     fun getMetalTypeNameThroughMetalTypeUUID(metalTypeUUID: String): String? {
         return DatabaseHelper.instance.getMetalTypeNameThroughMetalTypeUUID(metalTypeUUID)
+    }
+
+    // Getting the MetalTypeUUID through MetalType name
+    fun getMetalTypeUUIDThroughMetalTypeName(metalTypeName: String): String? {
+        return DatabaseHelper.instance.getMetalTypeUUIDThroughMetalTypeName(metalTypeName)
+    }
+
+    // Getting the Collection UUID through Collection name
+    fun getCollectionUUIDThroughCollectionName(collectionName: String): String? {
+        return DatabaseHelper.instance.getCollectionUUIDThroughCollectionName(collectionName)
     }
 
     //Inserting Address in Address table

@@ -12,7 +12,7 @@ import com.rscja.deviceapi.interfaces.IUHFInventoryCallback
 class RFIDSetUp(private val context: Context, private val callback: RFIDCallback) {
 
     private var mUHF: RFIDWithUHFBLE? = RFIDWithUHFBLE.getInstance()
-    public var mIsScanning = false
+    private var mIsScanning = false
     private var mHandler: Handler? = null
 
     interface RFIDCallback {

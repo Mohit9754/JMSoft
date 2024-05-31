@@ -92,7 +92,10 @@ class CatalogFragment : Fragment(), View.OnClickListener {
         else {
 
             binding.llEmptyCatalog?.visibility  = View.VISIBLE
-            GetProgressBar.getInstance(requireActivity())?.dismiss()
+
+            if (isAdded) {
+                GetProgressBar.getInstance(requireActivity())?.dismiss()
+            }
 
         }
     }

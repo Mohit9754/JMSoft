@@ -169,7 +169,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                 selectedProductImage.addAll(selectedUris)
 
                 addImageAdapter?.notifyDataSetChanged()
-                binding.tvProductImageError?.visibility = View.GONE
+                binding.tvProductImageError.visibility = View.GONE
 
                 // Now you have selected image URIs respecting the min and max limits
                 // Handle them as needed in your app
@@ -177,6 +177,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         }
 
     //Gallery Permission Launcher
+
     private var galleryPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean? ->
@@ -1202,9 +1203,10 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                 requireActivity(),
                 requireActivity().getString(R.string.added_successfully)
             )
+
             setCategoryRecyclerView()
 
-            binding.mcvCategoryList?.visibility = View.GONE
+            binding.mcvCategoryList.visibility = View.GONE
             showOrHideCategoryDropDown()
 
             dialogCategory?.dismiss()
@@ -1490,40 +1492,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     }
 
-    // Convert data to barcode
-    private fun genBarcodeBitmap(data: String): Bitmap? {
 
-        // Getting input value from the EditText
-        if (data.isNotEmpty()) {
-            // Initializing a MultiFormatWriter to encode the input value
-            val mwriter = MultiFormatWriter()
-
-            try {
-                // Generating a barcode matrix
-                val matrix = mwriter.encode(data, BarcodeFormat.CODE_128, 60, 30)
-
-                // Creating a bitmap to represent the barcode
-                val bitmap = Bitmap.createBitmap(60, 30, Bitmap.Config.RGB_565)
-
-                // Iterating through the matrix and set pixels in the bitmap
-                for (i in 0 until 60) {
-                    for (j in 0 until 30) {
-                        bitmap.setPixel(i, j, if (matrix[i, j]) Color.BLACK else Color.WHITE)
-                    }
-                }
-                // Setting the bitmap as the image resource of the ImageView
-                return bitmap
-
-            } catch (e: Exception) {
-
-                Utils.T(requireActivity(), "Exception $e")
-
-            }
-        } else {
-            // Showing an error message if the EditText is empty
-        }
-        return null
-    }
 
     // Show or hide metal type drop down
     private fun showOrHideMetalTypeDropDown() {
@@ -1669,7 +1638,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
                 if (binding.etBarcode != null && binding.ivBarcodeImage != null) {
 
-                    val barcodeBitmap = genBarcodeBitmap(binding.etBarcode.text.toString().trim())
+                    val barcodeBitmap = Utils.genBarcodeBitmap(requireActivity(),binding.etBarcode.text.toString().trim())
 
                     if (barcodeBitmap != null) {
 

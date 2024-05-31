@@ -10,6 +10,7 @@ import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
+import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 
@@ -54,6 +55,9 @@ class DataManager
         // Creating Metal_Type table
         MetalTypeDataModel.CreateTable(db)
 
+        // Creating order table
+        OrderDataModel.CreateTable(db)
+
     }
 //    override fun onOpen(db: SQLiteDatabase) {
 //        super.onOpen(db)
@@ -94,12 +98,16 @@ class DataManager
         // Drop Metal_Type table
         MetalTypeDataModel.dropTable(db)
 
+        // Drop order table
+        OrderDataModel.dropTable(db)
+
         onCreate(db)
+
     }
 
     companion object {
 
-        const val DATABASE_VERSION = 83
+        const val DATABASE_VERSION = 96
         const val DATABASE_NAME = "JM_Soft"
     }
 }

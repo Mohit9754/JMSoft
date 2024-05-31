@@ -1,5 +1,6 @@
 package com.jmsoft.Utility.UtilityTools
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothA2dp
 import android.bluetooth.BluetoothAdapter
@@ -15,7 +16,9 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.provider.DocumentsContract.Root
+import android.provider.MediaStore
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.IntentCompat
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
@@ -33,6 +36,8 @@ object BluetoothUtils {
     private lateinit var bluetoothAdapter: BluetoothAdapter
     private lateinit var bluetoothStateReceiver: BroadcastReceiver
     private lateinit var receiver: BroadcastReceiver
+
+
 
     //Checks if device is paired or not
     @SuppressLint("MissingPermission")

@@ -86,6 +86,8 @@ class ProductListAdapter(
 
             if (productDataList.isEmpty()) {
 
+                GetProgressBar.getInstance(context)?.dismiss()
+
                 fragmentProductBinding.mcvProductList?.visibility = View.GONE
 //                fragmentProductBinding.mcvFilter?.visibility = View.GONE
                 fragmentProductBinding.llEmptyProduct?.visibility = View.VISIBLE

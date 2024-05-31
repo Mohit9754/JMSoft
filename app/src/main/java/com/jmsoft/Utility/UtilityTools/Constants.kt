@@ -71,6 +71,7 @@ interface Constants {
         const val blank = ""
         const val Default_Country_Code = "+212"
         const val Default_Country_Region = "MA"
+        const val Default_Image = "default_image"
         const val Nigeria_Country_Region = "NG"
         const val english = "en"
         const val arabic = "ar"
@@ -220,6 +221,11 @@ interface Constants {
         const val product = "product"
         const val edit = "edit"
         const val add = "add"
+
+        const val Status = "Status"
+//        const val Pending = "Pending"
+        const val Completed = "Completed"
+//        const val doc = "doc"
 
         const val userUUID = "userUUID"
         const val productUUID = "productUUID"

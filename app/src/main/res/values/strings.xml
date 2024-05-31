@@ -233,7 +233,18 @@
     <string name="unknown">UNKNOWN</string>
     <string name="expected">EXPECTED</string>
     <string name="please_turn_on_bluetooth">"Please turn on bluetooth "</string>
+    <string name="import_product">Import Product</string>
     <string name="_0">0</string>
+    <string name="invalid_carat_type">Invalid carat type</string>
+    <string name="invalid_product_price">Invalid Product price</string>
+    <string name="invalid_product_cost">"Invalid Product cost "</string>
+    <string name="exception_in_reading">Exception in reading</string>
+    <string name="invalid_file_selected">Invalid file selected</string>
+    <string name="document_is_encrypted">Document is encrypted</string>
+    <string name="storage_permission">Storage permission</string>
+    <string name="storage_permission_access_is_needed_in_order_to_import_excel_sheet_please_enable_it_from_the_settings">Storage permission Access is needed in order to import\nexcel sheet. Please enable it from the settings.</string>
+    <string name="readed_successfully">Readed Successfully</string>
+    <string name="column_does_not_exist">Column %1$s does not exist</string>
 
 
 </resources>

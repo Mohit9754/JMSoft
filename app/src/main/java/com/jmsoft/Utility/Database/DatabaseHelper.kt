@@ -5,6 +5,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import androidx.core.graphics.drawable.toBitmap
+import com.jmsoft.R
 import com.jmsoft.Utility.Database.AddressDataModel
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.CategoryDataModel
@@ -560,6 +562,48 @@ class DatabaseHelper(cx: Context) {
         cursor?.close()
 
         return metalTypeName
+    }
+
+    // Getting the MetalTypeUUID through MetalType name
+    @SuppressLint("Recycle", "Range")
+    fun getMetalTypeUUIDThroughMetalTypeName(metalTypeName: String): String? {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT * FROM ${MetalTypeDataModel.TABLE_NAME_METAL_TYPE} WHERE ${MetalTypeDataModel.Key_metalTypeName} == ?",
+            arrayOf(metalTypeName)
+        )
+
+        cursor?.moveToFirst()
+
+        val metalTypeUUID =
+            cursor?.getString(cursor.getColumnIndex(MetalTypeDataModel.Key_metalTypeUUID))
+
+        cursor?.close()
+
+        return metalTypeUUID
+    }
+
+    // Getting the Collection UUID through Collection name
+    @SuppressLint("Recycle", "Range")
+    fun getCollectionUUIDThroughCollectionName(collectionName: String): String? {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT * FROM ${CollectionDataModel.TABLE_NAME_COLLECTION} WHERE ${CollectionDataModel.Key_collectionName} == ?",
+            arrayOf(collectionName)
+        )
+
+        cursor?.moveToFirst()
+
+        val collectionUUID =
+            cursor?.getString(cursor.getColumnIndex(CollectionDataModel.Key_collectionUUID))
+
+        cursor?.close()
+
+        return collectionUUID
     }
 
     //Get All Products of particular Collection  from the Product table
@@ -1580,6 +1624,7 @@ class DatabaseHelper(cx: Context) {
 
 
     //Inserting the Admin in the user table at the time of table creation
+    @SuppressLint("UseCompatLoadingForDrawables")
     fun insertAdmin(db: SQLiteDatabase) {
 
         val adminUserValues = ContentValues().apply {
@@ -1594,6 +1639,13 @@ class DatabaseHelper(cx: Context) {
             put(UserDataModel.Key_password, Utils.encodeText(Utils.getPassword(cx).toString()))
         }
         db.insert(UserDataModel.TABLE_NAME_USER, null, adminUserValues)
+
+
+        val imageBitmap = cx.getDrawable(R.drawable.default_image)?.toBitmap()
+
+        imageBitmap?.let { Utils.saveToInternalStorage(cx, it,Constants.Default_Image) }
+        imageBitmap?.let { Utils.saveToInternalStorage(cx, it,Constants.Default_Image) }
+
     }
 
     /**

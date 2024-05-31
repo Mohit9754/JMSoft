@@ -42,6 +42,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
     kotlinOptions {
         jvmTarget = "17"
     }
@@ -54,14 +55,23 @@ kotlin {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("com.google.android.material:material:1.11.0")
+    implementation("com.google.android.material:material:1.12.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
-    implementation("androidx.activity:activity:1.8.2")
+    implementation("androidx.activity:activity:1.9.0")
+    implementation(files("libs/poishadow-all.jar"))
+
+//    implementation(files("libs/poishadow-all.jar"))
+//    implementation(files("libs/poishadow-all.jar"))
+//    implementation(files("libs/poishadow-all.jar"))
+//    implementation(files("libs//poishadow-all.jar"))
+//    implementation(files("libs/poishadow-all.jar"))
+//    implementation(files("libs/poishadow-all.jar"))
+
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test.ext:junit-ktx:1.1.5")
@@ -72,18 +82,21 @@ dependencies {
     implementation("com.intuit.ssp:ssp-android:1.1.0")
     implementation("com.intuit.sdp:sdp-android:1.1.0")
     //FireBase
-    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     // Firebase Realtime Database
-    implementation("com.google.firebase:firebase-database:20.3.1")
+    implementation("com.google.firebase:firebase-database:21.0.0")
 
     implementation("com.google.zxing:core:3.4.1")
 
+    implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
 
+//    implementation (files("libs/poishadow-all.jar"))
 
-    //Validation For Phone Number
+    // Validation For Phone Number
     implementation("io.michaelrocks:libphonenumber-android:8.12.49")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3")
