@@ -3,10 +3,10 @@ package com.jmsoft.main.enum
 enum class ProductColumnName(val displayName: String) {
 
     PRODUCT_NAME("productname"),
-    CATEGORY_NAME("categorynam"),
+    CATEGORY_NAME("category"),
     METAL_TYPE("metaltype"),
     DESCRIPTION("description"),
-    COLLECTION_NAME("collectionname"),
+    COLLECTION_NAME("collection"),
     ORIGIN("origin"),
     WEIGHT("weight"),
     CARAT("carat"),

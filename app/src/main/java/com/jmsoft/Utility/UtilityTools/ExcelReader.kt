@@ -123,6 +123,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                                                         if (firstRow.contains(ProductColumnName.BARCODE.displayName)) {
 
+
                                                         }
                                                         else {
 
