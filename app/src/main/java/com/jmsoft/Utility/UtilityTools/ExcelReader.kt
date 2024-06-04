@@ -30,14 +30,18 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
     lateinit var file: File
     lateinit var fileDir: File
 
-    private fun isInEnum(name: String): Boolean {
+//    private fun isInEnum(name: String): Boolean {
+//
+//        return try {
+//            enumValueOf<ProductColumnName>(name)
+//            true
+//        } catch (e: IllegalArgumentException) {
+//            false
+//        }
+//    }
 
-        return try {
-            enumValueOf<ProductColumnName>(name)
-            true
-        } catch (e: IllegalArgumentException) {
-            false
-        }
+    private fun isInEnum(displayName: String): Boolean {
+        return ProductColumnName.values().any { it.displayName == displayName }
     }
 
     @SuppressLint("DefaultLocale")
@@ -85,6 +89,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                         val firstCell: Cell = cellIter1.next()
 
                         val columnName = firstCell.toString().trim().lowercase().replace(" ","")
+//                        val columnName = firstCell.toString().trim()
 
                         firstRow.add(columnName)
 
@@ -98,25 +103,25 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                         }
                     }
 
-                    if (firstRow.contains(ProductColumnName.productname.toString())) {
+                    if (firstRow.contains(ProductColumnName.PRODUCT_NAME.displayName)) {
 
-                        if (firstRow.contains(ProductColumnName.categorynam.toString())){
+                        if (firstRow.contains(ProductColumnName.CATEGORY_NAME.displayName)){
 
-                            if (firstRow.contains(ProductColumnName.metaltype.toString())) {
+                            if (firstRow.contains(ProductColumnName.METAL_TYPE.displayName)) {
 
-                                if (firstRow.contains(ProductColumnName.description.toString())) {
+                                if (firstRow.contains(ProductColumnName.DESCRIPTION.displayName)) {
 
-                                    if (firstRow.contains(ProductColumnName.origin.toString())) {
+                                    if (firstRow.contains(ProductColumnName.ORIGIN.displayName)) {
 
-                                        if (firstRow.contains(ProductColumnName.weight.toString())) {
+                                        if (firstRow.contains(ProductColumnName.WEIGHT.displayName)) {
 
-                                            if (firstRow.contains(ProductColumnName.carat.toString())) {
+                                            if (firstRow.contains(ProductColumnName.CARAT.displayName)) {
 
-                                                if (firstRow.contains(ProductColumnName.price.toString())) {
+                                                if (firstRow.contains(ProductColumnName.PRICE.displayName)) {
 
-                                                    if (firstRow.contains(ProductColumnName.cost.toString())) {
+                                                    if (firstRow.contains(ProductColumnName.DESCRIPTION.displayName)) {
 
-                                                        if (firstRow.contains(ProductColumnName.barcode.toString())) {
+                                                        if (firstRow.contains(ProductColumnName.BARCODE.displayName)) {
 
                                                         }
                                                         else {
@@ -124,7 +129,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                                             Utils.T(context,
                                                                 context.getString(
                                                                     R.string.column_does_not_exist,
-                                                                    ProductColumnName.barcode
+                                                                    ProductColumnName.BARCODE.displayName
                                                                 ))
 
                                                             excelReadSuccess.onReadFail()
@@ -138,7 +143,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                                         Utils.T(context,
                                                             context.getString(
                                                                 R.string.column_does_not_exist,
-                                                                ProductColumnName.cost
+                                                                ProductColumnName.COST.displayName
                                                             ))
 
                                                         excelReadSuccess.onReadFail()
@@ -152,7 +157,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                                     Utils.T(context,
                                                         context.getString(
                                                             R.string.column_does_not_exist,
-                                                            ProductColumnName.price
+                                                            ProductColumnName.PRICE.displayName
                                                         ))
 
                                                     excelReadSuccess.onReadFail()
@@ -166,7 +171,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                                 Utils.T(context,
                                                     context.getString(
                                                         R.string.column_does_not_exist,
-                                                        ProductColumnName.carat
+                                                        ProductColumnName.CARAT.displayName
                                                     ))
 
                                                 excelReadSuccess.onReadFail()
@@ -179,7 +184,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                             Utils.T(context,
                                                 context.getString(
                                                     R.string.column_does_not_exist,
-                                                    ProductColumnName.weight
+                                                    ProductColumnName.WEIGHT.displayName
                                                 ))
 
                                             excelReadSuccess.onReadFail()
@@ -192,7 +197,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                         Utils.T(context,
                                             context.getString(
                                                 R.string.column_does_not_exist,
-                                                ProductColumnName.origin
+                                                ProductColumnName.ORIGIN.displayName
                                             ))
 
                                         excelReadSuccess.onReadFail()
@@ -205,7 +210,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                     Utils.T(context,
                                         context.getString(
                                             R.string.column_does_not_exist,
-                                            ProductColumnName.description
+                                            ProductColumnName.DESCRIPTION.displayName
                                         ))
 
                                     excelReadSuccess.onReadFail()
@@ -219,7 +224,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                 Utils.T(context,
                                     context.getString(
                                         R.string.column_does_not_exist,
-                                        ProductColumnName.metaltype
+                                        ProductColumnName.METAL_TYPE.displayName
                                     ))
 
                                 excelReadSuccess.onReadFail()
@@ -231,7 +236,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                             Utils.T(context,
                                 context.getString(
                                     R.string.column_does_not_exist,
-                                    ProductColumnName.categorynam
+                                    ProductColumnName.CATEGORY_NAME.displayName
                                 ))
 
                             excelReadSuccess.onReadFail()
@@ -245,7 +250,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                         Utils.T(context,
                             context.getString(
                                 R.string.column_does_not_exist,
-                                ProductColumnName.productname
+                                ProductColumnName.PRODUCT_NAME.displayName
                             ))
                         excelReadSuccess.onReadFail()
                         return
@@ -271,13 +276,13 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                                 when (i) {
 
-                                    ProductColumnName.productname.toString() -> {
+                                    ProductColumnName.PRODUCT_NAME.displayName -> {
 
                                         productDataModel.productName = cell.toString().trim()
 
                                     }
 
-                                    ProductColumnName.metaltype.toString() -> {
+                                    ProductColumnName.METAL_TYPE.displayName -> {
 
                                         val isMetalTypeExist =
                                             Utils.isMetalTypeExist(Utils.capitalizeData(cell.toString()))
@@ -306,7 +311,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                         }
                                     }
 
-                                    ProductColumnName.collectionname.toString() -> {
+                                    ProductColumnName.COLLECTION_NAME.displayName -> {
 
                                         val isCollectionExist =
                                             Utils.isCollectionExist(Utils.capitalizeData(cell.toString()))
@@ -336,13 +341,13 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                         }
                                     }
 
-                                    ProductColumnName.origin.toString() -> {
+                                    ProductColumnName.ORIGIN.displayName -> {
 
                                         productDataModel.productOrigin = cell.toString().trim()
 
                                     }
 
-                                    ProductColumnName.weight.toString() -> {
+                                    ProductColumnName.WEIGHT.displayName -> {
 
                                         productDataModel.productWeight =
                                             Utils.roundToTwoDecimalPlaces(
@@ -351,7 +356,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                                     }
 
-                                    ProductColumnName.carat.toString() -> {
+                                    ProductColumnName.CARAT.displayName -> {
 
                                         try {
                                             productDataModel.productCarat = cell.toString().toDouble().toInt()
@@ -366,7 +371,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                                     }
 
-                                    ProductColumnName.price.toString() -> {
+                                    ProductColumnName.PRICE.displayName -> {
 
                                         try {
                                             productDataModel.productPrice =
@@ -383,7 +388,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                         }
                                     }
 
-                                    ProductColumnName.cost.toString() -> {
+                                    ProductColumnName.COST.displayName -> {
 
                                         try {
 
@@ -401,7 +406,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                         }
                                     }
 
-                                    ProductColumnName.categorynam.toString() -> {
+                                    ProductColumnName.CATEGORY_NAME.displayName -> {
 
                                         val isCategoryExist =
                                             Utils.isCategoryExist(Utils.capitalizeData(cell.toString()))
@@ -431,13 +436,13 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                         }
                                     }
 
-                                    ProductColumnName.description.toString() -> {
+                                    ProductColumnName.DESCRIPTION.displayName -> {
 
                                         productDataModel.productDescription = cell.toString().trim()
 
                                     }
 
-                                    ProductColumnName.barcode.toString() -> {
+                                    ProductColumnName.BARCODE.displayName -> {
 
                                         val barcodeBitmap =
                                             Utils.genBarcodeBitmap(context, cell.toString().trim())
