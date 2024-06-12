@@ -94,6 +94,11 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
 
+    implementation ("io.reactivex.rxjava3:rxandroid:3.0.0")
+    implementation ("com.karumi:dexter:6.2.2")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.8.1")
+    implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
+
 //    implementation (files("libs/poishadow-all.jar"))
 
     // Validation For Phone Number

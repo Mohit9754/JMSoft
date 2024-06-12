@@ -19,6 +19,9 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"
         tools:ignore="SelectedPhotoAccess" />
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
     <application
         android:name=".basic.UtilityTools.AppController"
         android:allowBackup="true"
@@ -26,6 +29,8 @@
         android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/app_icon_round"
+        android:requestLegacyExternalStorage="true"
+
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -61,6 +66,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- FileProvider definition -->
+        <provider
+            android:name=".Utility.pdf_helper.XmlToPDFFileProvider"
+            android:authorities="${applicationId}.xmlToPdf.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+
+        </provider>
+
     </application>
 
 </manifest>

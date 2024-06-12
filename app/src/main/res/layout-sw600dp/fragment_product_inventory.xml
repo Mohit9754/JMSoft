@@ -1025,7 +1025,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@null"
                                 android:inputType="text"
-                                android:enabled="false"
+                                android:enabled="true"
                                 android:fontFamily="@font/montserrat_arabic_medium"
                                 android:hint="@string/enter_rfid_code"
                                 android:paddingHorizontal="@dimen/_5sdp"

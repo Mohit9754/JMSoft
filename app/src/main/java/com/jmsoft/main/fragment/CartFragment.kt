@@ -1,18 +1,30 @@
 package com.jmsoft.main.fragment
 
+import android.Manifest
+import android.app.Dialog
+import android.bluetooth.BluetoothAdapter
 import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.Context.LAYOUT_INFLATER_SERVICE
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.UnderlineSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.AddressDataModel
+import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants.Companion.address
 import com.jmsoft.basic.UtilityTools.Constants.Companion.confirmation
@@ -34,15 +47,27 @@ import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation
 import com.jmsoft.basic.validation.ValidationModel
+import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentCartBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CartListAdapter
 import com.jmsoft.main.adapter.CartAddressAdapter
 import com.jmsoft.main.`interface`.AddressSelectionStatus
+import com.jmsoft.main.`interface`.BluetoothOffCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import com.jmsoft.Utility.pdf_helper.FailureResponse
+import com.jmsoft.Utility.pdf_helper.PdfGenerator
+import com.jmsoft.Utility.pdf_helper.PdfGeneratorListener
+import com.jmsoft.Utility.pdf_helper.SuccessResponse
+import com.jmsoft.basic.UtilityTools.Constants.Companion.Data
+import com.jmsoft.databinding.InvoiceItemBinding
+import com.jmsoft.databinding.PdfInvoiceBinding
+import com.jmsoft.main.adapter.PdfInvoiceAdapter
+import com.jmsoft.main.model.Data
+import kotlinx.coroutines.NonDisposableHandle.parent
 
 class CartFragment : Fragment(), View.OnClickListener {
 
@@ -58,6 +83,142 @@ class CartFragment : Fragment(), View.OnClickListener {
     private var selectedAddressData: AddressDataModel? = null
 
     private var addressListAdapter:CartAddressAdapter? = null
+
+    // Permission for External Storage
+    private val permissionsForExternalStorage = arrayOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+
+    private var content:PdfGenerator.Build? = null
+
+    // Checks All the necessary permission related to External Storage
+    private var customPermissionLauncher = registerForActivityResult(
+
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        var allPermissionsGranted = true // Flag to track permission status
+        permissions.entries.forEach { entry ->
+            val permission = entry.key
+            val isGranted = entry.value
+            if (!isGranted) {
+                // If any permission is not granted, set the flag to false
+                allPermissionsGranted = false
+                // Permission is not granted
+                // Handle the denied permission accordingly
+                if (!shouldShowRequestPermissionRationale(permission)) {
+                    // Permission denied ,Show Open Setting Dialog
+                    showOpenSettingDialog()
+
+                }
+            } else {
+                Utils.E(permission)
+            }
+        }
+
+        // Check if all permissions are granted or not
+        if (allPermissionsGranted) {
+
+            lifecycleScope.launch(Dispatchers.Main) {
+
+                generatePDF()
+            }
+
+        }
+    }
+
+    private suspend fun generatePDF() {
+
+        val data1 = Data()
+        data1.amount = 100
+        data1.price = 200
+        data1.weight = 300
+        data1.carat = 400
+        data1.description = "Ring"
+        data1.np = 5
+
+        val data2 = Data()
+        data2.amount = 200
+        data2.price = 250
+        data2.weight = 500
+        data2.carat = 600
+        data2.description = "Necklace"
+        data2.np = 10
+
+        val data3 = Data()
+        data3.amount = 500
+        data3.price = 850
+        data3.weight = 302
+        data3.carat = 258
+        data3.description = "Bracelet"
+        data3.np = 15
+
+        val list = ArrayList<Data>()
+        list.add(data1)
+        list.add(data2)
+        list.add(data3)
+
+            content?.build(object : PdfGeneratorListener() {
+
+                override fun onFailure(failureResponse: FailureResponse?) {
+                    super.onFailure(failureResponse)
+
+                    Log.e("Data","Failed to generate")
+                }
+
+                override fun onStartPDFGeneration() {
+                    Log.e("Data","Start to generate")
+
+                }
+
+                override fun onFinishPDFGeneration() {
+                    Log.e("Data","Finish to generate")
+
+                }
+
+                override fun showLog(log: String?) {
+                    super.showLog(log)
+
+                    Log.e("Data","Show to generate")
+
+                }
+
+                override fun onSuccess(response: SuccessResponse?) {
+
+                    super.onSuccess(response)
+
+                    Log.e("Data","Success to generate")
+
+                }
+            })
+    }
+
+    // Open Setting Dialog
+    private fun showOpenSettingDialog() {
+
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogBinding = DialogOpenSettingBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.tvTitle.text = getString(R.string.permission_request)
+        dialogBinding.tvMessage.text =
+            getString(R.string.we_need_your_permission_to_access_storage_services_in_order_to_provide_the_full_functionality_of_our_app_your_cooperation_is_appreciated)
+        dialogBinding.mcvCancel.setOnClickListener {
+
+            dialog.dismiss()
+        }
+        dialogBinding.mcvOpenSetting.setOnClickListener {
+
+            dialog.dismiss()
+            Utils.openAppSettings(requireActivity())
+        }
+
+        dialog.setCancelable(true)
+        dialog.show()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -254,11 +415,18 @@ class CartFragment : Fragment(), View.OnClickListener {
             binding?.llConfirmation?.visibility = View.VISIBLE
             currentState = confirmation
 
+
+
+
+
         } else if (state == verification) {
 
             binding?.rlInformation?.visibility = View.GONE
             binding?.llConfirmation?.visibility = View.GONE
             binding?.rlVerification?.visibility = View.VISIBLE
+
+
+
         }
 
     }
@@ -355,6 +523,9 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         // Set Click on Radio Button
         binding?.llRadioButton?.setOnClickListener(this)
+
+        // Set Click on Share Button
+        binding?.mcvShare?.setOnClickListener(this)
 
         jobCart.join()
         jobAddress.join()
@@ -580,6 +751,65 @@ class CartFragment : Fragment(), View.OnClickListener {
                 binding?.rlInformation?.visibility = View.GONE
                 binding?.llConfirmation?.visibility = View.VISIBLE
 
+                val data1 = Data()
+                data1.amount = 100
+                data1.price = 200
+                data1.weight = 300
+                data1.carat = 400
+                data1.description = "Ring"
+                data1.np = 5
+
+                val data2 = Data()
+                data2.amount = 200
+                data2.price = 250
+                data2.weight = 500
+                data2.carat = 600
+                data2.description = "Necklace"
+                data2.np = 10
+
+                val data3 = Data()
+                data3.amount = 500
+                data3.price = 850
+                data3.weight = 302
+                data3.carat = 258
+                data3.description = "Bracelet"
+                data3.np = 15
+
+                val list = ArrayList<Data>()
+                list.add(data1)
+                list.add(data2)
+                list.add(data3)
+
+
+                val cardList = Utils.GetSession().userUUID?.let { Utils.getCartThroughUserUUID(it) }
+
+                Utils.E("${cardList?.size} ${cardList?.get(0)?.productUUID} ${cardList?.get(1)?.productUUID}")
+
+//            val inflater = requireActivity().getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+                val inflater = LayoutInflater.from(context)
+                val binding = PdfInvoiceBinding.inflate(inflater)
+//            val recyclerView = content?.findViewById<RecyclerView>(R.id.rvItems)
+//            val textViewTotalAmount = content?.findViewById<TextView>(R.id.tvTotalAmount)
+                binding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
+
+                binding.rvItems.setAdapter(cardList?.let {
+                    Utils.E("DAta is binding ")
+                    PdfInvoiceAdapter(requireActivity(), binding.tvTotalAmount,
+                        it
+                    )
+                })
+
+                content = PdfGenerator.getBuilder()
+                    .setContext(requireActivity())
+                    .fromViewSource()
+                    .fromView(binding.root)
+                    .setFileName("latesttt")
+                    .setFolderNameOrPath("MyFolder/MyDemoList/")
+                    .actionAfterPDFGeneration(PdfGenerator.ActionAfterPDFGeneration.OPEN)
+
+//                content = binding.root
+
             } else {
 
                 Utils.T(requireActivity(), getString(R.string.please_select_address))
@@ -607,6 +837,14 @@ class CartFragment : Fragment(), View.OnClickListener {
 
             }
         }
+
+        // Click on Share button
+        else if (v == binding?.mcvShare) {
+
+            customPermissionLauncher.launch(permissionsForExternalStorage)
+
+        }
+
     }
 
 }

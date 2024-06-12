@@ -819,8 +819,8 @@ object Utils {
         return DatabaseHelper.instance.getAllAddressThroughUserUUID(userUUID)
     }
 
-    //Getting the Product through Product UUID
-    suspend fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
+    // Getting the Product through Product UUID
+     fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
         return DatabaseHelper.instance.getProductThroughProductUUID(productUUID)
     }
 

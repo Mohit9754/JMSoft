@@ -1094,7 +1094,7 @@ class DatabaseHelper(cx: Context) {
 
     //Getting the Product through Product UUID
     @SuppressLint("Range", "Recycle")
-    suspend fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
+     fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
 
         read()
 
