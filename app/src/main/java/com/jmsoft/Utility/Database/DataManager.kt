@@ -8,6 +8,7 @@ import com.jmsoft.Utility.Database.AddressDataModel
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
+import com.jmsoft.Utility.Database.ContactDataModel
 import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.OrderDataModel
@@ -58,6 +59,9 @@ class DataManager
         // Creating order table
         OrderDataModel.CreateTable(db)
 
+        // Creating contact table
+        ContactDataModel.CreateTable(db)
+
     }
 //    override fun onOpen(db: SQLiteDatabase) {
 //        super.onOpen(db)
@@ -101,13 +105,16 @@ class DataManager
         // Drop order table
         OrderDataModel.dropTable(db)
 
+        // Drop contact table
+        ContactDataModel.dropTable(db)
+
         onCreate(db)
 
     }
 
     companion object {
 
-        const val DATABASE_VERSION = 96
+        const val DATABASE_VERSION = 104
         const val DATABASE_NAME = "JM_Soft"
     }
 }

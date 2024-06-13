@@ -255,6 +255,9 @@ class SettingFragment : Fragment(), View.OnClickListener {
         //Set Click on Back Button
         binding.mcvUserName?.setOnClickListener(this)
 
+        //Set Click on Vendors And Customers
+        binding.mcvVendorsAndCustomers?.setOnClickListener(this)
+
         GetProgressBar.getInstance(requireActivity())?.dismiss()
 
 
@@ -354,7 +357,16 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
         //When Edit Profile Clicked
         else if (v == binding.mcvEditProfile) {
+
             showEditProfileDialog()
+        }
+
+        else if (v == binding.mcvVendorsAndCustomers) {
+
+            GetProgressBar.getInstance(requireActivity())?.show()
+
+            (context as DashboardActivity).navController?.navigate(R.id.contact)
+
         }
 
     }

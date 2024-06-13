@@ -90,5 +90,12 @@
         android:label="Audit"
         tool:layout="@layout/fragment_audit"/>
 
+    <fragment
+        android:id="@+id/contact"
+        android:name="com.jmsoft.main.fragment.ContactFragment"
+        android:label="Contact"
+        tool:layout="@layout/fragment_contact"/>
+
+
 
 </navigation>

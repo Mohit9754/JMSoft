@@ -11,6 +11,7 @@ import com.jmsoft.Utility.Database.AddressDataModel
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
+import com.jmsoft.Utility.Database.ContactDataModel
 //import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
@@ -81,6 +82,19 @@ class DatabaseHelper(cx: Context) {
         db!!.delete(
             AddressDataModel.TABLE_NAME_ADDRESS, AddressDataModel.Key_addressUUID + " = '"
                     + addressUUID + "'", null
+        )
+        close()
+
+    }
+
+    // Deleting the contact from the contact table
+    fun deleteContact(contactUUID: String) {
+
+        open()
+
+        db!!.delete(
+            ContactDataModel.TABLE_NAME_CONTACT, ContactDataModel.Key_contactUUID + " = '"
+                    + contactUUID + "'", null
         )
         close()
 
@@ -441,6 +455,28 @@ class DatabaseHelper(cx: Context) {
         db?.insert(AddressDataModel.TABLE_NAME_ADDRESS, null, addressValue)
     }
 
+
+    // Inserting Contact in Contact table
+    fun insertContact(contactDataModel: ContactDataModel) {
+
+        open()
+
+        val contactValue = ContentValues().apply {
+
+            put(ContactDataModel.Key_contactUUID, contactDataModel.contactUUID)
+            put(ContactDataModel.Key_profileUri, contactDataModel.profileUri)
+            put(ContactDataModel.Key_firstName, contactDataModel.firstName)
+            put(ContactDataModel.Key_lastName, contactDataModel.lastName)
+            put(ContactDataModel.Key_phoneNumber, contactDataModel.phoneNumber)
+            put(ContactDataModel.Key_emailAddress, contactDataModel.emailAddress)
+            put(ContactDataModel.Key_type, contactDataModel.type)
+            put(ContactDataModel.Key_userUUID, contactDataModel.userUUID)
+        }
+
+        db?.insert(ContactDataModel.TABLE_NAME_CONTACT, null, contactValue)
+    }
+
+
     // Update Address in the Address Table
     fun updateAddressInTheAddressTable(addressDataModel: AddressDataModel) {
 
@@ -462,6 +498,88 @@ class DatabaseHelper(cx: Context) {
             "${AddressDataModel.Key_addressUUID} = ?",
             arrayOf(addressDataModel.addressUUID)
         )
+    }
+
+    // Update Contact in the Contact Table
+    fun updateContactInTheContactTable(contactDataModel: ContactDataModel) {
+
+        open()
+
+        val contactValue = ContentValues().apply {
+
+            put(ContactDataModel.Key_profileUri, contactDataModel.profileUri)
+            put(ContactDataModel.Key_firstName, contactDataModel.firstName)
+            put(ContactDataModel.Key_lastName, contactDataModel.lastName)
+            put(ContactDataModel.Key_emailAddress, contactDataModel.emailAddress)
+            put(ContactDataModel.Key_phoneNumber, contactDataModel.phoneNumber)
+            put(ContactDataModel.Key_type, contactDataModel.type)
+        }
+
+        db?.update(
+            ContactDataModel.TABLE_NAME_CONTACT,
+            contactValue,
+            "${ContactDataModel.Key_contactUUID} = ?",
+            arrayOf(contactDataModel.contactUUID)
+        )
+    }
+
+    // Get All Contact of particular user from the Contact table
+    @SuppressLint("Range")
+    fun getAllContactThroughUserUUID(userUUID: String): ArrayList<ContactDataModel> {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT * FROM ${ContactDataModel.TABLE_NAME_CONTACT} WHERE ${ContactDataModel.Key_userUUID} == ? ",
+            arrayOf(userUUID)
+        )
+
+        cursor?.moveToFirst()
+
+        val contactList = ArrayList<ContactDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val contactData = ContactDataModel()
+
+                contactData.contactId =
+                    cursor.getInt(cursor.getColumnIndex(ContactDataModel.Key_contactId))
+                contactData.contactUUID =
+                    cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_contactUUID))
+                contactData.userUUID =
+                    cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_userUUID))
+
+                contactData.profileUri =
+                    cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_profileUri))
+
+                contactData.firstName =
+                    cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_firstName))
+
+                contactData.lastName =
+                    cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_lastName))
+
+                contactData.phoneNumber =
+                    cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_phoneNumber))
+
+                contactData.emailAddress =
+                    cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_emailAddress))
+
+                contactData.type =
+                    cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_type))
+
+                contactList.add(contactData)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return contactList
     }
 
     //Get All Address of particular user from the Address table
@@ -1831,6 +1949,41 @@ class DatabaseHelper(cx: Context) {
         return result
     }
 
+    // Checks is Phone Number Already Exist in the Contact table accept my phone number
+    @SuppressLint("Recycle")
+    fun isPhoneNumberExistInContactTableAcceptMine(
+        phoneNumber: String,
+        contactUUID: String
+    ): Boolean {
+
+        read()
+        val cursor = db!!.rawQuery(
+            "SELECT * From ${ContactDataModel.TABLE_NAME_CONTACT} where ${ContactDataModel.Key_phoneNumber} = ? And ${ContactDataModel.Key_contactUUID} != ?",
+            arrayOf(phoneNumber,contactUUID)
+        )
+        val result = cursor.moveToFirst()
+        cursor?.close()
+        return result
+    }
+
+    // Checks is email Already Exist in the Contact table accept my email
+    @SuppressLint("Recycle")
+    fun isEmailExistInContactTableAcceptMine(
+        email: String,
+        contactUUID: String
+    ): Boolean {
+
+        read()
+        val cursor = db!!.rawQuery(
+            "SELECT * From ${ContactDataModel.TABLE_NAME_CONTACT} where ${ContactDataModel.Key_emailAddress} = ? And ${ContactDataModel.Key_contactUUID} != ?",
+            arrayOf(email,contactUUID)
+        )
+        val result = cursor.moveToFirst()
+        cursor?.close()
+        return result
+    }
+
+
     // Checks is Phone Number Already Exist in the Address table
     @SuppressLint("Recycle")
     fun isPhoneNumberExistInAddressTable(phoneNumber: String): Boolean {
@@ -1839,6 +1992,36 @@ class DatabaseHelper(cx: Context) {
         val cursor = db!!.rawQuery(
             "SELECT * From ${AddressDataModel.TABLE_NAME_ADDRESS} where ${AddressDataModel.Key_phoneNumber} = '$phoneNumber' ",
             null
+        )
+
+        val result = cursor.moveToFirst()
+        cursor?.close()
+        return result
+    }
+
+    // Checks is Phone Number Already Exist in the Contact table
+    @SuppressLint("Recycle")
+    fun isPhoneNumberExistInContactTable(phoneNumber: String): Boolean {
+
+        read()
+        val cursor = db!!.rawQuery(
+            "SELECT * From ${ContactDataModel.TABLE_NAME_CONTACT} where ${ContactDataModel.Key_phoneNumber} = ? ",
+            arrayOf(phoneNumber)
+        )
+
+        val result = cursor.moveToFirst()
+        cursor?.close()
+        return result
+    }
+
+    // Checks is Email Already Exist in the Contact table
+    @SuppressLint("Recycle")
+    fun isEmailExistInContactTable(email: String): Boolean {
+
+        read()
+        val cursor = db!!.rawQuery(
+            "SELECT * From ${ContactDataModel.TABLE_NAME_CONTACT} where ${ContactDataModel.Key_emailAddress} = ? ",
+            arrayOf(email)
         )
 
         val result = cursor.moveToFirst()

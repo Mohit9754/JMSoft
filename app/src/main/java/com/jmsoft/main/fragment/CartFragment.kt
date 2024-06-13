@@ -1,6 +1,7 @@
 package com.jmsoft.main.fragment
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.bluetooth.BluetoothAdapter
 import android.content.Context.INPUT_METHOD_SERVICE
@@ -82,7 +83,7 @@ class CartFragment : Fragment(), View.OnClickListener {
     // Selected Address Data Model
     private var selectedAddressData: AddressDataModel? = null
 
-    private var addressListAdapter:CartAddressAdapter? = null
+    private var addressListAdapter: CartAddressAdapter? = null
 
     // Permission for External Storage
     private val permissionsForExternalStorage = arrayOf(
@@ -90,7 +91,7 @@ class CartFragment : Fragment(), View.OnClickListener {
         Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
-    private var content:PdfGenerator.Build? = null
+    private var content: PdfGenerator.Build? = null
 
     // Checks All the necessary permission related to External Storage
     private var customPermissionLauncher = registerForActivityResult(
@@ -119,78 +120,47 @@ class CartFragment : Fragment(), View.OnClickListener {
         // Check if all permissions are granted or not
         if (allPermissionsGranted) {
 
-            lifecycleScope.launch(Dispatchers.Main) {
-
-                generatePDF()
-            }
+            generatePDF()
 
         }
     }
 
-    private suspend fun generatePDF() {
+    private fun generatePDF() {
 
-        val data1 = Data()
-        data1.amount = 100
-        data1.price = 200
-        data1.weight = 300
-        data1.carat = 400
-        data1.description = "Ring"
-        data1.np = 5
+        content?.build(object : PdfGeneratorListener() {
 
-        val data2 = Data()
-        data2.amount = 200
-        data2.price = 250
-        data2.weight = 500
-        data2.carat = 600
-        data2.description = "Necklace"
-        data2.np = 10
+            override fun onFailure(failureResponse: FailureResponse?) {
+                super.onFailure(failureResponse)
 
-        val data3 = Data()
-        data3.amount = 500
-        data3.price = 850
-        data3.weight = 302
-        data3.carat = 258
-        data3.description = "Bracelet"
-        data3.np = 15
+                Utils.E("Failed to generate")
+            }
 
-        val list = ArrayList<Data>()
-        list.add(data1)
-        list.add(data2)
-        list.add(data3)
+            override fun onStartPDFGeneration() {
 
-            content?.build(object : PdfGeneratorListener() {
+                Utils.E("Start to generate")
 
-                override fun onFailure(failureResponse: FailureResponse?) {
-                    super.onFailure(failureResponse)
+            }
 
-                    Log.e("Data","Failed to generate")
-                }
+            override fun onFinishPDFGeneration() {
 
-                override fun onStartPDFGeneration() {
-                    Log.e("Data","Start to generate")
+                Utils.E("Finish to generate")
 
-                }
+            }
 
-                override fun onFinishPDFGeneration() {
-                    Log.e("Data","Finish to generate")
+            override fun showLog(log: String?) {
+                super.showLog(log)
 
-                }
+                Utils.E("Show to generate")
 
-                override fun showLog(log: String?) {
-                    super.showLog(log)
+            }
 
-                    Log.e("Data","Show to generate")
+            override fun onSuccess(response: SuccessResponse?) {
 
-                }
+                super.onSuccess(response)
+                Utils.E("Success to generate")
 
-                override fun onSuccess(response: SuccessResponse?) {
-
-                    super.onSuccess(response)
-
-                    Log.e("Data","Success to generate")
-
-                }
-            })
+            }
+        })
     }
 
     // Open Setting Dialog
@@ -306,8 +276,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                         requireActivity(),
                         addressList,
                         it,
-                        selectedAddressData
-                        ,
+                        selectedAddressData,
                         object : AddressSelectionStatus {
 
                             override fun addressSelected(addressDataModel: AddressDataModel) {
@@ -416,15 +385,11 @@ class CartFragment : Fragment(), View.OnClickListener {
             currentState = confirmation
 
 
-
-
-
         } else if (state == verification) {
 
             binding?.rlInformation?.visibility = View.GONE
             binding?.llConfirmation?.visibility = View.GONE
             binding?.rlVerification?.visibility = View.VISIBLE
-
 
 
         }
@@ -586,7 +551,6 @@ class CartFragment : Fragment(), View.OnClickListener {
         Utils.updateAddressInTheAddressTable(addressDataModel)
 
 
-
         selectedAddressData = addressDataModel
 
         //Setting Up Address List Recycler View
@@ -711,6 +675,7 @@ class CartFragment : Fragment(), View.OnClickListener {
     }
 
     //Handle all the clicks
+    @SuppressLint("SetTextI18n")
     override fun onClick(v: View?) {
 
         // Set Click on Add to Card button
@@ -751,51 +716,18 @@ class CartFragment : Fragment(), View.OnClickListener {
                 binding?.rlInformation?.visibility = View.GONE
                 binding?.llConfirmation?.visibility = View.VISIBLE
 
-                val data1 = Data()
-                data1.amount = 100
-                data1.price = 200
-                data1.weight = 300
-                data1.carat = 400
-                data1.description = "Ring"
-                data1.np = 5
-
-                val data2 = Data()
-                data2.amount = 200
-                data2.price = 250
-                data2.weight = 500
-                data2.carat = 600
-                data2.description = "Necklace"
-                data2.np = 10
-
-                val data3 = Data()
-                data3.amount = 500
-                data3.price = 850
-                data3.weight = 302
-                data3.carat = 258
-                data3.description = "Bracelet"
-                data3.np = 15
-
-                val list = ArrayList<Data>()
-                list.add(data1)
-                list.add(data2)
-                list.add(data3)
-
-
                 val cardList = Utils.GetSession().userUUID?.let { Utils.getCartThroughUserUUID(it) }
+                val pdfInvoiceBinding = PdfInvoiceBinding.inflate(LayoutInflater.from(context))
 
-                Utils.E("${cardList?.size} ${cardList?.get(0)?.productUUID} ${cardList?.get(1)?.productUUID}")
+                pdfInvoiceBinding.tvClientName.text =
+                    "${selectedAddressData?.firstName} ${selectedAddressData?.lastName}"
 
-//            val inflater = requireActivity().getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                pdfInvoiceBinding.tvDate.text = Utils.currentDate
+                pdfInvoiceBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
 
-                val inflater = LayoutInflater.from(context)
-                val binding = PdfInvoiceBinding.inflate(inflater)
-//            val recyclerView = content?.findViewById<RecyclerView>(R.id.rvItems)
-//            val textViewTotalAmount = content?.findViewById<TextView>(R.id.tvTotalAmount)
-                binding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
-
-                binding.rvItems.setAdapter(cardList?.let {
-                    Utils.E("DAta is binding ")
-                    PdfInvoiceAdapter(requireActivity(), binding.tvTotalAmount,
+                pdfInvoiceBinding.rvItems.setAdapter(cardList?.let {
+                    PdfInvoiceAdapter(
+                        requireActivity(), pdfInvoiceBinding.tvTotalAmount,
                         it
                     )
                 })
@@ -803,12 +735,10 @@ class CartFragment : Fragment(), View.OnClickListener {
                 content = PdfGenerator.getBuilder()
                     .setContext(requireActivity())
                     .fromViewSource()
-                    .fromView(binding.root)
-                    .setFileName("latesttt")
+                    .fromView(pdfInvoiceBinding.root)
+                    .setFileName(Utils.generateUUId())
                     .setFolderNameOrPath("MyFolder/MyDemoList/")
                     .actionAfterPDFGeneration(PdfGenerator.ActionAfterPDFGeneration.OPEN)
-
-//                content = binding.root
 
             } else {
 
@@ -821,14 +751,12 @@ class CartFragment : Fragment(), View.OnClickListener {
 
             if (selectedAddressData == null) {
 
-                if (binding?.radioButton?.isChecked == true ){
+                if (binding?.radioButton?.isChecked == true) {
                     binding?.radioButton?.isChecked = false
-                }
-                else {
+                } else {
                     binding?.radioButton?.isChecked = true
                 }
-            }
-            else {
+            } else {
 
                 selectedAddressData = null
                 binding?.radioButton?.isChecked = true

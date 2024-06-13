@@ -32,6 +32,8 @@ class PdfInvoiceAdapter(
     override fun getItemCount() = cartDataList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+
+        Utils.E("Viewholder $position ")
         holder.bind(cartDataList[position],position)
     }
 
@@ -47,23 +49,20 @@ class PdfInvoiceAdapter(
             this.cardData = cardData
             this.productData = Utils.getProductThroughProductUUID(cardData.productUUID.toString())
 
-            Utils.E("Card data ${cardData.productUUID}  ")
-
             binding.tvAmount.text = (productData.productPrice?.let {
                 cardData.productQuantity?.times(
                     it
                 )
             }).toString()
 
-            binding.tvPrice.text = productData.productPrice.toString()
-            binding.tvWeight.text = productData.productWeight.toString()
+            binding.tvPrice.text = productData.productPrice?.let { Utils.getThousandSeparate(it) }
+            binding.tvWeight.text = productData.productWeight?.let { Utils.getThousandSeparate(it) }
             binding.tvCarat.text = productData.productCarat.toString()
-            binding.tvDescription.text = productData.productDescription.toString()
+            binding.tvDescription.text = productData.productName.toString()
             binding.tvNP.text = cardData.productQuantity.toString()
-
-            Utils.E("product name is ${productData.productName} ${cartDataList.size} ")
-
-            totalAmount += binding.tvAmount.toString().toInt()
+//
+//
+            totalAmount += binding.tvAmount.text.toString().toDouble()
 
             if (position+1 == cartDataList.size) {
                 textViewTotalAmount.text = Utils.getThousandSeparate(totalAmount)

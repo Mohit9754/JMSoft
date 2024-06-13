@@ -114,8 +114,8 @@
                 app:strokeWidth="0.7dp"
                 android:outlineAmbientShadowColor="@color/ambientShadowColor"
                 android:outlineSpotShadowColor="@color/spotShadowColor"
-                android:layout_gravity="center_vertical"
                 app:strokeColor="@color/text_hint"
+                android:layout_gravity="center_vertical"
                 app:cardCornerRadius="@dimen/_5sdp"
                 android:layout_height="wrap_content"
                 tools:ignore="UnusedAttribute">

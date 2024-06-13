@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:text="Amount"
                 android:id="@+id/tvAmount"
-                android:textSize="7sp"
+                android:textSize="10sp"
                 android:textColor="@color/dark_blue"
                 />
 
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:text="Price"
                 android:id="@+id/tvPrice"
-                android:textSize="7sp"
+                android:textSize="10sp"
                 android:textColor="@color/dark_blue"
                 />
 
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:text="Weight"
                 android:id="@+id/tvWeight"
-                android:textSize="7sp"
+                android:textSize="10sp"
                 android:textColor="@color/dark_blue"
                 />
 
@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:text="Carat"
                 android:id="@+id/tvCarat"
-                android:textSize="7sp"
+                android:textSize="10sp"
                 android:textColor="@color/dark_blue"
                 />
 
@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:text="Designation"
                 android:id="@+id/tvDescription"
-                android:textSize="7sp"
+                android:textSize="10sp"
                 android:textColor="@color/dark_blue"
                 />
 
@@ -135,14 +135,15 @@
             android:layout_width="@dimen/_44sdp"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_height="20dp">
+            android:layout_height="@dimen/_20sdp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="N.P"
                 android:id="@+id/tvNP"
-                android:textSize="7sp"
+                android:layout_gravity="center"
+                android:textSize="10sp"
                 android:textColor="@color/dark_blue"
                 />
 

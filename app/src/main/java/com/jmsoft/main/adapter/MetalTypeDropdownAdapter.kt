@@ -23,7 +23,6 @@ import com.jmsoft.main.`interface`.SelectedCallback
  *
  *
  */
-
 class MetalTypeDropdownAdapter(
     private val context: Context,
     private var metalTypeList: ArrayList<MetalTypeDataModel>,

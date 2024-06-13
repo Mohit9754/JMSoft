@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.UtilityTools.ProductUUIDList
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.currency
 import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
@@ -78,6 +79,8 @@ class ProductListAdapter(
             productDataList.removeAt(position)
             Utils.deleteProduct(productUUID)
 
+            ProductUUIDList.deleteUUID(productUUID)
+
             Utils.T(context, context.getString(R.string.deleted_successfully))
 
             notifyDataSetChanged()
@@ -119,6 +122,8 @@ class ProductListAdapter(
 
             this.productData = productData
             this.position = position
+
+            createProductUUIDList()
 
             // Checks state of the product list if it is for showing or adding in the collection
             checkState()
@@ -164,10 +169,20 @@ class ProductListAdapter(
 
         }
 
+        private fun createProductUUIDList() {
+
+            if (position == 0) {
+                ProductUUIDList.clearList()
+            }
+            productData.productUUID?.let { ProductUUIDList.addUUID(it) }
+
+        }
+
         // Dismiss progress bar
         private fun dismissProgressBar() {
 
             if (position+1 == productDataList.size ) {
+
 
                 // Dismiss progress bar
                 GetProgressBar.getInstance(context)?.dismiss()
@@ -297,7 +312,7 @@ class ProductListAdapter(
                 GetProgressBar.getInstance(context)?.show()
 
                 val bundle = Bundle()
-                //Giving the product UUID
+                // Giving the product UUID
                 bundle.putString(Constants.productUUID, productData.productUUID)
 
                 (context as DashboardActivity).navController?.navigate(
@@ -314,6 +329,7 @@ class ProductListAdapter(
                 val bundle = Bundle()
                 //Giving the product UUID
                 bundle.putString(Constants.productUUID, productData.productUUID)
+
                 (context as DashboardActivity).navController?.navigate(R.id.productDetail, bundle)
 
             }

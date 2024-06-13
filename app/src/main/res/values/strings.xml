@@ -246,6 +246,37 @@
     <string name="readed_successfully">Readed Successfully</string>
     <string name="column_does_not_exist">Column %1$s does not exist</string>
     <string name="we_need_your_permission_to_access_storage_services_in_order_to_provide_the_full_functionality_of_our_app_your_cooperation_is_appreciated">We need your permission to access Storage services in order to provide the full functionality of our app.Your cooperation is appreciated.</string>
+    <string name="buy_and_sell_all_types_of_jewelry_ar">بيع وشراء جميع أنواع المجوهرات</string>
+    <string name="buy_and_sell_all_types_of_jewelry_en">Buy and sell all types of jewelry</string>
+    <string name="order_n">ORDER N°</string>
+    <string name="order_no">الطلب رقم</string>
+    <string name="client">Client :</string>
+    <string name="date">Date :</string>
+    <string name="amount_ar">كمية</string>
+    <string name="amount">Amount</string>
+    <string name="price_ar">كمية</string>
+    <string name="weight_ar">وزن</string>
+    <string name="weight_en">Weight</string>
+    <string name="carat_ar">قيراط</string>
+    <string name="carat_en">Carat</string>
+    <string name="designation_ar">تعيين</string>
+    <string name="designation_en">Designation</string>
+    <string name="np_ar">كمية</string>
+    <string name="n_p_en">N.P</string>
+    <string name="total_amount">Total amount</string>
+    <string name="total_amount_ar">المبلغ الإجمالي</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="no_device_is_connected">"No device is Connected "</string>
+    <string name="page_to">Page %1$s to %2$s</string>
+    <string name="contact">Contact</string>
+    <string name="type_">Type</string>
+    <string name="select_type">Select type</string>
+    <string name="legal_entity">Legal Entity</string>
+    <string name="physical_person">Physical Person</string>
+    <string name="please_select_profile">Please select profile</string>
+    <string name="are_you_sure_you_want_to_delete_this_contact_this_action_cannot_be_undone">Are you sure you want to delete this contact ? This action cannot be undone.</string>
+    <string name="contact_updated_successfully">Contact updated successfully</string>
 
 
 </resources>

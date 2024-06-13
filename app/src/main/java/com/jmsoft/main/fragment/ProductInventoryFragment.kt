@@ -30,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +43,7 @@ import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.UtilityTools.ProductUUIDList
 import com.jmsoft.Utility.UtilityTools.RFIDSetUp
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.KeyboardUtils.hideKeyboard
@@ -128,9 +130,11 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     private var dialogCategory: Dialog? = null
 
-    var rfidSetUp : RFIDSetUp? = null
+    private var rfidSetUp : RFIDSetUp? = null
 
-    private val PERMISSIONS_REQUEST_CODE = 100
+    private var productUUIDIndex:Int = -1
+
+//    private val PERMISSIONS_REQUEST_CODE = 100
 
     // Gallery result launcher
     @SuppressLint("NotifyDataSetChanged")
@@ -687,6 +691,22 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
             withContext(Dispatchers.Main) {
 
+                binding.llPageIndicator.visibility = View.VISIBLE
+
+                productUUIDIndex = ProductUUIDList.getIndexOf(productUUID)
+
+                if (productUUIDIndex == 0) {
+                    binding.mcvPrevious.visibility = View.GONE
+                }
+
+                if (productUUIDIndex+1 == ProductUUIDList.getSize()){
+                    binding.mcvNext.visibility = View.GONE
+                }
+
+                binding.tvPageDetail.text =
+                    getString(R.string.page_to, (productUUIDIndex + 1).toString(), ProductUUIDList.getSize().toString())
+
+
                 binding.etProductName.setText(productData.productName)
                 binding.etProductName.setText(productData.productName)
 
@@ -817,6 +837,10 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         binding.mcvAddCategory.setOnClickListener(this)
 
         binding.mcvRFIDCodeBtn.setOnClickListener(this)
+
+        binding.mcvPrevious.setOnClickListener(this)
+
+        binding.mcvNext.setOnClickListener(this)
 
         if (productDataModel != null) {
             showOrHideCollectionDropDown()
@@ -1581,7 +1605,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
                 if (requireActivity() != null) {
 
-                    Utils.T(requireActivity(),"No device is Connected ")
+                    Utils.T(requireActivity(), getString(R.string.no_device_is_connected))
                 }
             }
         })
@@ -1597,6 +1621,25 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         super.onDestroy()
         rfidSetUp?.onPause()
 
+    }
+
+    private fun changePage(num:Int){
+
+        if (productUUIDIndex != -1) {
+
+            GetProgressBar.getInstance(requireActivity())?.show()
+
+            val bundle = Bundle()
+            // Giving the product UUID
+            bundle.putString(Constants.productUUID,ProductUUIDList.getProductUUID(productUUIDIndex+num))
+
+            val navOptions = NavOptions.Builder()
+                .setPopUpTo(R.id.productInventory, true)
+                .build()
+
+            (context as DashboardActivity).navController?.navigate(R.id.productInventory, bundle, navOptions)
+
+        }
     }
 
     //Handles All the Clicks
@@ -1671,6 +1714,15 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             hideKeyboard(requireActivity())
         }
 
+        else if (v == binding.mcvPrevious){
+            changePage(-1)
+        }
+
+        else if (v == binding.mcvNext) {
+
+            changePage(1)
+
+        }
     }
 
     override fun onTagRead(tagInfo: UHFTAGInfo) {

@@ -67,6 +67,7 @@ import com.jmsoft.Utility.Database.AddressDataModel
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
+import com.jmsoft.Utility.Database.ContactDataModel
 import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
@@ -502,6 +503,16 @@ object Utils {
         return DatabaseHelper.instance.isPhoneNumberExistInAddressTableAcceptMine(phoneNumber,addressUUID)
     }
 
+    // Checks is Phone Number Already Exist in the Contact table accept my phone number
+    fun isPhoneNumberExistInContactTableAcceptMine(phoneNumber: String, contactUUID: String): Boolean {
+        return DatabaseHelper.instance.isPhoneNumberExistInContactTableAcceptMine(phoneNumber,contactUUID)
+    }
+
+    // Checks is email Already Exist in the Contact table accept my email
+    fun isEmailExistInContactTableAcceptMine(email: String, contactUUID: String): Boolean {
+        return DatabaseHelper.instance.isEmailExistInContactTableAcceptMine(email,contactUUID)
+    }
+
     // Delete collection uuid from the product table
     fun deleteCollectionUUIDFromProductTable(collectionUUID: String) {
         DatabaseHelper.instance.deleteCollectionUUIDFromProductTable(collectionUUID)
@@ -511,6 +522,16 @@ object Utils {
     // Checks is Phone Number Already Exist in the Address table
     fun isPhoneNumberExistInAddressTable(phoneNumber: String): Boolean {
         return DatabaseHelper.instance.isPhoneNumberExistInAddressTable(phoneNumber)
+    }
+
+    // Checks is Phone Number Already Exist in the Contact table
+    fun isPhoneNumberExistInContactTable(phoneNumber: String): Boolean {
+        return DatabaseHelper.instance.isPhoneNumberExistInContactTable(phoneNumber)
+    }
+
+    // Checks is Email Already Exist in the Contact table
+    fun isEmailExistInContactTable(email: String): Boolean {
+        return DatabaseHelper.instance.isEmailExistInContactTable(email)
     }
 
     // Insert new user in the User Table
@@ -779,14 +800,24 @@ object Utils {
         return DatabaseHelper.instance.getCollectionUUIDThroughCollectionName(collectionName)
     }
 
-    //Inserting Address in Address table
+    // Inserting Contact in Contact table
     fun insertAddressInAddressTable(addressDataModel: AddressDataModel) {
         return DatabaseHelper.instance.insertAddressInAddressTable(addressDataModel)
+    }
+
+    // Inserting Address in Address table
+    fun insertContact(contactDataModel: ContactDataModel) {
+        return DatabaseHelper.instance.insertContact(contactDataModel)
     }
 
     // Update Address in the Address Table
     fun updateAddressInTheAddressTable(addressDataModel: AddressDataModel){
         return DatabaseHelper.instance.updateAddressInTheAddressTable(addressDataModel)
+    }
+
+    // Update Contact in the Contact Table
+    fun updateContactInTheContactTable(contactDataModel: ContactDataModel){
+        return DatabaseHelper.instance.updateContactInTheContactTable(contactDataModel)
     }
 
     //get Cart through user UUId
@@ -814,9 +845,19 @@ object Utils {
         DatabaseHelper.instance.deleteAddress(addressUUID)
     }
 
+    // Deleting the contact from the contact table
+    fun deleteContact(contactUUID: String) {
+        DatabaseHelper.instance.deleteContact(contactUUID)
+    }
+
     //Get All Address of particular user from the Address table
     fun getAllAddressThroughUserUUID(userUUID: String): ArrayList<AddressDataModel> {
         return DatabaseHelper.instance.getAllAddressThroughUserUUID(userUUID)
+    }
+
+    // Get All Contact of particular user from the Contact table
+    fun getAllContactThroughUserUUID(userUUID: String): ArrayList<ContactDataModel> {
+        return DatabaseHelper.instance.getAllContactThroughUserUUID(userUUID)
     }
 
     // Getting the Product through Product UUID
@@ -1300,7 +1341,7 @@ object Utils {
             val c = Calendar.getInstance().time
             E("Current time => $c")
             val df =
-                SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
             return df.format(c)
         }
 

@@ -326,8 +326,12 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         if (collectionUUID != null) {
             binding.mcvAdd?.visibility = View.VISIBLE
             binding.tvTitle?.text = getString(R.string.select_products_to_add)
+
         } else {
+
             binding.tvTitle?.text = getString(R.string.product)
+
+
         }
 
     }
