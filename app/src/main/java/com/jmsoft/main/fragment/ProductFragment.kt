@@ -10,6 +10,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.text.Editable
@@ -607,7 +608,14 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         else if(v == binding.mcvImport) {
 
-            storagePermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+
+                storagePermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+
+            } else{
+                openDocument()
+            }
+//            storagePermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
 
     }
