@@ -608,11 +608,13 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         else if(v == binding.mcvImport) {
 
+
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
 
                 storagePermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
 
-            } else{
+            } else {
+
                 openDocument()
             }
 //            storagePermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
