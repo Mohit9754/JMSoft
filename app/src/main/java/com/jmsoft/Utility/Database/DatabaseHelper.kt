@@ -15,6 +15,7 @@ import com.jmsoft.Utility.Database.ContactDataModel
 //import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
+import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.user
@@ -475,6 +476,25 @@ class DatabaseHelper(cx: Context) {
 
         db?.insert(ContactDataModel.TABLE_NAME_CONTACT, null, contactValue)
     }
+
+    // Inserting Order in Order table
+    fun insertOrder(orderDataModel: OrderDataModel) {
+
+        open()
+
+        val orderValue = ContentValues().apply {
+
+            put(OrderDataModel.Key_orderUUID, orderDataModel.orderUUID)
+            put(OrderDataModel.Key_productUUID, orderDataModel.productUUID)
+            put(OrderDataModel.Key_productQuantity, orderDataModel.productQuantity)
+            put(OrderDataModel.Key_userUUID, orderDataModel.userUUID)
+            put(OrderDataModel.Key_addressUUID, orderDataModel.addressUUID)
+        }
+
+        db?.insert(OrderDataModel.TABLE_NAME_ORDER, null, orderValue)
+    }
+
+
 
 
     // Update Address in the Address Table
@@ -1461,6 +1481,36 @@ class DatabaseHelper(cx: Context) {
         db?.delete(
             CategoryDataModel.TABLE_NAME_CATEGORY, "${CategoryDataModel.Key_categoryUUID} == ?",
             arrayOf(categoryUUID)
+        )
+    }
+
+    // get row count of order table
+    fun getRowCount(): Int {
+
+        read()
+
+        val cursor = db?.rawQuery("SELECT COUNT(*) FROM ${OrderDataModel.TABLE_NAME_ORDER}", null)
+        var rowCount = 0
+
+        // Use the cursor to fetch the count
+        cursor?.use {
+            if (it.moveToFirst()) {
+                rowCount = it.getInt(0)
+            }
+        }
+
+        return rowCount
+
+    }
+
+    // Delete cart from the cart table
+    fun deleteCart(userUUID: String) {
+
+        open()
+
+        db?.delete(
+            CartDataModel.TABLE_NAME_CART, "${CartDataModel.Key_userUUID} == ?",
+            arrayOf(userUUID)
         )
     }
 

@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.R.color
@@ -31,7 +32,6 @@ class ContactAdapter(
     private val contactList: ArrayList<ContactDataModel>,
     private val fragmentContactBinding: FragmentContactBinding,
     private var selectedContactData: ContactDataModel?,
-    private var progressBarDialog: Dialog?,
     private val contactSelectionStatus: ContactSelectionStatus
 ) :
     RecyclerView.Adapter<ContactAdapter.MyViewHolder>() {
@@ -189,7 +189,6 @@ class ContactAdapter(
 
             if (position+1 == contactList.size) {
                 GetProgressBar.getInstance(context)?.dismiss()
-                progressBarDialog?.dismiss()
             }
         }
 

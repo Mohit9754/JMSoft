@@ -3,6 +3,15 @@ package com.jmsoft.Utility.UtilityTools
 object ProductUUIDList {
 
     private var productUUIDList =  ArrayList<String>()
+    private var addStatus:Boolean = false
+
+    fun setStatus(addStatus:Boolean){
+        this.addStatus = addStatus
+    }
+
+    fun getStatus(): Boolean {
+        return addStatus
+    }
 
     fun getSize(): Int {
         return productUUIDList.size

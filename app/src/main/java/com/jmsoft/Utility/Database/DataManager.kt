@@ -18,6 +18,7 @@ import com.jmsoft.basic.UtilityTools.Utils
 /**
  * Created by Hritik on 2/10/2023.
  */
+
 class DataManager
 /**
  * @param context //
@@ -114,7 +115,7 @@ class DataManager
 
     companion object {
 
-        const val DATABASE_VERSION = 104
+        const val DATABASE_VERSION = 106
         const val DATABASE_NAME = "JM_Soft"
     }
 }

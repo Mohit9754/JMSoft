@@ -440,7 +440,7 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
 
     override fun onError(message: String) {
         // Handle errors
-        Utils.T(requireContext(), message)
+//        Utils.T(requireContext(), message)
 
     }
 

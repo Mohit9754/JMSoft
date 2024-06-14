@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import android.widget.ProgressBar
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
@@ -43,6 +44,7 @@ import com.jmsoft.main.`interface`.AddressSelectionStatus
 import com.jmsoft.main.`interface`.ContactSelectionStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 class ContactFragment : Fragment(), View.OnClickListener {
@@ -59,7 +61,6 @@ class ContactFragment : Fragment(), View.OnClickListener {
 
     private var selectedContactData: ContactDataModel? = null
 
-    private var progressBarDialog: Dialog? = null
 
     // for Opening the Camera Dialog
     private var forCameraSettingDialog = 100
@@ -276,6 +277,7 @@ class ContactFragment : Fragment(), View.OnClickListener {
         // Contact list is empty
         if (contactList?.isEmpty() == true || contactList == null) {
 
+            GetProgressBar.getInstance(requireActivity())?.dismiss()
             binding.ivNoContact?.visibility = View.VISIBLE
 
         } else {
@@ -289,7 +291,6 @@ class ContactFragment : Fragment(), View.OnClickListener {
                     contactList,
                     binding,
                     selectedContactData,
-                    progressBarDialog,
                     object : ContactSelectionStatus {
 
                         override fun contactSelected(contactDataModel: ContactDataModel) {
@@ -385,6 +386,8 @@ class ContactFragment : Fragment(), View.OnClickListener {
 
         contactDataModel.contactUUID = Utils.generateUUId()
         contactDataModel.profileUri = profileUri
+
+
         contactDataModel.firstName = binding.etFirstName?.text.toString().trim()
         contactDataModel.lastName = binding.etLastName?.text.toString().trim()
         contactDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
@@ -393,7 +396,9 @@ class ContactFragment : Fragment(), View.OnClickListener {
         contactDataModel.type = binding.tvType?.text.toString().trim()
         contactDataModel.userUUID = Utils.GetSession().userUUID
 
-        Utils.insertContact(contactDataModel)
+        lifecycleScope.launch (Dispatchers.IO){
+            Utils.insertContact(contactDataModel)
+        }
 
 //        Utils.T(requireActivity(),"")
 
@@ -425,7 +430,7 @@ class ContactFragment : Fragment(), View.OnClickListener {
     }
 
     // Update Contact
-    private fun updateContact() {
+    private suspend fun updateContact() {
 
         val contactDataModel = ContactDataModel()
 
@@ -438,35 +443,45 @@ class ContactFragment : Fragment(), View.OnClickListener {
 
         val profileUri = Utils.generateUUId()
 
-        binding.ivProfile?.drawable?.let {
-            Utils.saveToInternalStorage(
-                requireActivity(),
-                it.toBitmap(), profileUri
-            )
+
+        withContext(Dispatchers.Main) {
+
+            binding.ivProfile?.drawable?.let {
+                Utils.saveToInternalStorage(
+                    requireActivity(),
+                    it.toBitmap(), profileUri
+                )
+            }
+            contactDataModel.firstName = binding.etFirstName?.text.toString().trim()
+            contactDataModel.lastName = binding.etLastName?.text.toString().trim()
+            contactDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
+            contactDataModel.emailAddress =
+                binding.etEmail?.text.toString().trim().toLowerCase(Locale.ROOT)
+            contactDataModel.type = binding.tvType?.text.toString().trim()
+
         }
 
         contactDataModel.contactUUID = selectedContactData?.contactUUID
         contactDataModel.profileUri = profileUri
-        contactDataModel.firstName = binding.etFirstName?.text.toString().trim()
-        contactDataModel.lastName = binding.etLastName?.text.toString().trim()
-        contactDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
-        contactDataModel.emailAddress =
-            binding.etEmail?.text.toString().trim().toLowerCase(Locale.ROOT)
-        contactDataModel.type = binding.tvType?.text.toString().trim()
 
         Utils.updateContactInTheContactTable(contactDataModel)
 
         selectedContactData = contactDataModel
 
-        // Setting Up Contact List Recycler View
-        setContactRecyclerView()
 
-        Utils.T(requireActivity(), getString(R.string.contact_updated_successfully))
+        withContext(Dispatchers.Main) {
+
+            // Setting Up Contact List Recycler View
+            setContactRecyclerView()
+
+            Utils.T(requireActivity(), getString(R.string.contact_updated_successfully))
+
+        }
 
     }
 
     // Check whether we have to add new contact or update the contact , and act accordingly
-    private fun checkIfAddNewContactOrUpdateContact() {
+    private  fun checkIfAddNewContactOrUpdateContact() {
 
         val phoneNumber = binding.etPhoneNumber?.text.toString().trim()
         val emailAddress = binding.etEmail?.text.toString().trim().toLowerCase(Locale.ROOT)
@@ -495,8 +510,7 @@ class ContactFragment : Fragment(), View.OnClickListener {
 
                 if (isEmailExist == true) {
 
-//                    GetProgressBar.getInstance(requireActivity())?.dismiss()
-                    progressBarDialog?.dismiss()
+                    GetProgressBar.getInstance(requireActivity())?.dismiss()
 
                     binding.tvEmailError?.let {
                         Utils.showError(
@@ -506,8 +520,11 @@ class ContactFragment : Fragment(), View.OnClickListener {
                     }
 
                 } else {
+
                     // Update Contact
-                    updateContact()
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        updateContact()
+                    }
                 }
             }
         }
@@ -521,12 +538,13 @@ class ContactFragment : Fragment(), View.OnClickListener {
                 if (!Utils.isEmailExistInContactTable(emailAddress)) {
 
                     // Add new Contact
-                    addContact()
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        addContact()
+                    }
 
                 } else {
 
-//                    GetProgressBar.getInstance(requireActivity())?.dismiss()
-                    progressBarDialog?.dismiss()
+                    GetProgressBar.getInstance(requireActivity())?.dismiss()
 
                     binding.tvEmailError?.let {
                         Utils.showError(
@@ -534,7 +552,6 @@ class ContactFragment : Fragment(), View.OnClickListener {
                             it, requireActivity().getString(R.string.email_already_exist)
                         )
                     }
-
                 }
 
             } else {
@@ -547,9 +564,8 @@ class ContactFragment : Fragment(), View.OnClickListener {
     // Show phone number already exist error
     private fun showPhoneNumberAlreadyExistError() {
 
-//        GetProgressBar.getInstance(requireActivity())?.dismiss()
-        progressBarDialog?.dismiss()
-
+//        binding.progressBar?.visibility  = View.GONE
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
 
         binding.tvPhoneNumberError?.also {
 
@@ -560,7 +576,7 @@ class ContactFragment : Fragment(), View.OnClickListener {
     }
 
     // Validating Sign Up details
-    private fun validate() {
+    private suspend fun validate() {
 
         errorValidationModels.clear()
 
@@ -599,12 +615,14 @@ class ContactFragment : Fragment(), View.OnClickListener {
             validation?.CheckValidation(requireActivity(), errorValidationModels)
         if (resultReturn?.aBoolean == true) {
 
-            progressBarDialog = Utils.initProgressDialog(requireActivity())
-            progressBarDialog?.show()
-
-            lifecycleScope.launch(Dispatchers.Main) {
-                checkIfAddNewContactOrUpdateContact()
+            val job = lifecycleScope.launch(Dispatchers.Main) {
+                GetProgressBar.getInstance(requireActivity())?.show()
             }
+
+            job.join()
+
+            checkIfAddNewContactOrUpdateContact()
+
 
         } else {
             resultReturn?.errorTextView?.visibility = View.VISIBLE
@@ -684,7 +702,10 @@ class ContactFragment : Fragment(), View.OnClickListener {
 
             if (isProfileSelected) {
 
-                validate()
+                lifecycleScope.launch(Dispatchers.Main) {
+                    validate()
+                }
+
             } else {
                 Utils.T(requireActivity(), getString(R.string.please_select_profile))
             }

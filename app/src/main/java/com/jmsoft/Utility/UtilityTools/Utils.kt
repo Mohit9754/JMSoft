@@ -70,6 +70,7 @@ import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.ContactDataModel
 import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
+import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.loadingButton.LoadingButton
 import com.jmsoft.basic.Database.DatabaseHelper
@@ -808,6 +809,21 @@ object Utils {
     // Inserting Address in Address table
     fun insertContact(contactDataModel: ContactDataModel) {
         return DatabaseHelper.instance.insertContact(contactDataModel)
+    }
+
+    // Inserting Order in Order table
+    fun insertOrder(orderDataModel: OrderDataModel) {
+        return DatabaseHelper.instance.insertOrder(orderDataModel)
+    }
+
+    // Delete cart from the cart table
+    fun deleteCart(userUUID: String) {
+        return DatabaseHelper.instance.deleteCart(userUUID)
+    }
+
+    // get row count of order table
+    fun getRowCount(): Int {
+        return DatabaseHelper.instance.getRowCount()
     }
 
     // Update Address in the Address Table

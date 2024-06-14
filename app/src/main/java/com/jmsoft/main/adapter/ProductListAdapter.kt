@@ -311,6 +311,8 @@ class ProductListAdapter(
 
                 GetProgressBar.getInstance(context)?.show()
 
+                ProductUUIDList.setStatus(false)
+
                 val bundle = Bundle()
                 // Giving the product UUID
                 bundle.putString(Constants.productUUID, productData.productUUID)

@@ -33,6 +33,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.AddressDataModel
+import com.jmsoft.Utility.Database.CartDataModel
+import com.jmsoft.Utility.Database.ContactDataModel
+import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants.Companion.address
@@ -64,6 +67,7 @@ import com.jmsoft.Utility.pdf_helper.PdfGenerator
 import com.jmsoft.Utility.pdf_helper.PdfGeneratorListener
 import com.jmsoft.Utility.pdf_helper.SuccessResponse
 import com.jmsoft.basic.UtilityTools.Constants.Companion.Data
+import com.jmsoft.basic.UtilityTools.Utils.getCartThroughUserUUID
 import com.jmsoft.databinding.InvoiceItemBinding
 import com.jmsoft.databinding.PdfInvoiceBinding
 import com.jmsoft.main.adapter.PdfInvoiceAdapter
@@ -92,6 +96,8 @@ class CartFragment : Fragment(), View.OnClickListener {
     )
 
     private var content: PdfGenerator.Build? = null
+
+    private var cardList:ArrayList<CartDataModel>? = null
 
     // Checks All the necessary permission related to External Storage
     private var customPermissionLauncher = registerForActivityResult(
@@ -223,17 +229,19 @@ class CartFragment : Fragment(), View.OnClickListener {
     //Setting Up Card List Recycler View
     private fun setUpCardListRecyclerView() {
 
-        val cardList = Utils.GetSession().userUUID?.let { Utils.getCartThroughUserUUID(it) }
+        cardList = Utils.GetSession().userUUID?.let { Utils.getCartThroughUserUUID(it) }
 
         if (cardList?.isNotEmpty() == true) {
 
             val adapter = cardList.let {
                 binding?.let { it1 ->
-                    CartListAdapter(
-                        requireActivity(), it,
-                        it1,
-                        CoroutineScope(SupervisorJob() + Dispatchers.Default)
-                    )
+                    it?.let { it2 ->
+                        CartListAdapter(
+                            requireActivity(), it2,
+                            it1,
+                            CoroutineScope(SupervisorJob() + Dispatchers.Default)
+                        )
+                    }
                 }
             }
 
@@ -550,7 +558,6 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         Utils.updateAddressInTheAddressTable(addressDataModel)
 
-
         selectedAddressData = addressDataModel
 
         //Setting Up Address List Recycler View
@@ -577,6 +584,7 @@ class CartFragment : Fragment(), View.OnClickListener {
 
             if (isPhoneNumberExist == true) {
                 showPhoneNumberAlreadyExistError()
+
             } else {
 
                 // Update Address
@@ -674,6 +682,34 @@ class CartFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // insert order
+    private fun insertOrder() {
+
+        val orderDataModel = OrderDataModel()
+
+        orderDataModel.orderUUID = Utils.generateUUId()
+
+        val productUUIDList = cardList?.map { it.productUUID }?.joinToString()?.replace(" ", "")
+
+        orderDataModel.productUUID = productUUIDList
+
+        val productQuantityList = cardList?.map { it.productQuantity }?.joinToString()?.replace(" ", "")
+
+        orderDataModel.productQuantity = productQuantityList
+
+        orderDataModel.userUUID = Utils.GetSession().userUUID
+
+        orderDataModel.addressUUID = selectedAddressData?.addressUUID
+
+        Utils.insertOrder(orderDataModel)
+
+        // Cart delete
+        Utils.GetSession().userUUID?.let { Utils.deleteCart(it) }
+
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
+
+    }
+
     //Handle all the clicks
     @SuppressLint("SetTextI18n")
     override fun onClick(v: View?) {
@@ -708,6 +744,8 @@ class CartFragment : Fragment(), View.OnClickListener {
 
             if (selectedAddressData != null) {
 
+                GetProgressBar.getInstance(requireActivity())?.show()
+
                 (requireActivity() as DashboardActivity).currentState = confirmation
                 currentState = confirmation
 
@@ -716,8 +754,10 @@ class CartFragment : Fragment(), View.OnClickListener {
                 binding?.rlInformation?.visibility = View.GONE
                 binding?.llConfirmation?.visibility = View.VISIBLE
 
-                val cardList = Utils.GetSession().userUUID?.let { Utils.getCartThroughUserUUID(it) }
+                val cardList = Utils.GetSession().userUUID?.let { getCartThroughUserUUID(it) }
                 val pdfInvoiceBinding = PdfInvoiceBinding.inflate(LayoutInflater.from(context))
+
+                pdfInvoiceBinding.tvOrderNo.text = Utils.getRowCount().toString()
 
                 pdfInvoiceBinding.tvClientName.text =
                     "${selectedAddressData?.firstName} ${selectedAddressData?.lastName}"
@@ -739,6 +779,8 @@ class CartFragment : Fragment(), View.OnClickListener {
                     .setFileName(Utils.generateUUId())
                     .setFolderNameOrPath("MyFolder/MyDemoList/")
                     .actionAfterPDFGeneration(PdfGenerator.ActionAfterPDFGeneration.OPEN)
+
+                insertOrder()
 
             } else {
 

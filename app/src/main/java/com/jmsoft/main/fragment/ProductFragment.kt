@@ -33,6 +33,7 @@ import com.jmsoft.R
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.ExcelReader
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.UtilityTools.ProductUUIDList
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.All
 import com.jmsoft.basic.UtilityTools.Utils
@@ -558,6 +559,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         // Clicked on add product button
         else if (v == binding.mcvAddProduct) {
+
+            ProductUUIDList.setStatus(true)
+
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.productInventory)
         }
 

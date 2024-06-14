@@ -326,6 +326,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
     }
 
     override fun onCreateView(
+
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
@@ -699,12 +700,16 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                     binding.mcvPrevious.visibility = View.GONE
                 }
 
-                if (productUUIDIndex+1 == ProductUUIDList.getSize()){
-                    binding.mcvNext.visibility = View.GONE
+                if (productUUIDIndex+1 == ProductUUIDList.getSize()) {
+
+                    if (!ProductUUIDList.getStatus()) {
+                        binding.mcvNext.visibility = View.GONE
+                    }
                 }
 
-                binding.tvPageDetail.text =
-                    getString(R.string.page_to, (productUUIDIndex + 1).toString(), ProductUUIDList.getSize().toString())
+                val pageFlag = if (ProductUUIDList.getStatus()) 1 else 0
+
+                binding.tvPageDetail.text = getString(R.string.page_to, (productUUIDIndex + 1).toString(), (ProductUUIDList.getSize() + pageFlag).toString())
 
 
                 binding.etProductName.setText(productData.productName)
@@ -755,8 +760,24 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         } else {
 
+            val productListSize = ProductUUIDList.getSize()
+
+            productUUIDIndex = productListSize
+
+            binding.llPageIndicator.visibility = View.VISIBLE
+//            binding.mcvPrevious.visibility = View.GONE
+            binding.mcvNext.visibility = View.GONE
+
+            if (productListSize == 0) {
+                binding.mcvPrevious.visibility = View.GONE
+            }
+
+            binding.tvPageDetail.text =
+                getString(R.string.page_to, (productListSize+1).toString(), (productListSize+1).toString())
+
             GetProgressBar.getInstance(requireActivity())?.dismiss()
         }
+
     }
 
     //set the Clicks And initialization
@@ -1623,21 +1644,41 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     }
 
-    private fun changePage(num:Int){
+    private fun changePage(num:Int) {
 
         if (productUUIDIndex != -1) {
 
             GetProgressBar.getInstance(requireActivity())?.show()
 
-            val bundle = Bundle()
-            // Giving the product UUID
-            bundle.putString(Constants.productUUID,ProductUUIDList.getProductUUID(productUUIDIndex+num))
-
             val navOptions = NavOptions.Builder()
                 .setPopUpTo(R.id.productInventory, true)
                 .build()
 
-            (context as DashboardActivity).navController?.navigate(R.id.productInventory, bundle, navOptions)
+            if (num>0) {
+
+                if (ProductUUIDList.getSize() == productUUIDIndex+1) {
+
+                    (context as DashboardActivity).navController?.navigate(R.id.productInventory,null,navOptions)
+                }
+                else {
+
+                    val bundle = Bundle()
+                    // Giving the product UUID
+                    bundle.putString(Constants.productUUID,ProductUUIDList.getProductUUID(productUUIDIndex+num))
+                    (context as DashboardActivity).navController?.navigate(R.id.productInventory, bundle, navOptions)
+                }
+
+            }
+            else {
+
+                val bundle = Bundle()
+                // Giving the product UUID
+                bundle.putString(Constants.productUUID,ProductUUIDList.getProductUUID(productUUIDIndex+num))
+
+                (context as DashboardActivity).navController?.navigate(R.id.productInventory, bundle, navOptions)
+
+            }
+
 
         }
     }
