@@ -1,8 +1,10 @@
 package com.jmsoft.main.activity
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.jmsoft.R
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 
 /**
@@ -13,11 +15,17 @@ import com.jmsoft.basic.UtilityTools.Utils
  */
 
 class SplashActivity : AppCompatActivity() {
+
+    private val activity: Activity = this@SplashActivity
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+//        setAppLanguage()
 
         val thread: Thread = object : Thread() {
+
             override fun run() {
                 try {
                     sleep(1000)

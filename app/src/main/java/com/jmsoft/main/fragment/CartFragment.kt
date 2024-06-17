@@ -3,29 +3,37 @@ package com.jmsoft.main.fragment
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.bluetooth.BluetoothAdapter
+import android.content.ActivityNotFoundException
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.content.Context.LAYOUT_INFLATER_SERVICE
+import android.content.Context.PRINT_SERVICE
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.CancellationSignal
+import android.os.ParcelFileDescriptor
+import android.print.PageRange
+import android.print.PrintAttributes
+import android.print.PrintDocumentAdapter
+import android.print.PrintDocumentInfo
+import android.print.PrintManager
 import android.text.Editable
 import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.UnderlineSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import android.webkit.WebSettings
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,10 +42,12 @@ import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.AddressDataModel
 import com.jmsoft.Utility.Database.CartDataModel
-import com.jmsoft.Utility.Database.ContactDataModel
 import com.jmsoft.Utility.Database.OrderDataModel
-import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.pdf_helper.FailureResponse
+import com.jmsoft.Utility.pdf_helper.PdfGenerator
+import com.jmsoft.Utility.pdf_helper.PdfGeneratorListener
+import com.jmsoft.Utility.pdf_helper.SuccessResponse
 import com.jmsoft.basic.UtilityTools.Constants.Companion.address
 import com.jmsoft.basic.UtilityTools.Constants.Companion.confirmation
 import com.jmsoft.basic.UtilityTools.Constants.Companion.firstName
@@ -48,35 +58,31 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.state
 import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
 import com.jmsoft.basic.UtilityTools.Constants.Companion.zipCode
 import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.basic.UtilityTools.Utils.getCartThroughUserUUID
 import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation
 import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentCartBinding
+import com.jmsoft.databinding.PdfInvoiceBinding
 import com.jmsoft.main.activity.DashboardActivity
-import com.jmsoft.main.adapter.CartListAdapter
 import com.jmsoft.main.adapter.CartAddressAdapter
+import com.jmsoft.main.adapter.CartListAdapter
+import com.jmsoft.main.adapter.PdfInvoiceAdapter
 import com.jmsoft.main.`interface`.AddressSelectionStatus
-import com.jmsoft.main.`interface`.BluetoothOffCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import com.jmsoft.Utility.pdf_helper.FailureResponse
-import com.jmsoft.Utility.pdf_helper.PdfGenerator
-import com.jmsoft.Utility.pdf_helper.PdfGeneratorListener
-import com.jmsoft.Utility.pdf_helper.SuccessResponse
-import com.jmsoft.basic.UtilityTools.Constants.Companion.Data
-import com.jmsoft.basic.UtilityTools.Utils.getCartThroughUserUUID
-import com.jmsoft.databinding.InvoiceItemBinding
-import com.jmsoft.databinding.PdfInvoiceBinding
-import com.jmsoft.main.adapter.PdfInvoiceAdapter
-import com.jmsoft.main.model.Data
-import kotlinx.coroutines.NonDisposableHandle.parent
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+
 
 class CartFragment : Fragment(), View.OnClickListener {
 
-    var binding: FragmentCartBinding? = null
+    private var binding: FragmentCartBinding? = null
 
     // Validation Mode object
     private var errorValidationModels: MutableList<ValidationModel> = ArrayList()
@@ -98,6 +104,8 @@ class CartFragment : Fragment(), View.OnClickListener {
     private var content: PdfGenerator.Build? = null
 
     private var cardList:ArrayList<CartDataModel>? = null
+
+    private val pdfName = Utils.generateUUId()
 
     // Checks All the necessary permission related to External Storage
     private var customPermissionLauncher = registerForActivityResult(
@@ -133,40 +141,66 @@ class CartFragment : Fragment(), View.OnClickListener {
 
     private fun generatePDF() {
 
-        content?.build(object : PdfGeneratorListener() {
+        val cardList = Utils.GetSession().userUUID?.let { getCartThroughUserUUID(it) }
+        val pdfInvoiceBinding = PdfInvoiceBinding.inflate(LayoutInflater.from(context))
 
-            override fun onFailure(failureResponse: FailureResponse?) {
-                super.onFailure(failureResponse)
+        pdfInvoiceBinding.tvOrderNo.text = Utils.getRowCount().toString()
 
-                Utils.E("Failed to generate")
-            }
+        pdfInvoiceBinding.tvClientName.text =
+            "${selectedAddressData?.firstName} ${selectedAddressData?.lastName}"
 
-            override fun onStartPDFGeneration() {
+        pdfInvoiceBinding.tvDate.text = Utils.currentDate
+        pdfInvoiceBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
 
-                Utils.E("Start to generate")
-
-            }
-
-            override fun onFinishPDFGeneration() {
-
-                Utils.E("Finish to generate")
-
-            }
-
-            override fun showLog(log: String?) {
-                super.showLog(log)
-
-                Utils.E("Show to generate")
-
-            }
-
-            override fun onSuccess(response: SuccessResponse?) {
-
-                super.onSuccess(response)
-                Utils.E("Success to generate")
-
-            }
+        pdfInvoiceBinding.rvItems.setAdapter(cardList?.let {
+            PdfInvoiceAdapter(
+                requireActivity(), pdfInvoiceBinding.tvTotalAmount,
+                it
+            )
         })
+
+        PdfGenerator.getBuilder()
+            .setContext(requireActivity())
+            .fromViewSource()
+            .fromView(pdfInvoiceBinding.root)
+            .setFileName(pdfName)
+            .setFolderNameOrPath("MyFolder/MyDemoList/")
+//                    .savePDFSharedStorage()
+            .actionAfterPDFGeneration(PdfGenerator.ActionAfterPDFGeneration.NONE)
+            .build ( object : PdfGeneratorListener() {
+
+                override fun onFailure(failureResponse: FailureResponse?) {
+                    super.onFailure(failureResponse)
+
+                    Utils.E("Failed to generate")
+                }
+
+                override fun onStartPDFGeneration() {
+
+                    Utils.E("Start to generate")
+
+                }
+
+                override fun onFinishPDFGeneration() {
+
+                    Utils.E("Finish to generate")
+
+                }
+
+                override fun showLog(log: String?) {
+                    super.showLog(log)
+
+                    Utils.E("Show to generate")
+                }
+
+                override fun onSuccess(response: SuccessResponse?) {
+
+                    super.onSuccess(response)
+                    Utils.E("Success to generate")
+                }
+            })
+
+        insertOrder()
     }
 
     // Open Setting Dialog
@@ -500,6 +534,9 @@ class CartFragment : Fragment(), View.OnClickListener {
         // Set Click on Share Button
         binding?.mcvShare?.setOnClickListener(this)
 
+        // Set Click on Print Button
+        binding?.mcvPrint?.setOnClickListener(this)
+
         jobCart.join()
         jobAddress.join()
 
@@ -710,6 +747,86 @@ class CartFragment : Fragment(), View.OnClickListener {
 
     }
 
+    private fun printPdf(file: File) {
+
+        val context = requireContext()
+        val printManager = context.getSystemService(PRINT_SERVICE) as PrintManager
+        val jobName = getString(R.string.app_name) + " Document"
+
+        printManager.print(jobName, object : PrintDocumentAdapter() {
+
+            override fun onLayout(
+
+                oldAttributes: PrintAttributes?,
+                newAttributes: PrintAttributes?,
+                cancellationSignal: CancellationSignal?,
+                callback: LayoutResultCallback?,
+                extras: Bundle?
+            ) {
+                if (cancellationSignal?.isCanceled == true) {
+                    callback?.onLayoutCancelled()
+                    return
+                }
+
+                val pdi = PrintDocumentInfo.Builder(file.name)
+                    .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
+                    .setPageCount(PrintDocumentInfo.PAGE_COUNT_UNKNOWN)
+                    .build()
+
+                callback?.onLayoutFinished(pdi, true)
+            }
+
+            override fun onWrite(
+                pages: Array<out PageRange>?,
+                destination: ParcelFileDescriptor?,
+                cancellationSignal: CancellationSignal?,
+                callback: WriteResultCallback?
+            ) {
+                var input: FileInputStream? = null
+                var output: FileOutputStream? = null
+
+                try {
+                    input = FileInputStream(file)
+                    output = FileOutputStream(destination?.fileDescriptor)
+
+                    val buf = ByteArray(1024)
+                    var bytesRead: Int
+
+                    while (input.read(buf).also { bytesRead = it } > 0) {
+                        output.write(buf, 0, bytesRead)
+                    }
+
+                    callback?.onWriteFinished(arrayOf(PageRange.ALL_PAGES))
+                } catch (e: IOException) {
+                    callback?.onWriteFailed(e.toString())
+                } finally {
+                    try {
+                        input?.close()
+                        output?.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }, null)
+    }
+
+    private fun openPdfFile(file: File) {
+
+        val path = Uri.fromFile(file)
+        val pdfOpenintent = Intent(Intent.ACTION_VIEW)
+        pdfOpenintent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        pdfOpenintent.setDataAndType(path, "application/pdf")
+        try {
+            startActivity(pdfOpenintent)
+        } catch (e: ActivityNotFoundException) {
+        }
+
+    }
+
+
+
+
     //Handle all the clicks
     @SuppressLint("SetTextI18n")
     override fun onClick(v: View?) {
@@ -754,33 +871,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                 binding?.rlInformation?.visibility = View.GONE
                 binding?.llConfirmation?.visibility = View.VISIBLE
 
-                val cardList = Utils.GetSession().userUUID?.let { getCartThroughUserUUID(it) }
-                val pdfInvoiceBinding = PdfInvoiceBinding.inflate(LayoutInflater.from(context))
-
-                pdfInvoiceBinding.tvOrderNo.text = Utils.getRowCount().toString()
-
-                pdfInvoiceBinding.tvClientName.text =
-                    "${selectedAddressData?.firstName} ${selectedAddressData?.lastName}"
-
-                pdfInvoiceBinding.tvDate.text = Utils.currentDate
-                pdfInvoiceBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
-
-                pdfInvoiceBinding.rvItems.setAdapter(cardList?.let {
-                    PdfInvoiceAdapter(
-                        requireActivity(), pdfInvoiceBinding.tvTotalAmount,
-                        it
-                    )
-                })
-
-                content = PdfGenerator.getBuilder()
-                    .setContext(requireActivity())
-                    .fromViewSource()
-                    .fromView(pdfInvoiceBinding.root)
-                    .setFileName(Utils.generateUUId())
-                    .setFolderNameOrPath("MyFolder/MyDemoList/")
-                    .actionAfterPDFGeneration(PdfGenerator.ActionAfterPDFGeneration.OPEN)
-
-                insertOrder()
+                customPermissionLauncher.launch(permissionsForExternalStorage)
 
             } else {
 
@@ -811,7 +902,16 @@ class CartFragment : Fragment(), View.OnClickListener {
         // Click on Share button
         else if (v == binding?.mcvShare) {
 
-            customPermissionLauncher.launch(permissionsForExternalStorage)
+            val pdfFile = File(requireActivity().getExternalFilesDir(null), "MyFolder/MyDemoList/${pdfName}.pdf")
+            openPdfFile(pdfFile)
+
+        }
+
+        // Click on print button
+        else if (v == binding?.mcvPrint) {
+
+            val pdfFile = File(requireActivity().getExternalFilesDir(null), "MyFolder/MyDemoList/${pdfName}.pdf")
+            printPdf(pdfFile)
 
         }
 

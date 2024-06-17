@@ -617,7 +617,6 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
                 openDocument()
             }
-//            storagePermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
 
     }

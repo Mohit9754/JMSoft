@@ -97,6 +97,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
 
     private fun init() {
 
+        // Set app language
+        Utils.setAppLanguage(activity)
+
         //Set Image for current Language
         binding.ivJewellery?.let { Utils.setImageForCurrentLanguage(it) }
 
@@ -219,6 +222,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
 
             } else {
                 Utils.setLocale(activity, english)
+
             }
         } else if (v == binding.llSignUp) {
             Utils.I(activity, SignUpActivity::class.java, null)

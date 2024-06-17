@@ -54,6 +54,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.net.toUri
@@ -105,8 +106,37 @@ import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 import kotlin.random.Random
 
-
 object Utils {
+
+    object Flag {
+
+        private var flag = true
+        fun getFlag(): Boolean {
+            val flag = this.flag
+            this.flag = false
+            return flag
+        }
+    }
+
+    // Get the language from the shared preference
+    private fun getLang(context: Context): String {
+        val sh = context.getSharedPreferences(Constants.appLang, AppCompatActivity.MODE_PRIVATE)
+        return sh.getString(Constants.lang, english) ?: english
+    }
+
+    // Store the language in the shared preference
+     private fun storeLang(context: Context,lang:String) {
+
+        val sharedPreferences = context.getSharedPreferences(
+            Constants.appLang,
+            AppCompatActivity.MODE_PRIVATE
+        )
+        val myEdit = sharedPreferences.edit()
+        myEdit.putString(Constants.lang, lang)
+        myEdit.apply()
+
+         E("Store is $lang")
+    }
 
     // Decimal digit filter (2 digit after point)
     class DecimalDigitsInputFilter : InputFilter {
@@ -399,14 +429,24 @@ object Utils {
         return file.delete()
     }
 
+    fun setAppLanguage(context: Context){
+
+        if (Flag.getFlag()) {
+            setLocale(context, getLang(context))
+            Utils.E("language  is ${getLang(context)}")
+        }
+    }
+
     fun setLocale(context: Context, languageCode: String) {
         val locale = Locale(languageCode)
         Locale.setDefault(locale)
         val configuration = context.resources.configuration
         configuration.setLocale(locale)
         context.resources.updateConfiguration(configuration, context.resources.displayMetrics)
-
 //        context.createConfigurationContext(configuration)
+
+        // store the language
+        storeLang(context,languageCode)
 
         // Recreate the current activity
         if (context is Activity) {

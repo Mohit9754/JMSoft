@@ -7,20 +7,23 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.RelativeLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.basic.UtilityTools.Constants
+import com.jmsoft.basic.UtilityTools.Constants.Companion.appLang
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
 import com.jmsoft.basic.UtilityTools.Constants.Companion.information
+import com.jmsoft.basic.UtilityTools.Constants.Companion.lang
 import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
 import com.jmsoft.basic.UtilityTools.KeyboardUtils.hideKeyboard
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ActivityDashboardBinding
+
 
 /**
  * Dashboard Activity
@@ -74,6 +77,9 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
     //set the Clicks And initialization
     private fun init() {
 
+        // Set app language
+        Utils.setAppLanguage(activity)
+
         binding?.etSearch?.let { binding?.mcvSearch?.let { it1 -> setFocusChangeLis(it, it1) } }
 
         //For Managing Back press
@@ -91,6 +97,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
         binding?.ivCard?.setOnClickListener(this)
 
         binding?.toolbar?.setOnClickListener(this)
+
     }
 
     //Handles All the Clicks
@@ -103,17 +110,18 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
 
             if (lang == english) {
                 Utils.setLocale(activity, arabic)
-                activity.recreate()
+//                activity.recreate()
             } else {
                 Utils.setLocale(activity, english)
-                activity.recreate()
+//                Utils.storeLang(activity,english)
+//                activity.recreate()
             }
 
         // navigate to Setting fragment
         } else if (v == binding?.ivSetting) {
 
             // navController?.navigate(R.id.addToCard)
-            if(navController?.currentDestination?.id != R.id.setting) {
+            if (navController?.currentDestination?.id != R.id.setting) {
 
                 navController?.navigate(R.id.setting)
 
