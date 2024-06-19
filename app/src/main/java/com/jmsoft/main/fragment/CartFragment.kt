@@ -29,6 +29,8 @@ import android.view.Window
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -808,24 +810,39 @@ class CartFragment : Fragment(), View.OnClickListener {
                     }
                 }
             }
-        }, null)
+        }, PrintAttributes.Builder()
+            .setMediaSize(PrintAttributes.MediaSize.ISO_A4.asLandscape())
+            .setResolution(PrintAttributes.Resolution("id", "label", 600, 600))
+            .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
+            .build())
+
     }
 
     private fun openPdfFile(file: File) {
 
         val path = Uri.fromFile(file)
-        val pdfOpenintent = Intent(Intent.ACTION_VIEW)
-        pdfOpenintent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        pdfOpenintent.setDataAndType(path, "application/pdf")
-        try {
-            startActivity(pdfOpenintent)
-        } catch (e: ActivityNotFoundException) {
+        val pdfOpenIntent = Intent(Intent.ACTION_VIEW)
+        pdfOpenIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        pdfOpenIntent.setDataAndType(path, "application/pdf")
+
+        // Verify if there are apps available to handle the intent
+        val packageManager = requireContext().packageManager
+        val activities = packageManager.queryIntentActivities(pdfOpenIntent, 0)
+        val isIntentSafe = activities.isNotEmpty()
+
+        if (isIntentSafe) {
+
+            try {
+                startActivity(pdfOpenIntent)
+            } catch (_: ActivityNotFoundException) {
+                // Handle the case where no activity can handle the PDF intent
+                Utils.T(requireActivity(), getString(R.string.no_application_available_to_view_pdf))
+            }
+        } else {
+            // No app available to handle the intent
+            Utils.T(requireActivity(), getString(R.string.no_application_available_to_view_pdf))
         }
-
     }
-
-
-
 
     //Handle all the clicks
     @SuppressLint("SetTextI18n")
@@ -904,6 +921,7 @@ class CartFragment : Fragment(), View.OnClickListener {
 
             val pdfFile = File(requireActivity().getExternalFilesDir(null), "MyFolder/MyDemoList/${pdfName}.pdf")
             openPdfFile(pdfFile)
+//            openWebView(pdfFile)
 
         }
 

@@ -123,7 +123,7 @@ class CartListAdapter(
 
         }
 
-        //Set Total Price of the cart
+        // Set Total Price of the cart
         private fun setTotalPrice() {
 
             var totalPrice = 0.0
@@ -135,7 +135,7 @@ class CartListAdapter(
             fragmentCartBinding.tvTotalPriceVerification?.text = Utils.getThousandSeparate(Utils.roundToTwoDecimalPlaces(totalPrice))
         }
 
-        //Set the Product price
+        // Set the Product price
         private fun setProductPrice() {
 
             val price = cartData.productQuantity?.let { productData.productPrice?.times(it) }
@@ -143,7 +143,6 @@ class CartListAdapter(
             if (price != null) {
 
                 cartPrice[position] = price
-//                Utils.E(position.toString())
             }
 
             binding.tvPrice.text = price?.let { Utils.getThousandSeparate(it) }

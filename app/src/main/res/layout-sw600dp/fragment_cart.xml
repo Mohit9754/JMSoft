@@ -820,9 +820,6 @@
 
     </RelativeLayout>
 
-
-
-
     <WebView
         android:id="@+id/webView"
         android:visibility="gone"

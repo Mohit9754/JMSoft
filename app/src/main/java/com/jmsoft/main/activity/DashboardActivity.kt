@@ -139,6 +139,8 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
             // navController?.navigate(R.id.addToCard)
             if(navController?.currentDestination?.id != R.id.cart) {
 
+                GetProgressBar.getInstance(activity)?.show()
+
                 navController?.navigate(R.id.cart)
 
             }

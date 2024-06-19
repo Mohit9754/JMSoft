@@ -276,6 +276,9 @@
     <string name="please_select_profile">الرجاء تحديد الملف الشخصي</string>
     <string name="are_you_sure_you_want_to_delete_this_contact_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف جهة الاتصال هذه؟ لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="contact_updated_successfully">تم تحديث جهة الاتصال بنجاح</string>
+    <string name="_016862">016862</string>
+    <string name="no_application_available_to_view_pdf">لا يوجد تطبيق متاح لعرض PDF</string>
+
 
 
 
