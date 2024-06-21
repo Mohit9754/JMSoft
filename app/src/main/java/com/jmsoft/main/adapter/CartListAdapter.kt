@@ -73,7 +73,8 @@ class CartListAdapter(
             this.cartData = cartData
             this.position = position
 
-            //Getting the product data from cart's present cartUUID
+            // Getting the product data from cart's present cartUUID
+
             val productData = cartData.productUUID?.let {  Utils.getProductThroughProductUUID(it) }
 
             if (cartData.productUUID != null) {

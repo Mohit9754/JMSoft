@@ -1,12 +1,17 @@
 package com.jmsoft.main.adapter
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.jmsoft.R
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.databinding.ItemExpectedBinding
+import com.jmsoft.main.activity.DashboardActivity
 
 class ScannedAdapter(
     private val context: Context,
@@ -40,6 +45,8 @@ class ScannedAdapter(
 
             setRFIDCode()
 
+            binding.mcvProduct.setOnClickListener(this)
+
         }
 
         private fun setProductName() {
@@ -52,6 +59,17 @@ class ScannedAdapter(
 
 
         override fun onClick(v: View?) {
+
+            if (v == binding.mcvProduct) {
+
+                GetProgressBar.getInstance(context)?.show()
+
+                val bundle = Bundle()
+                //Giving the product UUID
+                bundle.putString(Constants.productUUID, productData.productUUID)
+                (context as DashboardActivity).navController?.navigate(R.id.productDetail, bundle)
+
+            }
 
         }
 

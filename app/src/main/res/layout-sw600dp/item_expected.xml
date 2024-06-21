@@ -10,6 +10,7 @@
     android:layout_marginHorizontal="1dp"
     android:layout_marginVertical="@dimen/_2sdp"
     app:strokeWidth="1dp"
+    android:id="@+id/mcvProduct"
     android:layout_height="wrap_content"
     tools:ignore="MissingDefaultResource">
 

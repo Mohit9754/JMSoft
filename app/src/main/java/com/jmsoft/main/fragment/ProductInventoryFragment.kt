@@ -1076,6 +1076,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         dialog.setCancelable(true)
 
         dialog.show()
+
     }
 
     /* validate input details */
@@ -1137,11 +1138,11 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             )
         )
 
-        errorValidationModel.add(
-            ValidationModel(
-                Validation.Type.Empty, binding.etRFIDCode, binding.tvRFIDCodeError
-            )
-        )
+//        errorValidationModel.add(
+//            ValidationModel(
+//                Validation.Type.Empty, binding.etRFIDCode, binding.tvRFIDCodeError
+//            )
+//        )
 
 //        errorValidationModel.add(
 //            ValidationModel(

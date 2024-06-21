@@ -173,10 +173,10 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
         dialog.show()
     }
 
-    private suspend fun setExpectedRecyclerView(){
+    private suspend fun setExpectedRecyclerView() {
 
         val result =  lifecycleScope.async(Dispatchers.IO) {
-            return@async Utils.getAllProducts() }
+            return@async Utils.getAllProductsThatHasRFID() }
 
         expectedProductList = result.await()
 
@@ -189,37 +189,6 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
 
         binding.tvTotal?.text  = expectedProductList.size.toString()
 
-//        val list = ArrayList<String>()
-//        list.add("test")
-//        list.add("mohit")
-//        list.add("test2")
-//        list.add("r")
-//
-//        for (data in list) {
-//
-//            if (Utils.isRFIDExist(data) == true) {
-//
-//                val productDataModel = Utils.getProductThroughRFIDCode(data)
-//
-//                if (!scannedProductList.contains(productDataModel)) {
-//
-//                    scannedProductList.add(0,productDataModel)
-//                    adapterScanned?.notifyItemInserted(0)
-////                adapterScanned?.notifyDataSetChanged()
-//
-//                }
-//            }
-//            else {
-//
-//                if (!unKnownList.contains(data)) {
-//                    unKnownList.add(0,data)
-//                    adapterUnKnown?.notifyItemInserted(0)
-//                    //                adapterScanned?.notifyDataSetChanged()
-//                }
-//
-//            }
-//
-//        }
 
     }
 

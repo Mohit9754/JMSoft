@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.jmsoft.R
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.databinding.ItemExpectedBinding
+import com.jmsoft.main.activity.DashboardActivity
 
 class UnknownAdapter(
     private val context: Context,
@@ -38,6 +41,8 @@ class UnknownAdapter(
 
             setRFIDCode()
 
+            binding.mcvProduct.setOnClickListener(this)
+
         }
 
         private fun setRFIDCode() {
@@ -45,6 +50,15 @@ class UnknownAdapter(
         }
 
         override fun onClick(v: View?) {
+
+            if (v == binding.mcvProduct) {
+
+                // Show progress bar
+                GetProgressBar.getInstance(context)?.show()
+
+                (context as DashboardActivity).navController?.navigate(R.id.product)
+
+            }
 
         }
 

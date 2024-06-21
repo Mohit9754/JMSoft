@@ -1039,8 +1039,47 @@ class DatabaseHelper(cx: Context) {
         return productList
     }
 
+    // Get All Products that has RFID from the Product table
+    @SuppressLint("Range")
+    suspend fun getAllProductsThatHasRFID(): ArrayList<ProductDataModel> {
 
-    //Get All Products from the Product table
+        read()
+
+        val cursor: Cursor? =
+                db?.rawQuery("SELECT  ${ProductDataModel.Key_productUUID},${ProductDataModel.Key_productName},${ProductDataModel.Key_productRFIDCode}  FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} != ?  ", arrayOf(""))
+
+        cursor?.moveToFirst()
+
+        val productList = ArrayList<ProductDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val productData = ProductDataModel()
+
+                productData.productUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+                productData.productName =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
+                productData.productRFIDCode =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFIDCode))
+
+                productList.add(productData)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return productList
+    }
+
+
+    // Get All Products from the Product table
     @SuppressLint("Range")
     suspend fun getAllProducts(): ArrayList<ProductDataModel> {
 

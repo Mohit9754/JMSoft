@@ -4,16 +4,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/_400sdp"
+    android:layout_width="2480px"
+    android:layout_height="3508px"
     android:orientation="vertical"
-    android:layout_height="wrap_content"
-    tools:ignore="MissingDefaultResource">
+    tools:ignore="MissingDefaultResource,PxUsage">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/dark_blue"
-        android:textSize="14sp"
+        android:textSize="30sp"
         android:textAppearance="?attr/textAppearanceListItem"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/_25sdp"
@@ -23,16 +23,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/dark_blue"
-        android:textSize="14sp"
+        android:textSize="30sp"
         android:textAppearance="?attr/textAppearanceListItem"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/_5sdp"
         android:layout_marginBottom="@dimen/_15sdp"
         android:text="@string/buy_and_sell_all_types_of_jewelry_en"/>
 
-
     <RelativeLayout
-        android:layout_width="@dimen/_350sdp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_20sdp"
         android:orientation="horizontal">
@@ -42,7 +41,8 @@
             android:layout_centerInParent="true"
             android:layout_height="wrap_content"
 
-            android:orientation="vertical">
+            android:orientation="vertical"
+            tools:ignore="UselessParent">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
@@ -63,7 +63,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
-                        android:textSize="12sp"
+                        android:textSize="20sp"
                         android:layout_marginEnd="@dimen/_5sdp"
                         android:text="@string/order_n"/>
 
@@ -71,7 +71,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
-                        android:textSize="12sp"
+                        android:textSize="20sp"
                         android:text="@string/order_no"/>
 
 
@@ -87,7 +87,7 @@
                 android:layout_gravity="center"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="14sp"
+                android:textSize="20sp"
                 android:layout_marginTop="@dimen/_5sdp"
                 />
 
@@ -114,7 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/client"
-                android:textSize="12sp"
+                android:textSize="30sp"
                 android:textColor="@color/dark_blue"
                 />
 
@@ -124,7 +124,7 @@
                 android:text="Mohit Chouhan"
                 android:layout_marginStart="@dimen/_4sdp"
                 android:id="@+id/tvClientName"
-                android:textSize="12sp"
+                android:textSize="30sp"
                 android:textColor="@color/dark_blue"
                 />
 
@@ -134,7 +134,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/date"
-            android:textSize="12sp"
+            android:textSize="30sp"
             android:textColor="@color/dark_blue"
             />
 
@@ -143,7 +143,7 @@
             android:layout_height="wrap_content"
             android:text="25 june 2024"
             android:id="@+id/tvDate"
-            android:textSize="12sp"
+            android:textSize="30sp"
             android:layout_marginStart="@dimen/_4sdp"
             android:textColor="@color/dark_blue"
             />
@@ -151,7 +151,7 @@
     </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="@dimen/_350sdp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:strokeWidth="1dp"
         android:layout_marginTop="@dimen/_10sdp"
@@ -175,13 +175,14 @@
                     android:layout_width="@dimen/_50sdp"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:layout_height="@dimen/_25sdp">
+                    android:layout_height="@dimen/_35sdp"
+                    >
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/amount_ar"
-                        android:textSize="12sp"
+                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
                         />
 
@@ -190,7 +191,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/amount"
-                        android:textSize="12sp"
+                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
                         />
 
@@ -206,14 +207,14 @@
                     android:layout_width="@dimen/_50sdp"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:layout_height="@dimen/_25sdp">
-                    >
+                    android:layout_height="@dimen/_35sdp">
+
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/price_ar"
-                        android:textSize="12sp"
+                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
                         />
 
@@ -221,7 +222,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/price"
-                        android:textSize="12sp"
+                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
                         />
 
@@ -237,14 +238,14 @@
                     android:layout_width="@dimen/_50sdp"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:layout_height="@dimen/_25sdp">
+                    android:layout_height="@dimen/_35sdp"
                     >
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/weight_ar"
-                        android:textSize="12sp"
+                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
                         />
 
@@ -252,7 +253,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/weight_en"
-                        android:textSize="12sp"
+                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
                         />
 
@@ -268,14 +269,15 @@
                     android:layout_width="@dimen/_50sdp"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:layout_height="@dimen/_25sdp">
+                    android:layout_height="@dimen/_35sdp"
                     >
+
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/carat_ar"
-                        android:textSize="12sp"
+                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
                         />
 
@@ -283,7 +285,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/carat_en"
-                        android:textSize="12sp"
+                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
                         />
 
@@ -299,14 +301,15 @@
                     android:layout_width="@dimen/_100sdp"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:layout_height="@dimen/_25sdp">
+                    android:layout_height="@dimen/_35sdp"
                     >
+
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/designation_ar"
-                        android:textSize="12sp"
+                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
                         />
 
@@ -314,12 +317,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/designation_en"
-                        android:textSize="12sp"
+                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
                         />
 
                 </LinearLayout>
-
 
                 <View
                     android:layout_width="1dp"
@@ -331,14 +333,15 @@
                     android:layout_width="@dimen/_44sdp"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:layout_height="@dimen/_25sdp">
+                    android:layout_height="@dimen/_35sdp"
                     >
+
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/np_ar"
-                        android:textSize="12sp"
+                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
                         />
 
@@ -346,13 +349,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/n_p_en"
-                        android:textSize="12sp"
+                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
                         />
 
                 </LinearLayout>
-
-
 
             </LinearLayout>
 
@@ -378,6 +379,7 @@
         android:layout_width="@dimen/_151sdp"
         app:cardCornerRadius="0dp"
         app:strokeWidth="1dp"
+        android:id="@+id/mcvTotalPrice"
         android:layout_marginHorizontal="@dimen/_20sdp"
         android:layout_marginBottom="@dimen/_35sdp"
         android:layout_marginTop="-1dp"
@@ -394,7 +396,7 @@
                 android:layout_width="@dimen/_50sdp"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:layout_height="@dimen/_25sdp">
+                android:layout_height="@dimen/_35sdp"
                 >
 
                 <TextView
@@ -402,7 +404,7 @@
                     android:layout_height="wrap_content"
                     android:text="45"
                     android:id="@+id/tvTotalAmount"
-                    android:textSize="10sp"
+                    android:textSize="22sp"
                     android:textColor="@color/dark_blue"
                     />
 
@@ -417,21 +419,21 @@
                 android:layout_width="@dimen/_100sdp"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:layout_height="@dimen/_25sdp">
-                >
+                android:layout_height="@dimen/_35sdp">
+
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_amount_ar"
-                    android:textSize="12sp"
+                    android:textSize="25sp"
                     android:textColor="@color/dark_blue" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_amount"
-                    android:textSize="12sp"
+                    android:textSize="25sp"
                     android:textColor="@color/dark_blue" />
 
             </LinearLayout>

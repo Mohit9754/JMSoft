@@ -10,6 +10,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.CancellationSignal
 import android.os.ParcelFileDescriptor
@@ -67,6 +68,7 @@ import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentCartBinding
 import com.jmsoft.databinding.PdfInvoiceBinding
+import com.jmsoft.databinding.PdfInvoiceSecondBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.CartAddressAdapter
 import com.jmsoft.main.adapter.CartListAdapter
@@ -136,11 +138,14 @@ class CartFragment : Fragment(), View.OnClickListener {
         // Check if all permissions are granted or not
         if (allPermissionsGranted) {
 
+            // Generate pdf
             generatePDF()
 
         }
     }
 
+    // Generate pdf
+    @SuppressLint("SetTextI18n")
     private fun generatePDF() {
 
         val cardList = Utils.GetSession().userUUID?.let { getCartThroughUserUUID(it) }
@@ -152,22 +157,52 @@ class CartFragment : Fragment(), View.OnClickListener {
             "${selectedAddressData?.firstName} ${selectedAddressData?.lastName}"
 
         pdfInvoiceBinding.tvDate.text = Utils.currentDate
-        pdfInvoiceBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
 
-        pdfInvoiceBinding.rvItems.setAdapter(cardList?.let {
-            PdfInvoiceAdapter(
-                requireActivity(), pdfInvoiceBinding.tvTotalAmount,
-                it
-            )
-        })
+        val viewList = mutableListOf<View>()
+
+        if (cardList != null) {
+
+            if (10 >= cardList.size) {
+
+                val pdfInvoiceAdapter = PdfInvoiceAdapter(requireActivity(), cardList,pdfInvoiceBinding.tvTotalAmount,null)
+                pdfInvoiceBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
+                pdfInvoiceBinding.rvItems.setAdapter(pdfInvoiceAdapter)
+
+                viewList.add(pdfInvoiceBinding.root)
+
+            }
+            else {
+
+                pdfInvoiceBinding.mcvTotalPrice.visibility = View.GONE
+
+                val chunkedList = cardList.chunked(10)
+
+                val pdfInvoiceAdapterFirstPart = PdfInvoiceAdapter(requireActivity(), chunkedList[0],null,null)
+                pdfInvoiceBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
+                pdfInvoiceBinding.rvItems.setAdapter(pdfInvoiceAdapterFirstPart)
+                viewList.add(pdfInvoiceBinding.root)
+
+                for (i in 1 until chunkedList.size) {
+
+                    val pdfInvoiceSecondBinding = PdfInvoiceSecondBinding.inflate(LayoutInflater.from(context))
+
+                    val tvTotalAmount: TextView? = if (i+1 == chunkedList.size) pdfInvoiceSecondBinding.tvTotalAmount else null
+
+                    val pdfInvoiceAdapterSecondPart =  PdfInvoiceAdapter(requireActivity(), chunkedList[i],tvTotalAmount,pdfInvoiceSecondBinding.mcvTotalPrice)
+                    pdfInvoiceSecondBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
+                    pdfInvoiceSecondBinding.rvItems.setAdapter(pdfInvoiceAdapterSecondPart)
+                    viewList.add(pdfInvoiceSecondBinding.root)
+
+                }
+            }
+        }
 
         PdfGenerator.getBuilder()
             .setContext(requireActivity())
             .fromViewSource()
-            .fromView(pdfInvoiceBinding.root)
+            .fromViewList(viewList)
             .setFileName(pdfName)
             .setFolderNameOrPath("MyFolder/MyDemoList/")
-//                    .savePDFSharedStorage()
             .actionAfterPDFGeneration(PdfGenerator.ActionAfterPDFGeneration.NONE)
             .build ( object : PdfGeneratorListener() {
 
@@ -749,6 +784,7 @@ class CartFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // print pdf
     private fun printPdf(file: File) {
 
         val context = requireContext()
@@ -811,13 +847,14 @@ class CartFragment : Fragment(), View.OnClickListener {
                 }
             }
         }, PrintAttributes.Builder()
-            .setMediaSize(PrintAttributes.MediaSize.ISO_A4.asLandscape())
+            .setMediaSize(PrintAttributes.MediaSize.ISO_A4.asPortrait())
             .setResolution(PrintAttributes.Resolution("id", "label", 600, 600))
             .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
             .build())
 
     }
 
+    // open pdf
     private fun openPdfFile(file: File) {
 
         val path = Uri.fromFile(file)
@@ -888,7 +925,14 @@ class CartFragment : Fragment(), View.OnClickListener {
                 binding?.rlInformation?.visibility = View.GONE
                 binding?.llConfirmation?.visibility = View.VISIBLE
 
-                customPermissionLauncher.launch(permissionsForExternalStorage)
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+
+                    customPermissionLauncher.launch(permissionsForExternalStorage)
+
+                } else {
+
+                    generatePDF()
+                }
 
             } else {
 

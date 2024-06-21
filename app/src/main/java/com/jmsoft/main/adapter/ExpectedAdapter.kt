@@ -3,6 +3,7 @@ package com.jmsoft.main.adapter
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,8 @@ import com.google.android.material.card.MaterialCardView
 import com.google.firebase.Firebase
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemCatalogBinding
 import com.jmsoft.databinding.ItemExpectedBinding
@@ -55,6 +58,8 @@ class ExpectedAdapter(
 
             setRFIDCode()
 
+            binding.mcvProduct.setOnClickListener(this)
+
         }
 
         // Set product name
@@ -67,6 +72,19 @@ class ExpectedAdapter(
         }
 
         override fun onClick(v: View?) {
+
+            if (v == binding.mcvProduct) {
+
+                GetProgressBar.getInstance(context)?.show()
+
+                val bundle = Bundle()
+                //Giving the product UUID
+                bundle.putString(Constants.productUUID, productDataModel.productUUID)
+                (context as DashboardActivity).navController?.navigate(R.id.productDetail, bundle)
+
+
+
+            }
 
         }
 

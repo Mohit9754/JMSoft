@@ -142,6 +142,7 @@ public class PdfGenerator {
 
         FileNameStep fromViewIDList(@NonNull Activity containingActivity,
                                     @IdRes List<Integer> xmlResourceList);
+
     }
 
     public interface PageSizeStep {

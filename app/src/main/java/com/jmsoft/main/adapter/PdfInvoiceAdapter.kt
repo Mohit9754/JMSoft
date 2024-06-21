@@ -7,22 +7,23 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.InvoiceItemBinding
+import com.jmsoft.databinding.PdfInvoiceSecondBinding
 import com.jmsoft.main.model.Data
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
 class PdfInvoiceAdapter(
     private val context: Context,
-    private var textViewTotalAmount:TextView,
-    private var cartDataList: ArrayList<CartDataModel>
+    private var cartDataList: List<CartDataModel>,
+    private var tvTotalAmount: TextView?,
+    private var mcvTotalAmount:MaterialCardView?
     ) :
     RecyclerView.Adapter<PdfInvoiceAdapter.MyViewHolder>() {
-
-   var totalAmount = 0.0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = InvoiceItemBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -32,8 +33,6 @@ class PdfInvoiceAdapter(
     override fun getItemCount() = cartDataList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
-        Utils.E("Viewholder $position ")
         holder.bind(cartDataList[position],position)
     }
 
@@ -60,16 +59,21 @@ class PdfInvoiceAdapter(
             binding.tvCarat.text = productData.productCarat.toString()
             binding.tvDescription.text = productData.productName.toString()
             binding.tvNP.text = cardData.productQuantity.toString()
-//
-//
-            totalAmount += binding.tvAmount.text.toString().toDouble()
+
+            Utils.TotalAmount.addAmount(binding.tvAmount.text.toString().toDouble())
 
             if (position+1 == cartDataList.size) {
-                textViewTotalAmount.text = Utils.getThousandSeparate(totalAmount)
-            }
 
+                if (tvTotalAmount != null) {
+
+                    tvTotalAmount?.text = Utils.getThousandSeparate(Utils.TotalAmount.getTotalAmount())
+                    Utils.TotalAmount.resetTotalAmount()
+                }
+                else {
+                    mcvTotalAmount?.visibility = View.GONE
+                }
+            }
 
         }
     }
-
 }

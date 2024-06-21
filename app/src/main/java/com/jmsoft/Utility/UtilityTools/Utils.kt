@@ -108,6 +108,22 @@ import kotlin.random.Random
 
 object Utils {
 
+    object TotalAmount {
+
+        private var totalAmount = 0.0
+
+        fun getTotalAmount() = totalAmount
+
+        fun resetTotalAmount(){
+            totalAmount = 0.0
+        }
+
+        fun addAmount(amount:Double) {
+            totalAmount += amount
+        }
+
+    }
+
     object Flag {
 
         private var flag = true
@@ -803,6 +819,11 @@ object Utils {
     //Get All Products from the Product table
     suspend fun getAllProducts(): ArrayList<ProductDataModel> {
         return DatabaseHelper.instance.getAllProducts()
+    }
+
+    // Get All Products that has RFID from the Product table
+    suspend fun getAllProductsThatHasRFID(): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsThatHasRFID()
     }
 
     //Get All Products Accept one Product from product table
