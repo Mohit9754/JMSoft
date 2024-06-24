@@ -2,6 +2,7 @@ package com.jmsoft.main.fragment
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Context.INPUT_METHOD_SERVICE
@@ -13,12 +14,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CancellationSignal
+import android.os.Environment
 import android.os.ParcelFileDescriptor
 import android.print.PageRange
 import android.print.PrintAttributes
 import android.print.PrintDocumentAdapter
 import android.print.PrintDocumentInfo
 import android.print.PrintManager
+import android.provider.Settings
+import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
 import android.text.Editable
 import android.text.SpannableString
 import android.text.TextWatcher
@@ -29,19 +33,16 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.FileProvider
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
+import com.intuit.ssp.BuildConfig
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.AddressDataModel
 import com.jmsoft.Utility.Database.CartDataModel
@@ -84,6 +85,11 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 
+//import com.jmsoft.package.name.BuildConfig
+
+//import com.jmsoft.BuildConfig
+
+
 class CartFragment : Fragment(), View.OnClickListener {
 
     private var binding: FragmentCartBinding? = null
@@ -110,6 +116,8 @@ class CartFragment : Fragment(), View.OnClickListener {
     private var cardList:ArrayList<CartDataModel>? = null
 
     private val pdfName = Utils.generateUUId()
+
+
 
     // Checks All the necessary permission related to External Storage
     private var customPermissionLauncher = registerForActivityResult(
@@ -142,6 +150,51 @@ class CartFragment : Fragment(), View.OnClickListener {
             generatePDF()
 
         }
+    }
+
+    // Initialize your permission result launcher
+    @RequiresApi(Build.VERSION_CODES.R)
+    val storagePermissionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+
+            // Check if permission is granted
+            if (Environment.isExternalStorageManager()) {
+
+                // Permission granted. Now resume your workflow.
+                // Call your method or handle the permission granted state here
+                generatePDF()
+            }
+            else {
+
+                requestStoragePermission()
+            }
+        }
+        else if (result.resultCode == Activity.RESULT_CANCELED) {
+
+            // Handle case where user cancels the permission request
+            if (Environment.isExternalStorageManager()) {
+
+                // Permission granted. Now resume your workflow.
+                // Call your method or handle the permission granted state here
+                generatePDF()
+            }
+            else {
+
+                requestStoragePermission()
+            }
+
+        }
+    }
+
+    // Method to request MANAGE_EXTERNAL_STORAGE permission
+    @RequiresApi(Build.VERSION_CODES.R)
+    fun requestStoragePermission() {
+
+        val packageName = requireContext().packageName
+        val uri = Uri.parse("package:$packageName")
+
+        val intent = Intent(ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri)
+        storagePermissionResultLauncher.launch(intent)
     }
 
     // Generate pdf
@@ -202,7 +255,7 @@ class CartFragment : Fragment(), View.OnClickListener {
             .fromViewSource()
             .fromViewList(viewList)
             .setFileName(pdfName)
-            .setFolderNameOrPath("MyFolder/MyDemoList/")
+            .setFolderNameOrPath("Invoice/")
             .actionAfterPDFGeneration(PdfGenerator.ActionAfterPDFGeneration.NONE)
             .build ( object : PdfGeneratorListener() {
 
@@ -227,7 +280,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                 override fun showLog(log: String?) {
                     super.showLog(log)
 
-                    Utils.E("Show to generate")
+                    Utils.E("Show to generate $log")
                 }
 
                 override fun onSuccess(response: SuccessResponse?) {
@@ -915,8 +968,6 @@ class CartFragment : Fragment(), View.OnClickListener {
 
             if (selectedAddressData != null) {
 
-                GetProgressBar.getInstance(requireActivity())?.show()
-
                 (requireActivity() as DashboardActivity).currentState = confirmation
                 currentState = confirmation
 
@@ -927,11 +978,21 @@ class CartFragment : Fragment(), View.OnClickListener {
 
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
 
+                    // For Android 10 and below, request traditional storage permissions
                     customPermissionLauncher.launch(permissionsForExternalStorage)
 
                 } else {
 
-                    generatePDF()
+                    // For Android 11 and above, request manage external storage permission
+                    if (Environment.isExternalStorageManager()) {
+
+                        generatePDF()
+
+                    } else {
+
+                        requestStoragePermission()
+
+                    }
                 }
 
             } else {
@@ -963,7 +1024,7 @@ class CartFragment : Fragment(), View.OnClickListener {
         // Click on Share button
         else if (v == binding?.mcvShare) {
 
-            val pdfFile = File(requireActivity().getExternalFilesDir(null), "MyFolder/MyDemoList/${pdfName}.pdf")
+            val pdfFile = File(requireActivity().getExternalFilesDir(null), "Invoice/${pdfName}.pdf")
             openPdfFile(pdfFile)
 //            openWebView(pdfFile)
 
@@ -972,7 +1033,7 @@ class CartFragment : Fragment(), View.OnClickListener {
         // Click on print button
         else if (v == binding?.mcvPrint) {
 
-            val pdfFile = File(requireActivity().getExternalFilesDir(null), "MyFolder/MyDemoList/${pdfName}.pdf")
+            val pdfFile = File(requireActivity().getExternalFilesDir(null), "Invoice/${pdfName}.pdf")
             printPdf(pdfFile)
 
         }

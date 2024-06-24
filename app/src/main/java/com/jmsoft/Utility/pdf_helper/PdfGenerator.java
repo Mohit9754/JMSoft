@@ -530,10 +530,12 @@ public class PdfGenerator {
         }
 
         private boolean hasAllPermission(Context context) {
+
             if (context == null) {
                 postFailure("Context is null");
                 return false;
             }
+
             return ContextCompat.checkSelfPermission(context,
                     Manifest.permission.READ_EXTERNAL_STORAGE) ==
                     PackageManager.PERMISSION_GRANTED &&
@@ -545,7 +547,7 @@ public class PdfGenerator {
         @Override
         public void build(PdfGeneratorListener pdfGeneratorListener) {
             this.pdfGeneratorListener = pdfGeneratorListener;
-            if (hasAllPermission(context) || (xmlToPDFLifecycleObserver != null && android.os.Build.VERSION.SDK_INT > 32)) {
+            if (true) {
                 print();
             } else {
                 if (android.os.Build.VERSION.SDK_INT >= 33) {
