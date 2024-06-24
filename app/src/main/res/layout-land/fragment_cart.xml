@@ -772,7 +772,7 @@ android:visibility="gone"
                                 android:fontFamily="@font/montserrat_arabic_medium"
                                 android:paddingHorizontal="@dimen/_22sdp"
                                 android:paddingVertical="@dimen/_5sdp"
-                                android:text="@string/share"
+                                android:text="@string/open"
                                 android:textColor="@color/theme"
                                 android:textSize="12sp" />
 

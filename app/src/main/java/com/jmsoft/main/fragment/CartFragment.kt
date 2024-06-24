@@ -118,7 +118,6 @@ class CartFragment : Fragment(), View.OnClickListener {
     private val pdfName = Utils.generateUUId()
 
 
-
     // Checks All the necessary permission related to External Storage
     private var customPermissionLauncher = registerForActivityResult(
 
@@ -200,6 +199,8 @@ class CartFragment : Fragment(), View.OnClickListener {
     // Generate pdf
     @SuppressLint("SetTextI18n")
     private fun generatePDF() {
+
+        GetProgressBar.getInstance(requireActivity())?.show()
 
         val cardList = Utils.GetSession().userUUID?.let { getCartThroughUserUUID(it) }
         val pdfInvoiceBinding = PdfInvoiceBinding.inflate(LayoutInflater.from(context))
@@ -290,7 +291,27 @@ class CartFragment : Fragment(), View.OnClickListener {
                 }
             })
 
+        // insert in the order table
         insertOrder()
+
+        // remove rfid data of product
+        removeRfIdData()
+
+    }
+
+    // remove rfid data of product
+    private fun removeRfIdData() {
+
+        if (cardList != null) {
+
+            for (cardData in cardList!!) {
+
+                cardData.productUUID?.let { Utils.removeRfidCode(it) }
+            }
+        }
+
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
+
     }
 
     // Open Setting Dialog

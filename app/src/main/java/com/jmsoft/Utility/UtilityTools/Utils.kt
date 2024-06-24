@@ -573,7 +573,11 @@ object Utils {
     // Delete collection uuid from the product table
     fun deleteCollectionUUIDFromProductTable(collectionUUID: String) {
         DatabaseHelper.instance.deleteCollectionUUIDFromProductTable(collectionUUID)
+    }
 
+    // Remove rfid data of product
+    fun removeRfidCode(productUUID: String){
+        DatabaseHelper.instance.removeRfidCode(productUUID)
     }
 
     // Checks is Phone Number Already Exist in the Address table

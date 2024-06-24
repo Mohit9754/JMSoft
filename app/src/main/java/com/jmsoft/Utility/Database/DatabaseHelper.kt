@@ -1039,6 +1039,24 @@ class DatabaseHelper(cx: Context) {
         return productList
     }
 
+    // Remove rfid data of product
+    fun removeRfidCode(productUUID: String) {
+
+        open()
+
+        val rfidValue = ContentValues().apply {
+
+            put(ProductDataModel.Key_productRFIDCode, "")
+        }
+
+        db?.update(
+            ProductDataModel.TABLE_NAME_PRODUCT,
+            rfidValue,
+            "${ProductDataModel.Key_productUUID} == ?",
+            arrayOf(productUUID)
+        )
+    }
+
     // Get All Products that has RFID from the Product table
     @SuppressLint("Range")
     suspend fun getAllProductsThatHasRFID(): ArrayList<ProductDataModel> {

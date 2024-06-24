@@ -136,7 +136,7 @@
     <string name="order_confirmed_successfully">Order Confirmed Successfully!</string>
     <string name="you_can_either_print_receipt_or_share_it_nwith_the_client_easily_from_here">You can either print receipt or share it\nwith the client easily from here</string>
     <string name="print">Print</string>
-    <string name="share">Share</string>
+    <string name="open">Open</string>
     <string name="back_to_main_page">Back to main page</string>
     <string name="remove_from_cart">REMOVE FROM CART</string>
     <string name="please_select_address">Please Select Address</string>
