@@ -102,6 +102,64 @@
         android:layout_marginTop="@dimen/_15sdp"
         android:layout_marginHorizontal="@dimen/_20sdp"
         android:weightSum="4"
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvDateAr"
+            android:textSize="30sp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:textColor="@color/dark_blue"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="تاريخ :"
+            android:textSize="30sp"
+            android:textColor="@color/dark_blue"
+            tools:ignore="HardcodedText" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="4"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_4sdp"
+                android:id="@+id/tvClientNameAr"
+                android:textSize="30sp"
+                android:textAlignment="textEnd"
+                android:layout_weight="4"
+                android:textColor="@color/dark_blue"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="عميل :"
+                android:textSize="30sp"
+                android:layout_marginStart="@dimen/_4sdp"
+                android:textColor="@color/dark_blue"
+                tools:ignore="HardcodedText" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/_350sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:weightSum="4"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -121,7 +179,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mohit Chouhan"
                 android:layout_marginStart="@dimen/_4sdp"
                 android:id="@+id/tvClientName"
                 android:textSize="30sp"
@@ -133,10 +190,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/date"
+            android:text="Date :"
             android:textSize="30sp"
             android:textColor="@color/dark_blue"
-            />
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -190,10 +247,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/amount"
+                        android:text="Amount"
                         android:textSize="25sp"
                         android:textColor="@color/dark_blue"
-                        />
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -221,10 +278,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/price"
+                        android:text="Price"
                         android:textSize="25sp"
                         android:textColor="@color/dark_blue"
-                        />
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -252,10 +309,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/weight_en"
+                        android:text="Weight"
                         android:textSize="25sp"
                         android:textColor="@color/dark_blue"
-                        />
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -284,10 +341,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/carat_en"
+                        android:text="Carat"
                         android:textSize="25sp"
                         android:textColor="@color/dark_blue"
-                        />
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -316,10 +373,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/designation_en"
+                        android:text="Designation"
                         android:textSize="25sp"
                         android:textColor="@color/dark_blue"
-                        />
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -348,10 +405,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/n_p_en"
+                        android:text="N.P"
                         android:textSize="25sp"
                         android:textColor="@color/dark_blue"
-                        />
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -404,7 +461,7 @@
                     android:layout_height="wrap_content"
                     android:text="45"
                     android:id="@+id/tvTotalAmount"
-                    android:textSize="22sp"
+                    android:textSize="20sp"
                     android:textColor="@color/dark_blue"
                     />
 
@@ -432,9 +489,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_amount"
+                    android:text="Total amount"
                     android:textSize="25sp"
-                    android:textColor="@color/dark_blue" />
+                    android:textColor="@color/dark_blue"
+                    tools:ignore="HardcodedText" />
 
             </LinearLayout>
 

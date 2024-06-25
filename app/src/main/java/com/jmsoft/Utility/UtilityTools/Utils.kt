@@ -331,7 +331,45 @@ object Utils {
     // Get thousand separate price
     fun getThousandSeparate(price: Double): String {
         val numberFormat = NumberFormat.getNumberInstance(Locale.ENGLISH)
-        return numberFormat.format(price).toString()
+        numberFormat.maximumFractionDigits = 2
+        return numberFormat.format(price)
+    }
+
+    fun removeThousandSeparators(formattedNumber: String): String {
+        return formattedNumber.replace(",", "")
+    }
+
+    fun thousandSeparatorEditText(editText: EditText) {
+
+        val currencyFormat = NumberFormat.getNumberInstance(Locale.getDefault())
+
+        // Set up TextWatcher to format input with thousand separators
+        editText.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                editText.removeTextChangedListener(this)
+
+                // Remove previous formatting
+                val cleanString = s.toString().replace("[,.]".toRegex(), "")
+
+                // Format the clean input with thousand separators
+                val formatted = currencyFormat.format(cleanString.toDoubleOrNull() ?: 0.0)
+                editText.setText(formatted)
+                editText.setSelection(formatted.length) // Move cursor to the end of text
+
+                editText.addTextChangedListener(this)
+            }
+        })
+
+    }
+
+    fun formatNumberWithoutScientificNotation(number: Double): String {
+        val decimalFormat = DecimalFormat("#,###.##")
+        return decimalFormat.format(number)
     }
 
     // Get Status bar height
@@ -1417,14 +1455,17 @@ object Utils {
         return Uri.parse(path)
     }
 
-    val currentDate: String
-        get() {
-            val c = Calendar.getInstance().time
-            E("Current time => $c")
-            val df =
-                SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-            return df.format(c)
-        }
+//    val currentDate: String
+//        get() {
+//
+//        }
+    fun currentDate():String {
+        val c = Calendar.getInstance().time
+        E("Current time => $c")
+        val df =
+            SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
+        return df.format(c)
+    }
 
     fun prettyCount(number: Number): String {
         val suffix = charArrayOf(' ', 'k', 'M', 'B', 'T', 'P', 'E')

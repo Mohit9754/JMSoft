@@ -246,10 +246,10 @@
     <string name="column_does_not_exist">Column %1$s does not exist</string>
     <string name="we_need_your_permission_to_access_storage_services_in_order_to_provide_the_full_functionality_of_our_app_your_cooperation_is_appreciated">نحتاج إلى إذنك للوصول إلى خدمات التخزين من أجل توفير الوظائف الكاملة لتطبيقنا. ونقدر تعاونك.</string>
     <string name="buy_and_sell_all_types_of_jewelry_ar">بيع وشراء جميع أنواع المجوهرات</string>
-    <string name="buy_and_sell_all_types_of_jewelry_en">بيع وشراء جميع أنواع المجوهرات</string>
-    <string name="order_n">رقم الطلب</string>
+    <string name="buy_and_sell_all_types_of_jewelry_en">Buy and sell all types of jewelry</string>
+    <string name="order_n">ORDER N°</string>
     <string name="order_no">الطلب رقم</string>
-    <string name="client">عميل :</string>
+    <string name="client">Client :</string>
     <string name="date">تاريخ :</string>
     <string name="amount_ar">كمية</string>
     <string name="amount">كمية</string>

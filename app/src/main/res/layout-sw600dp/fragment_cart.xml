@@ -628,6 +628,7 @@
 
                 </LinearLayout>
 
+
             </LinearLayout>
 
             <LinearLayout
@@ -695,10 +696,9 @@
 
             </LinearLayout>
 
-
         </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/llConfirmation"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -711,8 +711,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_25sdp"
                 android:orientation="horizontal"
+                android:layout_centerInParent="true"
                 tools:ignore="UselessParent">
 
                 <LinearLayout
@@ -740,7 +740,7 @@
                         android:textSize="14sp" />
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_9sdp"
                         android:orientation="horizontal">
@@ -787,6 +787,7 @@
                                 android:paddingHorizontal="@dimen/_22sdp"
                                 android:paddingVertical="@dimen/_5sdp"
                                 android:text="@string/open"
+                                android:id="@+id/tvOpen"
                                 android:textColor="@color/theme"
                                 android:textSize="12sp" />
 
@@ -816,7 +817,7 @@
 
             </LinearLayout>
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </RelativeLayout>
     

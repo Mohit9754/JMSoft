@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:text="45"
                     android:id="@+id/tvTotalAmount"
-                    android:textSize="22sp"
+                    android:textSize="20sp"
                     android:textColor="@color/dark_blue"
                     tools:ignore="SmallSp" />
 
@@ -85,9 +85,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_amount"
+                    android:text="Total amount"
                     android:textSize="25sp"
-                    android:textColor="@color/dark_blue" />
+                    android:textColor="@color/dark_blue"
+                    tools:ignore="HardcodedText" />
 
             </LinearLayout>
 

@@ -48,11 +48,18 @@ class PdfInvoiceAdapter(
             this.cardData = cardData
             this.productData = Utils.getProductThroughProductUUID(cardData.productUUID.toString())
 
-            binding.tvAmount.text = (productData.productPrice?.let {
-                cardData.productQuantity?.times(
-                    it
-                )
-            }).toString()
+            if (productData.productPrice != null && cardData.productQuantity != null) {
+
+                val totalAmount = productData.productPrice!! * cardData.productQuantity!!
+
+//                Utils.E("total amount $totalAmount")
+//                val formattedAmount = String.format("%,.2f", totalAmount)
+//                Utils.E("total amount $formattedAmount")
+
+                binding.tvAmount.text = Utils.getThousandSeparate(totalAmount)
+
+            }
+
 
             binding.tvPrice.text = productData.productPrice?.let { Utils.getThousandSeparate(it) }
             binding.tvWeight.text = productData.productWeight?.let { Utils.getThousandSeparate(it) }
@@ -60,7 +67,7 @@ class PdfInvoiceAdapter(
             binding.tvDescription.text = productData.productName.toString()
             binding.tvNP.text = cardData.productQuantity.toString()
 
-            Utils.TotalAmount.addAmount(binding.tvAmount.text.toString().toDouble())
+            Utils.TotalAmount.addAmount(Utils.removeThousandSeparators(binding.tvAmount.text.toString()).toDouble())
 
             if (position+1 == cartDataList.size) {
 

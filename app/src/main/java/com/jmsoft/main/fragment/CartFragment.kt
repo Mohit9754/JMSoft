@@ -37,6 +37,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,6 +54,7 @@ import com.jmsoft.Utility.pdf_helper.PdfGenerator
 import com.jmsoft.Utility.pdf_helper.PdfGeneratorListener
 import com.jmsoft.Utility.pdf_helper.SuccessResponse
 import com.jmsoft.basic.UtilityTools.Constants.Companion.address
+import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.confirmation
 import com.jmsoft.basic.UtilityTools.Constants.Companion.firstName
 import com.jmsoft.basic.UtilityTools.Constants.Companion.information
@@ -83,6 +85,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.Locale
 
 
 //import com.jmsoft.package.name.BuildConfig
@@ -210,7 +213,11 @@ class CartFragment : Fragment(), View.OnClickListener {
         pdfInvoiceBinding.tvClientName.text =
             "${selectedAddressData?.firstName} ${selectedAddressData?.lastName}"
 
-        pdfInvoiceBinding.tvDate.text = Utils.currentDate
+        pdfInvoiceBinding.tvClientNameAr.text =
+            "${selectedAddressData?.firstName} ${selectedAddressData?.lastName}"
+
+        pdfInvoiceBinding.tvDate.text = Utils.currentDate()
+        pdfInvoiceBinding.tvDateAr.text = Utils.currentDate()
 
         val viewList = mutableListOf<View>()
 
@@ -552,10 +559,10 @@ class CartFragment : Fragment(), View.OnClickListener {
     //set the Clicks , initialization and setup
     private suspend fun init() {
 
-        //Set underline on Back to Home page
+        // Set underline on Back to Home page
         setUnderLine()
 
-        //Setting the Selector on Material Card View When EditText has focus
+        // Setting the Selector on Material Card View When EditText has focus
         binding?.etFirstName?.let {
             binding?.mcvFirstName?.let { it1 ->
                 setFocusChangeLis(
