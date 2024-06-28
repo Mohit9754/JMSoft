@@ -235,6 +235,9 @@ interface Constants {
         const val productIndex = "productIndex"
         const val totalProduct = "totalProduct"
 
+        const val pdfName = "pdfName"
+        const val path = "Invoice/"
+
         const val collectionUUID = "collectionUUID"
         const val productSectionHeight = "productSectionHeight"
 

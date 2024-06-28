@@ -324,7 +324,7 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
             override fun onDeviceNotFound() {
 
                 if (requireActivity() != null) {
-                    Utils.T(requireActivity(),"No device is Connected ")
+                    Utils.T(requireActivity(),getString(R.string.no_device_is_connected))
                 }
             }
         })

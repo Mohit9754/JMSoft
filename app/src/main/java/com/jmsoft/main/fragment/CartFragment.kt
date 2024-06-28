@@ -53,12 +53,14 @@ import com.jmsoft.Utility.pdf_helper.FailureResponse
 import com.jmsoft.Utility.pdf_helper.PdfGenerator
 import com.jmsoft.Utility.pdf_helper.PdfGeneratorListener
 import com.jmsoft.Utility.pdf_helper.SuccessResponse
+import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.address
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.confirmation
 import com.jmsoft.basic.UtilityTools.Constants.Companion.firstName
 import com.jmsoft.basic.UtilityTools.Constants.Companion.information
 import com.jmsoft.basic.UtilityTools.Constants.Companion.lastName
+import com.jmsoft.basic.UtilityTools.Constants.Companion.path
 import com.jmsoft.basic.UtilityTools.Constants.Companion.phoneNumber
 import com.jmsoft.basic.UtilityTools.Constants.Companion.state
 import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
@@ -73,6 +75,7 @@ import com.jmsoft.databinding.FragmentCartBinding
 import com.jmsoft.databinding.PdfInvoiceBinding
 import com.jmsoft.databinding.PdfInvoiceSecondBinding
 import com.jmsoft.main.activity.DashboardActivity
+import com.jmsoft.main.activity.PdfViewActivity
 import com.jmsoft.main.adapter.CartAddressAdapter
 import com.jmsoft.main.adapter.CartListAdapter
 import com.jmsoft.main.adapter.PdfInvoiceAdapter
@@ -85,12 +88,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.Locale
 
-
-//import com.jmsoft.package.name.BuildConfig
-
-//import com.jmsoft.BuildConfig
 
 
 class CartFragment : Fragment(), View.OnClickListener {
@@ -263,7 +261,7 @@ class CartFragment : Fragment(), View.OnClickListener {
             .fromViewSource()
             .fromViewList(viewList)
             .setFileName(pdfName)
-            .setFolderNameOrPath("Invoice/")
+            .setFolderNameOrPath(path)
             .actionAfterPDFGeneration(PdfGenerator.ActionAfterPDFGeneration.NONE)
             .build ( object : PdfGeneratorListener() {
 
@@ -649,8 +647,8 @@ class CartFragment : Fragment(), View.OnClickListener {
         // Set Click on Radio Button
         binding?.llRadioButton?.setOnClickListener(this)
 
-        // Set Click on Share Button
-        binding?.mcvShare?.setOnClickListener(this)
+        // Set Click on Open Button
+        binding?.mcvOpen?.setOnClickListener(this)
 
         // Set Click on Print Button
         binding?.mcvPrint?.setOnClickListener(this)
@@ -936,31 +934,20 @@ class CartFragment : Fragment(), View.OnClickListener {
     }
 
     // open pdf
-    private fun openPdfFile(file: File) {
-
-        val path = Uri.fromFile(file)
-        val pdfOpenIntent = Intent(Intent.ACTION_VIEW)
-        pdfOpenIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        pdfOpenIntent.setDataAndType(path, "application/pdf")
-
-        // Verify if there are apps available to handle the intent
-        val packageManager = requireContext().packageManager
-        val activities = packageManager.queryIntentActivities(pdfOpenIntent, 0)
-        val isIntentSafe = activities.isNotEmpty()
-
-        if (isIntentSafe) {
-
-            try {
-                startActivity(pdfOpenIntent)
-            } catch (_: ActivityNotFoundException) {
-                // Handle the case where no activity can handle the PDF intent
-                Utils.T(requireActivity(), getString(R.string.no_application_available_to_view_pdf))
-            }
-        } else {
-            // No app available to handle the intent
-            Utils.T(requireActivity(), getString(R.string.no_application_available_to_view_pdf))
-        }
-    }
+//    private fun openPdfFile() {
+//
+//        binding?.rlCartManagement?.visibility  = View.GONE
+//        binding?.pdfView?.visibility = View.VISIBLE
+//
+//        val pdfFile = File(requireActivity().getExternalFilesDir(null), "${Constants.path}${pdfName}.pdf")
+//
+//        binding?.pdfView?.fromFile(pdfFile)
+//            ?.defaultPage(1)
+//            ?.showMinimap(false)
+//            ?.enableSwipe(true)
+//            ?.load();
+//
+//    }
 
     //Handle all the clicks
     @SuppressLint("SetTextI18n")
@@ -1050,18 +1037,21 @@ class CartFragment : Fragment(), View.OnClickListener {
         }
 
         // Click on Share button
-        else if (v == binding?.mcvShare) {
+        else if (v == binding?.mcvOpen) {
 
-            val pdfFile = File(requireActivity().getExternalFilesDir(null), "Invoice/${pdfName}.pdf")
-            openPdfFile(pdfFile)
-//            openWebView(pdfFile)
+//            val pdfFile = File(requireActivity().getExternalFilesDir(null), "$path${pdfName}.pdf")
+//            openPdfFile()
+
+            val intent = Intent(requireActivity(),PdfViewActivity::class.java)
+            intent.putExtra(Constants.pdfName,pdfName)
+            startActivity(intent)
 
         }
 
         // Click on print button
         else if (v == binding?.mcvPrint) {
 
-            val pdfFile = File(requireActivity().getExternalFilesDir(null), "Invoice/${pdfName}.pdf")
+            val pdfFile = File(requireActivity().getExternalFilesDir(null), "$path${pdfName}.pdf")
             printPdf(pdfFile)
 
         }

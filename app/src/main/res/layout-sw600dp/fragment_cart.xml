@@ -770,7 +770,7 @@
                         </com.google.android.material.card.MaterialCardView>
 
                         <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/mcvShare"
+                            android:id="@+id/mcvOpen"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:cardBackgroundColor="@color/white"
@@ -820,6 +820,5 @@
         </RelativeLayout>
 
     </RelativeLayout>
-    
 
 </RelativeLayout>

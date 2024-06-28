@@ -96,6 +96,12 @@
         android:label="Contact"
         tool:layout="@layout/fragment_contact"/>
 
+    <fragment
+        android:id="@+id/pdfView"
+        android:name="com.jmsoft.main.fragment.PdfViewFragment"
+        android:label="Pdf_view"
+        tool:layout="@layout/fragment_pdf_view"/>
+
 
 
 </navigation>

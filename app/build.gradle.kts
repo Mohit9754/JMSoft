@@ -91,6 +91,8 @@ dependencies {
 
     implementation("com.google.zxing:core:3.4.1")
 
+    implementation ("com.joanzapata.pdfview:android-pdfview:1.0.4@aar")
+
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
 
@@ -98,8 +100,6 @@ dependencies {
     implementation ("com.karumi:dexter:6.2.2")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.8.1")
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
-//    implementation ("com.github.barteksc:android-pdf-viewer:3.2.0-beta.1")
-//    implementation ("com.github.barteksc:android-pdf-viewer:2.8.2")
 
 
 //    implementation (files("libs/poishadow-all.jar"))

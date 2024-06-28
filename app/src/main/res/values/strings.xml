@@ -279,6 +279,7 @@
     <string name="contact_updated_successfully">Contact updated successfully</string>
     <string name="_016862">016862</string>
     <string name="no_application_available_to_view_pdf">No application available to view PDF</string>
+    <string name="pdf_name_is_null">Pdf name is null</string>
 
 
 </resources>
