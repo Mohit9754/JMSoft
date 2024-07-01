@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.main.`interface`.PairStatusCallback
 import com.rscja.deviceapi.RFIDWithUHFBLE
 import com.rscja.deviceapi.entity.UHFTAGInfo
 import com.rscja.deviceapi.interfaces.IUHFInventoryCallback
@@ -41,21 +42,22 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
         }
     }
 
-    fun onResume(macAddress: String) {
-        initRFID(macAddress)
+    fun onResume(macAddress: String,pairStatusCallback: PairStatusCallback) {
+        initRFID(macAddress,pairStatusCallback)
     }
 
-    fun onPause() {
-        stopRFIDScan()
+    fun onPause(pairStatusCallback:PairStatusCallback) {
+        stopRFIDScan(pairStatusCallback)
     }
 
-    private fun initRFID(macAddress: String) {
+    private fun initRFID(macAddress: String,pairStatusCallback:PairStatusCallback) {
 
         if (mUHF?.init(context) != true) {
             val errorMessage = "Failed to initialize RFID reader"
             Utils.E(errorMessage)
             Utils.T(context, errorMessage)
             callback.onError(errorMessage)
+            pairStatusCallback.pairFail()
             return
         }
 
@@ -71,11 +73,11 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
         val thread: Thread = object : Thread() {
             override fun run() {
                 try {
-                    sleep(2000)
+                    sleep(3000)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 } finally {
-                    startRFIDScan()
+                    startRFIDScan(pairStatusCallback)
                 }
             }
         }
@@ -83,26 +85,30 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
         thread.start()
     }
 
-    fun startRFIDScan() {
+    fun startRFIDScan(pairStatusCallback: PairStatusCallback) {
 
         if (!mIsScanning && (mUHF?.startInventoryTag() == true)) {
             mHandler?.sendEmptyMessage(3) // Notify scanning started
+            pairStatusCallback.pairSuccess()
         } else {
             val errorMessage = "Failed to start RFID scanning"
+            pairStatusCallback.pairFail()
             Utils.E(errorMessage)
             //  Utils.T(context, errorMessage)
             callback.onError(errorMessage)
         }
     }
 
-    fun stopRFIDScan() {
+    fun stopRFIDScan(pairStatusCallback:PairStatusCallback) {
         if (mIsScanning) {
             mUHF?.disconnect()
             if (mUHF?.stopInventory() == true) {
                 mHandler?.sendEmptyMessage(2) // Notify scanning stopped
+                pairStatusCallback.pairSuccess()
             }
         } else {
             val errorMessage = "Failed to stop RFID scanning"
+            pairStatusCallback.pairFail()
             Utils.E(errorMessage)
             //   Utils.T(context, errorMessage)
             callback.onError(errorMessage)

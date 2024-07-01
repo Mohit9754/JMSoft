@@ -278,6 +278,9 @@
     <string name="contact_updated_successfully">تم تحديث جهة الاتصال بنجاح</string>
     <string name="_016862">016862</string>
     <string name="no_application_available_to_view_pdf">لا يوجد تطبيق متاح لعرض PDF</string>
+    <string name="pdf_name_is_null">Pdf name is null</string>
+    <string name="no_column_match">No Column match %1$s</string>
+    <string name="column_name_does_not_match">Column name %1$s does not match</string>
 
 
 

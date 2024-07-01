@@ -73,13 +73,17 @@ class ProductListAdapter(
             val productImages = barcodeImageUri.split(",")
 
             for (product in productImages) {
-                Utils.deleteImageFromInternalStorage(context,product)
+
+                if (product != Constants.Default_Image) {
+
+                    Utils.deleteImageFromInternalStorage(context,product)
+                }
             }
 
             productDataList.removeAt(position)
             Utils.deleteProduct(productUUID)
 
-            ProductUUIDList.deleteUUID(productUUID)
+//            ProductUUIDList.deleteUUID(productUUID)
 
             Utils.T(context, context.getString(R.string.deleted_successfully))
 
@@ -123,7 +127,7 @@ class ProductListAdapter(
             this.productData = productData
             this.position = position
 
-            createProductUUIDList()
+//            createProductUUIDList()
 
             // Checks state of the product list if it is for showing or adding in the collection
             checkState()
@@ -169,20 +173,19 @@ class ProductListAdapter(
 
         }
 
-        private fun createProductUUIDList() {
-
-            if (position == 0) {
-                ProductUUIDList.clearList()
-            }
-            productData.productUUID?.let { ProductUUIDList.addUUID(it) }
-
-        }
+//        private fun createProductUUIDList() {
+//
+//            if (position == 0) {
+//                ProductUUIDList.clearList()
+//            }
+//            productData.productUUID?.let { ProductUUIDList.addUUID(it) }
+//
+//        }
 
         // Dismiss progress bar
         private fun dismissProgressBar() {
 
             if (position+1 == productDataList.size ) {
-
 
                 // Dismiss progress bar
                 GetProgressBar.getInstance(context)?.dismiss()

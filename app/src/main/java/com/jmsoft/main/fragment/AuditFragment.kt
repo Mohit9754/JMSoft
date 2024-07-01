@@ -36,12 +36,14 @@ import com.jmsoft.main.adapter.ExpectedAdapter
 import com.jmsoft.main.adapter.ScannedAdapter
 import com.jmsoft.main.adapter.UnknownAdapter
 import com.jmsoft.main.`interface`.ConnectedDeviceCallback
+import com.jmsoft.main.`interface`.PairStatusCallback
 import com.rscja.deviceapi.entity.UHFTAGInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
+class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
     // Permission for above 11 version
     @RequiresApi(Build.VERSION_CODES.S)
@@ -117,7 +119,7 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
 
     private val binding by lazy { FragmentAuditBinding.inflate(layoutInflater) }
 
-    private var rFIDSetUp:RFIDSetUp? = null
+    private var rFIDSetUp: RFIDSetUp? = null
 
 //    private var isRFIDScanning = false
 
@@ -125,13 +127,15 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
 
     private var unKnownList = ArrayList<String>()
 
-    private var adapterScanned:ScannedAdapter? = null
+    private var adapterScanned: ScannedAdapter? = null
 
-    private var adapterUnKnown:UnknownAdapter? = null
+    private var adapterUnKnown: UnknownAdapter? = null
+
+    private var adapterExpected: ExpectedAdapter? = null
 
     private var expectedProductList = ArrayList<ProductDataModel>()
 
-    override fun onCreateView (
+    override fun onCreateView(
 
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -175,39 +179,78 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
 
     private suspend fun setExpectedRecyclerView() {
 
-        val result =  lifecycleScope.async(Dispatchers.IO) {
-            return@async Utils.getAllProductsThatHasRFID() }
+        val result = lifecycleScope.async(Dispatchers.IO) {
+            return@async Utils.getAllProducts()
+        }
 
         expectedProductList = result.await()
 
-        val adapterExpected = ExpectedAdapter(requireContext(), expectedProductList)
+        adapterExpected = ExpectedAdapter(requireContext(), expectedProductList)
 
         binding.rvExpected?.also {
-            it.layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
+            it.layoutManager =
+                LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
             it.adapter = adapterExpected
         }
 
-        binding.tvTotal?.text  = expectedProductList.size.toString()
+        binding.tvTotal?.text = expectedProductList.size.toString()
 
+//        val list = ArrayList<String>()
+//        list.add("test")
+//        list.add("mohit")
+//        list.add("test2")
+//        list.add("r")
+//
+//        for (data in list) {
+//
+//            if (Utils.isRFIDExist(data) == true) {
+//
+//                val productDataModel = Utils.getProductThroughRFIDCode(data)
+//
+//                if (!scannedProductList.contains(productDataModel)) {
+//
+//                    scannedProductList.add(0,productDataModel)
+//                    adapterScanned?.notifyItemInserted(0)
+////                adapterScanned?.notifyDataSetChanged()
+//
+//                }
+//            }
+//            else {
+//
+//                if (!unKnownList.contains(data)) {
+//                    unKnownList.add(0,data)
+//                    adapterUnKnown?.notifyItemInserted(0)
+//                    //                adapterScanned?.notifyDataSetChanged()
+//                }
+//
+//            }
+//
+//        }
 
     }
 
     private fun setScannedRecyclerView() {
 
+
         adapterScanned = ScannedAdapter(requireContext(), scannedProductList)
 
         binding.rvScanned?.also {
-            it.layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
+            it.layoutManager =
+                LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
             it.adapter = adapterScanned
         }
 
     }
+
     private fun setUnKnownRecyclerView() {
+
+//        unKnownList.add("Hiiiiiiiii")
 
         adapterUnKnown = UnknownAdapter(requireActivity(), unKnownList)
 
         binding.rvUnknown?.also {
-            it.layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
+            it.layoutManager =
+                LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
             it.adapter = adapterUnKnown
         }
     }
@@ -215,13 +258,35 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
     override fun onPause() {
 
         super.onPause()
-        rFIDSetUp?.onPause()
-        binding.ivScan?.setImageResource(R.drawable.icon_play)
+        rFIDSetUp?.onPause(object : PairStatusCallback {
+
+            override fun pairSuccess() {
+
+                lifecycleScope.launch {
+                    changeToPlay()
+                }
+
+
+            }
+
+            override fun pairFail() {
+            }
+
+        })
+//        binding.ivScan?.setImageResource(R.drawable.icon_play)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        rFIDSetUp?.onPause()
+        rFIDSetUp?.onPause(object : PairStatusCallback {
+            override fun pairSuccess() {
+
+            }
+
+            override fun pairFail() {
+            }
+
+        })
         binding.ivScan?.setImageResource(R.drawable.icon_play)
 
     }
@@ -248,8 +313,8 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
 
         GetProgressBar.getInstance(requireActivity())?.dismiss()
 
-        binding.tvMissing?.text =  expectedProductList.size.toString()
-        binding.tvTotal?.text =  expectedProductList.size.toString()
+        binding.tvMissing?.text = expectedProductList.size.toString()
+        binding.tvTotal?.text = expectedProductList.size.toString()
 
         binding.mcvScan?.setOnClickListener(this)
 
@@ -269,65 +334,142 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
         }
     }
 
+    suspend fun changeToPause() {
+        withContext(Dispatchers.Main) {
+            GetProgressBar.getInstance(requireContext())?.dismiss()
+
+            binding.ivScan?.setImageResource(R.drawable.icon_pause)
+        }
+    }
+
+    suspend fun changeToPlay() {
+        withContext(Dispatchers.Main) {
+            GetProgressBar.getInstance(requireContext())?.dismiss()
+
+            binding.ivScan?.setImageResource(R.drawable.icon_play)
+        }
+    }
+
     private fun checkConnectedDevice() {
 
-        BluetoothUtils.getConnectedDevice(requireActivity(),object : ConnectedDeviceCallback {
+        BluetoothUtils.getConnectedDevice(requireActivity(), object : ConnectedDeviceCallback {
 
             @SuppressLint("MissingPermission")
             override fun onDeviceFound(device: ArrayList<BluetoothDevice>) {
 
-//                Utils.T(requireActivity(),"Connected Device is ${device[0].name}")
+
+                Utils.E("Status is ${rFIDSetUp?.getScanningStatus()}")
 
                 if (rFIDSetUp?.getScanningStatus() == true) {
 
-                    rFIDSetUp?.onPause()
+                    Utils.E("Rfid device is not scanning")
+
+                    GetProgressBar.getInstance(requireContext())?.show()
+
+                    rFIDSetUp?.onPause(object : PairStatusCallback {
+
+                        override fun pairSuccess() {
+
+                            Utils.E("Status is success ${rFIDSetUp?.getScanningStatus()}")
+
+                            lifecycleScope.launch {
+                                changeToPlay()
+                            }
+                        }
+
+                        override fun pairFail() {
+
+                            Utils.E("Status is fail ${rFIDSetUp?.getScanningStatus()}")
+
+                        }
+
+                    })
 
                     if (rFIDSetUp?.getScanningStatus() == false) {
 
-                        Utils.T(requireActivity(),"Scanning stopped")
+                        Utils.T(requireActivity(), "Scanning stopped")
                         binding.ivScan?.setImageResource(R.drawable.icon_play)
                     }
 
-                }
-                else {
+                } else {
 
-                    binding.ivScan?.setImageResource(R.drawable.reconnect)
+                    Utils.E("Resume ")
 
-                    val rotateAnimator = ObjectAnimator.ofFloat(binding.ivScan,
-                        Constants.rotation, 360f, 0f)
+                    GetProgressBar.getInstance(requireContext())?.show()
 
-                    rotateAnimator.duration = 1000 // Duration in milliseconds
-                    rotateAnimator.repeatCount = ObjectAnimator.INFINITE // Repeat indefinitely
-                    rotateAnimator.interpolator = LinearInterpolator() // Linear interpolation
-                    rotateAnimator.start()
+                    rFIDSetUp?.onResume(device[0].address, object : PairStatusCallback {
 
-                    rFIDSetUp?.onResume(device[0].address)
+                        override fun pairSuccess() {
 
-                    if (rFIDSetUp?.getScanningStatus() == true) {
 
-                        rotateAnimator.cancel()
+                            lifecycleScope.launch {
+                                changeToPause()
+                            }
 
-                        Utils.T(requireActivity(),"Scanning started")
+//                            Utils.T(requireActivity(),"Scanning started")
 
-                        binding.ivScan?.setImageResource(R.drawable.icon_pause)
-                    }
-                    else {
 
-                        rotateAnimator.cancel()
+                        }
 
-                        binding.ivScan?.setImageResource(R.drawable.icon_play)
+                        override fun pairFail() {
 
-                    }
+                            GetProgressBar.getInstance(requireContext())?.dismiss()
+
+
+                            binding.ivScan?.setImageResource(R.drawable.icon_play)
+
+                        }
+
+                    })
+
+
                 }
             }
 
             override fun onDeviceNotFound() {
 
                 if (requireActivity() != null) {
-                    Utils.T(requireActivity(),getString(R.string.no_device_is_connected))
+                    Utils.T(requireActivity(), "No device is Connected ")
                 }
             }
         })
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    suspend fun refresh() {
+
+        withContext(Dispatchers.Main) {
+
+            GetProgressBar.getInstance(requireContext())?.dismiss()
+
+            binding.ivScan?.setImageResource(R.drawable.icon_play)
+            binding.tvSelected?.text = requireActivity().getString(R.string._0)
+            binding.tvUnknown?.text = requireActivity().getString(R.string._0)
+
+            unKnownList.clear()
+            scannedProductList.clear()
+
+//            lifecycleScope.launch(Dispatchers.Main) {
+//                init()
+//            }
+
+
+            val expectedJob = lifecycleScope.launch(Dispatchers.Main) {
+                setExpectedRecyclerView()
+            }
+
+            adapterUnKnown?.notifyDataSetChanged()
+            adapterScanned?.notifyDataSetChanged()
+
+            expectedJob.join()
+
+
+            GetProgressBar.getInstance(requireActivity())?.dismiss()
+
+            binding.tvMissing?.text = expectedProductList.size.toString()
+            binding.tvTotal?.text = expectedProductList.size.toString()
+
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -339,29 +481,48 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
             lifecycleScope.launch(Dispatchers.Main) {
                 checkAndroidVersionAndLaunchPermission()
             }
-        }
-        else if (v == binding.mcvRefresh) {
+        } else if (v == binding.mcvRefresh) {
 
-            rFIDSetUp?.onPause()
+            Utils.E("Status is ... ${rFIDSetUp?.getScanningStatus()}")
 
-            if (rFIDSetUp?.getScanningStatus() == false) {
+            GetProgressBar.getInstance(requireContext())?.show()
 
-                binding.ivScan?.setImageResource(R.drawable.icon_play)
-                binding.tvSelected?.text = requireActivity().getString(R.string._0)
-                binding.tvUnknown?.text = requireActivity().getString(R.string._0)
+            if (rFIDSetUp?.getScanningStatus() == true) {
+                rFIDSetUp?.onPause(object : PairStatusCallback {
 
-                unKnownList.clear()
-                scannedProductList.clear()
+                    override fun pairSuccess() {
 
-                lifecycleScope.launch(Dispatchers.Main) {
-                    init()
+                        lifecycleScope.launch {
+                            refresh()
+                            refresh()
+
+                            Utils.E("refresh is ... ${rFIDSetUp?.getScanningStatus()}")
+
+                        }
+                    }
+
+                    override fun pairFail() {
+
+                        Utils.E("fail is ... ${rFIDSetUp?.getScanningStatus()}")
+
+                        lifecycleScope.launch {
+                            changeToPlay()
+
+                        }
+                    }
+                })
+
+            } else {
+
+                lifecycleScope.launch {
+                    refresh()
                 }
-
             }
-
         }
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onTagRead(tagInfo: UHFTAGInfo) {
 
@@ -371,40 +532,61 @@ class AuditFragment : Fragment(),View.OnClickListener,RFIDSetUp.RFIDCallback{
 
             val productDataModel = Utils.getProductThroughRFIDCode(tagInfo.epc)
 
-            val result = scannedProductList.any { it.productRFIDCode == productDataModel.productRFIDCode }
+            val result =
+                scannedProductList.any { it.productRFIDCode == productDataModel.productRFIDCode }
 
             if (!result) {
 
 //                Utils.E("product name is ${productDataModel.productName}")
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    expectedProductList.removeIf { it.productRFIDCode == tagInfo.epc }
-                }
-                else{
-                    expectedProductList.forEach { if(it.productRFIDCode == tagInfo.epc){ expectedProductList.remove(it)}  }
+                /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                 }
+                 else{
+                 }*/
+
+//                expectedProductList.forEach { if(it.productRFIDCode == tagInfo.epc){ expectedProductList.remove(it)}  }
+
+                val isRemoved = expectedProductList.removeIf { it.productRFIDCode == tagInfo.epc }
+
+                if (isRemoved) {
+
+                    Utils.E(
+                        " removed from expected list ${
+                            expectedProductList.contains(
+                                productDataModel
+                            )
+                        }"
+                    )
+
+                    scannedProductList.add(0, productDataModel)
+                    adapterScanned?.notifyItemInserted(0)
+                    adapterExpected?.notifyDataSetChanged()
+
+                    binding.tvSelected?.text = scannedProductList.size.toString()
+
+                } else {
+                    Utils.E("not removed from expected list")
+
                 }
 
-                scannedProductList.add(0,productDataModel)
-                adapterScanned?.notifyItemInserted(0)
-
-                binding.tvSelected?.text  = scannedProductList.size.toString()
 //                adapterScanned?.notifyDataSetChanged()
 
             }
-        }
-        else {
+
+        } else {
 
             if (!unKnownList.contains(tagInfo.epc)) {
 
-                unKnownList.add(0,tagInfo.epc)
+                unKnownList.add(0, tagInfo.epc)
                 adapterUnKnown?.notifyItemInserted(0)
-                binding.tvUnknown?.text  = unKnownList.size.toString()
-
+                binding.tvUnknown?.text = unKnownList.size.toString()
+                binding.tvTotal?.text =
+                    (unKnownList.size + scannedProductList.size + expectedProductList.size).toString()
                 // adapterScanned?.notifyDataSetChanged()
             }
         }
 
-        binding.tvMissing?.text =  expectedProductList.size.toString()
+        binding.tvMissing?.text = expectedProductList.size.toString()
     }
 
     override fun onError(message: String) {

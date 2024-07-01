@@ -1,9 +1,16 @@
 package com.jmsoft.Utility.UtilityTools
 
+import com.jmsoft.basic.UtilityTools.Utils
+import okio.Utf8
+
 object ProductUUIDList {
 
     private var productUUIDList =  ArrayList<String>()
     private var addStatus:Boolean = false
+
+    fun getData(){
+        productUUIDList = Utils.getAllProductsUUID()
+    }
 
     fun setStatus(addStatus:Boolean){
         this.addStatus = addStatus

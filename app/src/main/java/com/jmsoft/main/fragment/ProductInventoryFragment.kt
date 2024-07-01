@@ -64,6 +64,7 @@ import com.jmsoft.main.adapter.MetalTypeDropdownAdapter
 import com.jmsoft.main.adapter.SelectedCollectionAdapter
 import com.jmsoft.main.`interface`.CollectionStatusCallback
 import com.jmsoft.main.`interface`.ConnectedDeviceCallback
+import com.jmsoft.main.`interface`.PairStatusCallback
 import com.jmsoft.main.`interface`.SelectedCallback
 import com.jmsoft.main.model.SelectedCollectionModel
 import com.rscja.deviceapi.entity.UHFTAGInfo
@@ -678,6 +679,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
     // Check add or edit status
     private suspend fun checkAddOrEditState() {
 
+        ProductUUIDList.getData()
+
         val productUUID = arguments?.getString(Constants.productUUID)
 
         if (productUUID != null) {
@@ -760,6 +763,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         } else {
 
+            val productRfidCode = arguments?.getString(Constants.rfidCode)
+
+            if (productRfidCode != null) {
+                binding.etRFIDCode.setText(productRfidCode)
+            }
+
             val productListSize = ProductUUIDList.getSize()
 
             productUUIDIndex = productListSize
@@ -776,6 +785,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                 getString(R.string.page_to, (productListSize+1).toString(), (productListSize+1).toString())
 
             GetProgressBar.getInstance(requireActivity())?.dismiss()
+
         }
 
     }
@@ -790,18 +800,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         job.join()
 
+
         //Initialize RFID
         rfidSetUp = RFIDSetUp(requireContext(), this)
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(requireContext() as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_CODE)
-//            } else {
-//                rfidSetUp.onResume()
-//            }
-//        } else {
-//            rfidSetUp.onResume()
-//        }
 
         // Set focus change listener
         setFocusChangeListener()
@@ -836,7 +837,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         binding.llMetalType.setOnClickListener(this)
 
         binding.mcvCollection.setOnClickListener(this)
-
 
         binding.llCategory.setOnClickListener(this)
 
@@ -973,8 +973,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             val productImages = productDataModel.productImageUri?.split(",")
 
             if (productImages != null) {
+
                 for (product in productImages) {
-                    Utils.deleteImageFromInternalStorage(requireActivity(), product)
+
+                    if (product != Constants.Default_Image) {
+                        Utils.deleteImageFromInternalStorage(requireActivity(), product)
+                    }
                 }
             }
 
@@ -1613,35 +1617,117 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     private fun checkConnectedDevice() {
 
-        BluetoothUtils.getConnectedDevice(requireActivity(), object : ConnectedDeviceCallback {
+        BluetoothUtils.getConnectedDevice(requireActivity(),object : ConnectedDeviceCallback {
 
             @SuppressLint("MissingPermission")
             override fun onDeviceFound(device: ArrayList<BluetoothDevice>) {
 
-//               Utils.T(requireActivity(),"Scanning started")
-                rfidSetUp?.onResume(device[0].address)
 
+                Utils.E("Status is ${rfidSetUp?.getScanningStatus()}")
+
+                if (rfidSetUp?.getScanningStatus() == true) {
+
+                    GetProgressBar.getInstance(requireContext())?.show()
+
+                    rfidSetUp?.onPause(object: PairStatusCallback {
+
+                        override fun pairSuccess() {
+
+                            GetProgressBar.getInstance(requireContext())?.dismiss()
+
+
+
+                            Utils.E("Status is success ${rfidSetUp?.getScanningStatus()}")
+
+//                            lifecycleScope.launch {
+//                                changetoplay()
+//                            }
+                        }
+
+                        override fun pairFail() {
+
+                            GetProgressBar.getInstance(requireContext())?.dismiss()
+                            Utils.E("Status is fail ${rfidSetUp?.getScanningStatus()}")
+
+                        }
+
+                    })
+
+                    if (rfidSetUp?.getScanningStatus() == false) {
+
+                        Utils.T(requireActivity(),"Scanning stopped")
+//                        binding.ivScan?.setImageResource(R.drawable.icon_play)
+                    }
+
+                }
+
+                else {
+
+                    GetProgressBar.getInstance(requireContext())?.show()
+
+                    rfidSetUp?.onResume(device[0].address,object: PairStatusCallback {
+
+                        override fun pairSuccess() {
+
+                            GetProgressBar.getInstance(requireContext())?.dismiss()
+
+
+
+//                            Utils.T(requireActivity(),"Scanning started")
+
+
+                        }
+
+                        override fun pairFail() {
+
+                            GetProgressBar.getInstance(requireContext())?.dismiss()
+
+
+//                            binding.ivScan?.setImageResource(R.drawable.icon_play)
+
+                        }
+
+                    })
+
+
+                }
             }
 
             override fun onDeviceNotFound() {
 
                 if (requireActivity() != null) {
-
-                    Utils.T(requireActivity(), getString(R.string.no_device_is_connected))
+                    Utils.T(requireActivity(),"No device is Connected ")
                 }
             }
         })
-
     }
+
 
     override fun onPause() {
         super.onPause()
-        rfidSetUp?.onPause()
+        rfidSetUp?.onPause(object: PairStatusCallback {
+            override fun pairSuccess() {
+
+            }
+
+            override fun pairFail() {
+            }
+
+        })
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        rfidSetUp?.onPause()
+
+        rfidSetUp?.onPause(object: PairStatusCallback{
+            override fun pairSuccess() {
+
+            }
+
+            override fun pairFail() {
+            }
+
+        })
 
     }
 
@@ -1773,7 +1859,17 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
      //   Utils.T(requireContext(), "Tag read: ${tagInfo.epc}")
         binding.etRFIDCode.setText(tagInfo.epc)
 
-        rfidSetUp?.onPause()
+        rfidSetUp?.onPause( object: PairStatusCallback {
+
+            override fun pairSuccess() {
+
+            }
+
+            override fun pairFail() {
+
+            }
+
+        })
 
     }
 

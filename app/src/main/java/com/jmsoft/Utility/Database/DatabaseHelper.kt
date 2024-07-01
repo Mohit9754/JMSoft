@@ -1362,6 +1362,40 @@ class DatabaseHelper(cx: Context) {
         return result
     }
 
+    // Get all products uuid
+    @SuppressLint("Range")
+    fun getAllProductUUID():ArrayList<String> {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT ${ProductDataModel.Key_productUUID} FROM ${ProductDataModel.TABLE_NAME_PRODUCT}",
+            null
+        )
+
+        val productUUIDList = ArrayList<String>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val productUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+
+                productUUIDList.add(productUUID)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+
+        close()
+
+        return productUUIDList
+    }
+
     // Getting the Product through RFIDCode
     @SuppressLint("Range", "Recycle")
     fun getProductThroughRFIDCode(rFIDCode: String): ProductDataModel {

@@ -246,6 +246,7 @@ interface Constants {
         const val rotation = "rotation"
         const val updateInSession = "updateInSession"
         const val rfid_Scanner = "RFID scanner"
+        const val rfidCode = "rfidCode"
         const val rfid_tag_Printer = "RFID tag printer"
         const val ticket_Printer = "Ticket printer"
         const val ENCRYPTION_KEY = "Ticket printer"

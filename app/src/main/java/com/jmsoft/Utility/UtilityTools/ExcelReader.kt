@@ -59,7 +59,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
             }
             if (file.length() > Int.MAX_VALUE) {
 
-                Utils.T(context, "File too big")
+                Utils.T(context, "File is too big")
                 excelReadSuccess.onReadFail()
 
 //                excelExceptionListData.postValue("File too big")
@@ -273,7 +273,6 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                             if (cellIter.hasNext()) {
 
                                 val cell: Cell = cellIter.next()
-
 
                                 when (i) {
 

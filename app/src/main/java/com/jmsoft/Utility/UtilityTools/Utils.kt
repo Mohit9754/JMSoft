@@ -582,6 +582,11 @@ object Utils {
         return DatabaseHelper.instance.isPhoneNumberExist(phoneNumber)
     }
 
+    // Get all products uuid
+    fun getAllProductsUUID(): ArrayList<String> {
+        return DatabaseHelper.instance.getAllProductUUID()
+    }
+
     // Checks if rFIDCode Exist in the product table
     fun isRFIDExist(rFIDCode: String): Boolean? {
         return DatabaseHelper.instance.isRFIDExist(rFIDCode)
