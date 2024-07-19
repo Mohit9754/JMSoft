@@ -280,6 +280,16 @@
     <string name="_016862">016862</string>
     <string name="no_application_available_to_view_pdf">No application available to view PDF</string>
     <string name="pdf_name_is_null">Pdf name is null</string>
+    <string name="sales">Sales</string>
+    <string name="new_order">New order</string>
+    <string name="confirm_order">Confirm order</string>
+    <string name="qty">qty :</string>
+    <string name="order_id"># Order id :</string>
+    <string name="order_is_empty">Order is empty</string>
+    <string name="address_">Address :</string>
+    <string name="file_not_found">File not found</string>
+    <string name="purchasing_and_nsales">Purchasing and\n sales</string>
+    <string name="save_to_later">Save to later</string>
 
 
 </resources>

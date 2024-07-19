@@ -30,7 +30,14 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.CancellationSignal
 import android.os.Environment
+import android.os.ParcelFileDescriptor
+import android.print.PageRange
+import android.print.PrintAttributes
+import android.print.PrintDocumentAdapter
+import android.print.PrintDocumentInfo
+import android.print.PrintManager
 import android.provider.MediaStore
 import android.provider.Settings
 import android.text.Editable
@@ -95,6 +102,7 @@ import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.text.DecimalFormat
@@ -128,6 +136,7 @@ object Utils {
 
         private var flag = true
         fun getFlag(): Boolean {
+
             val flag = this.flag
             this.flag = false
             return flag
@@ -538,6 +547,9 @@ object Utils {
         }
     }
 
+    fun formatToSixDigitNumber(number: Int): String {
+        return String.format("%06d", number)
+    }
 
     // Extract the  current language
     fun getCurrentLanguage(): String {
@@ -764,6 +776,11 @@ object Utils {
         return DatabaseHelper.instance.getCollectionThroughUUID(collectionUUID)
     }
 
+    // update quantity in order table
+    fun updateQuantityInOrder(orderDataModel: OrderDataModel) {
+        DatabaseHelper.instance.updateQuantityInOrder(orderDataModel)
+    }
+
     // Get All Category of the Particular Collection
     fun getAllCategoryOfParticularCollection(collectionUUID: String): ArrayList<CategoryDataModel> {
         return DatabaseHelper.instance.getAllCategoryOfParticularCollection(collectionUUID)
@@ -878,7 +895,6 @@ object Utils {
         return DatabaseHelper.instance.getAllProductsAcceptProduct(productUUID)
     }
 
-
     /* Get All Products from the Product table Accept the collection */
      suspend fun getAllProductsAcceptCollection(collectionUUID: String): ArrayList<ProductDataModel> {
         return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUID)
@@ -889,12 +905,12 @@ object Utils {
         return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUIDList)
     }
 
-    //Getting the Category Name through Category UUID
+    // Getting the Category Name through Category UUID
     fun getCategoryNameThroughCategoryUUID(categoryUUID: String): String? {
         return DatabaseHelper.instance.getCategoryNameThroughCategoryUUID(categoryUUID)
     }
 
-    //Getting the MetalType Name through MetalType UUID
+    // Getting the MetalType Name through MetalType UUID
     fun getMetalTypeNameThroughMetalTypeUUID(metalTypeUUID: String): String? {
         return DatabaseHelper.instance.getMetalTypeNameThroughMetalTypeUUID(metalTypeUUID)
     }
@@ -924,14 +940,236 @@ object Utils {
         return DatabaseHelper.instance.insertOrder(orderDataModel)
     }
 
+    // get  order of particular user
+    fun getOrderByUUID(orderUUID: String): OrderDataModel {
+        return DatabaseHelper.instance.getOrderByUUID(orderUUID)
+    }
+
+    // get orders of particular user
+    fun getOrders(userUUID: String,status:String): ArrayList<OrderDataModel> {
+
+        return DatabaseHelper.instance.getOrders(userUUID,status)
+    }
+
+    // print pdf
+     fun printPdf(context: Context,file: File) {
+
+        val printManager = context.getSystemService(Context.PRINT_SERVICE) as PrintManager
+        val jobName = context.getString(R.string.app_name) + " Document"
+
+        printManager.print(jobName, object : PrintDocumentAdapter() {
+
+            override fun onLayout(
+
+                oldAttributes: PrintAttributes?,
+                newAttributes: PrintAttributes?,
+                cancellationSignal: CancellationSignal?,
+                callback: LayoutResultCallback?,
+                extras: Bundle?
+            ) {
+                if (cancellationSignal?.isCanceled == true) {
+                    callback?.onLayoutCancelled()
+                    return
+                }
+
+                val pdi = PrintDocumentInfo.Builder(file.name)
+                    .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
+                    .setPageCount(PrintDocumentInfo.PAGE_COUNT_UNKNOWN)
+                    .build()
+
+                callback?.onLayoutFinished(pdi, true)
+            }
+
+            override fun onWrite(
+                pages: Array<out PageRange>?,
+                destination: ParcelFileDescriptor?,
+                cancellationSignal: CancellationSignal?,
+                callback: WriteResultCallback?
+            ) {
+                var input: FileInputStream? = null
+                var output: FileOutputStream? = null
+
+                try {
+                    input = FileInputStream(file)
+                    output = FileOutputStream(destination?.fileDescriptor)
+
+                    val buf = ByteArray(1024)
+                    var bytesRead: Int
+
+                    while (input.read(buf).also { bytesRead = it } > 0) {
+                        output.write(buf, 0, bytesRead)
+                    }
+
+                    callback?.onWriteFinished(arrayOf(PageRange.ALL_PAGES))
+                } catch (e: IOException) {
+                    callback?.onWriteFailed(e.toString())
+                } finally {
+                    try {
+                        input?.close()
+                        output?.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }, PrintAttributes.Builder()
+            .setMediaSize(PrintAttributes.MediaSize.ISO_A4.asPortrait())
+            .setResolution(PrintAttributes.Resolution("id", "label", 600, 600))
+            .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
+            .build())
+
+    }
+
+    // checks if order exist
+    fun isOrderExist(userUUID: String): Boolean? {
+        return DatabaseHelper.instance.isOrderExist(userUUID)
+    }
+
+    // store OrderUUID in shared preference
+    fun storeOrderUUID(context: Context,orderUUID: String) {
+
+        val sharedPreferences = context.getSharedPreferences(
+            Constants.orderData,
+            AppCompatActivity.MODE_PRIVATE
+        )
+
+        val myEdit = sharedPreferences.edit()
+        myEdit.putString(Constants.orderUUID, orderUUID)
+        myEdit.apply()
+
+    }
+
+    // get Order UUID from shared preference
+    fun getOrderUUID(context: Context): String? {
+
+        val sharedPreferences = context.getSharedPreferences(
+            Constants.orderData,
+            AppCompatActivity.MODE_PRIVATE
+        )
+
+        return  sharedPreferences.getString(Constants.orderUUID,null)
+    }
+
+
+    // insert Order in the order table
+    fun insertOrder(context: Context,productUUID: String,productPrice:Double) {
+
+        val orderUUID = getOrderUUID(context)
+
+        val isOrderExist = orderUUID?.let { isOrderExist(it) }
+
+        if (isOrderExist == true) {
+
+            val orderDataModel = getOrderByUUID(orderUUID)
+
+            val newOrderDataModel = OrderDataModel()
+
+           if (orderDataModel.productUUIDUri?.isEmpty() == true) {
+                newOrderDataModel.productUUIDUri = productUUID
+            }
+            else {
+
+                val productUUIDList = orderDataModel.productUUIDUri?.split(",")?.toMutableList() ?: mutableListOf()
+                // Add the new product UUID to the list
+                productUUIDList.add(productUUID)
+                newOrderDataModel.productUUIDUri = productUUIDList.joinToString().replace(" ", "")
+
+            }
+
+            if (orderDataModel.productQuantityUri?.isEmpty() == true) {
+                newOrderDataModel.productQuantityUri = ""
+            }
+            else {
+
+                val productQuantityList = orderDataModel.productQuantityUri?.split(",")?.toMutableList() ?: mutableListOf()
+                // Add the quantity to the list
+                productQuantityList.add("1")
+                newOrderDataModel.productQuantityUri = productQuantityList.joinToString().replace(" ", "")
+
+            }
+
+            newOrderDataModel.orderUUID = orderDataModel.orderUUID
+
+            newOrderDataModel.totalAmount = orderDataModel.totalAmount?.plus(productPrice)
+
+            updateOrder(newOrderDataModel)
+
+        }
+
+        else {
+
+            val orderDataModel = OrderDataModel()
+
+            orderDataModel.orderUUID = orderUUID
+
+            orderDataModel.orderNo = formatToSixDigitNumber(DatabaseHelper.instance.getTotalOrder()+1)
+
+            orderDataModel.productUUIDUri = productUUID
+
+            orderDataModel.productQuantityUri = ""
+
+            orderDataModel.userUUID = Utils.GetSession().userUUID
+
+            orderDataModel.addressUUID = ""
+
+            orderDataModel.pdfName = ""
+
+            orderDataModel.date = ""
+
+            orderDataModel.status = Constants.New
+
+            orderDataModel.totalAmount = productPrice
+
+            Utils.insertOrder(orderDataModel)
+
+        }
+    }
+
+    // remove order from the order table
+    fun removeOrder(context: Context,productUUID: String,productPrice: Double) {
+
+        val orderDataModel = getOrderUUID(context)?.let { getOrderByUUID(it) }
+
+        val productUUIDList = orderDataModel?.productUUIDUri?.split(",")?.toMutableList()
+
+        productUUIDList?.remove(productUUID)
+
+        if (productUUIDList?.isEmpty() == true) {
+
+            orderDataModel.orderUUID?.let { DatabaseHelper.instance.deleteOrder(it) }
+
+            // generate new order UUID
+            storeOrderUUID(context, generateUUId())
+
+        }
+        else {
+
+            val newOrderDataModel = OrderDataModel()
+
+            newOrderDataModel.orderUUID = orderDataModel?.orderUUID
+
+            newOrderDataModel.totalAmount = orderDataModel?.totalAmount?.minus(productPrice)
+
+            newOrderDataModel.productUUIDUri = productUUIDList?.joinToString()?.replace(" ", "")
+
+            updateOrder(newOrderDataModel)
+
+        }
+    }
+
+    // update Order in Order table
+    fun updateOrder(orderDataModel: OrderDataModel) {
+        return DatabaseHelper.instance.updateOrder(orderDataModel)
+    }
+
+    // update order status to confirm
+    fun updateOrderStatus(orderDataModel: OrderDataModel) {
+        return DatabaseHelper.instance.updateOrderStatus(orderDataModel)
+    }
+
     // Delete cart from the cart table
     fun deleteCart(userUUID: String) {
         return DatabaseHelper.instance.deleteCart(userUUID)
-    }
-
-    // get row count of order table
-    fun getRowCount(): Int {
-        return DatabaseHelper.instance.getRowCount()
     }
 
     // Update Address in the Address Table
@@ -959,10 +1197,21 @@ object Utils {
         DatabaseHelper.instance.updateProductQuantity(quantity, cardUUID)
     }
 
+    // Update Quantity of Product in Card Table
+    fun updateProductQuantityInCart(userUUID: String,productUUID: String,quantity: Int) {
+        DatabaseHelper.instance.updateProductQuantityInCart(userUUID, productUUID,quantity)
+    }
+
     //Deleting the cart from the cart table
     fun deleteProductFromCart(cardUUID: String) {
         DatabaseHelper.instance.deleteProductFromCart(cardUUID)
     }
+
+    //Deleting the cart from the cart table
+    fun deleteProductFromCart(userUUID: String,productUUID: String) {
+        DatabaseHelper.instance.deleteProductFromCart(userUUID,productUUID)
+    }
+
 
     //Deleting the address from the address table
     fun deleteAddress(addressUUID: String) {
@@ -977,6 +1226,16 @@ object Utils {
     //Get All Address of particular user from the Address table
     fun getAllAddressThroughUserUUID(userUUID: String): ArrayList<AddressDataModel> {
         return DatabaseHelper.instance.getAllAddressThroughUserUUID(userUUID)
+    }
+
+    // is this address uuid exist
+    fun isAddressUUIDExist(addressUUID: String): Boolean? {
+        return DatabaseHelper.instance.isAddressUUIDExist(addressUUID)
+    }
+
+    // get address through address uuid
+    fun getAddressThroughAddressUUID(addressUUID: String): AddressDataModel {
+        return DatabaseHelper.instance.getAddressThroughAddressUUID(addressUUID)
     }
 
     // Get All Contact of particular user from the Contact table

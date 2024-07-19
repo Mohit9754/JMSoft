@@ -30,13 +30,20 @@ class PdfViewActivity : AppCompatActivity() {
 
             val pdfFile = File(activity.getExternalFilesDir(null), "${Constants.path}${pdfName}.pdf")
 
-            binding.pdfView.fromFile(pdfFile)
-                .defaultPage(1)
-                .showMinimap(false)
-                .enableSwipe(true)
-                .swipeVertical(true)
-                .load()
+            if (pdfFile.exists()) {
 
+                binding.pdfView.fromFile(pdfFile)
+                    .defaultPage(1)
+                    .showMinimap(false)
+                    .enableSwipe(true)
+                    .swipeVertical(true)
+                    .load()
+
+            }
+            else {
+
+                Utils.T(this, getString(R.string.file_not_found))
+            }
         }
 
         else {

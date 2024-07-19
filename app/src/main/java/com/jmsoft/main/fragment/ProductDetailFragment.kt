@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CartDataModel
+import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
@@ -80,7 +81,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
         (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.GONE
 
         // set the Clicks , initialization And Setup
-        lifecycleScope.launch(Dispatchers.Main){
+        lifecycleScope.launch(Dispatchers.Main) {
             init()
         }
 
@@ -175,7 +176,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     // Setting the May also like RecyclerView
     private fun setUpMayLikeRecyclerView() {
 
-        val collectionUUIDList = productData.collectionUUID?.split(",")
+        val collectionUUIDList = productData.collectionUUID?.split(",")?.toMutableList()
 
         val productList = if (productData.collectionUUID?.isNotEmpty() == true) {
 
@@ -273,7 +274,6 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
                 it
             )
         }?.let { Utils.getThousandSeparate(it) }
-
 
     }
 
@@ -374,6 +374,13 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
                 isProductExistInCart = false
                 setCartStatus()
 
+                // Delete from order table
+                productData.productUUID?.let { productData.productPrice?.let { it1 ->
+                    Utils.removeOrder(requireContext(),it,
+                        it1
+                    )
+                } }
+
                 Utils.T(requireActivity(), getString(R.string.removed_successfully))
 
             } else {
@@ -388,6 +395,13 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
                 isProductExistInCart = true
                 setCartStatus()
+
+                // insert order
+                productData.productUUID?.let { productData.productPrice?.let { it1 ->
+                    Utils.insertOrder(requireActivity(),it,
+                        it1,
+                    )
+                } }
 
                 Utils.T(requireActivity(), getString(R.string.added_successfully))
             }

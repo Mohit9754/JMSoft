@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">JM SOft</string>
     <string name="please_check_your_connection">يرجى التحقق من الاتصال الخاص بك</string>
     <string name="ok">نعم</string>
@@ -279,8 +279,19 @@
     <string name="_016862">016862</string>
     <string name="no_application_available_to_view_pdf">لا يوجد تطبيق متاح لعرض PDF</string>
     <string name="pdf_name_is_null">Pdf name is null</string>
-    <string name="no_column_match">No Column match %1$s</string>
-    <string name="column_name_does_not_match">Column name %1$s does not match</string>
+    <string name="no_column_match" tools:ignore="ExtraTranslation">No Column match %1$s</string>
+    <string name="column_name_does_not_match" tools:ignore="ExtraTranslation">Column name %1$s does not match</string>
+    <string name="sales">مبيعات</string>
+
+    <string name="new_order">طلب جديد</string>
+    <string name="confirm_order">أكد الطلب</string>
+    <string name="qty">الكمية :</string>
+    <string name="order_id"># رقم التعريف الخاص بالطلب :</string>
+    <string name="order_is_empty">الطلب فارغ</string>
+    <string name="address_">عنوان :</string>
+    <string name="file_not_found">لم يتم العثور على الملف</string>
+    <string name="purchasing_and_nsales">الشراء و\nالبيعs</string>
+
 
 
 

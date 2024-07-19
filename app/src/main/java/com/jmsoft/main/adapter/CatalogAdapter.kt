@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CartDataModel
+import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
@@ -200,6 +201,7 @@ class CatalogAdapter(
             binding.tvProductName.text = productData.productName
         }
 
+
         //Handles All the Clicks
         override fun onClick(v: View?) {
 
@@ -226,6 +228,14 @@ class CatalogAdapter(
                     isProductExistInCart = false
                     binding.ivCartStatus.setImageResource(R.drawable.icon_cart_white)
 
+                    // Delete from order table
+                    productData.productUUID?.let { productData.productPrice?.let { it1 ->
+                        Utils.removeOrder(context,it,
+                            it1
+                        )
+                    } }
+
+
                 } else if (isProductExistInCart == false) {
 
                     val cardDataModel = CartDataModel()
@@ -241,6 +251,13 @@ class CatalogAdapter(
 
                     // Getting Cart Product UUID for Deleting the product from the cart
                     getCartProductUUID()
+
+                    // insert order
+                    productData.productUUID?.let { productData.productPrice?.let { it1 ->
+                        Utils.insertOrder(context,it,
+                            it1,
+                        )
+                    } }
 
                     Utils.T(context, context.getString(R.string.added_in_the_cart))
 

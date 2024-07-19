@@ -66,6 +66,7 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.state
 import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
 import com.jmsoft.basic.UtilityTools.Constants.Companion.zipCode
 import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.basic.UtilityTools.Utils.GetSession
 import com.jmsoft.basic.UtilityTools.Utils.getCartThroughUserUUID
 import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation
@@ -89,8 +90,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 
-
-
 class CartFragment : Fragment(), View.OnClickListener {
 
     private var binding: FragmentCartBinding? = null
@@ -112,12 +111,15 @@ class CartFragment : Fragment(), View.OnClickListener {
         Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
-    private var content: PdfGenerator.Build? = null
-
-    private var cardList:ArrayList<CartDataModel>? = null
+    private var cardList = ArrayList<CartDataModel>()
 
     private val pdfName = Utils.generateUUId()
 
+    private var cartListAdapter:CartListAdapter? = null
+
+    private var orderUUID:String? = null
+
+    private var newOrderDataModel:OrderDataModel? = null
 
     // Checks All the necessary permission related to External Storage
     private var customPermissionLauncher = registerForActivityResult(
@@ -179,10 +181,8 @@ class CartFragment : Fragment(), View.OnClickListener {
                 generatePDF()
             }
             else {
-
                 requestStoragePermission()
             }
-
         }
     }
 
@@ -195,18 +195,23 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         val intent = Intent(ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri)
         storagePermissionResultLauncher.launch(intent)
+
     }
 
     // Generate pdf
     @SuppressLint("SetTextI18n")
     private fun generatePDF() {
 
+        newOrderDataModel = if (orderUUID != null) Utils.getOrderByUUID(orderUUID!!) else Utils.getOrderUUID(requireActivity())
+            ?.let { Utils.getOrderByUUID(it) }
+
         GetProgressBar.getInstance(requireActivity())?.show()
 
-        val cardList = Utils.GetSession().userUUID?.let { getCartThroughUserUUID(it) }
+//        val cardList = Utils.GetSession().userUUID?.let { getCartThroughUserUUID(it) }
+
         val pdfInvoiceBinding = PdfInvoiceBinding.inflate(LayoutInflater.from(context))
 
-        pdfInvoiceBinding.tvOrderNo.text = Utils.getRowCount().toString()
+        pdfInvoiceBinding.tvOrderNo.text = newOrderDataModel?.orderNo
 
         pdfInvoiceBinding.tvClientName.text =
             "${selectedAddressData?.firstName} ${selectedAddressData?.lastName}"
@@ -219,40 +224,37 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         val viewList = mutableListOf<View>()
 
-        if (cardList != null) {
+        if (10 >= cardList.size) {
 
-            if (10 >= cardList.size) {
+            val pdfInvoiceAdapter = PdfInvoiceAdapter(requireActivity(), cardList,pdfInvoiceBinding.tvTotalAmount,null)
+            pdfInvoiceBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
+            pdfInvoiceBinding.rvItems.setAdapter(pdfInvoiceAdapter)
 
-                val pdfInvoiceAdapter = PdfInvoiceAdapter(requireActivity(), cardList,pdfInvoiceBinding.tvTotalAmount,null)
-                pdfInvoiceBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
-                pdfInvoiceBinding.rvItems.setAdapter(pdfInvoiceAdapter)
+            viewList.add(pdfInvoiceBinding.root)
 
-                viewList.add(pdfInvoiceBinding.root)
+        }
+        else {
 
-            }
-            else {
+            pdfInvoiceBinding.mcvTotalPrice.visibility = View.GONE
 
-                pdfInvoiceBinding.mcvTotalPrice.visibility = View.GONE
+            val chunkedList = cardList.chunked(10)
 
-                val chunkedList = cardList.chunked(10)
+            val pdfInvoiceAdapterFirstPart = PdfInvoiceAdapter(requireActivity(), chunkedList[0],null,null)
+            pdfInvoiceBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
+            pdfInvoiceBinding.rvItems.setAdapter(pdfInvoiceAdapterFirstPart)
+            viewList.add(pdfInvoiceBinding.root)
 
-                val pdfInvoiceAdapterFirstPart = PdfInvoiceAdapter(requireActivity(), chunkedList[0],null,null)
-                pdfInvoiceBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
-                pdfInvoiceBinding.rvItems.setAdapter(pdfInvoiceAdapterFirstPart)
-                viewList.add(pdfInvoiceBinding.root)
+            for (i in 1 until chunkedList.size) {
 
-                for (i in 1 until chunkedList.size) {
+                val pdfInvoiceSecondBinding = PdfInvoiceSecondBinding.inflate(LayoutInflater.from(context))
 
-                    val pdfInvoiceSecondBinding = PdfInvoiceSecondBinding.inflate(LayoutInflater.from(context))
+                val tvTotalAmount: TextView? = if (i+1 == chunkedList.size) pdfInvoiceSecondBinding.tvTotalAmount else null
 
-                    val tvTotalAmount: TextView? = if (i+1 == chunkedList.size) pdfInvoiceSecondBinding.tvTotalAmount else null
+                val pdfInvoiceAdapterSecondPart =  PdfInvoiceAdapter(requireActivity(), chunkedList[i],tvTotalAmount,pdfInvoiceSecondBinding.mcvTotalPrice)
+                pdfInvoiceSecondBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
+                pdfInvoiceSecondBinding.rvItems.setAdapter(pdfInvoiceAdapterSecondPart)
+                viewList.add(pdfInvoiceSecondBinding.root)
 
-                    val pdfInvoiceAdapterSecondPart =  PdfInvoiceAdapter(requireActivity(), chunkedList[i],tvTotalAmount,pdfInvoiceSecondBinding.mcvTotalPrice)
-                    pdfInvoiceSecondBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
-                    pdfInvoiceSecondBinding.rvItems.setAdapter(pdfInvoiceAdapterSecondPart)
-                    viewList.add(pdfInvoiceSecondBinding.root)
-
-                }
             }
         }
 
@@ -296,8 +298,8 @@ class CartFragment : Fragment(), View.OnClickListener {
                 }
             })
 
-        // insert in the order table
-        insertOrder()
+        // update in the order table
+        updateOrder()
 
         // remove rfid data of product
         removeRfIdData()
@@ -307,12 +309,9 @@ class CartFragment : Fragment(), View.OnClickListener {
     // remove rfid data of product
     private fun removeRfIdData() {
 
-        if (cardList != null) {
+        for (cardData in cardList) {
 
-            for (cardData in cardList!!) {
-
-                cardData.productUUID?.let { Utils.removeRfidCode(it) }
-            }
+            cardData.productUUID?.let { Utils.removeRfidCode(it) }
         }
 
         GetProgressBar.getInstance(requireActivity())?.dismiss()
@@ -368,7 +367,6 @@ class CartFragment : Fragment(), View.OnClickListener {
         (requireActivity() as DashboardActivity).binding?.mcvSearch?.visibility = View.INVISIBLE
 
         //set the Clicks , initialization and setup
-
         lifecycleScope.launch(Dispatchers.Main) {
             init()
         }
@@ -379,38 +377,79 @@ class CartFragment : Fragment(), View.OnClickListener {
     //Setting Up Card List Recycler View
     private fun setUpCardListRecyclerView() {
 
-        cardList = Utils.GetSession().userUUID?.let { Utils.getCartThroughUserUUID(it) }
+        orderUUID = arguments?.getString(Constants.orderUUID)
 
-        if (cardList?.isNotEmpty() == true) {
+        if (orderUUID != null) {
 
-            val adapter = cardList.let {
+            binding?.llSaveToLater?.visibility = View.GONE
+
+            val cardDataList = ArrayList<CartDataModel>()
+
+            val orderDataModel = Utils.getOrderByUUID(orderUUID!!)
+
+            val productUUIDList = orderDataModel.productUUIDUri?.split(",")
+
+            val isListNotEmpty = orderDataModel.productQuantityUri?.isNotEmpty() == true
+
+            val productQuantityList = orderDataModel.productQuantityUri?.split(",")
+
+            if (productUUIDList != null && productQuantityList != null) for (i in productUUIDList.indices) {
+
+//                Utils.E("Product quantity is ##${productQuantityList[i]}##")
+
+                val cartDataModel = CartDataModel()
+                cartDataModel.productUUID = productUUIDList[i]
+                cartDataModel.productQuantity = if (isListNotEmpty) productQuantityList[i].toInt() else 1
+                cartDataModel.cartUUID = orderDataModel.orderUUID
+
+                cardDataList.add(0,cartDataModel)
+
+            }
+            cardList = cardDataList
+
+            cartListAdapter = cardList.let {
                 binding?.let { it1 ->
-                    it?.let { it2 ->
+                    CartListAdapter(
+                        requireActivity(), it,
+                        it1,true
+                    )
+                }
+            }
+        }
+
+        else {
+
+            cardList = Utils.GetSession().userUUID?.let { Utils.getCartThroughUserUUID(it) } ?: ArrayList()
+
+            if (cardList.isNotEmpty()) {
+
+                cartListAdapter = cardList.let {
+                    binding?.let { it1 ->
                         CartListAdapter(
-                            requireActivity(), it2,
-                            it1,
-                            CoroutineScope(SupervisorJob() + Dispatchers.Default)
+                            requireActivity(), it,
+                            it1,false
                         )
                     }
                 }
+
             }
+            // If cart is empty
+            else {
 
-            binding?.rvCartList?.layoutManager = LinearLayoutManager(
-                requireActivity(),
-                RecyclerView.VERTICAL, false
-            )
-            binding?.rvCartList?.adapter = adapter
+                GetProgressBar.getInstance(requireActivity())?.dismiss()
 
+                binding?.rlCartManagement?.visibility = View.GONE
+                binding?.llCartEmpty?.visibility = View.VISIBLE
+
+            }
         }
-        // If cart is empty
-        else {
 
-            GetProgressBar.getInstance(requireActivity())?.dismiss()
+        binding?.rvCartList?.layoutManager = LinearLayoutManager(
+            requireActivity(),
+            RecyclerView.VERTICAL, false
+        )
+        binding?.rvCartList?.adapter = cartListAdapter
 
-            binding?.rlCartManagement?.visibility = View.GONE
-            binding?.llCartEmpty?.visibility = View.VISIBLE
-
-        }
     }
 
     //Setting Up Address List Recycler View
@@ -579,6 +618,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                 )
             }
         }
+
         binding?.mcvZipCode?.let { binding?.etZipCode?.let { it1 -> setFocusChangeLis(it1, it) } }
 
         //Removing the Error When text Entered
@@ -626,6 +666,8 @@ class CartFragment : Fragment(), View.OnClickListener {
         //Setting Up Card List Recycler View
         val jobCart = lifecycleScope.launch(Dispatchers.Main) { setUpCardListRecyclerView() }
 
+        jobCart.join()
+
         //Setting Up Address List Recycler View
         val jobAddress = lifecycleScope.launch(Dispatchers.Main) { setUpAddressListRecyclerView() }
 
@@ -641,6 +683,8 @@ class CartFragment : Fragment(), View.OnClickListener {
         // Set Click on Place Order button
         binding?.mcvPlaceOrder?.setOnClickListener(this)
 
+        binding?.llSaveToLater?.setOnClickListener(this)
+
         // Set Click on Back To Home  TextView
         binding?.tvBackToHomePage?.setOnClickListener(this)
 
@@ -653,7 +697,6 @@ class CartFragment : Fragment(), View.OnClickListener {
         // Set Click on Print Button
         binding?.mcvPrint?.setOnClickListener(this)
 
-        jobCart.join()
         jobAddress.join()
 
 //        GetProgressBar.getInstance(requireActivity())?.dismiss()
@@ -835,119 +878,45 @@ class CartFragment : Fragment(), View.OnClickListener {
 
     }
 
-    // insert order
-    private fun insertOrder() {
+    // update Order
+    private fun updateOrder() {
 
-        val orderDataModel = OrderDataModel()
+//        val newOrderDataModel = if (orderUUID != null) Utils.getOrderByUUID(orderUUID!!) else Utils.getOrderUUID(requireActivity())
+//            ?.let { Utils.getOrderByUUID(it) }
 
-        orderDataModel.orderUUID = Utils.generateUUId()
+//        Utils.E("****************${newOrderDataModel?.orderUUID}&&&&&&&&&&&&&&&&&&&")
 
-        val productUUIDList = cardList?.map { it.productUUID }?.joinToString()?.replace(" ", "")
+        val confirmOrderDataModel = OrderDataModel()
 
-        orderDataModel.productUUID = productUUIDList
+        confirmOrderDataModel.orderUUID = newOrderDataModel?.orderUUID
 
-        val productQuantityList = cardList?.map { it.productQuantity }?.joinToString()?.replace(" ", "")
+        confirmOrderDataModel.addressUUID = selectedAddressData?.addressUUID
 
-        orderDataModel.productQuantity = productQuantityList
+        confirmOrderDataModel.status = Constants.Confirm
 
-        orderDataModel.userUUID = Utils.GetSession().userUUID
+        confirmOrderDataModel.pdfName = pdfName
 
-        orderDataModel.addressUUID = selectedAddressData?.addressUUID
+        confirmOrderDataModel.date = Utils.currentDate()
 
-        Utils.insertOrder(orderDataModel)
+        Utils.updateOrderStatus(confirmOrderDataModel)
 
-        // Cart delete
-        Utils.GetSession().userUUID?.let { Utils.deleteCart(it) }
+        val newOrderUUID = Utils.getOrderUUID(requireActivity())
+
+        Utils.E("######${newOrderUUID} ${orderUUID}######")
+
+        if (orderUUID == null || newOrderUUID == orderUUID) {
+
+            // Cart delete
+            Utils.GetSession().userUUID?.let { Utils.deleteCart(it) }
+
+            // generate new order UUID
+            Utils.storeOrderUUID(requireActivity(), Utils.generateUUId())
+
+        }
 
         GetProgressBar.getInstance(requireActivity())?.dismiss()
 
     }
-
-    // print pdf
-    private fun printPdf(file: File) {
-
-        val context = requireContext()
-        val printManager = context.getSystemService(PRINT_SERVICE) as PrintManager
-        val jobName = getString(R.string.app_name) + " Document"
-
-        printManager.print(jobName, object : PrintDocumentAdapter() {
-
-            override fun onLayout(
-
-                oldAttributes: PrintAttributes?,
-                newAttributes: PrintAttributes?,
-                cancellationSignal: CancellationSignal?,
-                callback: LayoutResultCallback?,
-                extras: Bundle?
-            ) {
-                if (cancellationSignal?.isCanceled == true) {
-                    callback?.onLayoutCancelled()
-                    return
-                }
-
-                val pdi = PrintDocumentInfo.Builder(file.name)
-                    .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
-                    .setPageCount(PrintDocumentInfo.PAGE_COUNT_UNKNOWN)
-                    .build()
-
-                callback?.onLayoutFinished(pdi, true)
-            }
-
-            override fun onWrite(
-                pages: Array<out PageRange>?,
-                destination: ParcelFileDescriptor?,
-                cancellationSignal: CancellationSignal?,
-                callback: WriteResultCallback?
-            ) {
-                var input: FileInputStream? = null
-                var output: FileOutputStream? = null
-
-                try {
-                    input = FileInputStream(file)
-                    output = FileOutputStream(destination?.fileDescriptor)
-
-                    val buf = ByteArray(1024)
-                    var bytesRead: Int
-
-                    while (input.read(buf).also { bytesRead = it } > 0) {
-                        output.write(buf, 0, bytesRead)
-                    }
-
-                    callback?.onWriteFinished(arrayOf(PageRange.ALL_PAGES))
-                } catch (e: IOException) {
-                    callback?.onWriteFailed(e.toString())
-                } finally {
-                    try {
-                        input?.close()
-                        output?.close()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        }, PrintAttributes.Builder()
-            .setMediaSize(PrintAttributes.MediaSize.ISO_A4.asPortrait())
-            .setResolution(PrintAttributes.Resolution("id", "label", 600, 600))
-            .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
-            .build())
-
-    }
-
-    // open pdf
-//    private fun openPdfFile() {
-//
-//        binding?.rlCartManagement?.visibility  = View.GONE
-//        binding?.pdfView?.visibility = View.VISIBLE
-//
-//        val pdfFile = File(requireActivity().getExternalFilesDir(null), "${Constants.path}${pdfName}.pdf")
-//
-//        binding?.pdfView?.fromFile(pdfFile)
-//            ?.defaultPage(1)
-//            ?.showMinimap(false)
-//            ?.enableSwipe(true)
-//            ?.load();
-//
-//    }
 
     //Handle all the clicks
     @SuppressLint("SetTextI18n")
@@ -1039,9 +1008,6 @@ class CartFragment : Fragment(), View.OnClickListener {
         // Click on Share button
         else if (v == binding?.mcvOpen) {
 
-//            val pdfFile = File(requireActivity().getExternalFilesDir(null), "$path${pdfName}.pdf")
-//            openPdfFile()
-
             val intent = Intent(requireActivity(),PdfViewActivity::class.java)
             intent.putExtra(Constants.pdfName,pdfName)
             startActivity(intent)
@@ -1052,7 +1018,26 @@ class CartFragment : Fragment(), View.OnClickListener {
         else if (v == binding?.mcvPrint) {
 
             val pdfFile = File(requireActivity().getExternalFilesDir(null), "$path${pdfName}.pdf")
-            printPdf(pdfFile)
+
+            if (pdfFile.exists()) {
+
+                Utils.printPdf(requireActivity(),pdfFile)
+            }
+            else {
+                Utils.T(requireActivity(), getString(R.string.file_not_found))
+            }
+        }
+
+        else if (v == binding?.llSaveToLater) {
+
+            Utils.GetSession().userUUID?.let { Utils.deleteCart(it) }
+
+            // generate new order UUID
+            Utils.storeOrderUUID(requireActivity(), Utils.generateUUId())
+
+            binding?.rlCartManagement?.visibility = View.GONE
+
+            binding?.llCartEmpty?.visibility = View.VISIBLE
 
         }
 

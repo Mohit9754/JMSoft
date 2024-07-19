@@ -102,6 +102,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
     }
 
     private fun openDocument() {
+
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             type = "*/*"
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION

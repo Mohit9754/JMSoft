@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CartDataModel
+import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
@@ -28,16 +29,17 @@ import kotlinx.coroutines.launch
  * Showing the catalog details
  *
  */
-
 class CartListAdapter(
     private val context: Context, private val cardList: ArrayList<CartDataModel>,
     private val fragmentCartBinding: FragmentCartBinding,
-    private val coroutineScope:CoroutineScope
+    private val orderStatus:Boolean
 ) :
     RecyclerView.Adapter<CartListAdapter.MyViewHolder>() {
 
     // Price of each product in the cart
     private var cartPrice = ArrayList<Double>()
+
+    private var totalAmount:Double = 0.0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemCardListBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -49,54 +51,38 @@ class CartListAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         // bind method
-        coroutineScope.launch(Dispatchers.Main) {
-            holder.bind(cardList[position], position)
-        }
+        holder.bind(cardList[position], position)
 
     }
 
     inner class MyViewHolder(private val binding: ItemCardListBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        //Cart Data
+        // Cart Data
         private lateinit var cartData: CartDataModel
 
-        //Product Data
+        // Product Data
         private lateinit var productData: ProductDataModel
 
-        //Position
+        // Position
         private var position: Int = 0
 
         // bind method
-        suspend fun bind(cartData: CartDataModel, position: Int) {
+         fun bind(cartData: CartDataModel, position: Int) {
 
             this.cartData = cartData
             this.position = position
 
             // Getting the product data from cart's present cartUUID
-
             val productData = cartData.productUUID?.let {  Utils.getProductThroughProductUUID(it) }
 
             if (cartData.productUUID != null) {
-
-                val result = coroutineScope.async(Dispatchers.IO) {
-                    return@async Utils.getProductThroughProductUUID(cartData.productUUID!!)
-                }
-
-                this.productData = result.await()
-
+                this.productData = Utils.getProductThroughProductUUID(cartData.productUUID!!)
             }
 
             // Calculating price of each product for storing in cartPrice array
             val price = cartData.productQuantity?.let { productData?.productPrice?.times(it) }
             price?.let { cartPrice.add(it) }
-
-            // At the last Set Total Price
-            if (cardList.size - 1 == position) {
-                setTotalPrice()
-                GetProgressBar.getInstance(context)?.dismiss()
-
-            }
 
             //Set the Product image
             setProductImage()
@@ -109,6 +95,23 @@ class CartListAdapter(
 
             //Set the Product price
             setProductPrice()
+
+            // At the last Set Total Price
+            if (cardList.size - 1 == position) {
+
+                setTotalPrice()
+
+                val productQuantity = cardList.map { it.productQuantity }.toMutableList()
+
+                productQuantity.reverse()
+
+                val productQuantityUri = productQuantity.joinToString().replace(" ", "")
+
+                updateQuantityInOrder(context,productQuantityUri,totalAmount)
+
+                GetProgressBar.getInstance(context)?.dismiss()
+
+            }
 
             //Set Click on plus button
             binding.tvPlus.setOnClickListener(this)
@@ -129,9 +132,11 @@ class CartListAdapter(
 
             var totalPrice = 0.0
 
-            for (price in cartPrice){
+            for (price in cartPrice) {
                 totalPrice += price
             }
+
+            totalAmount = totalPrice
 
             fragmentCartBinding.tvTotalPriceVerification?.text = Utils.getThousandSeparate(Utils.roundToTwoDecimalPlaces(totalPrice))
         }
@@ -152,6 +157,10 @@ class CartListAdapter(
 
         //Set the Product quantity
         private fun setProductQuantity() {
+
+            Utils.E("Product quantity is ###${cartData.productQuantity}###")
+
+
             binding.tvQuantity.text = cartData.productQuantity.toString()
         }
 
@@ -175,7 +184,7 @@ class CartListAdapter(
         }
 
         // Update the Product Quantity in Cart table
-        private fun updateQuantityOfProduct(){
+        private fun updateQuantityOfProduct() {
 
             cartData.productQuantity?.let {
                 cartData.cartUUID?.let { it1 ->
@@ -185,6 +194,23 @@ class CartListAdapter(
                     )
                 }
             }
+        }
+
+        private fun updateQuantityInOrder(context: Context,productQuantityUri:String,totalAmount:Double) {
+
+            val newOrder: OrderDataModel? = if (!orderStatus){ Utils.getOrderUUID(context)
+                ?.let { Utils.getOrderByUUID(it) } } else null
+
+            val orderDataModel = OrderDataModel()
+
+            orderDataModel.orderUUID = if (orderStatus) cartData.cartUUID else newOrder?.orderUUID
+
+            orderDataModel.productQuantityUri = productQuantityUri
+
+            orderDataModel.totalAmount = totalAmount
+
+            Utils.updateQuantityInOrder(orderDataModel)
+
         }
 
         //Handles All the Clicks
@@ -197,11 +223,31 @@ class CartListAdapter(
                 //Increment the product quantity by 1
                 cartData.productQuantity = cartData.productQuantity?.plus(1)
 
+//                cartData.productQuantity = cartData.productQuantity?.plus(1)
+
                 // Update the Product Quantity in Cart table
-                updateQuantityOfProduct()
+                if (!orderStatus) updateQuantityOfProduct() else Utils.GetSession().userUUID?.let {
+                    cartData.productUUID?.let { it1 ->
+                        cartData.productQuantity?.let { it2 ->
+                            Utils.updateProductQuantityInCart(
+                                it, it1, it2
+                            )
+                        }
+                    }
+                }
+
                 setProductQuantity()
                 setProductPrice()
                 setTotalPrice()
+
+                val productQuantity = cardList.map { it.productQuantity }.toMutableList()
+                productQuantity.reverse()
+
+                val productQuantityUri = productQuantity.joinToString().replace(" ", "")
+
+                // update quantity
+                updateQuantityInOrder(context,productQuantityUri,totalAmount)
+
 
             }
 
@@ -214,10 +260,27 @@ class CartListAdapter(
                     cartData.productQuantity = cartData.productQuantity?.minus(1)
 
                     // Update the Product Quantity in Cart table
-                    updateQuantityOfProduct()
+                    if (!orderStatus) updateQuantityOfProduct() else Utils.GetSession().userUUID?.let {
+                        cartData.productUUID?.let { it1 ->
+                            cartData.productQuantity?.let { it2 ->
+                                Utils.updateProductQuantityInCart(
+                                    it, it1, it2
+                                )
+                            }
+                        }
+                    }
+
                     setProductQuantity()
                     setProductPrice()
                     setTotalPrice()
+
+                    val productQuantity = cardList.map { it.productQuantity }.toMutableList()
+                    productQuantity.reverse()
+
+                    val productQuantityUri = productQuantity.joinToString().replace(" ", "")
+
+                    // update quantity
+                    updateQuantityInOrder(context,productQuantityUri,totalAmount)
 
                 }
             }
@@ -227,12 +290,18 @@ class CartListAdapter(
 
                 cardList.removeAt(position)
 
-                //Delete the Product from the cart
-                cartData.cartUUID?.let { Utils.deleteProductFromCart(it) }
+                // Delete the Product from the cart
+                if (!orderStatus) cartData.cartUUID?.let { Utils.deleteProductFromCart(it) } else Utils.GetSession().userUUID?.let {
+                    cartData.productUUID?.let { it1 ->
+                        Utils.deleteProductFromCart(
+                            it, it1
+                        )
+                    }
+                }
 
                 notifyDataSetChanged()
 
-                //Clear the cart price array
+                // Clear the cart price array
                 cartPrice.clear()
 
                 // if cart is empty then show the cart empty image
@@ -242,6 +311,14 @@ class CartListAdapter(
                     fragmentCartBinding.llCartEmpty?.visibility = View.VISIBLE
 
                 }
+
+                // remove from order table
+                productData.productUUID?.let { productData.productPrice?.let { it1 ->
+                    Utils.removeOrder(context,it,
+                        it1
+                    )
+                } }
+
             }
 
             // Clicked on cart product

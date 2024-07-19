@@ -35,7 +35,7 @@
                     <ImageView
                         android:layout_width="@dimen/_26sdp"
                         android:layout_height="@dimen/_26sdp"
-                        android:layout_marginHorizontal="@dimen/_10sdp"
+                        android:layout_marginHorizontal="@dimen/_11sdp"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:src="@drawable/icon_catalog"
                         tools:ignore="ContentDescription" />
@@ -50,6 +50,13 @@
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
+                        android:textSize="@dimen/_5ssp"
+                        tools:ignore="HardcodedText" />
+
 
                 </LinearLayout>
 
@@ -58,7 +65,7 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/mcvPurchasing"
+                android:id="@+id/mcvSales"
                 android:layout_marginHorizontal="@dimen/_40sdp"
                 app:cardBackgroundColor="@color/theme"
                 app:cardCornerRadius="@dimen/_4sdp">
@@ -73,7 +80,7 @@
                     <ImageView
                         android:layout_width="@dimen/_26sdp"
                         android:layout_height="@dimen/_26sdp"
-                        android:layout_marginHorizontal="@dimen/_10sdp"
+                        android:layout_marginHorizontal="@dimen/_11sdp"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:src="@drawable/icon_purchase"
                         tools:ignore="ContentDescription" />
@@ -84,7 +91,8 @@
                         android:layout_marginTop="@dimen/_6sdp"
                         android:layout_marginBottom="@dimen/_9sdp"
                         android:fontFamily="@font/montserrat_arabic_semibold"
-                        android:text="@string/purchasing"
+                        android:text="@string/purchasing_and_nsales"
+                        android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp" />
 
@@ -107,7 +115,7 @@
                     <ImageView
                         android:layout_width="@dimen/_26sdp"
                         android:layout_height="@dimen/_26sdp"
-                        android:layout_marginHorizontal="@dimen/_10sdp"
+                        android:layout_marginHorizontal="@dimen/_11sdp"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:src="@drawable/icon_reports" />
 
@@ -120,6 +128,13 @@
                         android:text="@string/reports"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
+                        android:textSize="@dimen/_5ssp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -150,7 +165,7 @@
                     <ImageView
                         android:layout_width="@dimen/_26sdp"
                         android:layout_height="@dimen/_26sdp"
-                        android:layout_marginHorizontal="@dimen/_10sdp"
+                        android:layout_marginHorizontal="@dimen/_11sdp"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:src="@drawable/icon_audit"
                         tools:ignore="ContentDescription" />
@@ -164,6 +179,13 @@
                         android:text="@string/audit"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
+                        android:textSize="@dimen/_5ssp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -187,7 +209,7 @@
                     <ImageView
                         android:layout_width="@dimen/_26sdp"
                         android:layout_height="@dimen/_26sdp"
-                        android:layout_marginHorizontal="@dimen/_10sdp"
+                        android:layout_marginHorizontal="@dimen/_11sdp"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:src="@drawable/icon_inventory"
                         tools:ignore="ContentDescription" />
@@ -201,6 +223,13 @@
                         android:text="@string/inventory"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
+                        android:textSize="@dimen/_5ssp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -222,7 +251,7 @@
                     <ImageView
                         android:layout_width="@dimen/_26sdp"
                         android:layout_height="@dimen/_26sdp"
-                        android:layout_marginHorizontal="@dimen/_10sdp"
+                        android:layout_marginHorizontal="@dimen/_11sdp"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:src="@drawable/icon_settings" />
 
@@ -235,6 +264,13 @@
                         android:text="@string/settings"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
+                        android:textSize="@dimen/_5ssp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 

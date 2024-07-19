@@ -51,15 +51,9 @@ class PdfInvoiceAdapter(
             if (productData.productPrice != null && cardData.productQuantity != null) {
 
                 val totalAmount = productData.productPrice!! * cardData.productQuantity!!
-
-//                Utils.E("total amount $totalAmount")
-//                val formattedAmount = String.format("%,.2f", totalAmount)
-//                Utils.E("total amount $formattedAmount")
-
                 binding.tvAmount.text = Utils.getThousandSeparate(totalAmount)
 
             }
-
 
             binding.tvPrice.text = productData.productPrice?.let { Utils.getThousandSeparate(it) }
             binding.tvWeight.text = productData.productWeight?.let { Utils.getThousandSeparate(it) }
@@ -75,6 +69,8 @@ class PdfInvoiceAdapter(
 
                     tvTotalAmount?.text = Utils.getThousandSeparate(Utils.TotalAmount.getTotalAmount())
                     Utils.TotalAmount.resetTotalAmount()
+
+//                    Utils.TotalAmount.resetTotalAmount()
                 }
                 else {
                     mcvTotalAmount?.visibility = View.GONE

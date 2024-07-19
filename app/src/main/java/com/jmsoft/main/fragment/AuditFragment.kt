@@ -180,7 +180,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
     private suspend fun setExpectedRecyclerView() {
 
         val result = lifecycleScope.async(Dispatchers.IO) {
-            return@async Utils.getAllProducts()
+            return@async Utils.getAllProductsThatHasRFID()
         }
 
         expectedProductList = result.await()
@@ -244,7 +244,6 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
     private fun setUnKnownRecyclerView() {
 
-//        unKnownList.add("Hiiiiiiiii")
 
         adapterUnKnown = UnknownAdapter(requireActivity(), unKnownList)
 
@@ -256,16 +255,16 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
     }
 
     override fun onPause() {
-
         super.onPause()
+
         rFIDSetUp?.onPause(object : PairStatusCallback {
 
             override fun pairSuccess() {
 
                 lifecycleScope.launch {
+
                     changeToPlay()
                 }
-
 
             }
 

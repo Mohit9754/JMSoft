@@ -21,6 +21,7 @@ import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.user
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.main.model.DeviceModel
+import java.util.UUID
 
 class DatabaseHelper(cx: Context) {
 
@@ -75,6 +76,17 @@ class DatabaseHelper(cx: Context) {
         close()
     }
 
+
+    // Deleting the product from the cart through cart
+    fun deleteProductFromCart(userUUID: String,productUUID: String) {
+
+        open()
+        db!!.delete(
+            CartDataModel.TABLE_NAME_CART, "${CartDataModel.Key_userUUID} = ? AND ${CartDataModel.Key_productUUID} = ? ", arrayOf(userUUID,productUUID)
+        )
+        close()
+    }
+
     //Deleting the address from the address table
     fun deleteAddress(addressUUID: String) {
 
@@ -117,6 +129,23 @@ class DatabaseHelper(cx: Context) {
             null
         )
 
+        close()
+    }
+
+    // Update Quantity of Product in Cart Table
+    fun updateProductQuantityInCart(userUUID: String,productUUID: String,quantity: Int) {
+
+        open()
+
+        val values = ContentValues()
+        values.put(CartDataModel.Key_productQuantity, quantity)
+
+        db!!.update(
+            CartDataModel.TABLE_NAME_CART,
+            values,
+            "${CartDataModel.Key_userUUID} = ? AND ${CartDataModel.Key_productUUID} = ?",
+            arrayOf(userUUID,productUUID)
+        )
         close()
     }
 
@@ -437,7 +466,7 @@ class DatabaseHelper(cx: Context) {
         return result
     }
 
-    //Inserting Address in Address table
+    // Inserting Address in Address table
     fun insertAddressInAddressTable(addressDataModel: AddressDataModel) {
 
         open()
@@ -454,6 +483,65 @@ class DatabaseHelper(cx: Context) {
         }
 
         db?.insert(AddressDataModel.TABLE_NAME_ADDRESS, null, addressValue)
+    }
+
+    // is this address uuid exist
+    @SuppressLint("Recycle")
+    fun isAddressUUIDExist(addressUUID: String): Boolean? {
+
+        read()
+
+        val cursor = db?.rawQuery("SELECT ${AddressDataModel.Key_address} FROM ${AddressDataModel.TABLE_NAME_ADDRESS} WHERE ${AddressDataModel.Key_addressUUID}  == ? ", arrayOf(addressUUID))
+        return cursor?.moveToFirst()
+
+    }
+
+    // get address through address uuid
+    @SuppressLint("Range")
+    fun getAddressThroughAddressUUID(addressUUID: String): AddressDataModel {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT * FROM ${AddressDataModel.TABLE_NAME_ADDRESS} WHERE ${AddressDataModel.Key_addressUUID} == ?",
+            arrayOf(addressUUID)
+        )
+
+        cursor?.moveToFirst()
+
+        val addressData = AddressDataModel()
+
+        if (cursor != null && cursor.count > 0) {
+
+            addressData.addressId =
+                cursor.getInt(cursor.getColumnIndex(AddressDataModel.Key_addressId))
+
+            addressData.addressUUID =
+                cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_addressUUID))
+
+            addressData.userUUID =
+                cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_userUUID))
+
+            addressData.firstName =
+                cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_firstName))
+
+            addressData.lastName =
+                cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_lastName))
+
+            addressData.address =
+                cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_address))
+
+            addressData.phoneNumber =
+                cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_phoneNumber))
+
+            addressData.zipCode =
+                cursor.getString(cursor.getColumnIndex(AddressDataModel.Key_zipCode))
+
+            cursor.close()
+        }
+        close()
+
+        return addressData
     }
 
 
@@ -477,6 +565,28 @@ class DatabaseHelper(cx: Context) {
         db?.insert(ContactDataModel.TABLE_NAME_CONTACT, null, contactValue)
     }
 
+    // get total  Order
+    @SuppressLint("Recycle")
+    fun getTotalOrder(): Int {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT COUNT(*) FROM ${OrderDataModel.TABLE_NAME_ORDER}",
+            null
+        )
+
+        var count = 0
+        if (cursor != null && cursor.moveToFirst()) {
+            count = cursor.getInt(0)
+        }
+        cursor?.close()
+
+        return count
+    }
+
+
+
     // Inserting Order in Order table
     fun insertOrder(orderDataModel: OrderDataModel) {
 
@@ -485,17 +595,207 @@ class DatabaseHelper(cx: Context) {
         val orderValue = ContentValues().apply {
 
             put(OrderDataModel.Key_orderUUID, orderDataModel.orderUUID)
-            put(OrderDataModel.Key_productUUID, orderDataModel.productUUID)
-            put(OrderDataModel.Key_productQuantity, orderDataModel.productQuantity)
+            put(OrderDataModel.Key_orderNo, orderDataModel.orderNo)
+            put(OrderDataModel.Key_productUUIDUri, orderDataModel.productUUIDUri)
+            put(OrderDataModel.Key_productQuantityUri, orderDataModel.productQuantityUri)
             put(OrderDataModel.Key_userUUID, orderDataModel.userUUID)
             put(OrderDataModel.Key_addressUUID, orderDataModel.addressUUID)
+            put(OrderDataModel.Key_status, orderDataModel.status)
+            put(OrderDataModel.Key_totalAmount, orderDataModel.totalAmount)
+            put(OrderDataModel.Key_pdfName, orderDataModel.pdfName)
+            put(OrderDataModel.Key_date, orderDataModel.date)
+
         }
 
         db?.insert(OrderDataModel.TABLE_NAME_ORDER, null, orderValue)
+
     }
 
+    // is Order exist
+    @SuppressLint("Recycle")
+    fun isOrderExist(orderUUID: String): Boolean? {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT ${OrderDataModel.Key_orderUUID} FROM ${OrderDataModel.TABLE_NAME_ORDER} WHERE ${OrderDataModel.Key_orderUUID} == ? ",
+            arrayOf(orderUUID)
+        )
+
+        return cursor?.moveToFirst()
+
+    }
+
+    // delete order
+     fun deleteOrder(orderUUID: String) {
+
+        open()
+
+        db?.delete(
+            OrderDataModel.TABLE_NAME_ORDER, "${OrderDataModel.Key_orderUUID} == ?",
+            arrayOf(orderUUID)
+        )
+    }
+
+    // get  order of particular user
+    @SuppressLint("Recycle", "Range")
+    fun getOrderByUUID(orderUUID: String): OrderDataModel {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT * FROM ${OrderDataModel.TABLE_NAME_ORDER} WHERE ${OrderDataModel.Key_orderUUID} == ?" ,
+            arrayOf(orderUUID)
+        )
+
+        val orderDataModel = OrderDataModel()
+
+        if (cursor != null && cursor.moveToFirst()) {
+
+            orderDataModel.orderNo = cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_orderNo))
+
+            orderDataModel.orderUUID = cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_orderUUID))
+
+            orderDataModel.productUUIDUri = cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_productUUIDUri))
+
+            orderDataModel.productQuantityUri = cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_productQuantityUri))
+
+            orderDataModel.totalAmount = cursor.getDouble(cursor.getColumnIndex(OrderDataModel.Key_totalAmount))
+
+        }
+
+        return orderDataModel
+    }
+
+    // Get Order UUID
+    @SuppressLint("Range")
+    fun getOrderUUID(userUUID: String, productUUID: String): String? {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT ${OrderDataModel.Key_orderUUID} FROM ${OrderDataModel.TABLE_NAME_ORDER} WHERE ${OrderDataModel.Key_userUUID} == ? AND ${OrderDataModel.Key_productUUIDUri} == ? AND ${OrderDataModel.Key_status} == ?",
+            arrayOf(userUUID,productUUID,Constants.New)
+        )
+
+        cursor?.moveToFirst()
+
+        val orderUUID = cursor?.getString(cursor.getColumnIndex(OrderDataModel.Key_orderUUID))
+
+        cursor?.close()
+
+        return orderUUID
+    }
+
+    // get orders of particular user
+    @SuppressLint("Recycle", "Range")
+    fun getOrders(userUUID: String,status:String): ArrayList<OrderDataModel> {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT * FROM ${OrderDataModel.TABLE_NAME_ORDER} WHERE ${OrderDataModel.Key_userUUID} == ? AND ${OrderDataModel.Key_status} == ?",
+            arrayOf(userUUID,status)
+        )
+
+        cursor?.moveToFirst()
+
+        val orderList = ArrayList<OrderDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val orderData = OrderDataModel()
+
+                orderData.orderUUID =
+                    cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_orderUUID))
+
+                orderData.orderNo =
+                    cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_orderNo))
+
+                orderData.productUUIDUri =
+                    cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_productUUIDUri))
+
+                orderData.productQuantityUri =
+                    cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_productQuantityUri))
+
+                orderData.addressUUID =
+                    cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_addressUUID))
+
+                orderData.totalAmount =
+                    cursor.getDouble(cursor.getColumnIndex(OrderDataModel.Key_totalAmount))
+
+                orderData.pdfName =
+                    cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_pdfName))
+
+                orderData.date =
+                    cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_date))
+
+                orderList.add(orderData)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return orderList
+
+    }
+
+    // update Order in Order table
+    fun updateOrder(orderDataModel: OrderDataModel) {
+
+        open()
+
+        val orderValue = ContentValues().apply {
+
+            put(OrderDataModel.Key_productUUIDUri, orderDataModel.productUUIDUri)
+            put(OrderDataModel.Key_totalAmount, orderDataModel.totalAmount)
+            put(OrderDataModel.Key_productQuantityUri, orderDataModel.productQuantityUri)
+
+        }
+
+        db?.update(OrderDataModel.TABLE_NAME_ORDER,orderValue,"${OrderDataModel.Key_orderUUID} == ?", arrayOf(orderDataModel.orderUUID))
+
+    }
+
+    // update order status to confirm
+    fun updateOrderStatus(orderDataModel: OrderDataModel) {
+
+        open()
+
+        val orderValue = ContentValues().apply {
+
+            put(OrderDataModel.Key_addressUUID, orderDataModel.addressUUID)
+            put(OrderDataModel.Key_pdfName, orderDataModel.pdfName)
+            put(OrderDataModel.Key_status, orderDataModel.status)
+            put(OrderDataModel.Key_date, orderDataModel.date)
+
+        }
+
+        db?.update(OrderDataModel.TABLE_NAME_ORDER,orderValue,"${OrderDataModel.Key_orderUUID} == ?", arrayOf(orderDataModel.orderUUID))
 
 
+    }
+
+    // update quantity in order table
+    fun updateQuantityInOrder(orderDataModel: OrderDataModel) {
+
+        open()
+
+        val orderValue = ContentValues().apply {
+            put(OrderDataModel.Key_productQuantityUri, orderDataModel.productQuantityUri)
+            put(OrderDataModel.Key_totalAmount,orderDataModel.totalAmount)
+        }
+
+        db?.update(OrderDataModel.TABLE_NAME_ORDER,orderValue,"${OrderDataModel.Key_orderUUID} == ?", arrayOf(orderDataModel.orderUUID))
+
+
+    }
 
     // Update Address in the Address Table
     fun updateAddressInTheAddressTable(addressDataModel: AddressDataModel) {
@@ -541,6 +841,7 @@ class DatabaseHelper(cx: Context) {
             "${ContactDataModel.Key_contactUUID} = ?",
             arrayOf(contactDataModel.contactUUID)
         )
+
     }
 
     // Get All Contact of particular user from the Contact table
@@ -697,6 +998,7 @@ class DatabaseHelper(cx: Context) {
         val metalTypeName =
             cursor?.getString(cursor.getColumnIndex(MetalTypeDataModel.Key_metalTypeName))
 
+
         cursor?.close()
 
         return metalTypeName
@@ -759,11 +1061,12 @@ class DatabaseHelper(cx: Context) {
             "${ProductDataModel.Key_collectionUUID} LIKE ?"
         }
 
-        val query = "SELECT DISTINCT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} != ? AND $likeConditions LIMIT $numberOfItems"
+        val query = "SELECT DISTINCT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} != ? AND ${ProductDataModel.Key_productRFIDCode} != ? AND $likeConditions LIMIT $numberOfItems"
 
         val queryArgs = mutableListOf<String>()
 
         queryArgs.add(productUUID)  // Add the productUUID as the first argument
+        queryArgs.add("")
 
         // Add the LIKE pattern arguments for collectionUUIDList
         queryArgs.addAll(collectionUUIDList.map { "%$it%" })
@@ -982,12 +1285,16 @@ class DatabaseHelper(cx: Context) {
         }
 
         // Build the SQL query with the dynamically constructed "NOT LIKE" conditions
-        val query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE $notLikeConditions"
+        val query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE $notLikeConditions AND ${ProductDataModel.Key_productRFIDCode} != ?"
 
-        val queryArgs = collectionUUIDList.map { "%$it%" }.toTypedArray()
+        val queryArgs = mutableListOf<String>()
+
+        queryArgs.addAll(collectionUUIDList.map { "%$it%" }.toMutableList())
+        queryArgs.add("")
+//        queryArgs[queryArgs.size] = ""
 
         // Execute the query
-        val cursor: Cursor? = db?.rawQuery(query, queryArgs)
+        val cursor: Cursor? = db?.rawQuery(query, queryArgs.toTypedArray())
 
         val productList = ArrayList<ProductDataModel>()
 
@@ -1064,7 +1371,7 @@ class DatabaseHelper(cx: Context) {
         read()
 
         val cursor: Cursor? =
-                db?.rawQuery("SELECT  ${ProductDataModel.Key_productUUID},${ProductDataModel.Key_productName},${ProductDataModel.Key_productRFIDCode}  FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} != ?  ", arrayOf(""))
+                db?.rawQuery("SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} != ?  ", arrayOf(""))
 
         cursor?.moveToFirst()
 
@@ -1082,8 +1389,32 @@ class DatabaseHelper(cx: Context) {
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
                 productData.productName =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
+                productData.metalTypeUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_metalTypeUUID))
+                productData.collectionUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_collectionUUID))
+                productData.productOrigin =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productOrigin))
+                productData.productWeight =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+                productData.productCarat =
+                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                productData.productPrice =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                productData.productCost =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+                productData.categoryUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+                productData.productDescription =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
                 productData.productRFIDCode =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFIDCode))
+                productData.productBarcodeUri =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeUri))
+                productData.productBarcodeData =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeData))
+                productData.productImageUri =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
 
                 productList.add(productData)
 
@@ -1167,7 +1498,7 @@ class DatabaseHelper(cx: Context) {
         read()
 
         val cursor: Cursor? =
-            db?.rawQuery("SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} != ? ", arrayOf(productUUID))
+            db?.rawQuery("SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} != ? AND ${ProductDataModel.Key_productRFIDCode} != ? ", arrayOf(productUUID,""))
 
         cursor?.moveToFirst()
 
@@ -1901,6 +2232,9 @@ class DatabaseHelper(cx: Context) {
 
 
         val imageBitmap = cx.getDrawable(R.drawable.default_image)?.toBitmap()
+
+        // generate new order UUID
+        Utils.storeOrderUUID(cx, Utils.generateUUId())
 
         imageBitmap?.let { Utils.saveToInternalStorage(cx, it,Constants.Default_Image) }
         imageBitmap?.let { Utils.saveToInternalStorage(cx, it,Constants.Default_Image) }

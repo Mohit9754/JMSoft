@@ -927,6 +927,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             imageUri.add(Utils.getPictureUri(requireActivity(), imageBitmap))
         }
         return imageUri.joinToString().replace(" ", "")
+
     }
 
     // Add or update product

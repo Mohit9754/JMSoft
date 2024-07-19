@@ -104,7 +104,7 @@ class CatalogFragment : Fragment(), View.OnClickListener {
     private suspend fun getAllProducts() {
 
         val result = lifecycleScope.async(Dispatchers.IO) {
-             return@async Utils.getAllProducts()
+             return@async Utils.getAllProductsThatHasRFID()
         }
 
         productList = result.await()
@@ -170,7 +170,7 @@ class CatalogFragment : Fragment(), View.OnClickListener {
     }
 
     // Set the Search
-    private fun setSearch(){
+    private fun setSearch() {
 
         etSearch?.addTextChangedListener(
 

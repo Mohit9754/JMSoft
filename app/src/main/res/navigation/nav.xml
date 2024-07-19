@@ -97,11 +97,10 @@
         tool:layout="@layout/fragment_contact"/>
 
     <fragment
-        android:id="@+id/pdfView"
-        android:name="com.jmsoft.main.fragment.PdfViewFragment"
-        android:label="Pdf_view"
-        tool:layout="@layout/fragment_pdf_view"/>
-
+        android:id="@+id/sales"
+        android:name="com.jmsoft.main.fragment.SalesFragment"
+        android:label="Sales"
+        tool:layout="@layout/fragment_sales"/>
 
 
 </navigation>
