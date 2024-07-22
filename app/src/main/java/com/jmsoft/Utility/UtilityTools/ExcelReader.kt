@@ -52,60 +52,53 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
         productList.clear()
         file = File(filePath)
+
         try {
             if (!file.exists() || file.length() == 0L) {
-
                 Utils.T(context, "Invalid File")
+                excelReadSuccess.onReadFail()
+                return
             }
-            if (file.length() > Int.MAX_VALUE) {
 
+            if (file.length() > Int.MAX_VALUE) {
                 Utils.T(context, "File is too big")
                 excelReadSuccess.onReadFail()
-
-//                excelExceptionListData.postValue("File too big")
+                return
             }
 
             val myInput = FileInputStream(file)
             val firstRow: MutableList<String> = arrayListOf()
-
-            if (file.name.endsWith("xlsx")) {
-                workbook = XSSFWorkbook(myInput)
+            val workbook = if (file.name.endsWith("xlsx")) {
+                XSSFWorkbook(myInput)
             } else {
-                workbook = HSSFWorkbook(myInput)
+                HSSFWorkbook(myInput)
             }
 
-            workbook = addColumnIfNotAdded(workbook)
             val mySheet = workbook.getSheetAt(0)
-            val rowIter: Iterator<Row> = mySheet.iterator()
+            val numberOfRows = mySheet.physicalNumberOfRows
 
-            while (rowIter.hasNext()) {
-                val row: Row = rowIter.next()
-                val cellIter1: Iterator<Cell> = row.cellIterator()
+            for (rowIndex in 0 until numberOfRows) {
+                val row = mySheet.getRow(rowIndex) ?: continue
 
-                if (row.rowNum == 0) {
+                if (rowIndex == 0) {
 
-                    while (cellIter1.hasNext()) {
-
-                        val firstCell: Cell = cellIter1.next()
-
-                        val columnName = firstCell.toString().trim().lowercase().replace(" ","")
-//                        val columnName = firstCell.toString().trim()
-
+                    // Process the header row
+                    for (cell in row) {
+                        val columnName = cell.toString().trim().lowercase().replace(" ", "")
                         firstRow.add(columnName)
 
-                        if (!isInEnum(columnName) && columnName != "status") {
+                        // Validate column names
+                        if (!isInEnum(columnName)) {
 
                             Utils.T(context, "Column name $columnName does not match")
-
                             excelReadSuccess.onReadFail()
-
                             return
                         }
                     }
 
                     if (firstRow.contains(ProductColumnName.PRODUCT_NAME.displayName)) {
 
-                        if (firstRow.contains(ProductColumnName.CATEGORY_NAME.displayName)){
+                        if (firstRow.contains(ProductColumnName.CATEGORY_NAME.displayName)) {
 
                             if (firstRow.contains(ProductColumnName.METAL_TYPE.displayName)) {
 
@@ -124,376 +117,407 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                                         if (firstRow.contains(ProductColumnName.BARCODE.displayName)) {
 
 
-                                                        }
-                                                        else {
+                                                        } else {
 
-                                                            Utils.T(context,
+                                                            Utils.T(
+                                                                context,
                                                                 context.getString(
                                                                     R.string.column_does_not_exist,
                                                                     ProductColumnName.BARCODE.displayName
-                                                                ))
+                                                                )
+                                                            )
 
                                                             excelReadSuccess.onReadFail()
                                                             return
 
                                                         }
 
-                                                    }
-                                                    else {
+                                                    } else {
 
-                                                        Utils.T(context,
+                                                        Utils.T(
+                                                            context,
                                                             context.getString(
                                                                 R.string.column_does_not_exist,
                                                                 ProductColumnName.COST.displayName
-                                                            ))
+                                                            )
+                                                        )
 
                                                         excelReadSuccess.onReadFail()
                                                         return
 
                                                     }
 
-                                                }
-                                                else {
+                                                } else {
 
-                                                    Utils.T(context,
+                                                    Utils.T(
+                                                        context,
                                                         context.getString(
                                                             R.string.column_does_not_exist,
                                                             ProductColumnName.PRICE.displayName
-                                                        ))
+                                                        )
+                                                    )
 
                                                     excelReadSuccess.onReadFail()
                                                     return
 
                                                 }
 
-                                            }
-                                            else {
+                                            } else {
 
-                                                Utils.T(context,
+                                                Utils.T(
+                                                    context,
                                                     context.getString(
                                                         R.string.column_does_not_exist,
                                                         ProductColumnName.CARAT.displayName
-                                                    ))
+                                                    )
+                                                )
 
                                                 excelReadSuccess.onReadFail()
                                                 return
 
                                             }
-                                        }
-                                        else {
+                                        } else {
 
-                                            Utils.T(context,
+                                            Utils.T(
+                                                context,
                                                 context.getString(
                                                     R.string.column_does_not_exist,
                                                     ProductColumnName.WEIGHT.displayName
-                                                ))
+                                                )
+                                            )
 
                                             excelReadSuccess.onReadFail()
                                             return
 
                                         }
-                                    }
-                                    else {
+                                    } else {
 
-                                        Utils.T(context,
+                                        Utils.T(
+                                            context,
                                             context.getString(
                                                 R.string.column_does_not_exist,
                                                 ProductColumnName.ORIGIN.displayName
-                                            ))
+                                            )
+                                        )
 
                                         excelReadSuccess.onReadFail()
                                         return
 
                                     }
-                                }
-                                else {
+                                } else {
 
-                                    Utils.T(context,
+                                    Utils.T(
+                                        context,
                                         context.getString(
                                             R.string.column_does_not_exist,
                                             ProductColumnName.DESCRIPTION.displayName
-                                        ))
+                                        )
+                                    )
 
                                     excelReadSuccess.onReadFail()
                                     return
 
                                 }
 
-                            }
-                            else {
+                            } else {
 
-                                Utils.T(context,
+                                Utils.T(
+                                    context,
                                     context.getString(
                                         R.string.column_does_not_exist,
                                         ProductColumnName.METAL_TYPE.displayName
-                                    ))
+                                    )
+                                )
 
                                 excelReadSuccess.onReadFail()
                                 return
                             }
-                        }
-                        else {
+                        } else {
 
-                            Utils.T(context,
+                            Utils.T(
+                                context,
                                 context.getString(
                                     R.string.column_does_not_exist,
                                     ProductColumnName.CATEGORY_NAME.displayName
-                                ))
+                                )
+                            )
 
                             excelReadSuccess.onReadFail()
                             return
 
-                         }
-                    }
+                        }
+                    } else {
 
-                    else {
-
-                        Utils.T(context,
+                        Utils.T(
+                            context,
                             context.getString(
                                 R.string.column_does_not_exist,
                                 ProductColumnName.PRODUCT_NAME.displayName
-                            ))
+                            )
+                        )
                         excelReadSuccess.onReadFail()
                         return
 
                     }
 
+
                 }
 
-                val cellIter: Iterator<Cell> = row.cellIterator()
+                else {
 
-                if (row.rowNum > 0) {
-
+                    // Process the data rows
                     val productDataModel = ProductDataModel()
+                    var rowHasData = false
 
-                    while (cellIter.hasNext()) {
+                    for ((index, cell) in row.withIndex()) {
 
-                        for (i in firstRow) {
+                        val columnName = firstRow.getOrNull(index) ?: continue
+                        val cellValue = cell.toString().trim()
 
-                            if (cellIter.hasNext()) {
+                        if (cellValue.isNotEmpty()) {
+                            rowHasData = true
+                        } else {
+                            continue
+                        }
 
-                                val cell: Cell = cellIter.next()
+                        when (columnName) {
 
-                                when (i) {
+                            ProductColumnName.PRODUCT_NAME.displayName -> {
 
-                                    ProductColumnName.PRODUCT_NAME.displayName -> {
+                                productDataModel.productName = cellValue
 
-                                        productDataModel.productName = cell.toString().trim()
+                            }
 
-                                    }
+                            ProductColumnName.METAL_TYPE.displayName -> {
 
-                                    ProductColumnName.METAL_TYPE.displayName -> {
+                                val isMetalTypeExist =
+                                    Utils.isMetalTypeExist(Utils.capitalizeData(cellValue))
 
-                                        val isMetalTypeExist =
-                                            Utils.isMetalTypeExist(Utils.capitalizeData(cell.toString()))
+                                if (isMetalTypeExist == true) {
 
-                                        if (isMetalTypeExist == true) {
+                                    val metalTypeUUID =
+                                        Utils.getMetalTypeUUIDThroughMetalTypeName(
+                                            Utils.capitalizeData(cell.toString())
+                                        )
 
-                                            val metalTypeUUID =
-                                                Utils.getMetalTypeUUIDThroughMetalTypeName(
-                                                    Utils.capitalizeData(cell.toString())
-                                                )
+                                    productDataModel.metalTypeUUID = metalTypeUUID
 
-                                            productDataModel.metalTypeUUID = metalTypeUUID
+                                } else {
 
-                                        } else {
+                                    val metalTypeDataModel = MetalTypeDataModel()
+                                    val metalTypeUUID = Utils.generateUUId()
+                                    metalTypeDataModel.metalTypeUUID = metalTypeUUID
+                                    metalTypeDataModel.metalTypeName =
+                                        Utils.capitalizeData(cellValue)
 
-                                            val metalTypeDataModel = MetalTypeDataModel()
-                                            val metalTypeUUID = Utils.generateUUId()
-                                            metalTypeDataModel.metalTypeUUID = metalTypeUUID
-                                            metalTypeDataModel.metalTypeName =
-                                                Utils.capitalizeData(cell.toString())
+                                    Utils.addMetalTypeInTheMetalTypeTable(metalTypeDataModel)
 
-                                            Utils.addMetalTypeInTheMetalTypeTable(metalTypeDataModel)
+                                    productDataModel.metalTypeUUID = metalTypeUUID
 
-                                            productDataModel.metalTypeUUID = metalTypeUUID
+                                }
+                            }
 
-                                        }
-                                    }
+                            ProductColumnName.COLLECTION_NAME.displayName -> {
 
-                                    ProductColumnName.COLLECTION_NAME.displayName -> {
+                                val isCollectionExist =
+                                    Utils.isCollectionExist(Utils.capitalizeData(cellValue))
 
-                                        val isCollectionExist =
-                                            Utils.isCollectionExist(Utils.capitalizeData(cell.toString()))
+                                if (isCollectionExist == true) {
 
-                                        if (isCollectionExist == true) {
+                                    val collectionUUID =
+                                        Utils.getCollectionUUIDThroughCollectionName(
+                                            Utils.capitalizeData(cellValue)
+                                        )
+                                    productDataModel.collectionUUID = collectionUUID
 
-                                            val collectionUUID =
-                                                Utils.getCollectionUUIDThroughCollectionName(
-                                                    Utils.capitalizeData(cell.toString())
-                                                )
-                                            productDataModel.collectionUUID = collectionUUID
+                                } else {
 
-                                        } else {
+                                    val collectionDataModel = CollectionDataModel()
+                                    val collectionUUID = Utils.generateUUId()
+                                    collectionDataModel.collectionUUID = collectionUUID
+                                    collectionDataModel.collectionName =
+                                        Utils.capitalizeData(cell.toString())
+                                    collectionDataModel.collectionImageUri =
+                                        Constants.Default_Image
 
-                                            val collectionDataModel = CollectionDataModel()
-                                            val collectionUUID = Utils.generateUUId()
-                                            collectionDataModel.collectionUUID = collectionUUID
-                                            collectionDataModel.collectionName =
-                                                Utils.capitalizeData(cell.toString())
-                                            collectionDataModel.collectionImageUri =
-                                                Constants.Default_Image
+                                    Utils.addCollection(collectionDataModel)
 
-                                            Utils.addCollection(collectionDataModel)
+                                    productDataModel.collectionUUID = collectionUUID
 
-                                            productDataModel.collectionUUID = collectionUUID
+                                }
+                            }
 
-                                        }
-                                    }
+                            ProductColumnName.ORIGIN.displayName -> {
 
-                                    ProductColumnName.ORIGIN.displayName -> {
+                                productDataModel.productOrigin = cellValue
 
-                                        productDataModel.productOrigin = cell.toString().trim()
+                            }
 
-                                    }
+                            ProductColumnName.WEIGHT.displayName -> {
 
-                                    ProductColumnName.WEIGHT.displayName -> {
+                                productDataModel.productWeight =
+                                    Utils.roundToTwoDecimalPlaces(
+                                        cellValue.toDouble()
+                                    )
 
-                                        productDataModel.productWeight =
-                                            Utils.roundToTwoDecimalPlaces(
-                                                cell.toString().toDouble()
-                                            )
+                            }
 
-                                    }
+                            ProductColumnName.CARAT.displayName -> {
 
-                                    ProductColumnName.CARAT.displayName -> {
+                                try {
 
-                                        try {
-                                            productDataModel.productCarat = cell.toString().toDouble().toInt()
+                                    productDataModel.productCarat = cellValue.toDouble().toInt()
 
-                                        } catch (e: Exception) {
+                                } catch (e: Exception) {
 
-                                            Utils.T(context,
-                                                context.getString(R.string.invalid_carat_type))
-                                            excelReadSuccess.onReadFail()
-                                            return
-                                        }
-
-                                    }
-
-                                    ProductColumnName.PRICE.displayName -> {
-
-                                        try {
-                                            productDataModel.productPrice =
-                                                Utils.roundToTwoDecimalPlaces(
-                                                    cell.toString().toDouble()
-                                                )
-
-                                        } catch (e: Exception) {
-
-                                            Utils.T(context,
-                                                context.getString(R.string.invalid_product_price))
-                                            excelReadSuccess.onReadFail()
-                                            return
-                                        }
-                                    }
-
-                                    ProductColumnName.COST.displayName -> {
-
-                                        try {
-
-                                            productDataModel.productCost =
-                                                Utils.roundToTwoDecimalPlaces(
-                                                    cell.toString().toDouble()
-                                                )
-
-                                        } catch (e: Exception) {
-
-                                            Utils.T(context,
-                                                context.getString(R.string.invalid_product_cost))
-                                            excelReadSuccess.onReadFail()
-                                            return
-                                        }
-                                    }
-
-                                    ProductColumnName.CATEGORY_NAME.displayName -> {
-
-                                        val isCategoryExist =
-                                            Utils.isCategoryExist(Utils.capitalizeData(cell.toString()))
-
-
-                                        if (isCategoryExist == true) {
-
-                                            val categoryUUID =
-                                                Utils.getCategoryUUIDThroughCategoryName(
-                                                    Utils.capitalizeData(cell.toString())
-                                                )
-
-                                            productDataModel.categoryUUID = categoryUUID
-
-                                        } else {
-
-                                            val categoryDataModel = CategoryDataModel()
-                                            val categoryUUID = Utils.generateUUId()
-                                            categoryDataModel.categoryUUID = categoryUUID
-                                            categoryDataModel.categoryName =
-                                                Utils.capitalizeData(cell.toString())
-
-                                            Utils.addCategory(categoryDataModel)
-
-                                            productDataModel.categoryUUID = categoryUUID
-
-                                        }
-                                    }
-
-                                    ProductColumnName.DESCRIPTION.displayName -> {
-
-                                        productDataModel.productDescription = cell.toString().trim()
-
-                                    }
-
-                                    ProductColumnName.BARCODE.displayName -> {
-
-                                        val barcodeBitmap =
-                                            Utils.genBarcodeBitmap(context, cell.toString().trim())
-
-                                        if (barcodeBitmap != null) {
-
-                                            val barcodeImageUri = Utils.generateUUId()
-
-                                            Utils.saveToInternalStorage(
-                                                context,
-                                                barcodeBitmap,
-                                                barcodeImageUri
-                                            )
-
-                                            productDataModel.productBarcodeData =
-                                                cell.toString().trim()
-                                            productDataModel.productBarcodeUri = barcodeImageUri
-
-                                        }
-                                    }
-
-                                    else -> {
-
-                                        if (i != "status") {
-                                            Utils.T(context, "No Column match $i")
-                                            excelReadSuccess.onReadFail()
-                                            return
-
-                                        }
-                                    }
+                                    Utils.T(context,
+                                        context.getString(R.string.invalid_carat_type))
+                                    excelReadSuccess.onReadFail()
+                                    return
                                 }
 
-                                productDataModel.productImageUri = "${Constants.Default_Image},${Constants.Default_Image}"
-                                productDataModel.productRFIDCode = ""
-                                productDataModel.productUUID = Utils.generateUUId()
+                            }
+
+                            ProductColumnName.PRICE.displayName -> {
+
+                                try {
+                                    productDataModel.productPrice =
+                                        Utils.roundToTwoDecimalPlaces(
+                                            Utils.removeThousandSeparators(cellValue)
+                                            .toDouble()
+                                        )
+
+                                } catch (e: Exception) {
+
+                                    Utils.T(context,
+                                        context.getString(R.string.invalid_product_price))
+                                    excelReadSuccess.onReadFail()
+                                    return
+                                }
+                            }
+
+                            ProductColumnName.COST.displayName -> {
+
+                                try {
+
+                                    productDataModel.productCost =
+                                        Utils.roundToTwoDecimalPlaces(
+                                            Utils.removeThousandSeparators(cellValue)
+                                                .toDouble()
+                                        )
+
+                                } catch (e: Exception) {
+
+                                    Utils.T(context,
+                                        context.getString(R.string.invalid_product_cost))
+                                    excelReadSuccess.onReadFail()
+                                    return
+                                }
+                            }
+
+                            ProductColumnName.CATEGORY_NAME.displayName -> {
+
+                                val isCategoryExist =
+                                    Utils.isCategoryExist(Utils.capitalizeData(cellValue))
+
+
+                                if (isCategoryExist == true) {
+
+                                    val categoryUUID =
+                                        Utils.getCategoryUUIDThroughCategoryName(
+                                            Utils.capitalizeData(cellValue)
+                                        )
+
+                                    productDataModel.categoryUUID = categoryUUID
+
+                                } else {
+
+                                    val categoryDataModel = CategoryDataModel()
+                                    val categoryUUID = Utils.generateUUId()
+                                    categoryDataModel.categoryUUID = categoryUUID
+                                    categoryDataModel.categoryName =
+                                        Utils.capitalizeData(cellValue)
+
+                                    Utils.addCategory(categoryDataModel)
+
+                                    productDataModel.categoryUUID = categoryUUID
+
+                                }
+                            }
+
+                            ProductColumnName.DESCRIPTION.displayName -> {
+
+                                productDataModel.productDescription = cellValue
+
+                            }
+
+                            ProductColumnName.BARCODE.displayName -> {
+
+                                val barcodeBitmap =
+                                    Utils.genBarcodeBitmap(context, cellValue)
+
+                                if (barcodeBitmap != null) {
+
+                                    val barcodeImageUri = Utils.generateUUId()
+
+                                    Utils.saveToInternalStorage(
+                                        context,
+                                        barcodeBitmap,
+                                        barcodeImageUri
+                                    )
+
+                                    productDataModel.productBarcodeData =
+                                        cellValue
+                                    productDataModel.productBarcodeUri = barcodeImageUri
+
+                                }
+
+                            }
+
+                            else -> {
+
+                                Utils.T(context, "No Column match $columnName")
+                                excelReadSuccess.onReadFail()
+                                return
 
                             }
                         }
-
-                        productList.add(productDataModel)
-
                     }
+
+                    if (rowHasData) {
+
+                        productDataModel.productImageUri = "${Constants.Default_Image},${Constants.Default_Image}"
+                        productDataModel.productRFIDCode = ""
+                        productDataModel.productUUID = Utils.generateUUId()
+                        productList.add(productDataModel)
+                    }
+
                 }
             }
 
             excelReadSuccess.onReadSuccess(productList)
 
-        } catch (e: Exception) {
-            e.printStackTrace()
+        }
+         catch (e: Exception) {
 
-        Utils.T(context, context.getString(R.string.exception_in_reading))
+            // Get the stack trace elements
+            val stackTrace = e.stackTrace
+
+            if (stackTrace.isNotEmpty()) {
+                // Get the first stack trace element
+                val element = stackTrace[0]
+                // Print the line number
+
+                Utils.E("Exception occurred at line number: ${element.lineNumber}")
+                Utils.E("Exception occurred at line number: ${e.message}")
+                Utils.E("Exception occurred at line number: ${e::class.simpleName}")
+
+            } else {
+                Utils.E("No stack trace available.")
+            }
+
+            Utils.T(context, context.getString(R.string.exception_in_reading))
+            excelReadSuccess.onReadFail()
 
 //            excelExceptionListData.postValue(e.message.orEmpty())
         }

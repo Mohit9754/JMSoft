@@ -14,9 +14,11 @@
         <item name="colorControlActivated">@color/theme</item>
         <item name="colorControlNormal">@color/text_hint</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+
         <item name="android:overScrollMode">never</item>
         <item name="android:scrollbarThumbHorizontal">@null</item>
         <item name="android:scrollbarThumbVertical">@null</item>
+
         <item name="android:autofilledHighlight" tools:targetApi="o">@android:color/transparent</item>
 <!--        <color name="colorControlNormal">@color/text_hint</color>-->
 

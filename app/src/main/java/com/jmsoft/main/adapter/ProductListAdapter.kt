@@ -283,13 +283,24 @@ class ProductListAdapter(
         // Set product cost
         @SuppressLint("SetTextI18n")
         private fun setProductCost() {
-            binding.tvProductCost.text = "${productData.productCost.toString()} $currency"
+
+            binding.tvProductCost.text = "${productData.productPrice?.let {
+                Utils.getThousandSeparate(
+                    it
+                )
+            }} $currency"
+
         }
 
         // Set product price
         @SuppressLint("SetTextI18n")
         private fun setProductPrice() {
-            binding.tvProductPrice.text = "${productData.productPrice.toString()} $currency"
+
+            binding.tvProductPrice.text = "${productData.productPrice?.let {
+                Utils.getThousandSeparate(
+                    it
+                )
+            }} $currency"
         }
 
         // Handle All the Clicks

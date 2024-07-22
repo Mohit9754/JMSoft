@@ -134,7 +134,7 @@
                         android:inputType="text"
                         android:fontFamily="@font/montserrat_arabic_regular"
                         android:id="@+id/etSearch"
-                        android:paddingVertical="@dimen/_6sdp"
+                        android:paddingVertical="@dimen/_5sdp"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/_22sdp"

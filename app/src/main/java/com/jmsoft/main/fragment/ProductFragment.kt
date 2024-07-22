@@ -172,6 +172,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         ContentResolver.SCHEME_CONTENT -> getContentFileName(uri)
         else -> uri.path?.let(::File)?.name
     }
+
     private fun copyFileAndExtract(uri: Uri, extension: String) {
         GetProgressBar.getInstance(requireActivity())?.show()
 
@@ -541,6 +542,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         lifecycleScope.launch(Dispatchers.IO) {
             setProductRecyclerView()
         }
+
 
         GetProgressBar.getInstance(requireActivity())?.dismiss()
 
