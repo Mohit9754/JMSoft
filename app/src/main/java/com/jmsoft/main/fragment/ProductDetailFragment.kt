@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -51,6 +52,12 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     private var heightOfllProductSection:Int? = null
 
     private var collectionUUIDData:String? = null
+
+    private var mayLikeProductList = ArrayList<ProductDataModel>()
+
+    private var catalogAdapter:CatalogAdapter? = null
+
+    private var offset = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -173,8 +180,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    // Setting the May also like RecyclerView
-    private fun setUpMayLikeRecyclerView() {
+    private fun getMayLikeRvData() {
 
         val collectionUUIDList = productData.collectionUUID?.split(",")?.toMutableList()
 
@@ -184,22 +190,35 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
                 collectionUUIDList.let { it1 ->
                     it1?.let { it2 ->
                         Utils.getAllProductsAcceptCollection(
-                            it2
+                            it2,offset
                         )
                     }
                 }
             } }  else {
 
-            productData.productUUID?.let { Utils.getAllProductsAcceptProduct(it) }
+            productData.productUUID?.let { Utils.getAllProductsAcceptProduct(it,offset) }
         }
 
-        if (productList?.isNotEmpty() == true) {
+        if (productList?.isEmpty() == true) binding.progressBar?.visibility = View.GONE
 
-            val catalogAdapter = CatalogAdapter(requireActivity(), productList)
+        productList?.let { mayLikeProductList.addAll(it) }
+        offset+=Constants.Limit
+
+        catalogAdapter?.notifyItemRangeInserted(offset,mayLikeProductList.size)
+
+    }
+
+    // Setting the May also like RecyclerView
+    private fun setUpMayLikeRecyclerView() {
+
+        if (mayLikeProductList.isNotEmpty()) {
+
+            catalogAdapter = CatalogAdapter(requireActivity(), mayLikeProductList,binding.progressBar)
 
             binding.rvCatalog?.layoutManager =
                 GridLayoutManager(requireActivity(), 3) // Span Count is set to 3
             binding.rvCatalog?.adapter = catalogAdapter
+
         }
         else {
             binding.tvMayLike?.visibility  = View.GONE
@@ -305,6 +324,18 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     // Set the Clicks , initialization And Setup
     private suspend fun init() {
 
+        binding.nsvProductDetail.setOnScrollChangeListener { v: NestedScrollView, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
+
+            if (scrollY >= v.getChildAt(v.childCount - 1)
+                    .measuredHeight - v.measuredHeight && scrollY > oldScrollY
+            ) {
+
+                binding.progressBar?.visibility = View.VISIBLE
+
+                getMayLikeRvData()
+            }
+        }
+
         // getting the product UUID
         val productUUID = arguments?.getString(Constants.productUUID)
 
@@ -327,6 +358,8 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+
+        getMayLikeRvData()
 
         // Setting the May also like RecyclerView
 

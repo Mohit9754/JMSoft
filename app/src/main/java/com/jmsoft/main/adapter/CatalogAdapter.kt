@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CartDataModel
@@ -29,6 +30,7 @@ import com.jmsoft.main.activity.DashboardActivity
 class CatalogAdapter(
     private val context: Context,
     private var productList: ArrayList<ProductDataModel>,
+    private var progressBar:ProgressBar?
 ) :
     RecyclerView.Adapter<CatalogAdapter.MyViewHolder>() {
 
@@ -103,8 +105,11 @@ class CatalogAdapter(
         private fun dismissProgressBar() {
 
             if (position+1 == productList.size) {
+
                 GetProgressBar.getInstance(context)?.dismiss()
+                progressBar?.visibility = View.GONE
             }
+
         }
 
         // Getting Cart Product UUID for Deleting the product from the cart
@@ -139,8 +144,8 @@ class CatalogAdapter(
                 binding.ivCartStatus.setImageResource(R.drawable.icon_cross)
             } else if (isProductExistInCart == false) {
                 binding.ivCartStatus.setImageResource(R.drawable.icon_cart_white)
-
             }
+
         }
 
         //Set the Product image

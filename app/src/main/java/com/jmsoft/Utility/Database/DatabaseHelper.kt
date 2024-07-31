@@ -1271,13 +1271,11 @@ class DatabaseHelper(cx: Context) {
         return productList
     }
 
-    //Get All Products from the Product table Accept Collection
+    // Get All Products from the Product table Accept Collection
     @SuppressLint("Range", "Recycle")
-    fun getAllProductsAcceptCollection(collectionUUIDList: List<String>): ArrayList<ProductDataModel> {
+    fun getAllProductsAcceptCollection(collectionUUIDList: List<String>,offset: Int): ArrayList<ProductDataModel> {
 
         read()
-
-//        Utils.E()
 
         // Construct the "NOT LIKE" conditions dynamically based on the list size
         val notLikeConditions = (1..collectionUUIDList.size).joinToString(separator = " AND ") {
@@ -1285,12 +1283,14 @@ class DatabaseHelper(cx: Context) {
         }
 
         // Build the SQL query with the dynamically constructed "NOT LIKE" conditions
-        val query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE $notLikeConditions AND ${ProductDataModel.Key_productRFIDCode} != ?"
+        val query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE $notLikeConditions AND ${ProductDataModel.Key_productRFIDCode} != ? LIMIT ? OFFSET ?"
 
         val queryArgs = mutableListOf<String>()
 
         queryArgs.addAll(collectionUUIDList.map { "%$it%" }.toMutableList())
         queryArgs.add("")
+        queryArgs.add(Constants.Limit.toString())
+        queryArgs.add(offset.toString())
 //        queryArgs[queryArgs.size] = ""
 
         // Execute the query
@@ -1364,6 +1364,374 @@ class DatabaseHelper(cx: Context) {
         )
     }
 
+    // Get total number of products of detail search
+    @SuppressLint("Recycle")
+    fun getTotalNumberOfProductsOfDetailSearch(search: String): Int {
+
+        val productNameSubstring = "%$search%" // Replace "substring" with the actual substring you're looking for
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)",
+            arrayOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring)
+        )
+
+        var totalCount = 0
+        if (cursor != null && cursor.moveToFirst()) {
+            totalCount = cursor.getInt(0)
+        }
+        cursor?.close()
+
+        return totalCount
+    }
+
+    // Get total number of products of detail search accept collection
+    @SuppressLint("Recycle")
+    fun getTotalNumberOfProductsOfDetailSearchAcceptCollection(search: String,collectionUUID: String): Int {
+
+        val productNameSubstring = "%$search%" // Replace "substring" with the actual substring you're looking for
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?) AND LOWER(${ProductDataModel.Key_collectionUUID}) != ?",
+            arrayOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring,collectionUUID)
+        )
+
+        var totalCount = 0
+        if (cursor != null && cursor.moveToFirst()) {
+            totalCount = cursor.getInt(0)
+        }
+        cursor?.close()
+
+        return totalCount
+    }
+
+    // Get Products with search
+    @SuppressLint("Recycle", "Range")
+    fun getProductsWithDetailSearch(search:String,offset: Int,categoryUUID: String): ArrayList<ProductDataModel> {
+
+        val productNameSubstring = "%$search%"
+
+        val query: String
+        val args: MutableList<String> = mutableListOf()
+
+        if (categoryUUID == Constants.All) {
+            // Query to get all products that match the search criteria
+            query = """
+            SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
+            WHERE (
+                LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
+            )
+            LIMIT ? OFFSET ?
+        """
+            args.addAll(listOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, Constants.Limit.toString(), offset.toString()))
+        } else {
+            // Query to get products by categoryUUID that match the search criteria
+            query = """
+            SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
+            WHERE (
+                LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
+            )
+            AND ${ProductDataModel.Key_categoryUUID} = ?
+            LIMIT ? OFFSET ?
+        """
+            args.addAll(listOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, categoryUUID, Constants.Limit.toString(), offset.toString()))
+        }
+
+        val cursor: Cursor? = db?.rawQuery(query, args.toTypedArray())
+
+        cursor?.moveToFirst()
+
+        val productList = ArrayList<ProductDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val productData = ProductDataModel()
+
+                productData.productUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+                productData.productName =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
+                productData.metalTypeUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_metalTypeUUID))
+                productData.collectionUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_collectionUUID))
+                productData.productOrigin =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productOrigin))
+                productData.productWeight =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+                productData.productCarat =
+                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                productData.productPrice =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                productData.productCost =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+                productData.categoryUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+                productData.productDescription =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
+                productData.productRFIDCode =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFIDCode))
+                productData.productBarcodeUri =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeUri))
+                productData.productBarcodeData =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeData))
+                productData.productImageUri =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
+
+                productList.add(productData)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return productList
+
+    }
+
+    @SuppressLint("Range")
+    fun getProductsWithDetailSearchAcceptCollection(search:String, offset: Int, collectionUUID: String, categoryUUID: String): ArrayList<ProductDataModel> {
+
+        val productNameSubstring = "%$search%"
+
+        val query: String
+        val args: MutableList<String> = mutableListOf()
+
+        if (categoryUUID == Constants.All) {
+            // Query to get all products that match the search criteria and do not match the collectionUUID
+            query = """
+            SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
+            WHERE (
+                LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
+            )
+            AND ${ProductDataModel.Key_collectionUUID} != ?
+            LIMIT ? OFFSET ?
+        """
+            args.addAll(listOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, collectionUUID, Constants.Limit.toString(), offset.toString()))
+        } else {
+            // Query to get products by categoryUUID that match the search criteria and do not match the collectionUUID
+            query = """
+            SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
+            WHERE (
+                LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR
+                LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
+            )
+            AND ${ProductDataModel.Key_collectionUUID} != ?
+            AND ${ProductDataModel.Key_categoryUUID} = ?
+            LIMIT ? OFFSET ?
+        """
+            args.addAll(listOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, collectionUUID, categoryUUID, Constants.Limit.toString(), offset.toString()))
+        }
+
+        val cursor: Cursor? = db?.rawQuery(query, args.toTypedArray())
+        cursor?.moveToFirst()
+
+        val productList = ArrayList<ProductDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val productData = ProductDataModel()
+
+                productData.productUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+                productData.productName =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
+                productData.metalTypeUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_metalTypeUUID))
+                productData.collectionUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_collectionUUID))
+                productData.productOrigin =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productOrigin))
+                productData.productWeight =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+                productData.productCarat =
+                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                productData.productPrice =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                productData.productCost =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+                productData.categoryUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+                productData.productDescription =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
+                productData.productRFIDCode =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFIDCode))
+                productData.productBarcodeUri =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeUri))
+                productData.productBarcodeData =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeData))
+                productData.productImageUri =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
+
+                productList.add(productData)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return productList
+
+    }
+
+
+    // Get Products with detail search
+    @SuppressLint("Recycle", "Range")
+    fun getProductsWithSearch(search:String,offset: Int): ArrayList<ProductDataModel> {
+
+        val productNameSubstring = "%$search%" // Replace "substring" with the actual substring you're looking for
+
+        val cursor: Cursor? =
+            db?.rawQuery(
+                "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) LIMIT ? OFFSET ?",
+                arrayOf(productNameSubstring, Constants.Limit.toString(), offset.toString())
+            )
+
+        cursor?.moveToFirst()
+
+        val productList = ArrayList<ProductDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val productData = ProductDataModel()
+
+                productData.productUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+                productData.productName =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
+                productData.metalTypeUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_metalTypeUUID))
+                productData.collectionUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_collectionUUID))
+                productData.productOrigin =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productOrigin))
+                productData.productWeight =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+                productData.productCarat =
+                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                productData.productPrice =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                productData.productCost =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+                productData.categoryUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+                productData.productDescription =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
+                productData.productRFIDCode =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFIDCode))
+                productData.productBarcodeUri =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeUri))
+                productData.productBarcodeData =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeData))
+                productData.productImageUri =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
+
+                productList.add(productData)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return productList
+
+    }
+
+    // Get Products with limit and offset
+    @SuppressLint("Recycle", "Range")
+    fun getProductsWithLimitAndOffset(offset:Int): ArrayList<ProductDataModel> {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} != ? LIMIT ? OFFSET ?",
+            arrayOf("", Constants.Limit.toString(), offset.toString())
+        )
+
+        cursor?.moveToFirst()
+
+        val productList = ArrayList<ProductDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val productData = ProductDataModel()
+
+                productData.productUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+                productData.productName =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
+                productData.metalTypeUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_metalTypeUUID))
+                productData.collectionUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_collectionUUID))
+                productData.productOrigin =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productOrigin))
+                productData.productWeight =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+                productData.productCarat =
+                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                productData.productPrice =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                productData.productCost =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+                productData.categoryUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+                productData.productDescription =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
+                productData.productRFIDCode =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFIDCode))
+                productData.productBarcodeUri =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeUri))
+                productData.productBarcodeData =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeData))
+                productData.productImageUri =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
+
+                productList.add(productData)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return productList
+
+    }
+
     // Get All Products that has RFID from the Product table
     @SuppressLint("Range")
     suspend fun getAllProductsThatHasRFID(): ArrayList<ProductDataModel> {
@@ -1427,16 +1795,89 @@ class DatabaseHelper(cx: Context) {
         return productList
     }
 
+    // return the total number of products
+    @SuppressLint("Recycle")
+    fun getTotalNumberOfProducts(categoryUUID: String): Int {
+        read()
 
-    // Get All Products from the Product table
-    @SuppressLint("Range")
-    suspend fun getAllProducts(): ArrayList<ProductDataModel> {
+        val query: String
+        val args: Array<String>
+
+        if (categoryUUID == Constants.All) {
+            // Query to count all products
+            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT}"
+            args = emptyArray()
+        } else {
+            // Query to count products by categoryUUID
+            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ?"
+            args = arrayOf(categoryUUID)
+        }
+
+        val cursor: Cursor? = db?.rawQuery(query, args)
+        var totalCount = 0
+
+        cursor?.use {
+            if (it.moveToFirst()) {
+                totalCount = it.getInt(0)
+            }
+        }
+
+        return totalCount
+    }
+
+    // return the total number of products of collection
+    @SuppressLint("Recycle")
+    fun getTotalNumberOfProductOfCollection(collectionUUID: String,categoryUUID: String): Int {
 
         read()
 
-        val cursor: Cursor? =
-            db?.rawQuery("SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} ", null)
+        val query: String
+        val args: Array<String>
 
+        if (categoryUUID == Constants.All) {
+            // Query to count all products
+            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} = ? "
+            args = arrayOf(collectionUUID)
+        } else {
+            // Query to count products by categoryUUID
+            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? AND ${ProductDataModel.Key_collectionUUID} = ?"
+            args = arrayOf(categoryUUID,collectionUUID)
+        }
+
+        val cursor: Cursor? = db?.rawQuery(query, args)
+        var totalCount = 0
+
+        cursor?.use {
+            if (it.moveToFirst()) {
+                totalCount = it.getInt(0)
+            }
+        }
+
+        return totalCount
+    }
+
+
+
+    //Get All Products from the Product table with limit and offset
+    @SuppressLint("Range")
+    suspend fun getAllProducts(offset: Int,categoryUUID: String): ArrayList<ProductDataModel> {
+
+        read()
+
+        val query: String
+        val args: Array<String>
+
+        if (categoryUUID == Constants.All) {
+            // Query to get all products
+            query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} LIMIT ? OFFSET ?"
+            args = arrayOf(Constants.Limit.toString(), offset.toString())
+        } else {
+            // Query to get products by category UUID
+            query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? LIMIT ? OFFSET ?"
+            args = arrayOf(categoryUUID, Constants.Limit.toString(), offset.toString())
+        }
+
+        val cursor: Cursor? = db?.rawQuery(query, args)
         cursor?.moveToFirst()
 
         val productList = ArrayList<ProductDataModel>()
@@ -1493,12 +1934,12 @@ class DatabaseHelper(cx: Context) {
 
     //Get All Products Accept one Product from product table
     @SuppressLint("Range")
-    fun getAllProductsAcceptProduct(productUUID: String): ArrayList<ProductDataModel> {
+    fun getAllProductsAcceptProduct(productUUID: String,offset: Int): ArrayList<ProductDataModel> {
 
         read()
 
         val cursor: Cursor? =
-            db?.rawQuery("SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} != ? AND ${ProductDataModel.Key_productRFIDCode} != ? ", arrayOf(productUUID,""))
+            db?.rawQuery("SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} != ? AND ${ProductDataModel.Key_productRFIDCode} != ? LIMIT ? OFFSET ? ", arrayOf(productUUID,"",Constants.Limit.toString(),offset.toString()))
 
         cursor?.moveToFirst()
 
@@ -1556,13 +1997,26 @@ class DatabaseHelper(cx: Context) {
 
 
     /* Get All Products from the Product table Accept the collection */
-    @SuppressLint("Range")
-    suspend fun getAllProductsAcceptCollection(collectionUUID: String): ArrayList<ProductDataModel> {
+    @SuppressLint("Range", "Recycle")
+    suspend fun getAllProductsAcceptCollection(collectionUUID: String,offset: Int,categoryUUID: String): ArrayList<ProductDataModel> {
 
         read()
 
-        val cursor: Cursor? =
-            db?.rawQuery("SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} NOT LIKE ?", arrayOf("%$collectionUUID%"))
+        val query: String
+        val args: Array<String>
+
+        if (categoryUUID == Constants.All) {
+            // Query to get all products that do not match the collectionUUID
+            query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} NOT LIKE ? LIMIT ? OFFSET ?"
+            args = arrayOf("%$collectionUUID%", Constants.Limit.toString(), offset.toString())
+
+        } else {
+            // Query to get products by categoryUUID that do not match the collectionUUID
+            query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? AND ${ProductDataModel.Key_collectionUUID} NOT LIKE ? LIMIT ? OFFSET ?"
+            args = arrayOf(categoryUUID, "%$collectionUUID%", Constants.Limit.toString(), offset.toString())
+        }
+
+        val cursor: Cursor? = db?.rawQuery(query, args)
 
         cursor?.moveToFirst()
 

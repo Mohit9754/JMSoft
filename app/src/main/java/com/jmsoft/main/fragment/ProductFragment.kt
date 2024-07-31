@@ -23,14 +23,16 @@ import android.view.Window
 import android.webkit.MimeTypeMap
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
+import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.ExcelReader
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
@@ -49,6 +51,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.ceil
 
 class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
@@ -60,15 +63,17 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
     private var productDataList = ArrayList<ProductDataModel>()
 
-    private var categoryFilterList = ArrayList<ProductDataModel>()
-
     private var selectedProductUUIDList = ArrayList<String>()
 
     private var isRunFilter = false
 
-    private val searchFilterList  = ArrayList<ProductDataModel>()
+    private var categoryDataList = ArrayList<CategoryDataModel>()
+
+    private var selectedCategoryIndex = 0
 
     private lateinit var excelReader: ExcelReader
+
+    private var offset = 0
 
     private var file: File? = null
 
@@ -84,9 +89,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             openDocument()
 
         } else {
-             showOpenSettingDialog()
-          }
+            showOpenSettingDialog()
         }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,7 +101,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         // Inflate the layout for this fragment
         binding = FragmentProductBinding.inflate(layoutInflater)
 
-        init()
+        lifecycleScope.launch(Dispatchers.Main) {
+            init()
+        }
 
         return binding.root
     }
@@ -111,7 +118,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         filePickerLauncher.launch(intent)
     }
 
-     private fun Uri.getExtension(context: Context): String? {
+    private fun Uri.getExtension(context: Context): String? {
         var extension: String? = ""
         extension = if (this.scheme == ContentResolver.SCHEME_CONTENT) {
             val mime = MimeTypeMap.getSingleton()
@@ -136,7 +143,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
     // Gallery result launcher
     @SuppressLint("NotifyDataSetChanged")
     val filePickerLauncher = registerForActivityResult(
-    ActivityResultContracts.StartActivityForResult()
+        ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
@@ -167,8 +174,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         }
     }.getOrNull()
 
-
-    fun getFileName(uri: Uri): String? = when (uri.scheme) {
+    private fun getFileName(uri: Uri): String? = when (uri.scheme) {
         ContentResolver.SCHEME_CONTENT -> getContentFileName(uri)
         else -> uri.path?.let(::File)?.name
     }
@@ -189,7 +195,11 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                     output.flush()
                 }
             }
-            fileUri = FileProvider.getUriForFile(requireActivity(), requireContext().packageName + ".provider", file!!)
+            fileUri = FileProvider.getUriForFile(
+                requireActivity(),
+                requireContext().packageName + ".provider",
+                file!!
+            )
         } catch (e: Exception) {
 //            hideProgress()
             fileUri = uri
@@ -205,7 +215,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                     Utils.T(requireContext(), getString(R.string.document_is_encrypted))
 
                 } else {
-                    excelReader.readExcelFileFromAssets(requireActivity(),this.absolutePath)
+                    excelReader.readExcelFileFromAssets(requireActivity(), this.absolutePath)
                 }
             }
         }
@@ -243,16 +253,17 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
     // Set the spinner
     private suspend fun setSpinner() {
 
-        val result =  lifecycleScope.async(Dispatchers.IO) {
-            return@async Utils.getAllCategory() }
+        val result = lifecycleScope.async(Dispatchers.IO) {
+            return@async Utils.getAllCategory()
+        }
 
-        val categoryDataList = result.await()
+        categoryDataList = result.await()
 
         val listSpinner = mutableListOf<String?>()
         listSpinner.add(All)
         categoryDataList.map { it.categoryName }.let { listSpinner.addAll(it) }
 
-        withContext(Dispatchers.Main){
+        withContext(Dispatchers.Main) {
 
             val spinnerAdapter = ArrayAdapter(requireActivity(), R.layout.item_spinner, listSpinner)
             spinnerAdapter.setDropDownViewResource(R.layout.item_custom_spinner_list)
@@ -266,16 +277,18 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                     position: Int,
                     id: Long
                 ) {
+                    selectedCategoryIndex = position
+                    offset = 0
+
+                    if (isRunFilter)  GetProgressBar.getInstance(requireActivity())?.show()
 
                     if (position == 0) {
 
                         if (isRunFilter) {
 
-                            binding.mcvProductList?.visibility = View.VISIBLE
-                            binding.llEmptyProduct?.visibility = View.GONE
-
-                            productListAdapter?.filterProductDataList(productDataList)
-                            categoryFilterList = productDataList
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                getProductData()
+                            }
 
                             binding.etSearch?.text?.clear()
 
@@ -285,10 +298,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
                     } else {
 
-                        categoryFilterList =
-                            productDataList.filter { it.categoryUUID == categoryDataList[position - 1].categoryUUID } as ArrayList<ProductDataModel>
-
-                        setCategoryFilterList()
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            getProductData()
+                        }
 
                         isRunFilter = true
                         binding.etSearch?.text?.clear()
@@ -302,24 +314,6 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                 }
             }
         }
-
-    }
-
-    // Set category filter list
-    private fun setCategoryFilterList() {
-
-        if (categoryFilterList.isNotEmpty()) {
-
-            binding.mcvProductList?.visibility = View.VISIBLE
-            binding.llEmptyProduct?.visibility = View.GONE
-
-            productListAdapter?.filterProductDataList(categoryFilterList)
-
-        } else {
-
-            binding.mcvProductList?.visibility = View.GONE
-            binding.llEmptyProduct?.visibility = View.VISIBLE
-        }
     }
 
     // Checks fragment state
@@ -332,10 +326,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             binding.tvTitle?.text = getString(R.string.select_products_to_add)
 
         } else {
-
             binding.tvTitle?.text = getString(R.string.product)
-
-
         }
 
     }
@@ -343,80 +334,208 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
     // make the isRunFilter false
     override fun onResume() {
         super.onResume()
-        isRunFilter = false
 
+        isRunFilter = false
+        offset = 0
+        selectedCategoryIndex = 0
+        binding.etSearch?.text?.clear()
     }
 
-    // Set search
-    private fun setSearch() {
+    // Get Visible page no
+    fun getVisiblePages(pageNoList: List<Int>, currentPage: Int, totalVisible: Int = 5): List<Int> {
+        val totalPages = pageNoList.size
 
-        binding.etSearch?.addTextChangedListener( object : TextWatcher {
+        if (totalPages == 0) return emptyList() // If there are no pages, return an empty list
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        // Include first and last page numbers in the visible pages
+        val firstPage = pageNoList.first()
+        val lastPage = pageNoList.last()
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        // Set to hold the visible pages ensuring no duplicates
+        val visiblePages = mutableSetOf(firstPage, lastPage)
 
-                searchFilterList.clear()
+        // Ensure the current page is within valid range
+        if (currentPage in firstPage..lastPage) {
+            visiblePages.add(currentPage)
 
-                if (binding.etSearch?.text?.isNotEmpty() == true) {
+            // Include neighbors of the current page if they exist
+            if (currentPage > firstPage) visiblePages.add(currentPage - 1)
+            if (currentPage < lastPage) visiblePages.add(currentPage + 1)
+        }
 
-                    for (product in categoryFilterList) {
+        // Calculate remaining pages to display, excluding the fixed ones
+        val additionalPagesNeeded = totalVisible - visiblePages.size
 
-                        if (product.productName?.contains(
-                                binding.etSearch?.text.toString().trim(),
-                                true
-                            ) == true
-                            ||
-                            product.productDescription?.contains(
-                                binding.etSearch?.text.toString().trim(),
-                                true
-                            ) == true
-                            ||
-                            product.productOrigin?.contains(
-                                binding.etSearch?.text.toString().trim(),
-                                true
-                            ) == true
-                            ||
-                            product.productRFIDCode?.contains(
-                                binding.etSearch?.text.toString().trim(),
-                                true
-                            ) == true
-                            ||
-                            product.productBarcodeData?.contains(
-                                binding.etSearch?.text.toString().trim(),
-                                true
-                            ) == true
+        // Adjust the range if more pages are needed
+        if (additionalPagesNeeded > 0) {
+            // Determine start and end points for additional pages
+            val remainingPages = pageNoList.filter { it !in visiblePages }
 
-                        ) {
-                            searchFilterList.add(product)
-                        }
-                    }
-
-                    if (searchFilterList.isNotEmpty()) {
-
-                        binding.mcvProductList?.visibility = View.VISIBLE
-                        binding.llEmptyProduct?.visibility = View.GONE
-
-                        productListAdapter?.filterProductDataList(searchFilterList)
-
-                    }
-                    else {
-
-                        binding.mcvProductList?.visibility = View.GONE
-                        binding.llEmptyProduct?.visibility = View.VISIBLE
-                    }
-                }
-
-                else {
-                    setCategoryFilterList()
+            // Add as many pages as needed to fill the visible slots
+            for (i in 0 until additionalPagesNeeded) {
+                if (i < remainingPages.size) {
+                    visiblePages.add(remainingPages[i])
+                } else {
+                    break
                 }
             }
-            override fun afterTextChanged(s: Editable?) {}
+        }
 
-        })
+        // Ensure the size is exactly totalVisible by removing the farthest elements if necessary
+        while (visiblePages.size > totalVisible) {
+            // Remove the farthest elements from currentPage
+            visiblePages.remove(visiblePages.minByOrNull { Math.abs(it - currentPage) })
+        }
+
+        return visiblePages.sorted()
     }
 
-    private fun init() {
+    // Set page no recycler view
+    private fun setPageNoRecyclerView() {
+
+
+
+        binding.llPageIndicator?.visibility = View.VISIBLE
+
+        val categoryUUID =
+            if (selectedCategoryIndex - 1 == -1) All else categoryDataList[selectedCategoryIndex - 1].categoryUUID
+
+        binding.rvPageNo?.layoutManager =
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+
+        // Inline adapter and view holder
+        binding.rvPageNo?.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+            val totalNumberOfProducts = if (binding.etSearch?.text?.isEmpty() == true) {
+
+                if (collectionUUID != null)
+
+                    categoryUUID?.let {
+                        Utils.getTotalNumberOfProductsOfCollection(
+                            collectionUUID!!,
+                            it
+                        )
+                    }
+                else {
+
+                    categoryUUID?.let { Utils.getTotalNumberOfProducts(it) }
+
+                }
+            } else {
+
+                if (collectionUUID != null) {
+
+                    binding.etSearch?.text?.toString()?.trim()?.let {
+                        Utils.getTotalNumberOfProductsOfDetailSearchAcceptCollection(
+                            it, collectionUUID!!
+                        )
+                    }
+
+                } else {
+                    binding.etSearch?.text?.toString()?.trim()
+                        ?.let { Utils.getTotalNumberOfProductsOfDetailSearch(it) }
+
+                }
+            }
+
+            val totalProducts = totalNumberOfProducts ?: 0 // default to 45 if null
+
+            val pageNoList = (1..ceil(totalProducts / Constants.Limit.toFloat()).toInt()).toList()
+
+            val currentPage = (offset / Constants.Limit)+1
+
+            val visiblePageNoList = getVisiblePages(pageNoList,currentPage)
+
+            override fun onCreateViewHolder(
+                parent: ViewGroup,
+                viewType: Int
+            ): RecyclerView.ViewHolder {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_page_no, parent, false)
+                return ViewHolder(view)
+            }
+
+            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+                (holder as ViewHolder).bind(visiblePageNoList[position], position)
+            }
+
+            override fun getItemCount() = visiblePageNoList.size
+
+            inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+                private val tvPageNo: TextView = itemView.findViewById(R.id.tvPageNo)
+                private val tvDots: TextView = itemView.findViewById(R.id.tvDots)
+                private val mcvPageNo: MaterialCardView = itemView.findViewById(R.id.mcvPageNo)
+
+                fun bind(pageNo: Int, position: Int) {
+
+                    if (visiblePageNoList[position] == currentPage) {
+                        mcvPageNo.strokeColor = resources.getColor(R.color.theme, null)
+                    }
+
+                    if (currentPage == 1) {
+                        binding.mcvPrevious?.visibility = View.GONE
+                    } else {
+                        binding.mcvPrevious?.visibility = View.VISIBLE
+                    }
+
+                    if (currentPage  == visiblePageNoList[visiblePageNoList.size-1]) {
+                        binding.mcvNext?.visibility = View.GONE
+                    } else {
+                        binding.mcvNext?.visibility = View.VISIBLE
+                    }
+
+                    if (visiblePageNoList.size == 1) {
+                        binding.llPageIndicator?.visibility = View.GONE
+                    }
+
+
+                    if (position == 3 && currentPage <= 3 && pageNoList.size > 5  ) {
+
+                        tvDots.visibility = View.VISIBLE
+                    }
+
+                    if (position == 0 && (currentPage >= 4 && currentPage <= pageNoList.size - 2 ) &&  pageNoList.size > 5 )
+                        tvDots.visibility = View.VISIBLE
+
+                    if (position == 3 && (currentPage >= 4 && currentPage <= pageNoList.size - 3 ) &&  pageNoList.size > 5 )
+                        tvDots.visibility = View.VISIBLE
+
+                    if (position == 1 && (currentPage == pageNoList.size-1  ) &&  pageNoList.size > 5 )
+                        tvDots.visibility = View.VISIBLE
+
+                    if (position == 2 && (currentPage == pageNoList.size  ) &&  pageNoList.size > 5 )
+                        tvDots.visibility = View.VISIBLE
+
+
+                    tvPageNo.text = pageNo.toString()
+
+                    mcvPageNo.setOnClickListener {
+
+                        offset = (visiblePageNoList[position] - 1) * Constants.Limit
+
+                        GetProgressBar.getInstance(requireActivity())?.show()
+
+                        if (binding.etSearch?.text?.isNotEmpty() == true) {
+
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                getProductData()
+                            }
+                        } else {
+
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                getProductWithDetailSearch()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    private suspend fun init() {
 
         // Checks fragment state
         checkState()
@@ -427,34 +546,43 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             "org.apache.poi.javax.xml.stream.XMLInputFactory",
             "com.fasterxml.aalto.stax.InputFactoryImpl"
         );
+
         System.setProperty(
             "org.apache.poi.javax.xml.stream.XMLOutputFactory",
             "com.fasterxml.aalto.stax.OutputFactoryImpl"
         );
+
         System.setProperty(
             "org.apache.poi.javax.xml.stream.XMLEventFactory",
             "com.fasterxml.aalto.stax.EventFactoryImpl"
         );
 
-        // Set Product Recycler View
-        lifecycleScope.launch(Dispatchers.IO) {
-            setProductRecyclerView()
+        val job = lifecycleScope.launch(Dispatchers.Main) {
+            getProductData()
         }
+
+        job.join()
+
+//        // Set Product Recycler View
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            setProductRecyclerView()
+//        }
 
         // Set the spinner
         lifecycleScope.launch(Dispatchers.Default) {
             setSpinner()
         }
 
-        // Set search
-//        lifecycleScope.launch(Dispatchers.Default) {
-            setSearch()
-//        }
+        setEditTextChangeLisOnSearch()
+
+
+//        setSearch()
 
         // Set focus change listener on edittext search
         binding.etSearch?.let {
             binding.mcvSearch?.let { it1 ->
-                Utils.setFocusChangeListener(requireActivity(),
+                Utils.setFocusChangeListener(
+                    requireActivity(),
                     it, it1
                 )
             }
@@ -471,64 +599,113 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         binding.mcvImport?.setOnClickListener(this)
 
+        binding.mcvPrevious?.setOnClickListener(this)
+
+        binding.mcvNext?.setOnClickListener(this)
+
+        binding.ivSearch?.setOnClickListener(this)
+
     }
 
-    // Set Product Recycler View
-    private suspend fun setProductRecyclerView() {
+    // edit text change listener on search
+    private fun setEditTextChangeLisOnSearch() {
 
-        val job = if (collectionUUID != null) {
+        binding.etSearch?.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if (s?.isEmpty() == true) {
+
+                    offset = 0
+
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        getProductData()
+                    }
+
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+
+        })
+
+    }
+
+    // Get Product data
+    private suspend fun getProductData() {
+
+        val categoryUUID =
+            if (selectedCategoryIndex - 1 == -1) All else categoryDataList[selectedCategoryIndex - 1].categoryUUID
+
+        val job = if (collectionUUID != null && categoryUUID != null) {
 
             lifecycleScope.launch(Dispatchers.IO) {
+
                 productDataList = Utils.getAllProductsAcceptCollection(
-                    collectionUUID!!
+                    collectionUUID!!, offset, categoryUUID
                 )
             }
-        }
-        else {
+
+        } else {
 
             lifecycleScope.launch(Dispatchers.IO) {
-                productDataList = Utils.getAllProducts()
+                productDataList = Utils.getAllProducts(offset, categoryUUID!!)
+
             }
         }
 
         job.join()
 
-        categoryFilterList = productDataList
+        setProductRecyclerView()
 
-        withContext(Dispatchers.Main) {
-
-            if (productDataList.isNotEmpty()) {
-
-                binding.mcvProductList?.visibility = View.VISIBLE
-                binding.llEmptyProduct?.visibility = View.GONE
-
-                productListAdapter = ProductListAdapter(
-                    requireActivity(),
-                    productDataList,
-                    collectionUUID,
-                    binding,
-                    selectedProductUUIDList
-                )
-
-                binding.rvProduct?.layoutManager =
-                    LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
-                binding.rvProduct?.adapter = productListAdapter
-
-            }
-
-            else {
-                binding.mcvProductList?.visibility = View.GONE
-                binding.mcvFilter?.visibility = View.GONE
-                binding.llEmptyProduct?.visibility = View.VISIBLE
-
-                // Dismiss progress bar
-                GetProgressBar.getInstance(requireActivity())?.dismiss()
-            }
-            
-        }
     }
 
-    override fun onReadSuccess(productList :ArrayList<ProductDataModel>) {
+    // Set Product Recycler View
+    private fun setProductRecyclerView() {
+
+        if (productDataList.isNotEmpty()) {
+
+            binding.mcvProductList?.visibility = View.VISIBLE
+            binding.llEmptyProduct?.visibility = View.GONE
+
+            productListAdapter = ProductListAdapter(
+                requireActivity(),
+                productDataList,
+                collectionUUID,
+                binding,
+                selectedProductUUIDList
+            )
+
+            binding.rvProduct?.layoutManager =
+                LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+            binding.rvProduct?.adapter = productListAdapter
+
+            setPageNoRecyclerView()
+
+            binding.rvProduct?.post {
+
+                Utils.E("Scroll to top position ")
+                binding.rvProduct?.smoothScrollToPosition(0)
+
+            }
+
+        } else {
+
+            binding.mcvProductList?.visibility = View.GONE
+//            binding.mcvFilter?.visibility = View.GONE
+            binding.llEmptyProduct?.visibility = View.VISIBLE
+            binding.llPageIndicator?.visibility = View.GONE
+
+
+            // Dismiss progress bar
+            GetProgressBar.getInstance(requireActivity())?.dismiss()
+        }
+
+    }
+
+    override fun onReadSuccess(productList: ArrayList<ProductDataModel>) {
 
         Utils.T(requireActivity(), getString(R.string.readed_successfully))
 
@@ -539,17 +716,48 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             }
         }
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            setProductRecyclerView()
-        }
+        offset = 0
 
+        lifecycleScope.launch(Dispatchers.Main) {
+            getProductData()
+        }
+        binding.etSearch?.text?.clear()
 
         GetProgressBar.getInstance(requireActivity())?.dismiss()
 
     }
 
-    override fun onReadFail(){
+    override fun onReadFail() {
         GetProgressBar.getInstance(requireActivity())?.dismiss()
+    }
+
+    private suspend fun getProductWithDetailSearch() {
+
+        val categoryUUID =
+            if (selectedCategoryIndex - 1 == -1) All else categoryDataList[selectedCategoryIndex - 1].categoryUUID
+
+        val job = if (collectionUUID != null && categoryUUID != null) {
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                productDataList = Utils.getProductsWithDetailSearchAcceptCollection(
+                    binding.etSearch?.text.toString().trim(), offset, collectionUUID!!, categoryUUID
+                )
+            }
+        } else {
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                productDataList = Utils.getProductsWithDetailSearch(
+                    binding.etSearch?.text.toString().trim(),
+                    offset, categoryUUID!!
+                )
+            }
+
+        }
+
+        job.join()
+
+        setProductRecyclerView()
+
     }
 
     // Handle all the clicks
@@ -558,7 +766,6 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         // Clicked on back button
         if (v == binding.mcvBackBtn) {
             (requireActivity() as DashboardActivity).navController?.popBackStack()
-
         }
 
         // Clicked on add product button
@@ -607,10 +814,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
             (requireActivity() as DashboardActivity).navController?.popBackStack()
 
-        }
-
-        else if(v == binding.mcvImport) {
-
+        } else if (v == binding.mcvImport) {
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
 
@@ -620,6 +824,39 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
                 openDocument()
             }
+        } else if (v == binding.mcvPrevious) {
+
+            offset = ((offset / Constants.Limit) - 1) * Constants.Limit
+
+            GetProgressBar.getInstance(requireActivity())?.show()
+
+            lifecycleScope.launch(Dispatchers.Main) {
+                getProductData()
+            }
+
+        } else if (v == binding.mcvNext) {
+
+            offset = ((offset / Constants.Limit) + 1) * Constants.Limit
+
+            GetProgressBar.getInstance(requireActivity())?.show()
+
+            lifecycleScope.launch(Dispatchers.Main) {
+                getProductData()
+            }
+
+        } else if (v == binding.ivSearch) {
+
+            if (binding.etSearch?.text?.isNotEmpty() == true) {
+
+                GetProgressBar.getInstance(requireActivity())?.show()
+
+                offset = 0
+
+                lifecycleScope.launch(Dispatchers.Main) {
+                    getProductWithDetailSearch()
+                }
+            }
+
         }
 
     }

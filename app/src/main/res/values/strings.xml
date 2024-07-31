@@ -290,6 +290,7 @@
     <string name="file_not_found">File not found</string>
     <string name="purchasing_and_nsales">Purchasing and\n sales</string>
     <string name="save_to_later">Save to later</string>
+    <string name="dots">. . .</string>
 
 
 </resources>

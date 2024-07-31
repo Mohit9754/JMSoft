@@ -877,12 +877,23 @@ object Utils {
 
     //Getting the Category UUId through Category Name
     fun getCategoryUUIDThroughCategoryName(categoryName: String): String? {
+
         return DatabaseHelper.instance.getCategoryUUIDThroughCategoryName(categoryName)
     }
 
-    //Get All Products from the Product table
-    suspend fun getAllProducts(): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProducts()
+    // return the total number of products
+    fun getTotalNumberOfProducts(categoryUUID: String): Int {
+        return DatabaseHelper.instance.getTotalNumberOfProducts(categoryUUID)
+    }
+
+    // return the total number of products of collection
+    fun getTotalNumberOfProductsOfCollection(collectionUUID: String,categoryUUID: String): Int {
+        return DatabaseHelper.instance.getTotalNumberOfProductOfCollection(collectionUUID,categoryUUID)
+    }
+
+    //Get All Products from the Product table with limit and offset
+    suspend fun getAllProducts(offset: Int, categoryUUID: String): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProducts(offset,categoryUUID)
     }
 
     // Get All Products that has RFID from the Product table
@@ -890,19 +901,47 @@ object Utils {
         return DatabaseHelper.instance.getAllProductsThatHasRFID()
     }
 
+    // Get Products with limit and offset
+    suspend fun getProductsWithLimitAndOffset(offset:Int): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getProductsWithLimitAndOffset(offset)
+    }
+
+    // Get Products with search
+    suspend fun getProductsWithDetailSearch(search:String,offset: Int,categoryUUID: String): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getProductsWithDetailSearch(search,offset,categoryUUID)
+    }
+    suspend fun getProductsWithDetailSearchAcceptCollection(search:String,offset: Int,collectionUUID: String,categoryUUID: String): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getProductsWithDetailSearchAcceptCollection(search,offset,collectionUUID,categoryUUID)
+    }
+
+    // Get total number of products of detail search
+     fun getTotalNumberOfProductsOfDetailSearch(search:String): Int {
+        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearch(search)
+    }
+
+    // Get total number of products of detail search accept collection
+     fun getTotalNumberOfProductsOfDetailSearchAcceptCollection(search: String,collectionUUID: String): Int {
+        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearchAcceptCollection(search,collectionUUID)
+    }
+
+    // Get Products with limit and offset
+    suspend fun getProductsWithSearch(search:String,offset: Int): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getProductsWithSearch(search,offset)
+    }
+
     //Get All Products Accept one Product from product table
-    fun getAllProductsAcceptProduct(productUUID: String): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProductsAcceptProduct(productUUID)
+    fun getAllProductsAcceptProduct(productUUID: String,offset: Int): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsAcceptProduct(productUUID,offset)
     }
 
     /* Get All Products from the Product table Accept the collection */
-     suspend fun getAllProductsAcceptCollection(collectionUUID: String): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUID)
+     suspend fun getAllProductsAcceptCollection(collectionUUID: String,offset: Int,categoryUUID: String): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUID,offset,categoryUUID)
     }
 
     //Get All Products from the Product table Accept Category one Category
-    fun getAllProductsAcceptCollection(collectionUUIDList:List<String>): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUIDList)
+    fun getAllProductsAcceptCollection(collectionUUIDList:List<String>,offset: Int): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUIDList,offset)
     }
 
     // Getting the Category Name through Category UUID
@@ -1977,6 +2016,7 @@ object Utils {
 
     @SuppressLint("ResourceType")
     fun initProgressDialog(c: Context?): Dialog {
+
         val dialog = Dialog(c!!)
         dialog.setCanceledOnTouchOutside(false)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -1985,6 +2025,7 @@ object Utils {
         dialog.setCanceledOnTouchOutside(false)
         dialog.setCancelable(false)
         return dialog
+
     }
 
     fun videoProgressDialog(c: Context?): Dialog {

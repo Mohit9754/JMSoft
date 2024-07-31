@@ -150,17 +150,15 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
     private var cameraActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result != null) {
-            if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == Activity.RESULT_OK) {
 
-                dialogMetalBinding.llAddImageSection.visibility = View.GONE
-                dialogMetalBinding.ivCollectionImage.setImageBitmap(result.data?.extras?.get("data") as Bitmap?)
-                dialogMetalBinding.mcvCrossBtn.visibility = View.VISIBLE
-                isCollectionImageSelected = true
-                dialogMetalBinding.tvCollectionImageError.visibility = View.GONE
+            dialogMetalBinding.llAddImageSection.visibility = View.GONE
+            dialogMetalBinding.ivCollectionImage.setImageBitmap(result.data?.extras?.get("data") as Bitmap?)
+            dialogMetalBinding.mcvCrossBtn.visibility = View.VISIBLE
+            isCollectionImageSelected = true
+            dialogMetalBinding.tvCollectionImageError.visibility = View.GONE
 //                updateProfile(binding.ivProfile?.drawable?.toBitmap())
 
-            }
         }
     }
 

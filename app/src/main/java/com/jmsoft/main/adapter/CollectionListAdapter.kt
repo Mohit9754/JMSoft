@@ -71,7 +71,9 @@ class CollectionListAdapter(
 
             Utils.deleteCollectionUUIDFromProductTable(collectionUUID)
 
-            Utils.deleteImageFromInternalStorage(context,collectionImageUri)
+            if (collectionImageUri != Constants.Default_Image) {
+                Utils.deleteImageFromInternalStorage(context,collectionImageUri)
+            }
 
             // Delete the collection first
             Utils.deleteCollection(collectionUUID)

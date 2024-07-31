@@ -14,8 +14,6 @@ public class SuccessResponse {
     String path;
     //Because PdfDocument is using PostScript as unit.
     int widthInPostScripUnit,heightInPostScripUnit;
-
-
     public SuccessResponse(PdfDocument pdfDocument, File file, int widthInPostScripUnit, int heightInPostScripUnit) {
         this.pdfDocument = pdfDocument;
         this.file = file;

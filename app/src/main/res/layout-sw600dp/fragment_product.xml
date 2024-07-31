@@ -105,7 +105,6 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="@dimen/_100sdp"
                 android:layout_marginEnd="@dimen/_7sdp"
@@ -146,6 +145,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/_4sdp"
                         android:layout_alignParentEnd="true"
+                        android:id="@+id/ivSearch"
                         android:padding="@dimen/_3sdp"
                         android:src="@drawable/icon_search"
                         tools:ignore="ContentDescription" />
@@ -256,7 +256,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/llTop"
+            android:layout_above="@+id/llPageIndicator"
             android:visibility="visible"
+            app:strokeWidth="0.01dp"
+
             android:layout_marginHorizontal="1dp"
             android:id="@+id/mcvProductList"
             android:layout_marginTop="@dimen/_10sdp"
@@ -267,12 +270,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/_3sdp"
                 android:orientation="vertical">
-
 
                 <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:id="@+id/nsvProduct"
+                    >
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -442,9 +447,7 @@
 
                         </com.google.android.material.card.MaterialCardView>
 
-
                     </LinearLayout>
-
 
                 </androidx.core.widget.NestedScrollView>
 
@@ -453,6 +456,112 @@
 
 
         </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/llPageIndicator"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_alignParentBottom="true"
+            android:visibility="visible"
+            android:layout_height="wrap_content"
+            tools:ignore="DisableBaselineAlignment">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    app:strokeWidth="0.7dp"
+                    android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                    android:outlineSpotShadowColor="@color/spotShadowColor"
+                    app:strokeColor="@color/text_hint"
+                    android:id="@+id/mcvPrevious"
+                    app:cardCornerRadius="@dimen/_3sdp"
+                    android:layout_height="wrap_content"
+                    tools:ignore="UnusedAttribute">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_marginHorizontal="@dimen/_5sdp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        tools:ignore="UseCompoundDrawables">
+
+                        <ImageView
+                            android:layout_width="@dimen/_7sdp"
+                            android:layout_height="@dimen/_7sdp"
+                            android:src="@drawable/icon_previous_arrow"
+                            android:layout_marginEnd="@dimen/_3sdp"
+                            android:tint="@color/product_background_color"
+                            tools:ignore="ContentDescription,UseAppTint" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/previous"
+                            android:fontFamily="@font/montserrat_arabic_regular"
+                            android:textSize="15sp"
+                            android:textColor="@color/product_background_color"
+                            />
+
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/rvPageNo"
+                    tools:listitem="@layout/item_page_no"
+                    android:layout_marginHorizontal="@dimen/_2sdp"
+                    android:orientation="horizontal"
+                    tools:ignore="NestedWeights" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    app:strokeWidth="0.7dp"
+                    android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                    android:outlineSpotShadowColor="@color/spotShadowColor"
+                    app:strokeColor="@color/text_hint"
+                    android:id="@+id/mcvNext"
+                    app:cardCornerRadius="@dimen/_3sdp"
+                    android:layout_marginEnd="@dimen/_4sdp"
+                    android:layout_height="wrap_content"
+                    tools:ignore="UnusedAttribute">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_marginHorizontal="@dimen/_5sdp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        tools:ignore="UseCompoundDrawables">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/next"
+                            android:fontFamily="@font/montserrat_arabic_regular"
+                            android:textSize="15sp"
+                            android:layout_marginEnd="@dimen/_3sdp"
+                            android:textColor="@color/ochre_color"
+                            />
+
+                        <ImageView
+                            android:layout_width="@dimen/_7sdp"
+                            android:layout_height="@dimen/_7sdp"
+                            android:src="@drawable/icon_next_arrow"
+                            android:tint="@color/ochre_color"
+                            tools:ignore="ContentDescription,UseAppTint" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/llEmptyProduct"
@@ -483,7 +592,6 @@
                 android:textSize="15sp" />
 
         </LinearLayout>
-
 
     </RelativeLayout>
 

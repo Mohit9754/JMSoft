@@ -127,6 +127,7 @@ interface Constants {
         const val type = "type"
         const val On = "On"
         const val New = "New"
+        const val Limit = 9
         const val Confirm = "Confirm"
         const val all = "all"
         const val error = "error"

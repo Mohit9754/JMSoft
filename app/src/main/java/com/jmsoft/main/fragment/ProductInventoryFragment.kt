@@ -226,6 +226,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             cameraActivityResultLauncher.launch(cameraIntent)
+
         } else {
 
             if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
@@ -240,17 +241,16 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
     private var cameraActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result != null) {
-            if (result.resultCode == Activity.RESULT_OK) {
 
-                binding.tvProductImageError.visibility = View.GONE
-                productImageView?.setImageBitmap(result.data?.extras?.get("data") as Bitmap?)
-                productImageView?.drawable?.let { selectedProductImage.add(it.toBitmap()) }
+        if (result.resultCode == Activity.RESULT_OK) {
 
-                addImageAdapter?.notifyDataSetChanged()
-                binding.tvProductImageError.visibility = View.GONE
+            binding.tvProductImageError.visibility = View.GONE
+            productImageView?.setImageBitmap(result.data?.extras?.get("data") as Bitmap?)
+            productImageView?.drawable?.let { selectedProductImage.add(it.toBitmap()) }
 
-            }
+            addImageAdapter?.notifyDataSetChanged()
+            binding.tvProductImageError.visibility = View.GONE
+
         }
     }
 
@@ -363,6 +363,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                     binding.tvMetalTypeError.visibility = View.GONE
                     binding.ivMetalType.let { Utils.rotateView(it, 0f) }
                     binding.mcvMetalTypeList.let { Utils.collapseView(it) }
+
                 }
 
                 override fun unselect() {
@@ -503,6 +504,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     // Set product images
     fun setProductImageRecyclerView() {
+
         addImageAdapter = AddImageAdapter(
             requireActivity(),
             selectedProductImage,
@@ -761,6 +763,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                 GetProgressBar.getInstance(requireActivity())?.dismiss()
 
             }
+
         } else {
 
             val productRfidCode = arguments?.getString(Constants.rfidCode)
@@ -888,6 +891,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             dialog.dismiss()
             //Camera Launcher
             cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+
         }
 
         dialogBinding.mcvGallery.setOnClickListener {
@@ -1801,6 +1805,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             GetProgressBar.getInstance(requireActivity())?.show()
 
             (requireActivity() as DashboardActivity).navController?.popBackStack()
+
         } else if (v == binding.mcvAddMetalType) {
 
             showAddOrEditMetalTypeDialog(null, null)
@@ -1843,7 +1848,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             hideKeyboard(requireActivity())
         }
 
-        else if (v == binding.mcvPrevious){
+        else if (v == binding.mcvPrevious) {
             changePage(-1)
         }
 

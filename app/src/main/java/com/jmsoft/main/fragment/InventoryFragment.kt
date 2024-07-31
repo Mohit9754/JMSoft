@@ -35,7 +35,7 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
     }
 
     //set the Clicks And initialization
-    private fun init(){
+    private fun init() {
 
         // Set Click on Back Button
         binding.mcvBackBtn?.setOnClickListener(this)

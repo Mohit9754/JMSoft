@@ -9,6 +9,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
+        android:id="@+id/nsvCatalog"
         android:visibility="visible"
         android:layout_height="wrap_content">
 
@@ -61,6 +62,15 @@
             android:textSize="15sp" />
 
     </LinearLayout>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        />
 
 
 </RelativeLayout>
