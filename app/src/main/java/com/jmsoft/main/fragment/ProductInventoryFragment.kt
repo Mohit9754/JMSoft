@@ -41,6 +41,7 @@ import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.Database.StockLocationDataModel
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.Utility.UtilityTools.ProductUUIDList
@@ -56,12 +57,14 @@ import com.jmsoft.databinding.DialogAddMetalTypeBinding
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.DialogProfileBinding
 import com.jmsoft.databinding.FragmentProductInventoryBinding
+import com.jmsoft.databinding.ItemAddStockLocationBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.AddImageAdapter
 import com.jmsoft.main.adapter.CategoryDropdownAdapter
 import com.jmsoft.main.adapter.CollectionDropdownAdapter
 import com.jmsoft.main.adapter.MetalTypeDropdownAdapter
 import com.jmsoft.main.adapter.SelectedCollectionAdapter
+import com.jmsoft.main.adapter.StockLocationDropdownAdapter
 import com.jmsoft.main.`interface`.CollectionStatusCallback
 import com.jmsoft.main.`interface`.ConnectedDeviceCallback
 import com.jmsoft.main.`interface`.PairStatusCallback
@@ -97,6 +100,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     private var metalTypeDropdownAdapter: MetalTypeDropdownAdapter? = null
 
+    private var stockLocationDropdownAdapter: StockLocationDropdownAdapter? = null
+
     private var maxImageLimit = 5 // Maximum images allowed
 
     private val selectedProductImage: ArrayList<Any> = ArrayList()
@@ -107,7 +112,11 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     private var metalTypeDropdownList = ArrayList<MetalTypeDataModel>()
 
+    private var stockLocationDropdownList = ArrayList<StockLocationDataModel>()
+
     private var selectedMetalTypeUUID: String? = null
+
+    private var selectedStockLocationUUID: String? = null
 
     private var dialogAddMetalTypeBinding: DialogAddMetalTypeBinding? = null
 
@@ -218,7 +227,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         }
     }
 
-    //Camera Permission Launcher
+    // Camera Permission Launcher
     private var cameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean? ->
@@ -389,6 +398,57 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     }
 
+    // Set stock location dropdown
+    private fun setStockLocationRecyclerView() {
+
+        stockLocationDropdownList = Utils.getAllStockLocation()
+
+        stockLocationDropdownAdapter = StockLocationDropdownAdapter(
+            requireActivity(),
+            stockLocationDropdownList,
+            this,
+            false,
+            object : SelectedCallback {
+
+                override fun selected(data: Any) {
+
+                    val stockLocationDataModel = data as StockLocationDataModel
+
+                    if (binding.tvStockLocation.text.toString() != stockLocationDataModel.stockLocationName) {
+
+                        selectedStockLocationUUID = stockLocationDataModel.stockLocationUUID
+                        binding.tvStockLocation.text = stockLocationDataModel.stockLocationName
+                        binding.tvStockLocationError.visibility = View.GONE
+                        binding.ivStockLocation.let { Utils.rotateView(it, 0f) }
+                        binding.mcvStockLocationList.let { Utils.collapseView(it) }
+
+                    }
+
+                }
+
+                override fun unselect() {
+
+                    selectedStockLocationUUID = null
+                    binding.tvStockLocation.text = ""
+                    binding.tvStockLocationError.visibility = View.GONE
+//                    binding.mcvMetalTypeList?.visibility = View.GONE
+                    showOrHideStockLocationDropDown()
+
+                }
+            }
+        )
+
+        if (selectedStockLocationUUID != null) {
+            stockLocationDropdownAdapter?.selectedStockLocationPosition =
+                stockLocationDropdownList.indexOfFirst { it.stockLocationUUID == selectedStockLocationUUID }
+        }
+
+        binding.rvStockLocation.layoutManager =
+            LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+        binding.rvStockLocation.adapter = stockLocationDropdownAdapter
+
+    }
+
     // Set category dropdown
     private fun setCategoryRecyclerView() {
 
@@ -447,7 +507,14 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             object : CollectionStatusCallback {
 
                 @SuppressLint("NotifyDataSetChanged")
-                override fun collectionSelected(selectedCollectionModel: SelectedCollectionModel) {
+                override fun collectionSelected(selectedCollectionModel: SelectedCollectionModel,closeDropDown:Boolean) {
+
+                    if (closeDropDown) {
+
+                        binding.ivCollection.let { Utils.rotateView(it, 0f) }
+                        binding.mcvCollectionList.let { Utils.collapseView(it) }
+
+                    }
 
                     binding.tvCollection.visibility = View.GONE
                     binding.tvCollectionError.visibility = View.GONE
@@ -678,6 +745,16 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     }
 
+    private fun setSelectedStockLocation(stockLocationUUID:String) {
+
+        val stockLocationDataModel = Utils.getStockLocation(stockLocationUUID)
+
+        if(stockLocationDataModel.stockLocationName != null) {
+            binding.tvStockLocation.text = stockLocationDataModel.stockLocationName
+        }
+        selectedStockLocationUUID = stockLocationUUID
+    }
+
     // Check add or edit status
     private suspend fun checkAddOrEditState() {
 
@@ -726,6 +803,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                 selectedCollectionUUID =
                     productData.collectionUUID?.split(",")?.toMutableList() ?: mutableListOf()
 
+                productData.stockLocationUUID?.let { setSelectedStockLocation(it) }
+
                 binding.etOrigin.setText(productData.productOrigin)
                 binding.etWeight.setText(productData.productWeight.toString())
                 binding.etCarat.setText(productData.productCarat.toString())
@@ -766,6 +845,10 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         } else {
 
+            val stockLocationUUID = arguments?.getString(Constants.stockLocationUUID)
+
+            stockLocationUUID?.let { setSelectedStockLocation(it) }
+
             val productRfidCode = arguments?.getString(Constants.rfidCode)
 
             if (productRfidCode != null) {
@@ -803,7 +886,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         job.join()
 
-
         //Initialize RFID
         rfidSetUp = RFIDSetUp(requireContext(), this)
 
@@ -825,6 +907,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         // Set metal type dropdown
         setMetalTypeRecyclerView()
 
+        setStockLocationRecyclerView()
+
         // Set category dropdown
         setCategoryRecyclerView()
 
@@ -839,6 +923,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         binding.llMetalType.setOnClickListener(this)
 
+        binding.llStockLocation.setOnClickListener(this)
+
         binding.mcvCollection.setOnClickListener(this)
 
         binding.llCategory.setOnClickListener(this)
@@ -851,6 +937,8 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         binding.mcvBackBtn.setOnClickListener(this)
 
         binding.mcvAddMetalType.setOnClickListener(this)
+
+        binding.mcvAddStockLocation.setOnClickListener(this)
 
         binding.mcvBarcodeBtn.setOnClickListener(this)
 
@@ -965,6 +1053,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         productData.productBarcodeData = barcodeData
         productData.productBarcodeUri = Utils.getPictureUri(requireActivity(), barcodeImage[0])
         productData.productImageUri = getProductImageUri()
+        productData.stockLocationUUID = selectedStockLocationUUID?:""
 
         if (productDataModel != null) {
 
@@ -1338,6 +1427,134 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         }
     }
 
+//     @SuppressLint("NotifyDataSetChanged")
+//     fun showAddOrUpdateStockLocationDialog(position: Int?, stockLocationUUID:String?) {
+//
+//        val dialog = Dialog(requireActivity())
+//
+//        val dialogBinding = ItemAddStockLocationBinding.inflate(LayoutInflater.from(context))
+//
+//        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//        dialog.setCanceledOnTouchOutside(true)
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+//
+//        val parent = dialogBinding.root.parent as? ViewGroup
+//        parent?.removeView(dialogBinding.root)
+//        dialog.setContentView(dialogBinding.root)
+//
+//         if (position != null) {
+//
+//             // set data
+//             dialogBinding.tvTitle.text = requireActivity().getString(R.string.edit_stock_location)
+//             dialogBinding.etParent.setText(stockLocationDropdownList[position].stockLocationParentName)
+//             dialogBinding.etName.setText(stockLocationDropdownList[position].stockLocationName)
+//
+//         }
+//
+//        Utils.setFocusChangeLis(requireActivity(),dialogBinding.etParent, dialogBinding.mcvParent)
+//
+//        Utils.setFocusChangeLis(requireActivity(),dialogBinding.etName, dialogBinding.mcvName)
+//
+//        Utils.addTextChangedListener(
+//            dialogBinding.etParent,
+//            dialogBinding.tvParentError
+//        )
+//
+//        Utils.addTextChangedListener(
+//            dialogBinding.etName,
+//            dialogBinding.tvNameError
+//        )
+//
+//        dialogBinding.mcvSave.setOnClickListener {
+//
+//            val errorValidationModels: MutableList<ValidationModel> = ArrayList()
+//
+//            errorValidationModels.add(
+//                ValidationModel(
+//                    Validation.Type.Empty,
+//                    dialogBinding.etParent,
+//                    dialogBinding.tvParentError
+//                )
+//            )
+//
+//            errorValidationModels.add(
+//                ValidationModel(
+//                    Validation.Type.Empty,
+//                    dialogBinding.etName,
+//                    dialogBinding.tvNameError
+//                )
+//            )
+//
+//            val validation: Validation? = Validation.instance
+//            val resultReturn: ResultReturn? =
+//                validation?.CheckValidation(requireActivity(), errorValidationModels)
+//
+//            if (resultReturn?.aBoolean == true) {
+//
+//                dialog.dismiss()
+//
+//                val stockLocationDataModel = StockLocationDataModel()
+//                stockLocationDataModel.stockLocationUUID = stockLocationUUID ?:Utils.getOrderUUID(requireActivity())
+//                stockLocationDataModel.stockLocationParentName = Utils.capitalizeData(dialogBinding.etParent.text.toString())
+//                stockLocationDataModel.stockLocationName = Utils.capitalizeData(dialogBinding.etName.text.toString())
+//
+//                if (stockLocationUUID != null && position != null) {
+//
+//                    Utils.updateStockLocation(stockLocationDataModel)
+//                    stockLocationDropdownList[position] = stockLocationDataModel
+//                    stockLocationDropdownAdapter?.notifyItemChanged(position)
+//
+//                    Utils.T(
+//                        requireActivity(),
+//                        requireActivity().getString(R.string.updated_successfully)
+//                    )
+//                }
+//                else {
+//
+//                    Utils.addStockLocation(stockLocationDataModel)
+//
+//                    Utils.T(
+//                        requireActivity(),
+//                        requireActivity().getString(R.string.added_successfully)
+//                    )
+//
+//                    setStockLocationRecyclerView()
+//
+//                    binding.mcvStockLocationList.visibility = View.GONE
+//                    showOrHideStockLocationDropDown()
+//                }
+//
+//            }
+//            else {
+//
+//                resultReturn?.errorTextView?.visibility = View.VISIBLE
+//                if (resultReturn?.type === Validation.Type.EmptyString) {
+//                    resultReturn.errorTextView?.text = resultReturn.errorMessage
+//                } else {
+//                    resultReturn?.errorTextView?.text = validation?.errorMessage
+//                    val animation =
+//                        AnimationUtils.loadAnimation(context, R.anim.top_to_bottom)
+//                    resultReturn?.errorTextView?.startAnimation(animation)
+//                    validation?.EditTextPointer?.requestFocus()
+//
+//                    val imm =
+//                        requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//                    imm.showSoftInput(validation?.EditTextPointer, InputMethodManager.SHOW_IMPLICIT)
+//                }
+//            }
+//
+//        }
+//
+//        dialogBinding.mcvCancel.setOnClickListener {
+//            dialog.dismiss()
+//        }
+//
+//        dialog.setCancelable(true)
+//        dialog.show()
+//
+//    }
+
+
     // Metal type dialog for add or edit
     @SuppressLint("NotifyDataSetChanged")
     fun showAddOrEditMetalTypeDialog(position: Int?, metalTypeUUID: String?) {
@@ -1565,6 +1782,22 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         }
     }
 
+    // Show or hide Stock Location drop down
+    private fun showOrHideStockLocationDropDown() {
+
+        if (binding.mcvStockLocationList.visibility == View.VISIBLE) {
+
+            binding.ivStockLocation.let { Utils.rotateView(it, 0f) }
+            binding.mcvStockLocationList.let { Utils.collapseView(it) }
+
+        } else {
+
+            binding.ivStockLocation.let { Utils.rotateView(it, 180f) }
+            binding.mcvStockLocationList.let { Utils.expandView(it) }
+
+        }
+    }
+
     // Show or hide collection drop down
     private fun showOrHideCollectionDropDown() {
 
@@ -1640,8 +1873,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
                             GetProgressBar.getInstance(requireContext())?.dismiss()
 
-
-
                             Utils.E("Status is success ${rfidSetUp?.getScanningStatus()}")
 
 //                            lifecycleScope.launch {
@@ -1700,9 +1931,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
             override fun onDeviceNotFound() {
 
-                if (requireActivity() != null) {
-                    Utils.T(requireActivity(),"No device is Connected ")
-                }
+                Utils.T(requireActivity(),"No device is Connected ")
             }
         })
     }
@@ -1770,8 +1999,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                 (context as DashboardActivity).navController?.navigate(R.id.productInventory, bundle, navOptions)
 
             }
-
-
         }
     }
 
@@ -1781,9 +2008,17 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         if (v == binding.llMetalType) {
             showOrHideMetalTypeDropDown()
-        } else if (v == binding.llCategory) {
+        }
+
+        else if (v == binding.llStockLocation) {
+            showOrHideStockLocationDropDown()
+        }
+
+        else if (v == binding.llCategory) {
             showOrHideCategoryDropDown()
-        } else if (v == binding.mcvRFIDCodeBtn) {
+        }
+
+        else if (v == binding.mcvRFIDCodeBtn) {
 
             checkAndroidVersionAndLaunchPermission()
 
@@ -1809,7 +2044,11 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         } else if (v == binding.mcvAddMetalType) {
 
             showAddOrEditMetalTypeDialog(null, null)
-        } else if (v == binding.mcvBarcodeBtn) {
+        }
+        else if (v == binding.mcvAddStockLocation) {
+//            showAddOrUpdateStockLocationDialog(null,null)
+        }
+        else if (v == binding.mcvBarcodeBtn) {
 
             if (binding.etBarcode.text?.isNotEmpty() == true) {
 

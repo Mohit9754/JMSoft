@@ -159,6 +159,7 @@
     <string name="save_small">save</string>
     <string name="edit_metal_type">Edit Metal Type</string>
     <string name="are_you_sure_you_want_to_delete_this_metal_type_this_action_cannot_be_undone">Are you sure you want to delete this metal type ? This action cannot be undone.</string>
+    <string name="are_you_sure_you_want_to_delete_this_stock_location_this_action_cannot_be_undone">Are you sure you want to delete this stock location ? This action cannot be undone.</string>
     <string name="add_collection">Add Collection</string>
     <string name="edit_collection">Edit Collection</string>
     <string name="enter_collection">Enter Collection</string>
@@ -291,6 +292,17 @@
     <string name="purchasing_and_nsales">Purchasing and\n sales</string>
     <string name="save_to_later">Save to later</string>
     <string name="dots">. . .</string>
+    <string name="stock_location">Stock Location</string>
+    <string name="add_stock_location">Add Stock Location</string>
+    <string name="stock_location_is_empty">Stock location is empty</string>
+    <string name="name">Name</string>
+    <string name="parent">Parent</string>
+    <string name="enter_parent">Enter parent</string>
+    <string name="enter_name">Enter name</string>
+    <string name="edit_stock_location">Edit Stock Location</string>
+    <string name="select_stock_location">Select stock location</string>
+    <string name="invalid_weight_type">Invalid weight type</string>
+    <string name="select_parent">Select parent</string>
 
 
 </resources>

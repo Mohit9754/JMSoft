@@ -120,7 +120,7 @@ class MetalTypeDropdownAdapter(
         }
 
         // Set selected metal type
-        private fun setSelectedMetalType(){
+        private fun setSelectedMetalType() {
 
             if (selectedMetalTypePosition == position) {
 

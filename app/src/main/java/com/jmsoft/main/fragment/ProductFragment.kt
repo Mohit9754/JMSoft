@@ -34,6 +34,7 @@ import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.Database.StockLocationDataModel
 import com.jmsoft.Utility.UtilityTools.ExcelReader
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.Utility.UtilityTools.ProductUUIDList
@@ -190,6 +191,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         val fout = FileOutputStream(file)
         try {
             requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
+
                 fout.use { output ->
                     inputStream.copyTo(output)
                     output.flush()
@@ -280,7 +282,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                     selectedCategoryIndex = position
                     offset = 0
 
-                    if (isRunFilter)  GetProgressBar.getInstance(requireActivity())?.show()
+                    if (isRunFilter) GetProgressBar.getInstance(requireActivity())?.show()
 
                     if (position == 0) {
 
@@ -322,6 +324,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         collectionUUID = arguments?.getString(Constants.collectionUUID)
 
         if (collectionUUID != null) {
+
             binding.mcvAdd?.visibility = View.VISIBLE
             binding.tvTitle?.text = getString(R.string.select_products_to_add)
 
@@ -393,8 +396,6 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
     // Set page no recycler view
     private fun setPageNoRecyclerView() {
 
-
-
         binding.llPageIndicator?.visibility = View.VISIBLE
 
         val categoryUUID =
@@ -423,18 +424,25 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                 }
             } else {
 
-                if (collectionUUID != null) {
+                if (collectionUUID != null && categoryUUID != null) {
 
                     binding.etSearch?.text?.toString()?.trim()?.let {
                         Utils.getTotalNumberOfProductsOfDetailSearchAcceptCollection(
-                            it, collectionUUID!!
+                            it, collectionUUID!!, categoryUUID
                         )
                     }
 
                 } else {
-                    binding.etSearch?.text?.toString()?.trim()
-                        ?.let { Utils.getTotalNumberOfProductsOfDetailSearch(it) }
 
+                    binding.etSearch?.text?.toString()?.trim()
+                        ?.let {
+                            categoryUUID?.let { it1 ->
+                                Utils.getTotalNumberOfProductsOfDetailSearch(
+                                    it,
+                                    it1
+                                )
+                            }
+                        }
                 }
             }
 
@@ -442,9 +450,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
             val pageNoList = (1..ceil(totalProducts / Constants.Limit.toFloat()).toInt()).toList()
 
-            val currentPage = (offset / Constants.Limit)+1
+            val currentPage = (offset / Constants.Limit) + 1
 
-            val visiblePageNoList = getVisiblePages(pageNoList,currentPage)
+            val visiblePageNoList = getVisiblePages(pageNoList, currentPage)
 
             override fun onCreateViewHolder(
                 parent: ViewGroup,
@@ -456,6 +464,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             }
 
             override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
+
                 (holder as ViewHolder).bind(visiblePageNoList[position], position)
             }
 
@@ -479,7 +489,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                         binding.mcvPrevious?.visibility = View.VISIBLE
                     }
 
-                    if (currentPage  == visiblePageNoList[visiblePageNoList.size-1]) {
+                    if (currentPage == visiblePageNoList[visiblePageNoList.size - 1]) {
                         binding.mcvNext?.visibility = View.GONE
                     } else {
                         binding.mcvNext?.visibility = View.VISIBLE
@@ -490,21 +500,21 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                     }
 
 
-                    if (position == 3 && currentPage <= 3 && pageNoList.size > 5  ) {
+                    if (position == 3 && currentPage <= 3 && pageNoList.size > 5) {
 
                         tvDots.visibility = View.VISIBLE
                     }
 
-                    if (position == 0 && (currentPage >= 4 && currentPage <= pageNoList.size - 2 ) &&  pageNoList.size > 5 )
+                    if (position == 0 && (currentPage >= 4 && currentPage <= pageNoList.size - 2) && pageNoList.size > 5)
                         tvDots.visibility = View.VISIBLE
 
-                    if (position == 3 && (currentPage >= 4 && currentPage <= pageNoList.size - 3 ) &&  pageNoList.size > 5 )
+                    if (position == 3 && (currentPage >= 4 && currentPage <= pageNoList.size - 3) && pageNoList.size > 5)
                         tvDots.visibility = View.VISIBLE
 
-                    if (position == 1 && (currentPage == pageNoList.size-1  ) &&  pageNoList.size > 5 )
+                    if (position == 1 && (currentPage == pageNoList.size - 1) && pageNoList.size > 5)
                         tvDots.visibility = View.VISIBLE
 
-                    if (position == 2 && (currentPage == pageNoList.size  ) &&  pageNoList.size > 5 )
+                    if (position == 2 && (currentPage == pageNoList.size) && pageNoList.size > 5)
                         tvDots.visibility = View.VISIBLE
 
 
@@ -531,8 +541,6 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                 }
             }
         }
-
-
     }
 
     private suspend fun init() {
@@ -563,20 +571,12 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         job.join()
 
-//        // Set Product Recycler View
-//        lifecycleScope.launch(Dispatchers.IO) {
-//            setProductRecyclerView()
-//        }
-
         // Set the spinner
         lifecycleScope.launch(Dispatchers.Default) {
             setSpinner()
         }
 
         setEditTextChangeLisOnSearch()
-
-
-//        setSearch()
 
         // Set focus change listener on edittext search
         binding.etSearch?.let {
@@ -634,6 +634,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
     }
 
     // Get Product data
+    @SuppressLint("SuspiciousIndentation")
     private suspend fun getProductData() {
 
         val categoryUUID =
@@ -651,8 +652,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         } else {
 
             lifecycleScope.launch(Dispatchers.IO) {
-                productDataList = Utils.getAllProducts(offset, categoryUUID!!)
-
+                if (categoryUUID != null)
+                    productDataList = Utils.getAllProducts(offset, categoryUUID)
             }
         }
 
@@ -684,11 +685,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
             setPageNoRecyclerView()
 
-            binding.rvProduct?.post {
-
-                Utils.E("Scroll to top position ")
-                binding.rvProduct?.smoothScrollToPosition(0)
-
+            // Scroll the NestedScrollView to the top position
+            binding.nsvProduct?.post {
+                binding.nsvProduct?.smoothScrollTo(0, 0)
             }
 
         } else {
@@ -746,12 +745,13 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         } else {
 
             lifecycleScope.launch(Dispatchers.IO) {
-                productDataList = Utils.getProductsWithDetailSearch(
-                    binding.etSearch?.text.toString().trim(),
-                    offset, categoryUUID!!
-                )
-            }
 
+                if (categoryUUID != null)
+                    productDataList = Utils.getProductsWithDetailSearch(
+                        binding.etSearch?.text.toString().trim(),
+                        offset, categoryUUID
+                    )
+            }
         }
 
         job.join()
@@ -810,8 +810,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                         break
                     }
                 }
-            }
 
+            }
             (requireActivity() as DashboardActivity).navController?.popBackStack()
 
         } else if (v == binding.mcvImport) {
@@ -856,9 +856,6 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                     getProductWithDetailSearch()
                 }
             }
-
         }
-
     }
-
 }

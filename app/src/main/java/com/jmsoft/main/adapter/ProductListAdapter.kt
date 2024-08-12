@@ -35,6 +35,7 @@ class ProductListAdapter(
 ) :
     RecyclerView.Adapter<ProductListAdapter.MyViewHolder>() {
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemProductListBinding.inflate(LayoutInflater.from(context), parent, false)
         return MyViewHolder(view)
@@ -284,7 +285,7 @@ class ProductListAdapter(
         @SuppressLint("SetTextI18n")
         private fun setProductCost() {
 
-            binding.tvProductCost.text = "${productData.productPrice?.let {
+            binding.tvProductCost.text = "${productData.productCost?.let {
                 Utils.getThousandSeparate(
                     it
                 )

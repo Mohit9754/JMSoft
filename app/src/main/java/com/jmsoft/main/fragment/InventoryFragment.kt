@@ -52,6 +52,8 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
         // Set Click on Product option
         binding.mcvProduct?.setOnClickListener(this)
 
+        binding.mcvStockLocation?.setOnClickListener(this)
+
         GetProgressBar.getInstance(requireActivity())?.dismiss()
 
     }
@@ -108,6 +110,15 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
             GetProgressBar.getInstance(requireActivity())?.show()
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.product)
+
+        }
+
+        else if (v == binding.mcvStockLocation) {
+
+            // Show progress bar
+            GetProgressBar.getInstance(requireActivity())?.show()
+
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.stockLocation)
 
         }
 

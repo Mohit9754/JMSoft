@@ -17,11 +17,11 @@ import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.Database.StockLocationDataModel
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.user
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.main.model.DeviceModel
-import java.util.UUID
 
 class DatabaseHelper(cx: Context) {
 
@@ -202,12 +202,22 @@ class DatabaseHelper(cx: Context) {
 
         open()
 
-//        deleteMetalTypeUUIDFromProductTable(metalTypeUUID)
-
         db?.delete(
             MetalTypeDataModel.TABLE_NAME_METAL_TYPE,
             "${MetalTypeDataModel.Key_metalTypeUUID} == ?",
             arrayOf(metalTypeUUID)
+        )
+    }
+
+    // Delete Stock Location
+    fun deleteStockLocation(stockLocationUUID: String) {
+
+        open()
+
+        db?.delete(
+            StockLocationDataModel.TABLE_NAME_STOCK_LOCATION,
+            "${StockLocationDataModel.Key_stockLocationUUID} == ?",
+            arrayOf(stockLocationUUID)
         )
     }
 
@@ -263,6 +273,86 @@ class DatabaseHelper(cx: Context) {
 
     }
 
+    // Get All Stock location
+    @SuppressLint("Range")
+    fun getAllStockLocation(): ArrayList<StockLocationDataModel> {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT * FROM ${StockLocationDataModel.TABLE_NAME_STOCK_LOCATION}",
+            null
+        )
+
+        cursor?.moveToFirst()
+
+        val stockLocationList = ArrayList<StockLocationDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+                val stockLocationDataModel = StockLocationDataModel()
+
+                stockLocationDataModel.stockLocationUUID =
+                    cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationUUID))
+
+                stockLocationDataModel.stockLocationParentUUID =
+                    cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationParentUUID))
+
+                stockLocationDataModel.stockLocationName =
+                    cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationName))
+
+                stockLocationList.add(stockLocationDataModel)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return stockLocationList
+
+    }
+
+    // Get Stock location through uuid
+    @SuppressLint("Range")
+    fun getStockLocation(stockLocationUUID: String): StockLocationDataModel {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT * FROM ${StockLocationDataModel.TABLE_NAME_STOCK_LOCATION} WHERE ${StockLocationDataModel.Key_stockLocationUUID} = ?",
+            arrayOf(stockLocationUUID)
+        )
+
+        cursor?.moveToFirst()
+
+        val stockLocationDataModel = StockLocationDataModel()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+                stockLocationDataModel.stockLocationUUID =
+                    cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationUUID))
+
+                stockLocationDataModel.stockLocationParentUUID =
+                    cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationParentUUID))
+
+                stockLocationDataModel.stockLocationName =
+                    cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationName))
+
+
+            cursor.close()
+        }
+        close()
+
+        return stockLocationDataModel
+
+    }
+
     // Updating metal type in the metal type table
     fun updateMetalType(metalTypeUUID: String, metalTypeName: String) {
 
@@ -282,6 +372,28 @@ class DatabaseHelper(cx: Context) {
 
     }
 
+    // update stock location
+    fun updateStockLocation(stockLocationDataModel: StockLocationDataModel) {
+
+        open()
+
+        val stockLocationValue = ContentValues().apply {
+
+            put(StockLocationDataModel.Key_stockLocationUUID, stockLocationDataModel.stockLocationUUID)
+            put(StockLocationDataModel.Key_stockLocationName, stockLocationDataModel.stockLocationName)
+        }
+
+        db?.update(
+            StockLocationDataModel.TABLE_NAME_STOCK_LOCATION,
+            stockLocationValue,
+            "${StockLocationDataModel.Key_stockLocationUUID} == ?",
+            arrayOf(stockLocationDataModel.stockLocationUUID)
+        )
+
+    }
+
+
+
     // Add Metal type in Metal_Type table
     fun addMetalTypeInTheMetalTypeTable(metalTypeDataModel: MetalTypeDataModel) {
 
@@ -294,6 +406,21 @@ class DatabaseHelper(cx: Context) {
         }
 
         db?.insert(MetalTypeDataModel.TABLE_NAME_METAL_TYPE, null, metalTypeValue)
+    }
+
+    // Add new stock location
+    fun addStockLocation(stockLocationDataModel: StockLocationDataModel) {
+
+        open()
+
+        val stockLocationValue = ContentValues().apply {
+
+            put(StockLocationDataModel.Key_stockLocationUUID, stockLocationDataModel.stockLocationUUID)
+            put(StockLocationDataModel.Key_stockLocationParentUUID, stockLocationDataModel.stockLocationParentUUID)
+            put(StockLocationDataModel.Key_stockLocationName, stockLocationDataModel.stockLocationName)
+        }
+
+        db?.insert(StockLocationDataModel.TABLE_NAME_STOCK_LOCATION, null, stockLocationValue)
     }
 
 
@@ -1340,8 +1467,8 @@ class DatabaseHelper(cx: Context) {
 
             cursor.close()
         }
-            close()
 
+        close()
 
         return productList
     }
@@ -1366,49 +1493,79 @@ class DatabaseHelper(cx: Context) {
 
     // Get total number of products of detail search
     @SuppressLint("Recycle")
-    fun getTotalNumberOfProductsOfDetailSearch(search: String): Int {
+    fun getTotalNumberOfProductsOfDetailSearch(search: String, categoryUUID: String): Int {
 
-        val productNameSubstring = "%$search%" // Replace "substring" with the actual substring you're looking for
+        val productNameSubstring = "%$search%"
+        val queryBuilder = StringBuilder()
+        val args = mutableListOf<String>()
 
-        val cursor: Cursor? = db?.rawQuery(
-            "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)",
-            arrayOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring)
-        )
+        queryBuilder.append("SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE (")
+        queryBuilder.append("LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR ")
+        queryBuilder.append("LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR ")
+        queryBuilder.append("LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR ")
+        queryBuilder.append("LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR ")
+        queryBuilder.append("LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?))")
 
-        var totalCount = 0
-        if (cursor != null && cursor.moveToFirst()) {
-            totalCount = cursor.getInt(0)
+        args.addAll(listOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring))
+
+        if (categoryUUID != Constants.All) {
+            queryBuilder.append(" AND LOWER(${ProductDataModel.Key_categoryUUID}) = LOWER(?)")
+            args.add(categoryUUID)
         }
-        cursor?.close()
+
+        val cursor: Cursor? = db?.rawQuery(queryBuilder.toString(), args.toTypedArray())
+        var totalCount = 0
+
+        cursor?.use {
+            if (it.moveToFirst()) {
+                totalCount = it.getInt(0)
+            }
+        }
 
         return totalCount
     }
+
 
     // Get total number of products of detail search accept collection
     @SuppressLint("Recycle")
-    fun getTotalNumberOfProductsOfDetailSearchAcceptCollection(search: String,collectionUUID: String): Int {
+    fun getTotalNumberOfProductsOfDetailSearchAcceptCollection(search: String, collectionUUID: String, categoryUUID: String): Int {
+        val productNameSubstring = "%$search%"
+        val queryBuilder = StringBuilder()
+        val args = mutableListOf<String>()
 
-        val productNameSubstring = "%$search%" // Replace "substring" with the actual substring you're looking for
+        queryBuilder.append("SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE (")
+        queryBuilder.append("LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR ")
+        queryBuilder.append("LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR ")
+        queryBuilder.append("LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR ")
+        queryBuilder.append("LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR ")
+        queryBuilder.append("LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)) ")
+        queryBuilder.append("AND LOWER(${ProductDataModel.Key_collectionUUID}) != ?")
 
-        val cursor: Cursor? = db?.rawQuery(
-            "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?) AND LOWER(${ProductDataModel.Key_collectionUUID}) != ?",
-            arrayOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring,collectionUUID)
-        )
+        args.addAll(listOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, collectionUUID))
 
-        var totalCount = 0
-        if (cursor != null && cursor.moveToFirst()) {
-            totalCount = cursor.getInt(0)
+        if (categoryUUID != Constants.All) {
+            queryBuilder.append(" AND LOWER(${ProductDataModel.Key_categoryUUID}) = LOWER(?)")
+            args.add(categoryUUID)
         }
-        cursor?.close()
 
-        return totalCount
+        val cursor: Cursor? = db?.rawQuery(queryBuilder.toString(), args.toTypedArray())
+        var count = 0
+
+        cursor?.use {
+            if (it.moveToFirst()) {
+                count = it.getInt(0)
+            }
+        }
+
+        return count
     }
+
 
     // Get Products with search
     @SuppressLint("Recycle", "Range")
     fun getProductsWithDetailSearch(search:String,offset: Int,categoryUUID: String): ArrayList<ProductDataModel> {
 
-        val productNameSubstring = "%$search%"
+        val substring = "%$search%"
 
         val query: String
         val args: MutableList<String> = mutableListOf()
@@ -1426,7 +1583,7 @@ class DatabaseHelper(cx: Context) {
             )
             LIMIT ? OFFSET ?
         """
-            args.addAll(listOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, Constants.Limit.toString(), offset.toString()))
+            args.addAll(listOf(substring, substring, substring, substring, substring, Constants.Limit.toString(), offset.toString()))
         } else {
             // Query to get products by categoryUUID that match the search criteria
             query = """
@@ -1441,7 +1598,7 @@ class DatabaseHelper(cx: Context) {
             AND ${ProductDataModel.Key_categoryUUID} = ?
             LIMIT ? OFFSET ?
         """
-            args.addAll(listOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, categoryUUID, Constants.Limit.toString(), offset.toString()))
+            args.addAll(listOf(substring, substring, substring, substring, substring, categoryUUID, Constants.Limit.toString(), offset.toString()))
         }
 
         val cursor: Cursor? = db?.rawQuery(query, args.toTypedArray())
@@ -1836,11 +1993,11 @@ class DatabaseHelper(cx: Context) {
 
         if (categoryUUID == Constants.All) {
             // Query to count all products
-            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} = ? "
+            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} != ? "
             args = arrayOf(collectionUUID)
         } else {
             // Query to count products by categoryUUID
-            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? AND ${ProductDataModel.Key_collectionUUID} = ?"
+            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? AND ${ProductDataModel.Key_collectionUUID} != ?"
             args = arrayOf(categoryUUID,collectionUUID)
         }
 
@@ -2119,6 +2276,9 @@ class DatabaseHelper(cx: Context) {
 
             productData.productImageUri =
                 cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
+
+            productData.stockLocationUUID =
+                cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_stockLocationUUID))
 
         }
         cursor?.close()
@@ -2465,6 +2625,8 @@ class DatabaseHelper(cx: Context) {
             put(ProductDataModel.Key_productBarcodeUri, productDataModel.productBarcodeUri)
             put(ProductDataModel.Key_productBarcodeData, productDataModel.productBarcodeData)
             put(ProductDataModel.Key_productImageUri, productDataModel.productImageUri)
+            put(ProductDataModel.Key_stockLocationUUID, productDataModel.stockLocationUUID)
+
         }
 
         db?.insert(ProductDataModel.TABLE_NAME_PRODUCT, null, productValue)
@@ -2493,6 +2655,7 @@ class DatabaseHelper(cx: Context) {
             put(ProductDataModel.Key_productBarcodeUri, productDataModel.productBarcodeUri)
             put(ProductDataModel.Key_productBarcodeData, productDataModel.productBarcodeData)
             put(ProductDataModel.Key_productImageUri, productDataModel.productImageUri)
+            put(ProductDataModel.Key_stockLocationUUID, productDataModel.stockLocationUUID)
         }
 
         db?.update(ProductDataModel.TABLE_NAME_PRODUCT, productValue, "${ProductDataModel.Key_productUUID} == ?",

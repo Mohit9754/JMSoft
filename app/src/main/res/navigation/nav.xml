@@ -102,5 +102,11 @@
         android:label="Sales"
         tool:layout="@layout/fragment_sales"/>
 
+    <fragment
+        android:id="@+id/stockLocation"
+        android:name="com.jmsoft.main.fragment.StockLocationFragment"
+        android:label="Stock Location"
+        tool:layout="@layout/fragment_stock_location"/>
+
 
 </navigation>

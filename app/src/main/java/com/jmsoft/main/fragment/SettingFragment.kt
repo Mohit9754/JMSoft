@@ -107,12 +107,10 @@ class SettingFragment : Fragment(), View.OnClickListener {
     private var cameraActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result != null) {
-            if (result.resultCode == RESULT_OK) {
-                binding.ivProfile?.setImageBitmap(result.data?.extras?.get("data") as Bitmap?)
-                updateProfile(binding.ivProfile?.drawable?.toBitmap())
+        if (result.resultCode == RESULT_OK) {
+            binding.ivProfile?.setImageBitmap(result.data?.extras?.get("data") as Bitmap?)
+            updateProfile(binding.ivProfile?.drawable?.toBitmap())
 
-            }
         }
     }
 

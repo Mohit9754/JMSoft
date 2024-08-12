@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llStockLocation"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="3"
+    android:paddingHorizontal="@dimen/_7sdp"
+    tools:ignore="MissingDefaultResource">
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/name"
+        android:paddingVertical="@dimen/_4sdp"
+        android:fontFamily="@font/montserrat_arabic_regular"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="10sp"
+        tools:ignore="MissingDefaultResource,NestedWeights,SmallSp" />
+
+    <TextView
+        android:id="@+id/tvParent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/montserrat_arabic_regular"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:textSize="10sp"
+        tools:ignore="MissingDefaultResource,NestedWeights,SmallSp" />
+
+    <!--
+
+
+    <LinearLayout
+        android:id="@+id/llDelAndEditSection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcvEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            app:cardBackgroundColor="@color/mcv_background_color"
+            app:cardCornerRadius="@dimen/_4sdp"
+            app:cardElevation="0dp"
+            tools:ignore="RtlSymmetry">
+
+            <ImageView
+                android:layout_width="@dimen/_7sdp"
+                android:layout_height="@dimen/_7sdp"
+                android:layout_marginHorizontal="@dimen/_4sdp"
+                android:layout_marginVertical="@dimen/_4sdp"
+                android:src="@drawable/icon_edit"
+                tools:ignore="ContentDescription" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcvDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_2sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            app:cardBackgroundColor="@color/mcv_background_color"
+            app:cardCornerRadius="@dimen/_4sdp"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:layout_width="@dimen/_8sdp"
+                android:layout_height="@dimen/_8sdp"
+                android:layout_marginHorizontal="@dimen/_3sdp"
+                android:layout_marginVertical="@dimen/_3sdp"
+                android:src="@drawable/icon_delete"
+                tools:ignore="ContentDescription" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    -->
+
+
+
+</LinearLayout>
+
+
+

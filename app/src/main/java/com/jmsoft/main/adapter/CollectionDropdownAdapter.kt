@@ -67,7 +67,7 @@ class CollectionDropdownAdapter(
             if (selectedCollectionUUID.any { it == collectionData.collectionUUID }) {
 
                 binding.checkBoxCollection.isChecked = true
-                collectionStatusCallback.collectionSelected(SelectedCollectionModel(binding.checkBoxCollection,collectionData))
+                collectionStatusCallback.collectionSelected(SelectedCollectionModel(binding.checkBoxCollection,collectionData),false)
 
             }
             else {
@@ -101,7 +101,7 @@ class CollectionDropdownAdapter(
                     binding.checkBoxCollection.isChecked = true
                     selectedCollectionUUID.clear()
                     collectionData.collectionUUID?.let { selectedCollectionUUID.add(it) }
-                    collectionStatusCallback.collectionSelected(SelectedCollectionModel(binding.checkBoxCollection,collectionData))
+                    collectionStatusCallback.collectionSelected(SelectedCollectionModel(binding.checkBoxCollection,collectionData),true)
                     notifyDataSetChanged()
                 }
             }

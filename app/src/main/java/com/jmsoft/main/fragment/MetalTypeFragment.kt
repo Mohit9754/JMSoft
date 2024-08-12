@@ -321,18 +321,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    //setting the selector on material card view
-    private fun setFocusChangeLis(editText: EditText, materialCardView: MaterialCardView) {
 
-        editText.setOnFocusChangeListener { _, hasFocus ->
-
-            if (hasFocus) {
-                materialCardView.strokeColor = requireActivity().getColor(R.color.theme)
-            } else {
-                materialCardView.strokeColor = requireActivity().getColor(R.color.text_hint)
-            }
-        }
-    }
 
     // Update metal type
     private fun updateMetalType(metalTypeUUID: String, position: Int) {
@@ -591,7 +580,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
 
         }
 
-        setFocusChangeLis(dialogMetalBinding.etMetalType, dialogMetalBinding.mcvMetalType)
+        Utils.setFocusChangeLis(requireActivity(),dialogMetalBinding.etMetalType, dialogMetalBinding.mcvMetalType)
         Utils.addTextChangedListener(
             dialogMetalBinding.etMetalType,
             dialogMetalBinding.tvMetalTypeError

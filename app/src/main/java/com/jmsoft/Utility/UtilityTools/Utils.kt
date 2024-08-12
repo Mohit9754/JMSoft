@@ -58,6 +58,7 @@ import android.webkit.MimeTypeMap
 import android.webkit.WebView
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -80,6 +81,7 @@ import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.Database.StockLocationDataModel
 import com.jmsoft.Utility.UtilityTools.loadingButton.LoadingButton
 import com.jmsoft.basic.Database.DatabaseHelper
 import com.jmsoft.basic.Database.UserDataModel
@@ -106,6 +108,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -307,16 +310,12 @@ object Utils {
     // Round off to two digit
     fun roundToTwoDecimalPlaces(value: Double): Double {
 
-        if (getCurrentLanguage() == english ){
+        val decimalFormatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
+        val decimalFormat = DecimalFormat("#.##", decimalFormatSymbols)
 
-            val decimalFormat = DecimalFormat("#.##") // Define the decimal format with two decimal places
-            return decimalFormat.format(value).toDouble() // Format the value and convert it back to Double
-        }
-        else if (getCurrentLanguage() == arabic) {
-            return formatArabicToTwoDecimalPoints(value.toString())
-        }
+        // Format the value and parse it back to Double
+        return decimalFormat.format(value).toDouble()
 
-        return 0000.00
     }
 
     // Get the Screen height
@@ -417,6 +416,19 @@ object Utils {
         } catch (e: IOException) {
             e.printStackTrace()
             null
+        }
+    }
+
+    //setting the selector on material card view
+    fun setFocusChangeLis(context: Context,editText: EditText, materialCardView: MaterialCardView) {
+
+        editText.setOnFocusChangeListener { _, hasFocus ->
+
+            if (hasFocus) {
+                materialCardView.strokeColor = context.getColor(R.color.theme)
+            } else {
+                materialCardView.strokeColor = context.getColor(R.color.text_hint)
+            }
         }
     }
 
@@ -824,6 +836,11 @@ object Utils {
         DatabaseHelper.instance.deleteMetalType(metalTypeUUID)
     }
 
+    // Delete Stock Location
+    fun deleteStockLocation(stockLocationUUID:String) {
+        DatabaseHelper.instance.deleteStockLocation(stockLocationUUID)
+    }
+
     // Delete Product from the product table
     fun deleteProduct(productUUID: String) {
         DatabaseHelper.instance.deleteProduct(productUUID)
@@ -843,6 +860,26 @@ object Utils {
     fun addMetalTypeInTheMetalTypeTable(metalTypeDataModel: MetalTypeDataModel) {
 
         DatabaseHelper.instance.addMetalTypeInTheMetalTypeTable(metalTypeDataModel)
+    }
+
+    // Add new stock location
+    fun addStockLocation(stockLocationDataModel: StockLocationDataModel) {
+        DatabaseHelper.instance.addStockLocation(stockLocationDataModel)
+    }
+
+    // update stock location
+    fun updateStockLocation(stockLocationDataModel: StockLocationDataModel) {
+        DatabaseHelper.instance.updateStockLocation(stockLocationDataModel)
+    }
+
+    // Get All Stock location
+    fun getAllStockLocation(): ArrayList<StockLocationDataModel> {
+        return DatabaseHelper.instance.getAllStockLocation()
+    }
+
+    // Get All Stock location
+    fun getStockLocation(stockLocationUUID: String):StockLocationDataModel  {
+        return DatabaseHelper.instance.getStockLocation(stockLocationUUID)
     }
 
     // Add Product in Product table
@@ -915,13 +952,13 @@ object Utils {
     }
 
     // Get total number of products of detail search
-     fun getTotalNumberOfProductsOfDetailSearch(search:String): Int {
-        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearch(search)
+     fun getTotalNumberOfProductsOfDetailSearch(search:String,categoryUUID: String): Int {
+        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearch(search,categoryUUID)
     }
 
     // Get total number of products of detail search accept collection
-     fun getTotalNumberOfProductsOfDetailSearchAcceptCollection(search: String,collectionUUID: String): Int {
-        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearchAcceptCollection(search,collectionUUID)
+     fun getTotalNumberOfProductsOfDetailSearchAcceptCollection(search: String,collectionUUID: String,categoryUUID: String): Int {
+        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearchAcceptCollection(search,collectionUUID,categoryUUID)
     }
 
     // Get Products with limit and offset
@@ -1620,6 +1657,29 @@ object Utils {
     }
 
 
+//    fun expandView(view: View) {
+//        view.visibility = View.VISIBLE
+//        view.measure(
+//            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+//            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+//        )
+//        val targetHeight = view.measuredHeight
+//        view.layoutParams.height = 1
+//        view.requestLayout()
+//
+//        view.animate()
+//            .setDuration(100) // Adjust the duration as needed
+//            .setInterpolator(AccelerateDecelerateInterpolator())
+//            .translationY(0f)
+//            .alpha(1f)
+//            .setListener(null)
+//            .setUpdateListener {
+//                val params = view.layoutParams
+//                params.height = (targetHeight * it.animatedFraction).toInt()
+//                view.layoutParams = params
+//            }
+//    }
+
     fun expandView(view: View) {
         view.visibility = View.VISIBLE
         view.measure(
@@ -1627,13 +1687,12 @@ object Utils {
             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         )
         val targetHeight = view.measuredHeight
-        view.layoutParams.height = 1
+        view.layoutParams.height = 0  // Start from 0 height
         view.requestLayout()
 
         view.animate()
             .setDuration(100) // Adjust the duration as needed
             .setInterpolator(AccelerateDecelerateInterpolator())
-            .translationY(0f)
             .alpha(1f)
             .setListener(null)
             .setUpdateListener {
@@ -1641,7 +1700,54 @@ object Utils {
                 params.height = (targetHeight * it.animatedFraction).toInt()
                 view.layoutParams = params
             }
+            .withEndAction {
+                // Ensure the final height is properly set
+                view.layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+                view.requestLayout()
+            }
     }
+
+
+    fun collapseView(view: View) {
+        val initialHeight = view.height
+
+        view.animate()
+            .setDuration(100) // Adjust the duration as needed
+            .setInterpolator(AccelerateDecelerateInterpolator())
+            .alpha(0f)
+            .setUpdateListener {
+                val params = view.layoutParams
+                params.height = (initialHeight * (1 - it.animatedFraction)).toInt()
+                view.layoutParams = params
+            }
+            .withEndAction {
+                view.visibility = View.GONE
+                view.layoutParams.height = 0
+                view.requestLayout()
+            }
+    }
+
+
+
+//    fun collapseView(view: View) {
+//        val initialHeight = view.height
+//        view.animate()
+//            .setDuration(100) // Adjust the duration as needed
+//            .setInterpolator(AccelerateDecelerateInterpolator())
+//            .translationY(-initialHeight.toFloat())
+//            .alpha(0f)
+//            .setListener(object : AnimatorListenerAdapter() {
+//                override fun onAnimationEnd(animation: Animator) {
+//                    super.onAnimationEnd(animation)
+//                    view.visibility = View.GONE
+//                }
+//            })
+//            .setUpdateListener {
+//                val params = view.layoutParams
+//                params.height = (initialHeight * (1 - it.animatedFraction)).toInt()
+//                view.layoutParams = params
+//            }
+//    }
 
     fun rotateView90Degrees(view: View) {
         // Create an ObjectAnimator to animate the rotation property
@@ -1667,25 +1773,7 @@ object Utils {
         rotateAnimator.start()
     }
 
-    fun collapseView(view: View) {
-        val initialHeight = view.height
-        view.animate()
-            .setDuration(100) // Adjust the duration as needed
-            .setInterpolator(AccelerateDecelerateInterpolator())
-            .translationY(-initialHeight.toFloat())
-            .alpha(0f)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    super.onAnimationEnd(animation)
-                    view.visibility = View.GONE
-                }
-            })
-            .setUpdateListener {
-                val params = view.layoutParams
-                params.height = (initialHeight * (1 - it.animatedFraction)).toInt()
-                view.layoutParams = params
-            }
-    }
+
 
     fun expandOrCollapseView(v: View, expand: Boolean) {
         if (expand) {

@@ -261,9 +261,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                     }
 
 
-                }
-
-                else {
+                } else {
 
                     // Process the data rows
                     val productDataModel = ProductDataModel()
@@ -355,11 +353,24 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                             ProductColumnName.WEIGHT.displayName -> {
 
-                                productDataModel.productWeight =
-                                    Utils.roundToTwoDecimalPlaces(
-                                        cellValue.toDouble()
-                                    )
+                                try {
 
+                                    productDataModel.productWeight =
+                                        Utils.roundToTwoDecimalPlaces(
+                                            cellValue.toDouble()
+                                        )
+                                    
+                                } catch (e: Exception) {
+
+                                    Utils.T(
+                                        context,
+                                        context.getString(R.string.invalid_weight_type)
+                                    )
+                                    excelReadSuccess.onReadFail()
+                                    return
+
+                                }
+                                
                             }
 
                             ProductColumnName.CARAT.displayName -> {
@@ -370,8 +381,10 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                                 } catch (e: Exception) {
 
-                                    Utils.T(context,
-                                        context.getString(R.string.invalid_carat_type))
+                                    Utils.T(
+                                        context,
+                                        context.getString(R.string.invalid_carat_type)
+                                    )
                                     excelReadSuccess.onReadFail()
                                     return
                                 }
@@ -384,13 +397,15 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                     productDataModel.productPrice =
                                         Utils.roundToTwoDecimalPlaces(
                                             Utils.removeThousandSeparators(cellValue)
-                                            .toDouble()
+                                                .toDouble()
                                         )
 
                                 } catch (e: Exception) {
 
-                                    Utils.T(context,
-                                        context.getString(R.string.invalid_product_price))
+                                    Utils.T(
+                                        context,
+                                        context.getString(R.string.invalid_product_price)
+                                    )
                                     excelReadSuccess.onReadFail()
                                     return
                                 }
@@ -408,8 +423,10 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                                 } catch (e: Exception) {
 
-                                    Utils.T(context,
-                                        context.getString(R.string.invalid_product_cost))
+                                    Utils.T(
+                                        context,
+                                        context.getString(R.string.invalid_product_cost)
+                                    )
                                     excelReadSuccess.onReadFail()
                                     return
                                 }
@@ -486,7 +503,8 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                     if (rowHasData) {
 
-                        productDataModel.productImageUri = "${Constants.Default_Image},${Constants.Default_Image}"
+                        productDataModel.productImageUri =
+                            "${Constants.Default_Image},${Constants.Default_Image}"
                         productDataModel.productRFIDCode = ""
                         productDataModel.productUUID = Utils.generateUUId()
                         productList.add(productDataModel)
@@ -497,8 +515,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
             excelReadSuccess.onReadSuccess(productList)
 
-        }
-         catch (e: Exception) {
+        } catch (e: Exception) {
 
             // Get the stack trace elements
             val stackTrace = e.stackTrace

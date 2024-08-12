@@ -259,7 +259,6 @@
             android:layout_above="@+id/llPageIndicator"
             android:visibility="visible"
             app:strokeWidth="0.01dp"
-
             android:layout_marginHorizontal="1dp"
             android:id="@+id/mcvProductList"
             android:layout_marginTop="@dimen/_10sdp"

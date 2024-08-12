@@ -20,6 +20,8 @@ class ProductDataModel {
     var productBarcodeData:String? = null
     var productBarcodeUri:String? = null
     var productImageUri: String? = null
+    var stockLocationUUID:String? = null
+
 
     companion object {
 
@@ -43,6 +45,7 @@ class ProductDataModel {
         const val Key_productBarcodeData = "productBarcodeData"
         const val Key_productBarcodeUri = "productBarcodeUri"
         const val Key_productImageUri = "productImageUri"
+        const val Key_stockLocationUUID = "stockLocationUUID"
 
         @JvmStatic
         fun CreateTable(db: SQLiteDatabase) {
@@ -64,6 +67,7 @@ class ProductDataModel {
                     + Key_metalTypeUUID + " TEXT,"
                     + Key_collectionUUID + " TEXT,"  // Include this line for Key_collectionUUID
                     + Key_categoryUUID + " TEXT,"
+                    + Key_stockLocationUUID + " TEXT,"
                     + " FOREIGN KEY (" + Key_metalTypeUUID + ") REFERENCES " + MetalTypeDataModel.TABLE_NAME_METAL_TYPE + "(" + MetalTypeDataModel.Key_metalTypeUUID + ") ON DELETE CASCADE ,"
                     + " FOREIGN KEY (" + Key_categoryUUID + ") REFERENCES " + CategoryDataModel.TABLE_NAME_CATEGORY + "(" + CategoryDataModel.Key_categoryUUID + ") ON DELETE CASCADE"
                     + " )")

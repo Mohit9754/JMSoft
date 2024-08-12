@@ -426,6 +426,216 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_arabic_medium"
+                        android:text="@string/stock_location"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/mcvStockLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="1dp"
+                        android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                        android:outlineSpotShadowColor="@color/spotShadowColor"
+                        android:layout_marginTop="@dimen/_1sdp"
+                        app:cardCornerRadius="@dimen/_3sdp"
+                        app:strokeColor="@color/text_hint"
+                        app:strokeWidth="1dp"
+                        tools:ignore="UnusedAttribute">
+
+                        <LinearLayout
+                            android:id="@+id/llStockLocation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:gravity="center_vertical"
+                            android:weightSum="2"
+                            tools:ignore="UseCompoundDrawables">
+
+                            <TextView
+                                android:id="@+id/tvStockLocation"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"
+                                android:background="@null"
+                                android:clickable="false"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/montserrat_arabic_medium"
+                                android:hint="@string/select_stock_location"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:paddingVertical="@dimen/_7sdp"
+                                android:textSize="10sp"
+                                tools:ignore="Autofill,SmallSp,TextFields,TouchTargetSizeCheck" />
+
+                            <ImageView
+                                android:id="@+id/ivStockLocation"
+                                android:layout_width="@dimen/_17sdp"
+                                android:layout_height="@dimen/_17sdp"
+                                android:padding="@dimen/_5sdp"
+                                android:src="@drawable/icon_open"
+                                tools:ignore="ContentDescription" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvStockLocationError"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_1sdp"
+                            android:layout_marginTop="@dimen/_1sdp"
+                            android:fontFamily="@font/montserrat_arabic_regular"
+                            android:textColor="@color/red"
+                            android:textSize="10sp"
+                            android:visibility="gone"
+                            tools:ignore="SmallSp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/mcvStockLocationList"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                            android:outlineSpotShadowColor="@color/spotShadowColor"
+                            android:layout_marginHorizontal="1dp"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:visibility="visible"
+                            app:cardCornerRadius="@dimen/_3sdp"
+                            app:strokeColor="@color/text_hint"
+                            app:strokeWidth="1dp"
+                            tools:ignore="UnusedAttribute">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:orientation="vertical"
+                                android:layout_height="wrap_content">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:weightSum="2"
+                                    android:paddingHorizontal="@dimen/_7sdp"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tvName"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/montserrat_arabic_regular"
+                                        android:gravity="center_vertical"
+                                        android:text="@string/name"
+                                        android:paddingTop="@dimen/_4sdp"
+                                        android:paddingBottom="@dimen/_3sdp"
+                                        android:textColor="@color/black"
+                                        android:textSize="10sp"
+                                        tools:ignore="MissingDefaultResource,NestedWeights,SmallSp" />
+
+                                    <TextView
+                                        android:id="@+id/tvParent"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="2"
+                                        android:text="@string/parent"
+                                        android:fontFamily="@font/montserrat_arabic_regular"
+                                        android:gravity="center_horizontal"
+                                        android:paddingTop="@dimen/_4sdp"
+                                        android:paddingBottom="@dimen/_3sdp"
+                                        android:textColor="@color/black"
+                                        android:textSize="10sp"
+                                        tools:ignore="MissingDefaultResource,NestedWeights,SmallSp" />
+
+                                </LinearLayout>
+
+                                <com.google.android.material.card.MaterialCardView
+                                    android:id="@+id/mcvAddStockLocation"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone"
+                                    android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                                    android:outlineSpotShadowColor="@color/spotShadowColor"
+                                    android:layout_gravity="end"
+                                    android:layout_marginEnd="@dimen/_7sdp"
+                                    android:layout_marginTop="@dimen/_4sdp"
+                                    android:layout_marginBottom="@dimen/_2sdp"
+                                    app:cardBackgroundColor="@color/theme"
+                                    app:cardCornerRadius="@dimen/_4sdp"
+                                    app:strokeWidth="0dp">
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center_vertical"
+                                        android:orientation="horizontal"
+                                        tools:ignore="UseCompoundDrawables">
+
+                                        <ImageView
+                                            android:layout_width="@dimen/_12sdp"
+                                            android:layout_height="@dimen/_12sdp"
+                                            android:layout_marginHorizontal="@dimen/_1sdp"
+                                            android:layout_marginVertical="@dimen/_2sdp"
+                                            android:src="@drawable/icon_add_device"
+                                            tools:ignore="ContentDescription,TooDeepLayout" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginEnd="@dimen/_5sdp"
+                                            android:fontFamily="@font/montserrat_arabic_semibold"
+                                            android:text="@string/add_stock_location"
+                                            android:textColor="@color/white"
+                                            android:textSize="9sp"
+                                            tools:ignore="SmallSp" />
+
+
+                                    </LinearLayout>
+
+
+                                </com.google.android.material.card.MaterialCardView>
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rvStockLocation"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    tools:itemCount="2"
+                                    tools:listitem="@layout/item_stock_location_dropdown" />
+
+<!--                                <TextView-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:text="last"/>-->
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:orientation="vertical"
+                    tools:ignore="UselessParent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_arabic_medium"
                         android:text="@string/collection"
                         android:textSize="10sp"
                         tools:ignore="SmallSp" />
