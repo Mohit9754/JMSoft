@@ -9,8 +9,8 @@
     android:paddingHorizontal="@dimen/_18sdp"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/_12sdp"
@@ -43,6 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="1dp"
+            android:layout_toEndOf="@+id/mcvRefresh"
             app:cardBackgroundColor="@color/disable_color"
             app:cardCornerRadius="@dimen/_5sdp"
             app:cardElevation="0dp"
@@ -59,7 +60,47 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-    </LinearLayout>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcvFilter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            app:cardBackgroundColor="@color/white"
+            android:outlineAmbientShadowColor="@color/ambientShadowColor"
+            android:outlineSpotShadowColor="@color/spotShadowColor"
+            app:cardCornerRadius="@dimen/_5sdp"
+            android:layout_marginVertical="1dp"
+            app:strokeWidth="0.7dp"
+            app:strokeColor="@color/selected_drop_down_color"
+            tools:ignore="UnusedAttribute">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginVertical="@dimen/_2sdp"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
+
+                    />
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

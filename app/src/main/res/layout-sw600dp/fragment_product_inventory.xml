@@ -512,7 +512,7 @@
                             android:outlineSpotShadowColor="@color/spotShadowColor"
                             android:layout_marginHorizontal="1dp"
                             android:layout_marginTop="@dimen/_5sdp"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             app:cardCornerRadius="@dimen/_3sdp"
                             app:strokeColor="@color/text_hint"
                             app:strokeWidth="1dp"

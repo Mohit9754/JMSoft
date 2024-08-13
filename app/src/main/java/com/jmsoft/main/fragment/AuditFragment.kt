@@ -16,6 +16,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.animation.LinearInterpolator
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -24,7 +26,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jmsoft.R
+import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.Database.StockLocationDataModel
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.Utility.UtilityTools.RFIDSetUp
@@ -133,7 +137,11 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
     private var adapterExpected: ExpectedAdapter? = null
 
+    private var selectedStockLocationIndex = 0
+
     private var expectedProductList = ArrayList<ProductDataModel>()
+
+    private var stockLocationDataList = ArrayList<StockLocationDataModel>()
 
     override fun onCreateView(
 
@@ -177,13 +185,16 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
         dialog.show()
     }
 
-    private suspend fun setExpectedRecyclerView() {
+    private suspend fun setExpectedRecyclerView(stockLocationUUID: String) {
 
         val result = lifecycleScope.async(Dispatchers.IO) {
-            return@async Utils.getAllProductsThatHasRFID()
+            return@async Utils.getAllProductsThatHasRFID(stockLocationUUID)
         }
 
         expectedProductList = result.await()
+
+        if (expectedProductList.isEmpty())
+            GetProgressBar.getInstance(requireActivity())?.dismiss()
 
         adapterExpected = ExpectedAdapter(requireContext(), expectedProductList)
 
@@ -195,42 +206,9 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
         binding.tvTotal?.text = expectedProductList.size.toString()
 
-//        val list = ArrayList<String>()
-//        list.add("test")
-//        list.add("mohit")
-//        list.add("test2")
-//        list.add("r")
-//
-//        for (data in list) {
-//
-//            if (Utils.isRFIDExist(data) == true) {
-//
-//                val productDataModel = Utils.getProductThroughRFIDCode(data)
-//
-//                if (!scannedProductList.contains(productDataModel)) {
-//
-//                    scannedProductList.add(0,productDataModel)
-//                    adapterScanned?.notifyItemInserted(0)
-////                adapterScanned?.notifyDataSetChanged()
-//
-//                }
-//            }
-//            else {
-//
-//                if (!unKnownList.contains(data)) {
-//                    unKnownList.add(0,data)
-//                    adapterUnKnown?.notifyItemInserted(0)
-//                    //                adapterScanned?.notifyDataSetChanged()
-//                }
-//
-//            }
-//
-//        }
-
     }
 
     private fun setScannedRecyclerView() {
-
 
         adapterScanned = ScannedAdapter(requireContext(), scannedProductList)
 
@@ -243,7 +221,6 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
     }
 
     private fun setUnKnownRecyclerView() {
-
 
         adapterUnKnown = UnknownAdapter(requireActivity(), unKnownList)
 
@@ -290,13 +267,62 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
     }
 
+    private suspend fun setSpinner() {
+
+        val result = lifecycleScope.async(Dispatchers.IO) {
+            return@async Utils.getAllStockLocation()
+        }
+
+        stockLocationDataList = result.await()
+
+        val listSpinner = mutableListOf<String?>()
+        listSpinner.add(Constants.All)
+        stockLocationDataList.map { it.stockLocationName }.let { listSpinner.addAll(it) }
+
+        withContext(Dispatchers.Main) {
+
+            val spinnerAdapter = ArrayAdapter(requireActivity(), R.layout.item_spinner, listSpinner)
+            spinnerAdapter.setDropDownViewResource(R.layout.item_custom_spinner_list)
+            binding.spinner?.adapter = spinnerAdapter
+
+            binding.spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+
+                    selectedStockLocationIndex = position
+
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        refresh()
+                    }
+
+
+//                    GetProgressBar.getInstance(requireActivity())?.show()
+//
+//                    val stockLocationUUID =
+//                        if (position == 0) Constants.All else stockLocationDataList[position - 1].stockLocationUUID
+//
+//                    lifecycleScope.launch(Dispatchers.Main) {
+//                        stockLocationUUID?.let { setExpectedRecyclerView(it) }
+//                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    // Handle case when nothing is selected (optional)
+                }
+            }
+        }
+    }
+
     private suspend fun init() {
 
         rFIDSetUp = RFIDSetUp(requireActivity(), this)
 
-        val expectedJob = lifecycleScope.launch(Dispatchers.Main) {
-            setExpectedRecyclerView()
-        }
+        setSpinner()
 
         val scannedJob = lifecycleScope.launch(Dispatchers.Main) {
             setScannedRecyclerView()
@@ -306,7 +332,6 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
             setUnKnownRecyclerView()
         }
 
-        expectedJob.join()
         scannedJob.join()
         unKnownJob.join()
 
@@ -427,9 +452,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
             override fun onDeviceNotFound() {
 
-                if (requireActivity() != null) {
-                    Utils.T(requireActivity(), "No device is Connected ")
-                }
+                Utils.T(requireActivity(), "No device is Connected ")
             }
         })
     }
@@ -439,7 +462,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
         withContext(Dispatchers.Main) {
 
-            GetProgressBar.getInstance(requireContext())?.dismiss()
+            GetProgressBar.getInstance(requireContext())?.show()
 
             binding.ivScan?.setImageResource(R.drawable.icon_play)
             binding.tvSelected?.text = requireActivity().getString(R.string._0)
@@ -452,16 +475,17 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 //                init()
 //            }
 
+            val stockLocationUUID =
+                if (selectedStockLocationIndex == 0) Constants.All else stockLocationDataList[selectedStockLocationIndex - 1].stockLocationUUID
 
             val expectedJob = lifecycleScope.launch(Dispatchers.Main) {
-                setExpectedRecyclerView()
+                stockLocationUUID?.let { setExpectedRecyclerView(it) }
             }
 
             adapterUnKnown?.notifyDataSetChanged()
             adapterScanned?.notifyDataSetChanged()
 
             expectedJob.join()
-
 
             GetProgressBar.getInstance(requireActivity())?.dismiss()
 
@@ -484,7 +508,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
             Utils.E("Status is ... ${rFIDSetUp?.getScanningStatus()}")
 
-            GetProgressBar.getInstance(requireContext())?.show()
+//            GetProgressBar.getInstance(requireContext())?.show()
 
             if (rFIDSetUp?.getScanningStatus() == true) {
                 rFIDSetUp?.onPause(object : PairStatusCallback {
@@ -526,10 +550,11 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
     override fun onTagRead(tagInfo: UHFTAGInfo) {
 
 //        Utils.T(requireContext(), "Tag read: ${tagInfo.epc}")
+        val stockLocationUUID = if (selectedStockLocationIndex == 0) Constants.All else (stockLocationDataList[selectedStockLocationIndex-1].stockLocationUUID)?:Constants.All
 
-        if (Utils.isRFIDExist(tagInfo.epc) == true) {
+        if (Utils.isRFIDExist(tagInfo.epc,stockLocationUUID) == true) {
 
-            val productDataModel = Utils.getProductThroughRFIDCode(tagInfo.epc)
+            val productDataModel = Utils.getProductThroughRFIDCode(tagInfo.epc,stockLocationUUID)
 
             val result =
                 scannedProductList.any { it.productRFIDCode == productDataModel.productRFIDCode }

@@ -612,13 +612,13 @@ object Utils {
     }
 
     // Checks if rFIDCode Exist in the product table
-    fun isRFIDExist(rFIDCode: String): Boolean? {
-        return DatabaseHelper.instance.isRFIDExist(rFIDCode)
+    fun isRFIDExist(rFIDCode: String,stockLocationUUID: String): Boolean? {
+        return DatabaseHelper.instance.isRFIDExist(rFIDCode,stockLocationUUID)
     }
 
     // Getting the Product through RFIDCode
-    fun getProductThroughRFIDCode(rFIDCode: String): ProductDataModel {
-        return DatabaseHelper.instance.getProductThroughRFIDCode(rFIDCode)
+    fun getProductThroughRFIDCode(rFIDCode: String,stockLocationUUID: String): ProductDataModel {
+        return DatabaseHelper.instance.getProductThroughRFIDCode(rFIDCode,stockLocationUUID)
     }
 
 
@@ -934,8 +934,8 @@ object Utils {
     }
 
     // Get All Products that has RFID from the Product table
-    suspend fun getAllProductsThatHasRFID(): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProductsThatHasRFID()
+    suspend fun getAllProductsThatHasRFID(stockLocationUUID:String): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsThatHasRFID(stockLocationUUID)
     }
 
     // Get Products with limit and offset

@@ -186,25 +186,6 @@
 
                         />
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/tvFilter"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:fontFamily="@font/montserrat_arabic_medium"-->
-<!--                        android:text="@string/add_product"-->
-<!--                        android:textColor="@color/text_color"-->
-<!--                        android:textSize="10sp"-->
-<!--                        tools:ignore="SmallSp" />-->
-
-<!--                    <ImageView-->
-<!--                        android:layout_width="@dimen/_8sdp"-->
-<!--                        android:layout_height="@dimen/_8sdp"-->
-<!--                        android:layout_marginStart="@dimen/_2sdp"-->
-<!--                        android:src="@drawable/icon_open"-->
-<!--                        android:tint="@color/text_color"-->
-<!--                        tools:ignore="ContentDescription,UseAppTint" />-->
-
-
                 </LinearLayout>
 
 

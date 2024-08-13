@@ -58,6 +58,9 @@ class ExpectedAdapter(
 
             setRFIDCode()
 
+            if (position == productList.size-1)
+                GetProgressBar.getInstance(context)?.dismiss()
+
             binding.mcvProduct.setOnClickListener(this)
 
         }

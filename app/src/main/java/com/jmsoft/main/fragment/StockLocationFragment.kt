@@ -67,6 +67,14 @@ class StockLocationFragment : Fragment(), View.OnClickListener {
     @RequiresApi(Build.VERSION_CODES.N)
     fun removeItemFromDropdownList(stockLocationUUID:String) {
         stockLocationDropdownList.removeIf { it.stockLocationUUID == stockLocationUUID }
+
+        stockLocationList.forEach { item ->
+            if (item.stockLocationParentUUID == stockLocationUUID) {
+                item.stockLocationParentUUID = ""
+            }
+        }
+
+        setStockLocationRecyclerView()
     }
 
     private fun setStockLocationRecyclerView() {

@@ -1891,12 +1891,23 @@ class DatabaseHelper(cx: Context) {
 
     // Get All Products that has RFID from the Product table
     @SuppressLint("Range")
-    suspend fun getAllProductsThatHasRFID(): ArrayList<ProductDataModel> {
+    suspend fun getAllProductsThatHasRFID(stockLocationUUID:String): ArrayList<ProductDataModel> {
 
         read()
 
-        val cursor: Cursor? =
-                db?.rawQuery("SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} != ?  ", arrayOf(""))
+        val cursor: Cursor? = if (stockLocationUUID == Constants.All) {
+            // Get all products with RFID
+            db?.rawQuery(
+                "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} != ?",
+                arrayOf("")
+            )
+        } else {
+            // Get products with RFID for the specific stock location
+            db?.rawQuery(
+                "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} != ? AND ${ProductDataModel.Key_stockLocationUUID} = ?",
+                arrayOf("", stockLocationUUID)
+            )
+        }
 
         cursor?.moveToFirst()
 
@@ -2290,21 +2301,31 @@ class DatabaseHelper(cx: Context) {
 
     // Checks if rFIDCode Exist in the product table
     @SuppressLint("Range", "Recycle")
-     fun isRFIDExist(rFIDCode: String): Boolean? {
+    fun isRFIDExist(rFIDCode: String, stockLocationUUID: String): Boolean {
 
         read()
 
-        val cursor: Cursor? = db?.rawQuery(
-            "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} == ?",
-            arrayOf(rFIDCode)
-        )
+        // Build the query based on the stockLocationUUID
+        val cursor: Cursor? = if (stockLocationUUID == Constants.All) {
+            // Check if RFID code exists in all locations
+            db?.rawQuery(
+                "SELECT 1 FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} == ? LIMIT 1",
+                arrayOf(rFIDCode)
+            )
+        } else {
+            // Check if RFID code exists in the specific stock location
+            db?.rawQuery(
+                "SELECT 1 FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} == ? AND ${ProductDataModel.Key_stockLocationUUID} == ? LIMIT 1",
+                arrayOf(rFIDCode, stockLocationUUID)
+            )
+        }
 
-        val result = cursor?.moveToFirst()
-        cursor?.close()
+        val exists = cursor?.use {
+            // If cursor has data, RFID exists
+            it.count > 0
+        } ?: false
 
-        close()
-
-        return result
+        return exists
     }
 
     // Get all products uuid
@@ -2343,14 +2364,23 @@ class DatabaseHelper(cx: Context) {
 
     // Getting the Product through RFIDCode
     @SuppressLint("Range", "Recycle")
-    fun getProductThroughRFIDCode(rFIDCode: String): ProductDataModel {
+    fun getProductThroughRFIDCode(rFIDCode: String,stockLocationUUID: String): ProductDataModel {
 
         read()
 
-        val cursor: Cursor? = db?.rawQuery(
-            "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} == ?",
-            arrayOf(rFIDCode)
-        )
+        val cursor: Cursor? = if (stockLocationUUID == Constants.All) {
+            // Get products with the specific RFID code from all locations
+            db?.rawQuery(
+                "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} == ?",
+                arrayOf(rFIDCode)
+            )
+        } else {
+            // Get products with the specific RFID code from the specific stock location
+            db?.rawQuery(
+                "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} == ? AND ${ProductDataModel.Key_stockLocationUUID} == ?",
+                arrayOf(rFIDCode, stockLocationUUID)
+            )
+        }
 
         val productData = ProductDataModel()
 

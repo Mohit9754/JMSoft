@@ -507,6 +507,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                             "${Constants.Default_Image},${Constants.Default_Image}"
                         productDataModel.productRFIDCode = ""
                         productDataModel.productUUID = Utils.generateUUId()
+                        productDataModel.stockLocationUUID = ""
                         productList.add(productDataModel)
                     }
 
