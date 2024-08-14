@@ -25,15 +25,18 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
     init {
 
         mHandler = object : Handler(Looper.getMainLooper()) {
+
             override fun handleMessage(msg: Message) {
 
                 when (msg.what) {
+
                     1 -> {
                         val tagInfo = msg.obj as UHFTAGInfo
                         handleTagData(tagInfo)
                     }
 
                     2 -> mIsScanning = false
+
                     3 -> {
                         mIsScanning = true
                     }
@@ -67,7 +70,6 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
 
         mUHF?.setInventoryCallback(IUHFInventoryCallback { uhftagInfo ->
             mHandler?.obtainMessage(1, uhftagInfo)?.sendToTarget()
-
         })
 
         val thread: Thread = object : Thread() {

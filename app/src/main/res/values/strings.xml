@@ -245,7 +245,7 @@
     <string name="storage_permission">Storage permission</string>
     <string name="storage_permission_access_is_needed_in_order_to_import_excel_sheet_please_enable_it_from_the_settings">Storage permission Access is needed in order to import\nexcel sheet. Please enable it from the settings.</string>
     <string name="readed_successfully">Readed Successfully</string>
-    <string name="column_does_not_exist">Column %1$s does not exist</string>
+    <string name="column_does_not_exist">Column "%1$s" does not exist</string>
     <string name="we_need_your_permission_to_access_storage_services_in_order_to_provide_the_full_functionality_of_our_app_your_cooperation_is_appreciated">We need your permission to access Storage services in order to provide the full functionality of our app.Your cooperation is appreciated.</string>
     <string name="buy_and_sell_all_types_of_jewelry_ar">بيع وشراء جميع أنواع المجوهرات</string>
     <string name="buy_and_sell_all_types_of_jewelry_en">Buy and sell all types of jewelry</string>

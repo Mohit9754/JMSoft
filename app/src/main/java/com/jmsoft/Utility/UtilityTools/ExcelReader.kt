@@ -8,6 +8,7 @@ import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.Database.StockLocationDataModel
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.main.enum.ProductColumnName
@@ -116,6 +117,43 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                                                         if (firstRow.contains(ProductColumnName.BARCODE.displayName)) {
 
+                                                            if (firstRow.contains(ProductColumnName.NAME.displayName)) {
+
+                                                                if (firstRow.contains(
+                                                                        ProductColumnName.PARENT.displayName
+                                                                    )
+                                                                ) {
+
+
+                                                                } else {
+
+                                                                    Utils.T(
+                                                                        context,
+                                                                        context.getString(
+                                                                            R.string.column_does_not_exist,
+                                                                            ProductColumnName.PARENT.displayName
+                                                                        )
+                                                                    )
+
+                                                                    excelReadSuccess.onReadFail()
+                                                                    return
+
+                                                                }
+
+                                                            } else {
+
+                                                                Utils.T(
+                                                                    context,
+                                                                    context.getString(
+                                                                        R.string.column_does_not_exist,
+                                                                        ProductColumnName.NAME.displayName
+                                                                    )
+                                                                )
+
+                                                                excelReadSuccess.onReadFail()
+                                                                return
+
+                                                            }
 
                                                         } else {
 
@@ -266,6 +304,8 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                     // Process the data rows
                     val productDataModel = ProductDataModel()
                     var rowHasData = false
+                    var parentUUID = Utils.generateUUId()
+                    var stockLocationName:String = ""
 
                     for ((index, cell) in row.withIndex()) {
 
@@ -283,6 +323,12 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                             ProductColumnName.PRODUCT_NAME.displayName -> {
 
                                 productDataModel.productName = cellValue
+
+                            }
+
+                            ProductColumnName.NAME.displayName -> {
+
+                                stockLocationName = cellValue
 
                             }
 
@@ -313,6 +359,34 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                     productDataModel.metalTypeUUID = metalTypeUUID
 
                                 }
+                            }
+
+                            ProductColumnName.PARENT.displayName -> {
+
+                                val isParentExist = Utils.isParentExist(Utils.capitalizeData(cellValue))
+
+                                if (isParentExist == true) {
+
+                                    parentUUID =
+                                        Utils.getParentUUIDThroughParentName(
+                                            Utils.capitalizeData(cellValue)
+                                        ).toString()
+
+                                } else {
+
+                                    val stockLocationDataModel = StockLocationDataModel()
+
+                                    stockLocationDataModel.stockLocationUUID = parentUUID
+
+                                    stockLocationDataModel.stockLocationName =
+                                        Utils.capitalizeData(cell.toString())
+
+                                    stockLocationDataModel.stockLocationParentUUID = ""
+
+                                    Utils.addStockLocation(stockLocationDataModel)
+
+                                }
+
                             }
 
                             ProductColumnName.COLLECTION_NAME.displayName -> {
@@ -359,7 +433,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                         Utils.roundToTwoDecimalPlaces(
                                             cellValue.toDouble()
                                         )
-                                    
+
                                 } catch (e: Exception) {
 
                                     Utils.T(
@@ -370,7 +444,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                     return
 
                                 }
-                                
+
                             }
 
                             ProductColumnName.CARAT.displayName -> {
@@ -501,13 +575,36 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                         }
                     }
 
+
                     if (rowHasData) {
+
+                        val isStockLocationExist = Utils.isStockLocationExist(Utils.capitalizeData(stockLocationName),parentUUID)
+
+                        if (isStockLocationExist) {
+
+                            val stockLocationUUID = Utils.getStockLocationUUID(Utils.capitalizeData(stockLocationName),parentUUID)
+
+                            productDataModel.stockLocationUUID = stockLocationUUID
+                        }
+                        else {
+
+                            val stockLocationUUID = Utils.generateUUId()
+
+                            val stockLocationDataModel = StockLocationDataModel()
+                            stockLocationDataModel.stockLocationUUID = stockLocationUUID
+                            stockLocationDataModel.stockLocationName = Utils.capitalizeData(stockLocationName)
+                            stockLocationDataModel.stockLocationParentUUID = parentUUID
+
+                            Utils.addStockLocation(stockLocationDataModel)
+
+                            productDataModel.stockLocationUUID = stockLocationUUID
+
+                        }
 
                         productDataModel.productImageUri =
                             "${Constants.Default_Image},${Constants.Default_Image}"
                         productDataModel.productRFIDCode = ""
                         productDataModel.productUUID = Utils.generateUUId()
-                        productDataModel.stockLocationUUID = ""
                         productList.add(productDataModel)
                     }
 

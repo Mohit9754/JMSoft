@@ -1173,6 +1173,27 @@ class DatabaseHelper(cx: Context) {
         return collectionUUID
     }
 
+    // Getting the Parent UUID through parent name
+    @SuppressLint("Recycle", "Range")
+    fun getParentUUIDThroughParentName(parentName: String): String? {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT * FROM ${StockLocationDataModel.TABLE_NAME_STOCK_LOCATION} WHERE ${StockLocationDataModel.Key_stockLocationName} == ?",
+            arrayOf(parentName)
+        )
+
+        cursor?.moveToFirst()
+
+        val stockLocationUUID =
+            cursor?.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationUUID))
+
+        cursor?.close()
+
+        return stockLocationUUID
+    }
+
     //Get All Products of particular Collection  from the Product table
     @SuppressLint("Range")
     suspend fun getProductsThroughCollection(
@@ -1646,6 +1667,9 @@ class DatabaseHelper(cx: Context) {
                 productData.productImageUri =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
 
+                productData.stockLocationUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_stockLocationUUID))
+
                 productList.add(productData)
 
             } while (cursor.moveToPrevious())
@@ -1742,6 +1766,8 @@ class DatabaseHelper(cx: Context) {
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeData))
                 productData.productImageUri =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
+                productData.stockLocationUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_stockLocationUUID))
 
                 productList.add(productData)
 
@@ -2089,6 +2115,9 @@ class DatabaseHelper(cx: Context) {
                 productData.productImageUri =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
 
+                productData.stockLocationUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_stockLocationUUID))
+
                 productList.add(productData)
 
             } while (cursor.moveToPrevious())
@@ -2228,6 +2257,8 @@ class DatabaseHelper(cx: Context) {
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeData))
                 productData.productImageUri =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
+                productData.stockLocationUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_stockLocationUUID))
 
                 productList.add(productData)
 
@@ -2709,6 +2740,62 @@ class DatabaseHelper(cx: Context) {
         cursor?.close()
         return result
     }
+
+    // Check if parent exist
+    @SuppressLint("Recycle")
+    fun isParentExist(parentName: String): Boolean {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT 1 FROM ${StockLocationDataModel.TABLE_NAME_STOCK_LOCATION} WHERE ${StockLocationDataModel.Key_stockLocationName} = ?",
+            arrayOf(parentName)
+        )
+
+        val exists = cursor?.moveToFirst() == true
+        cursor?.close()
+        return exists
+    }
+
+    // Check if stock Location exist
+    @SuppressLint("Recycle")
+    fun isStockLocationExist(stockLocationName:String,parentUUID:String): Boolean {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT 1 FROM ${StockLocationDataModel.TABLE_NAME_STOCK_LOCATION} WHERE ${StockLocationDataModel.Key_stockLocationName} = ? AND ${StockLocationDataModel.Key_stockLocationParentUUID} = ?" ,
+            arrayOf(stockLocationName,parentUUID)
+        )
+
+        val exists = cursor?.moveToFirst() == true
+        cursor?.close()
+        return exists
+    }
+
+    // get Stock location uuid
+    @SuppressLint("Range")
+    fun getStockLocationUUID(stockLocationName:String, parentUUID:String): String {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT ${StockLocationDataModel.Key_stockLocationUUID} FROM ${StockLocationDataModel.TABLE_NAME_STOCK_LOCATION} WHERE ${StockLocationDataModel.Key_stockLocationName} = ? AND ${StockLocationDataModel.Key_stockLocationParentUUID} = ?" ,
+            arrayOf(stockLocationName, parentUUID)
+        )
+
+        var stockLocationUUID = ""
+
+        if (cursor != null && cursor.moveToFirst()) {
+
+            stockLocationUUID = cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationUUID))
+        }
+        cursor?.close()
+
+        return stockLocationUUID
+    }
+
+
 
     /* Check if Category exist in the category table accept category uuid */
     @SuppressLint("Recycle")

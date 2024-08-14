@@ -12,7 +12,9 @@ enum class ProductColumnName(val displayName: String) {
     CARAT("carat"),
     PRICE("price"),
     COST("cost"),
-    BARCODE("barcode");
+    BARCODE("barcode"),
+    NAME("name"),
+    PARENT("parent");
 
 }
 

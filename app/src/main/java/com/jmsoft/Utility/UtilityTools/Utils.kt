@@ -747,6 +747,21 @@ object Utils {
         return DatabaseHelper.instance.isCategoryExist(categoryName)
     }
 
+    // Check if parent exist
+    fun isParentExist(parentName: String): Boolean {
+        return DatabaseHelper.instance.isParentExist(parentName)
+    }
+
+    // Check if stock Location exist
+    fun isStockLocationExist(stockLocationName:String,parentUUID:String): Boolean {
+        return DatabaseHelper.instance.isStockLocationExist(stockLocationName,parentUUID)
+    }
+
+    // get Stock location uuid
+    fun getStockLocationUUID(stockLocationName:String,parentUUID:String): String {
+        return DatabaseHelper.instance.getStockLocationUUID(stockLocationName,parentUUID)
+    }
+
     /* Check if Category exist in the category table accept category uuid */
     fun isCategoryExistAccept(categoryDataModel: CategoryDataModel): Boolean? {
         return DatabaseHelper.instance.isCategoryExistAccept(categoryDataModel)
@@ -999,6 +1014,11 @@ object Utils {
     // Getting the Collection UUID through Collection name
     fun getCollectionUUIDThroughCollectionName(collectionName: String): String? {
         return DatabaseHelper.instance.getCollectionUUIDThroughCollectionName(collectionName)
+    }
+
+    // Getting the Parent UUID through parent name
+    fun getParentUUIDThroughParentName(parentName: String): String? {
+        return DatabaseHelper.instance.getParentUUIDThroughParentName(parentName)
     }
 
     // Inserting Contact in Contact table

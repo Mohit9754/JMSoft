@@ -710,6 +710,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         for (product in productList) {
 
+            Utils.E("Stock location uuid is ${product.stockLocationUUID}")
+
             lifecycleScope.launch(Dispatchers.IO) {
                 Utils.addProduct(product)
             }

@@ -160,6 +160,9 @@ class ProductListAdapter(
             // Set product price
             setProductPrice()
 
+            // Set product stock location
+            setStockLocationName()
+
             // Dismiss progress bar
             dismissProgressBar()
 
@@ -228,6 +231,16 @@ class ProductListAdapter(
 
         private fun setProductName() {
             binding.tvProductName.text = productData.productName
+        }
+        private fun setStockLocationName() {
+
+            val stockLocationDataModel = productData.stockLocationUUID?.let {
+                Utils.getStockLocation(
+                    it
+                )
+            }
+
+            binding.tvStockLocation.text = if (stockLocationDataModel?.stockLocationName != null) stockLocationDataModel.stockLocationName else "_"
         }
 
         // Set product category
