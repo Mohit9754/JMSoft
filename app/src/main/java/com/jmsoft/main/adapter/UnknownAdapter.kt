@@ -59,12 +59,12 @@ class UnknownAdapter(
                 // Show progress bar
                 GetProgressBar.getInstance(context)?.show()
 
-                val bundle = Bundle()
-                //Giving the product UUID
-                bundle.putString(Constants.rfidCode, rfidCode)
-                ProductUUIDList.setStatus(true)
+//                val bundle = Bundle()
+//                //Giving the product UUID
+//                bundle.putString(Constants.rfidCode, rfidCode)
+//                ProductUUIDList.setStatus(true)
 
-                (context as DashboardActivity).navController?.navigate(R.id.productInventory, bundle)
+                (context as DashboardActivity).navController?.navigate(R.id.catalog, null)
 
 
             }

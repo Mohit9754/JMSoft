@@ -13,6 +13,7 @@ import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.UtilityTools.ProductUUIDList
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
 import com.jmsoft.basic.UtilityTools.Utils
@@ -97,6 +98,8 @@ class CatalogAdapter(
             //Setting Click on CartStatus
             binding.mcvCartStatus.setOnClickListener(this)
 
+            binding.ivEdit?.setOnClickListener(this)
+
             // Dismiss progress bar
             dismissProgressBar()
         }
@@ -153,12 +156,14 @@ class CatalogAdapter(
 
             val arrayOfImages = productData.productImageUri?.split(",")?.toTypedArray()
 
+            Utils.E("product image is # ${arrayOfImages?.get(0).toString()}")
+
             val bitmap = Utils.getImageFromInternalStorage(
                 context,
-                arrayOfImages?.get(0).toString()
+                arrayOfImages?.get(0).toString().trim()
             )
 
-            binding.tvProductImage?.setImageBitmap(bitmap)
+            binding.ivProductImage?.setImageBitmap(bitmap)
         }
 
         //Set the Product price
@@ -267,6 +272,23 @@ class CatalogAdapter(
                     Utils.T(context, context.getString(R.string.added_in_the_cart))
 
                 }
+            }
+
+            else if (v == binding.ivEdit) {
+
+                GetProgressBar.getInstance(context)?.show()
+
+                ProductUUIDList.setStatus(false)
+
+                val bundle = Bundle()
+                // Giving the product UUID
+                bundle.putString(Constants.productUUID, productData.productUUID)
+
+                (context as DashboardActivity).navController?.navigate(
+                    R.id.productInventory,
+                    bundle
+                )
+
             }
         }
     }

@@ -80,6 +80,7 @@ class DataManager
      * @param paramInt1 //
      * @param paramInt2 //
      */
+
     override fun onUpgrade(db: SQLiteDatabase, paramInt1: Int, paramInt2: Int) {
 
         // Drop User and User_session table

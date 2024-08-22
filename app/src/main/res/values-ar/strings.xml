@@ -1,4 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <string name="app_name">JM SOft</string>
     <string name="please_check_your_connection">يرجى التحقق من الاتصال الخاص بك</string>
     <string name="ok">نعم</string>
@@ -291,6 +292,20 @@
     <string name="address_">عنوان :</string>
     <string name="file_not_found">لم يتم العثور على الملف</string>
     <string name="purchasing_and_nsales">الشراء و\nالبيعs</string>
+
+    <string name="save_to_later">حفظ إلى وقت لاحق</string>
+    <string name="dots">. . .</string>
+    <string name="stock_location">موقع المخزون</string>
+    <string name="add_stock_location">إضافة موقع المخزون</string>
+    <string name="stock_location_is_empty">موقع المخزون فارغ</string>
+    <string name="name">الاسم</string>
+    <string name="parent">الأم</string>
+    <string name="enter_parent">أدخل الوالدين</string>
+    <string name="enter_name">أدخل الاسم</string>
+    <string name="edit_stock_location">تحرير موقع المخزون</string>
+    <string name="select_stock_location">حدد موقع المخزون</string>
+    <string name="invalid_weight_type">نوع الوزن غير صالح</string>
+    <string name="select_parent">حدد الوالدين</string>
 
 
 

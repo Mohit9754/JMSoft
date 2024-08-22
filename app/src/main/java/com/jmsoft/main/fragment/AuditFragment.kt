@@ -549,51 +549,46 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onTagRead(tagInfo: UHFTAGInfo) {
 
-//        Utils.T(requireContext(), "Tag read: ${tagInfo.epc}")
         val stockLocationUUID = if (selectedStockLocationIndex == 0) Constants.All else (stockLocationDataList[selectedStockLocationIndex-1].stockLocationUUID)?:Constants.All
 
-        if (Utils.isRFIDExist(tagInfo.epc,stockLocationUUID) == true) {
+        if (Utils.isRFIDExist(tagInfo.epc,Constants.All) == true) {
 
-            val productDataModel = Utils.getProductThroughRFIDCode(tagInfo.epc,stockLocationUUID)
+            if (Utils.isRFIDExist(tagInfo.epc,stockLocationUUID) == true) {
 
-            val result =
-                scannedProductList.any { it.productRFIDCode == productDataModel.productRFIDCode }
+                val productDataModel = Utils.getProductThroughRFIDCode(tagInfo.epc,stockLocationUUID)
 
-            if (!result) {
+                val result =
+                    scannedProductList.any { it.productRFIDCode == productDataModel.productRFIDCode }
 
-//                Utils.E("product name is ${productDataModel.productName}")
+                if (!result) {
 
-                /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                 }
-                 else{
-                 }*/
+                    val isRemoved = expectedProductList.removeIf { it.productRFIDCode == tagInfo.epc }
 
-//                expectedProductList.forEach { if(it.productRFIDCode == tagInfo.epc){ expectedProductList.remove(it)}  }
+                    if (isRemoved) {
 
-                val isRemoved = expectedProductList.removeIf { it.productRFIDCode == tagInfo.epc }
+                        Utils.E(
+                            " removed from expected list ${
+                                expectedProductList.contains(
+                                    productDataModel
+                                )
+                            }"
+                        )
 
-                if (isRemoved) {
+                        scannedProductList.add(0, productDataModel)
+                        adapterScanned?.notifyItemInserted(0)
+                        adapterExpected?.notifyDataSetChanged()
 
-                    Utils.E(
-                        " removed from expected list ${
-                            expectedProductList.contains(
-                                productDataModel
-                            )
-                        }"
-                    )
+                        binding.tvSelected?.text = scannedProductList.size.toString()
 
-                    scannedProductList.add(0, productDataModel)
-                    adapterScanned?.notifyItemInserted(0)
-                    adapterExpected?.notifyDataSetChanged()
+                    } else {
 
-                    binding.tvSelected?.text = scannedProductList.size.toString()
+                        Utils.E("not removed from expected list")
 
-                } else {
-                    Utils.E("not removed from expected list")
-
-                }
+                    }
 
 //                adapterScanned?.notifyDataSetChanged()
+
+                }
 
             }
 

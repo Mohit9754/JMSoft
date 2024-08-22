@@ -317,8 +317,9 @@
                         android:layout_height="@dimen/_10sdp"
                         android:layout_marginHorizontal="@dimen/_3sdp"
                         android:layout_marginVertical="@dimen/_3sdp"
-                        android:src="@drawable/icon_product"
-                        tools:ignore="ContentDescription" />
+                        android:tint="@color/theme"
+                        android:src="@drawable/ic_stock_location"
+                        tools:ignore="ContentDescription,UseAppTint" />
 
                 </com.google.android.material.card.MaterialCardView>
 

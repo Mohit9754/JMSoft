@@ -1173,6 +1173,27 @@ class DatabaseHelper(cx: Context) {
         return collectionUUID
     }
 
+    // Getting the Collection name through Collection uuid
+    @SuppressLint("Range")
+    fun getCollectionNameThroughCollectionUUID(collectionUUID: String): String? {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT * FROM ${CollectionDataModel.TABLE_NAME_COLLECTION} WHERE ${CollectionDataModel.Key_collectionUUID} == ?",
+            arrayOf(collectionUUID)
+        )
+
+        cursor?.moveToFirst()
+
+        val collectionName =
+            cursor?.getString(cursor.getColumnIndex(CollectionDataModel.Key_collectionName))
+
+        cursor?.close()
+
+        return collectionName
+    }
+
     // Getting the Parent UUID through parent name
     @SuppressLint("Recycle", "Range")
     fun getParentUUIDThroughParentName(parentName: String): String? {
@@ -2050,6 +2071,72 @@ class DatabaseHelper(cx: Context) {
         return totalCount
     }
 
+    //Get All Products from the Product table without limit and offset
+    @SuppressLint("Range")
+    suspend fun getAllProductsWithOutLimit(): ArrayList<ProductDataModel> {
+
+        read()
+
+        val query: String = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}"
+
+        val cursor: Cursor? = db?.rawQuery(query,null)
+        cursor?.moveToFirst()
+
+        val productList = ArrayList<ProductDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val productData = ProductDataModel()
+
+                productData.productUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+                productData.productName =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
+                productData.metalTypeUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_metalTypeUUID))
+                productData.collectionUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_collectionUUID))
+                productData.productOrigin =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productOrigin))
+                productData.productWeight =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
+                productData.productCarat =
+                    cursor.getInt(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
+                productData.productPrice =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productPrice))
+                productData.productCost =
+                    cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
+                productData.categoryUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+                productData.productDescription =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
+                productData.productRFIDCode =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFIDCode))
+                productData.productBarcodeUri =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeUri))
+                productData.productBarcodeData =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeData))
+                productData.productImageUri =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
+
+                productData.stockLocationUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_stockLocationUUID))
+
+                productList.add(productData)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return productList
+    }
+
 
 
     //Get All Products from the Product table with limit and offset
@@ -2345,6 +2432,7 @@ class DatabaseHelper(cx: Context) {
             )
         } else {
             // Check if RFID code exists in the specific stock location
+
             db?.rawQuery(
                 "SELECT 1 FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} == ? AND ${ProductDataModel.Key_stockLocationUUID} == ? LIMIT 1",
                 arrayOf(rFIDCode, stockLocationUUID)

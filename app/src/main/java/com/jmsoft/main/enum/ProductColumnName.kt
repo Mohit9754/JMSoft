@@ -18,7 +18,6 @@ enum class ProductColumnName(val displayName: String) {
 
 }
 
-
 //enum class ProductColumnName {
 //
 //    productname,

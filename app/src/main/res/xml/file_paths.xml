@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
+    <!-- Defines a path for files within the app's internal storage -->
     <files-path name="my_files" path="MyFolder/MyDemoList/" />
+
+    <!-- Defines a path for external storage files (e.g., SD card, Downloads) -->
+    <external-path name="external_files" path="." />
+
 </paths>

@@ -61,11 +61,51 @@
 
             </LinearLayout>
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvAddDuplicate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/theme"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/_4sdp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_marginHorizontal="@dimen/_1sdp"
+                        android:src="@drawable/icon_add_device"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
+                        android:text="@string/add_duplicate_product"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:id="@+id/llPageIndicator"
+                android:layout_marginStart="@dimen/_5sdp"
                 android:visibility="gone"
                 android:layout_height="wrap_content">
 
@@ -114,7 +154,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Page 1 to 10"
                     android:id="@+id/tvPageDetail"
                     android:layout_marginHorizontal="@dimen/_6sdp"
                     android:fontFamily="@font/montserrat_arabic_regular"
@@ -165,7 +204,6 @@
                 </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
-
 
         </LinearLayout>
 

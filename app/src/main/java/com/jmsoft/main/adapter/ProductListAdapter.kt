@@ -366,13 +366,4 @@ class ProductListAdapter(
         }
     }
 
-    // Filter function for filtering the product list
-    @SuppressLint("NotifyDataSetChanged")
-    fun filterProductDataList(productDataList: ArrayList<ProductDataModel>) {
-
-        this.productDataList = productDataList
-        notifyDataSetChanged()
-
-    }
-
 }

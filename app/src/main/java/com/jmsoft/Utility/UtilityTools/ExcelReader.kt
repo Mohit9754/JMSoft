@@ -27,19 +27,7 @@ import kotlin.collections.ArrayList
 class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
     private val productList = ArrayList<ProductDataModel>()
-    lateinit var workbook: Workbook
     lateinit var file: File
-    lateinit var fileDir: File
-
-//    private fun isInEnum(name: String): Boolean {
-//
-//        return try {
-//            enumValueOf<ProductColumnName>(name)
-//            true
-//        } catch (e: IllegalArgumentException) {
-//            false
-//        }
-//    }
 
     private fun isInEnum(displayName: String): Boolean {
         return ProductColumnName.values().any { it.displayName == displayName }
@@ -638,44 +626,6 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
         }
     }
 
-    private fun addColumnIfNotAdded(workBook: Workbook): Workbook {
-
-        val sheet = workBook.getSheetAt(0)
-        val rowIterator: Iterator<Row> = sheet.iterator()
-        while (rowIterator.hasNext()) {
-            val row: Row = rowIterator.next()
-            Log.e("ApachPOI row count : ", row.count().toString())
-            val cellIterator: Iterator<Cell> = row.cellIterator()
-            while (cellIterator.hasNext()) {
-                val column: Cell = cellIterator.next()
-                if (!cellIterator.hasNext()) {
-                    if (column.cellType == Cell.CELL_TYPE_STRING) {
-                        if (column.stringCellValue.equals(Constants.Status) ||
-                            column.stringCellValue.equals(Constants.Completed)
-                        ) {
-                            if (column.stringCellValue.equals(Constants.Completed)) {
-                                val style = workBook.createCellStyle()
-                                style.fillBackgroundColor = IndexedColors.YELLOW.index
-                                style.setFillPattern(FillPatternType.SOLID_FOREGROUND)
-                                row.rowStyle = style
-                                Log.e("Already completed", "so setting green")
-                            }
-                        } else {
-                            val cell = row.createCell(row.lastCellNum + 1)
-                            cell.setCellValue(Constants.Status)
-                            Log.e("column.stringCellValue ", "else case")
-                        }
-                    } else {
-                        val cell = row.createCell(row.lastCellNum + 1)
-                        cell.setCellValue(Constants.Status)
-                        Log.e("column.cellType ", "else case")
-                    }
-                }
-            }
-        }
-        return workBook
-    }
-
     fun isEncrypt(filepath: String): Boolean {
 
         val file = File(filepath)
@@ -700,19 +650,6 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
             return true
         }
         return false
-    }
-
-    fun checkPassword(password: String, path: String): Boolean {
-        try {
-            val file = File(path)
-            val wb = WorkbookFactory.create(
-                file,
-                password
-            )
-        } catch (e: EncryptedDocumentException) {
-            return false
-        }
-        return true
     }
 
 }

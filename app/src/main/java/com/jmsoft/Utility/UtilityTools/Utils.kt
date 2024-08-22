@@ -948,6 +948,11 @@ object Utils {
         return DatabaseHelper.instance.getAllProducts(offset,categoryUUID)
     }
 
+    //Get All Products from the Product table without limit and offset
+    suspend fun getAllProductsWithOutLimit(): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsWithOutLimit()
+    }
+
     // Get All Products that has RFID from the Product table
     suspend fun getAllProductsThatHasRFID(stockLocationUUID:String): ArrayList<ProductDataModel> {
         return DatabaseHelper.instance.getAllProductsThatHasRFID(stockLocationUUID)
@@ -1014,6 +1019,11 @@ object Utils {
     // Getting the Collection UUID through Collection name
     fun getCollectionUUIDThroughCollectionName(collectionName: String): String? {
         return DatabaseHelper.instance.getCollectionUUIDThroughCollectionName(collectionName)
+    }
+
+    // Getting the Collection name through Collection uuid
+    fun getCollectionNameThroughCollectionUUID(collectionName: String): String? {
+        return DatabaseHelper.instance.getCollectionNameThroughCollectionUUID(collectionName)
     }
 
     // Getting the Parent UUID through parent name

@@ -303,6 +303,9 @@
     <string name="select_stock_location">Select stock location</string>
     <string name="invalid_weight_type">Invalid weight type</string>
     <string name="select_parent">Select parent</string>
+    <string name="export_product">Export Product</string>
+    <string name="no_application_available_to_open_excel_file">No application available to open Excel file.</string>
+    <string name="add_duplicate_product">Add duplicate product</string>
 
 
 </resources>

@@ -159,6 +159,8 @@ class CatalogFragment : Fragment(), View.OnClickListener {
             }
         }
 
+        productList.clear()
+
         // Getting all the Product list
         val job = lifecycleScope.launch(Dispatchers.Main) { getProducts() }
 
@@ -249,7 +251,8 @@ class CatalogFragment : Fragment(), View.OnClickListener {
 
         etSearch?.setText("")
         searchOffset = 0
-//        offset = 0
+        offset = 0
+
     }
 
     //Handles All the Clicks
