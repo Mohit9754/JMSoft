@@ -256,6 +256,8 @@ class SettingFragment : Fragment(), View.OnClickListener {
         //Set Click on Vendors And Customers
         binding.mcvVendorsAndCustomers?.setOnClickListener(this)
 
+        binding.mcvAdvanceSetting?.setOnClickListener(this)
+
         GetProgressBar.getInstance(requireActivity())?.dismiss()
 
 
@@ -364,6 +366,14 @@ class SettingFragment : Fragment(), View.OnClickListener {
             GetProgressBar.getInstance(requireActivity())?.show()
 
             (context as DashboardActivity).navController?.navigate(R.id.contact)
+
+        }
+
+        else if (v == binding.mcvAdvanceSetting) {
+
+//            GetProgressBar.getInstance(requireActivity())?.show()
+
+            (context as DashboardActivity).navController?.navigate(R.id.advanceSetting)
 
         }
 

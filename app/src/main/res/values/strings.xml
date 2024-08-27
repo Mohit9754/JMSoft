@@ -303,9 +303,44 @@
     <string name="select_stock_location">Select stock location</string>
     <string name="invalid_weight_type">Invalid weight type</string>
     <string name="select_parent">Select parent</string>
+    <string name="tvFrequencyBand">Frequency band：</string>
     <string name="export_product">Export Product</string>
     <string name="no_application_available_to_open_excel_file">No application available to open Excel file.</string>
     <string name="add_duplicate_product">Add duplicate product</string>
+
+    <string name="china_standard1">China Standard1(840~845MHz)</string>
+    <string name="china_standard2">China Standard2(920~925MHz)</string>
+    <string name="europe_standard">Europe Standard(865~868MHz)</string>
+    <string name="united_states_standard">United States Standard(902~928MHz)</string>
+    <string name="korea">Korea(917~923MHz)</string>
+    <string name="japan">Japan(952~953MHz)</string>
+    <string name="South_Africa_915_919MHz">South Africa(915~919MHz)</string>
+
+    <string name="Morocco">Morocco</string>
+    <string name="Russia_860_867MHZ">Russia(866MHz-867.6MHz)</string>
+    <string name="TAIWAN">Taiwan(920~928Mhz)</string>
+    <string name="Peru_915_928MHz">Peru(915MHz-928MHz)</string>
+    <string name="vietnam_918_923MHz">Vietnam(918~923MHz)</string>
+    <string name="Malaysia">Malaysia</string>
+    <string name="advance_setting">Advance Setting</string>
+
+    <string-array name="arrayFrequency">
+
+        <item>@string/china_standard1</item>
+        <item>@string/china_standard2</item>
+        <item>@string/europe_standard</item>
+        <item>@string/united_states_standard</item>
+        <item>@string/korea</item>
+        <item>@string/japan</item>
+        <item>@string/South_Africa_915_919MHz</item>
+        <item>@string/TAIWAN</item>
+        <item>@string/vietnam_918_923MHz</item>
+        <item>@string/Peru_915_928MHz</item>
+        <item>@string/Russia_860_867MHZ</item>
+        <item>@string/Morocco</item>
+        <item>@string/Malaysia</item>
+
+    </string-array>
 
 
 </resources>

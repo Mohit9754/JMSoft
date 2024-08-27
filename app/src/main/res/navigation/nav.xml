@@ -108,5 +108,10 @@
         android:label="Stock Location"
         tool:layout="@layout/fragment_stock_location"/>
 
+    <fragment
+        android:id="@+id/advanceSetting"
+        android:name="com.jmsoft.main.fragment.AdvanceSettingFragment"
+        android:label="AdvancevSetting"
+        tool:layout="@layout/fragment_advance_setting"/>
 
 </navigation>

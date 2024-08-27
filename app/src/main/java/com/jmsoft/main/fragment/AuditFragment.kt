@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -33,6 +34,8 @@ import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.Utility.UtilityTools.RFIDSetUp
 import com.jmsoft.basic.UtilityTools.Constants
+import com.jmsoft.basic.UtilityTools.Constants.Companion.frequencyData
+import com.jmsoft.basic.UtilityTools.Constants.Companion.frequencyIndex
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentAuditBinding
@@ -142,6 +145,22 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
     private var expectedProductList = ArrayList<ProductDataModel>()
 
     private var stockLocationDataList = ArrayList<StockLocationDataModel>()
+
+    private val fValues = intArrayOf(
+        0x01,
+        0x02,
+        0x04,
+        0x08,
+        0x16,
+        0x32,
+        0x33,
+        0x34,
+        0x35,
+        0x36,
+        0x37,
+        0x80,
+        0x3B
+    )
 
     override fun onCreateView(
 
@@ -267,7 +286,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
     }
 
-    private suspend fun setSpinner() {
+    private suspend fun setStockLocationSpinner() {
 
         val result = lifecycleScope.async(Dispatchers.IO) {
             return@async Utils.getAllStockLocation()
@@ -300,15 +319,6 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
                         refresh()
                     }
 
-
-//                    GetProgressBar.getInstance(requireActivity())?.show()
-//
-//                    val stockLocationUUID =
-//                        if (position == 0) Constants.All else stockLocationDataList[position - 1].stockLocationUUID
-//
-//                    lifecycleScope.launch(Dispatchers.Main) {
-//                        stockLocationUUID?.let { setExpectedRecyclerView(it) }
-//                    }
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -318,11 +328,14 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
         }
     }
 
+
+
+
     private suspend fun init() {
 
         rFIDSetUp = RFIDSetUp(requireActivity(), this)
 
-        setSpinner()
+        setStockLocationSpinner()
 
         val scannedJob = lifecycleScope.launch(Dispatchers.Main) {
             setScannedRecyclerView()
@@ -421,7 +434,12 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
                     GetProgressBar.getInstance(requireContext())?.show()
 
-                    rFIDSetUp?.onResume(device[0].address, object : PairStatusCallback {
+                    val sharedPreferences = requireActivity().getSharedPreferences(frequencyData, Context.MODE_PRIVATE)
+
+                    val defaultValue = 0 // Default value if the key doesn't exist
+                    val frequencyIndex = sharedPreferences.getInt(frequencyIndex, defaultValue)
+
+                    rFIDSetUp?.onResume(device[0].address,frequencyIndex, object : PairStatusCallback {
 
                         override fun pairSuccess() {
 
@@ -543,7 +561,6 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
             }
         }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")

@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:paddingHorizontal="@dimen/_18sdp"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:paddingHorizontal="@dimen/_18sdp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="@dimen/_12sdp"
+        android:orientation="horizontal"
         tools:ignore="UselessParent">
 
         <com.google.android.material.card.MaterialCardView
@@ -60,27 +59,29 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcvFilter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            app:cardBackgroundColor="@color/white"
+            android:layout_marginVertical="1dp"
             android:outlineAmbientShadowColor="@color/ambientShadowColor"
             android:outlineSpotShadowColor="@color/spotShadowColor"
+            app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/_5sdp"
-            android:layout_marginVertical="1dp"
-            app:strokeWidth="0.7dp"
             app:strokeColor="@color/selected_drop_down_color"
+            app:strokeWidth="0.7dp"
             tools:ignore="UnusedAttribute">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:layout_marginVertical="@dimen/_2sdp"
                 android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginVertical="@dimen/_2sdp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
 
@@ -98,59 +99,56 @@
         </com.google.android.material.card.MaterialCardView>
 
 
-
-
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/_15sdp"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:orientation="horizontal"
         tools:ignore="UselessLeaf">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginEnd="@dimen/_20sdp"
+            android:orientation="vertical"
             tools:ignore="UselessParent">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="@dimen/_65sdp"
+                android:layout_height="wrap_content"
                 app:cardCornerRadius="@dimen/_7sdp"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
                 app:strokeColor="@color/text_color"
-                android:layout_height="wrap_content">
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/text_color"
                         android:fontFamily="@font/montserrat_arabic_bold"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
                         android:gravity="center_horizontal"
                         android:paddingVertical="@dimen/_6sdp"
                         android:text="@string/total_"
-                        />
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
 
                     <TextView
+                        android:id="@+id/tvTotal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/_0"
-                        android:id="@+id/tvTotal"
                         android:layout_gravity="center"
+                        android:fontFamily="@font/montserrat_arabic_bold"
                         android:paddingVertical="@dimen/_4sdp"
-                        android:textSize="16sp"
+                        android:text="@string/_0"
                         android:textColor="@color/text_color"
-                        android:fontFamily="@font/montserrat_arabic_bold" />
+                        android:textSize="16sp" />
 
 
                 </LinearLayout>
@@ -159,17 +157,17 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="@dimen/_65sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
                 app:cardCornerRadius="@dimen/_7sdp"
                 app:cardElevation="0dp"
-                android:layout_marginTop="@dimen/_12sdp"
-                app:strokeWidth="1dp"
                 app:strokeColor="@color/moss_green"
-                android:layout_height="wrap_content">
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -183,15 +181,15 @@
                         android:textSize="16sp" />
 
                     <TextView
+                        android:id="@+id/tvSelected"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/_0"
-                        android:id="@+id/tvSelected"
                         android:layout_gravity="center"
+                        android:fontFamily="@font/montserrat_arabic_bold"
                         android:paddingVertical="@dimen/_4sdp"
-                        android:textSize="16sp"
+                        android:text="@string/_0"
                         android:textColor="@color/text_color"
-                        android:fontFamily="@font/montserrat_arabic_bold" />
+                        android:textSize="16sp" />
 
 
                 </LinearLayout>
@@ -200,17 +198,17 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="@dimen/_65sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
                 app:cardCornerRadius="@dimen/_7sdp"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                android:layout_marginTop="@dimen/_12sdp"
                 app:strokeColor="@color/red_orange"
-                android:layout_height="wrap_content">
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -224,15 +222,15 @@
                         android:textSize="16sp" />
 
                     <TextView
+                        android:id="@+id/tvMissing"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/_0"
-                        android:id="@+id/tvMissing"
                         android:layout_gravity="center"
+                        android:fontFamily="@font/montserrat_arabic_bold"
                         android:paddingVertical="@dimen/_4sdp"
-                        android:textSize="16sp"
+                        android:text="@string/_0"
                         android:textColor="@color/text_color"
-                        android:fontFamily="@font/montserrat_arabic_bold" />
+                        android:textSize="16sp" />
 
 
                 </LinearLayout>
@@ -241,17 +239,17 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="@dimen/_65sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
                 app:cardCornerRadius="@dimen/_7sdp"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                android:layout_marginTop="@dimen/_12sdp"
                 app:strokeColor="@color/sand_color"
-                android:layout_height="wrap_content">
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -265,15 +263,15 @@
                         android:textSize="16sp" />
 
                     <TextView
+                        android:id="@+id/tvUnknown"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/_0"
-                        android:id="@+id/tvUnknown"
                         android:layout_gravity="center"
+                        android:fontFamily="@font/montserrat_arabic_bold"
                         android:paddingVertical="@dimen/_4sdp"
-                        android:textSize="16sp"
+                        android:text="@string/_0"
                         android:textColor="@color/text_color"
-                        android:fontFamily="@font/montserrat_arabic_bold" />
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -288,97 +286,92 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:weightSum="3"
-                android:orientation="horizontal"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
                 tools:ignore="DisableBaselineAlignment,UselessParent">
 
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="@string/expected"
-                    android:fontFamily="@font/montserrat_arabic_bold"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
+                    android:layout_weight="1"
                     android:background="@drawable/bg_audit"
                     android:backgroundTint="@color/text_color"
+                    android:fontFamily="@font/montserrat_arabic_bold"
+                    android:gravity="center_horizontal"
                     android:paddingVertical="@dimen/_8sdp"
-                    android:gravity="center_horizontal" />
+                    android:text="@string/expected"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="@string/scanned"
-                    android:fontFamily="@font/montserrat_arabic_bold"
-                    android:textColor="@color/white"
                     android:layout_marginHorizontal="@dimen/_12sdp"
-                    android:textSize="16sp"
+                    android:layout_weight="1"
                     android:background="@drawable/bg_audit"
                     android:backgroundTint="@color/moss_green"
-                    android:paddingVertical="@dimen/_8sdp"
+                    android:fontFamily="@font/montserrat_arabic_bold"
                     android:gravity="center_horizontal"
-                    />
+                    android:paddingVertical="@dimen/_8sdp"
+                    android:text="@string/scanned"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="@string/unknown"
-                    android:fontFamily="@font/montserrat_arabic_bold"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
+                    android:layout_weight="1"
                     android:background="@drawable/bg_audit"
                     android:backgroundTint="@color/sand_color"
-                    android:paddingVertical="@dimen/_8sdp"
+                    android:fontFamily="@font/montserrat_arabic_bold"
                     android:gravity="center_horizontal"
-                    />
+                    android:paddingVertical="@dimen/_8sdp"
+                    android:text="@string/unknown"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:weightSum="3"
-                    android:orientation="horizontal"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                tools:ignore="DisableBaselineAlignment,UselessParent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvExpected"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    tools:ignore="DisableBaselineAlignment,UselessParent">
+                    android:layout_weight="1"
+                    android:paddingVertical="@dimen/_4sdp"
+                    tools:listitem="@layout/item_expected" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:id="@+id/rvExpected"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="@dimen/_4sdp"
-                        tools:listitem="@layout/item_expected"
-                        />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvScanned"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_12sdp"
+                    android:layout_weight="1"
+                    android:paddingVertical="@dimen/_4sdp"
+                    tools:listitem="@layout/item_expected" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:id="@+id/rvScanned"
-                        android:layout_marginHorizontal="@dimen/_12sdp"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="@dimen/_4sdp"
-                        tools:listitem="@layout/item_expected"
-                        />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvUnknown"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingVertical="@dimen/_4sdp"
+                    tools:listitem="@layout/item_expected" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:id="@+id/rvUnknown"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="@dimen/_4sdp"
-                        tools:listitem="@layout/item_expected"
-                        />
-
-
-                </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
+
+    </LinearLayout>
 
 
 </LinearLayout>

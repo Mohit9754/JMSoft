@@ -45,15 +45,15 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
         }
     }
 
-    fun onResume(macAddress: String,pairStatusCallback: PairStatusCallback) {
-        initRFID(macAddress,pairStatusCallback)
+    fun onResume(macAddress: String,frequency:Int,pairStatusCallback: PairStatusCallback) {
+        initRFID(macAddress,frequency,pairStatusCallback)
     }
 
     fun onPause(pairStatusCallback:PairStatusCallback) {
         stopRFIDScan(pairStatusCallback)
     }
 
-    private fun initRFID(macAddress: String,pairStatusCallback:PairStatusCallback) {
+    private fun initRFID(macAddress: String,frequency: Int,pairStatusCallback:PairStatusCallback) {
 
         if (mUHF?.init(context) != true) {
             val errorMessage = "Failed to initialize RFID reader"
@@ -65,6 +65,8 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
         }
 
         Utils.E("MAC Address is : + $macAddress")
+
+        mUHF?.setFrequencyMode(frequency)
 
         mUHF?.connect(macAddress)
 

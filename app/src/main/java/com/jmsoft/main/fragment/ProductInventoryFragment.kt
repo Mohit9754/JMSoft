@@ -1800,7 +1800,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
                     GetProgressBar.getInstance(requireContext())?.show()
 
-                    rfidSetUp?.onResume(device[0].address, object : PairStatusCallback {
+                    val sharedPreferences = requireActivity().getSharedPreferences(Constants.frequencyData, Context.MODE_PRIVATE)
+
+                    val defaultValue = 0 // Default value if the key doesn't exist
+                    val frequencyIndex = sharedPreferences.getInt(Constants.frequencyIndex, defaultValue)
+
+                    rfidSetUp?.onResume(device[0].address,frequencyIndex, object : PairStatusCallback {
 
                         override fun pairSuccess() {
 
