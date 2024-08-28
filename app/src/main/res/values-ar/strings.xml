@@ -306,7 +306,7 @@
     <string name="select_stock_location">حدد موقع المخزون</string>
     <string name="invalid_weight_type">نوع الوزن غير صالح</string>
     <string name="select_parent">حدد الوالدين</string>
-    <string name="tvFrequencyBand">نطاق التردد:</string>
+    <string name="tvFrequencyBand">نطاق التردد ：</string>
     <string name="export_product">تصدير المنتج</string>
     <string name="no_application_available_to_open_excel_file">لا يوجد تطبيق متاح لفتح ملف Excel.</string>
     <string name="add_duplicate_product">إضافة منتج مكرر</string>
@@ -325,5 +325,8 @@
     <string name="Peru_915_928MHz">Peru(915MHz-928MHz)</string>
     <string name="vietnam_918_923MHz">Vietnam(918~923MHz)</string>
     <string name="Malaysia">Malaysia</string>
+
+    <string name="advance_setting">الإعداد المسبق</string>
+
 
 </resources>

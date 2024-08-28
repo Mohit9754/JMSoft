@@ -439,7 +439,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
                     val defaultValue = 0 // Default value if the key doesn't exist
                     val frequencyIndex = sharedPreferences.getInt(frequencyIndex, defaultValue)
 
-                    rFIDSetUp?.onResume(device[0].address,frequencyIndex, object : PairStatusCallback {
+                    rFIDSetUp?.onResume(device[0].address,fValues[frequencyIndex], object : PairStatusCallback {
 
                         override fun pairSuccess() {
 

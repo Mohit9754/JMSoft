@@ -66,9 +66,9 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
 
         Utils.E("MAC Address is : + $macAddress")
 
-        mUHF?.setFrequencyMode(frequency)
-
         mUHF?.connect(macAddress)
+
+        mUHF?.setFrequencyMode(frequency)
 
         mUHF?.setInventoryCallback(IUHFInventoryCallback { uhftagInfo ->
             mHandler?.obtainMessage(1, uhftagInfo)?.sendToTarget()
@@ -105,6 +105,7 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
 
     fun stopRFIDScan(pairStatusCallback:PairStatusCallback) {
         if (mIsScanning) {
+
             mUHF?.disconnect()
             if (mUHF?.stopInventory() == true) {
                 mHandler?.sendEmptyMessage(2) // Notify scanning stopped
