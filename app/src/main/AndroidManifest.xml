@@ -75,6 +75,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- FileProvider definition -->
+
         <provider
             android:name=".Utility.pdf_helper.XmlToPDFFileProvider"
             android:authorities="${applicationId}.xmlToPdf.provider"
@@ -94,6 +95,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
 
 <!--        <provider-->
 <!--            android:name="androidx.core.content.FileProvider"-->

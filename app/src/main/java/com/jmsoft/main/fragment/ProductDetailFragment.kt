@@ -23,6 +23,7 @@ import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.UtilityTools.ProductUUIDList
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.productSectionHeight
 import com.jmsoft.basic.UtilityTools.Utils
@@ -370,6 +371,8 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
         // Set Click on Cart Status button
         binding.llCartStatus?.setOnClickListener(this)
 
+        binding.ivEdit?.setOnClickListener(this)
+
         binding.mcvExploreCollection?.setOnClickListener(this)
 
         jobCollection.join()
@@ -449,6 +452,23 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
             //Giving the collection UUID
             bundle.putString(Constants.collectionUUID,collectionUUIDData)
             (context as DashboardActivity).navController?.navigate(R.id.collectionDetail, bundle)
+
+        }
+
+        else if (v == binding.ivEdit) {
+
+            GetProgressBar.getInstance(requireActivity())?.show()
+
+            ProductUUIDList.setStatus(false)
+
+            val bundle = Bundle()
+            // Giving the product UUID
+            bundle.putString(Constants.productUUID, productData.productUUID)
+
+            (context as DashboardActivity).navController?.navigate(
+                R.id.productInventory,
+                bundle
+            )
 
         }
     }

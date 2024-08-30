@@ -5,5 +5,9 @@
 
     <!-- Defines a path for external storage files (e.g., SD card, Downloads) -->
     <external-path name="external_files" path="." />
+    <external-path name="external_files" path="Download/" />
+
+
+
 
 </paths>

@@ -146,6 +146,22 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     private var addDuplicate = false
 
+    private val fValues = intArrayOf(
+        0x01,
+        0x02,
+        0x04,
+        0x08,
+        0x16,
+        0x32,
+        0x33,
+        0x34,
+        0x35,
+        0x36,
+        0x37,
+        0x80,
+        0x3B
+    )
+
 //    private val PERMISSIONS_REQUEST_CODE = 100
 
     // Gallery result launcher
@@ -1805,7 +1821,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                     val defaultValue = 0 // Default value if the key doesn't exist
                     val frequencyIndex = sharedPreferences.getInt(Constants.frequencyIndex, defaultValue)
 
-                    rfidSetUp?.onResume(device[0].address,frequencyIndex, object : PairStatusCallback {
+                    rfidSetUp?.onResume(device[0].address,fValues[frequencyIndex], object : PairStatusCallback {
 
                         override fun pairSuccess() {
 

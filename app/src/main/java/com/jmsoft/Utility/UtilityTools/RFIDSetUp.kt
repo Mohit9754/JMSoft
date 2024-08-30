@@ -106,11 +106,19 @@ class RFIDSetUp(private val context: Context, private val callback: RFIDCallback
     fun stopRFIDScan(pairStatusCallback:PairStatusCallback) {
         if (mIsScanning) {
 
-            mUHF?.disconnect()
+//            mUHF?.free()
+//            mUHF?.uhfStopUpdate()
+//            mUHF?.disconnect()
+
             if (mUHF?.stopInventory() == true) {
+
                 mHandler?.sendEmptyMessage(2) // Notify scanning stopped
                 pairStatusCallback.pairSuccess()
+
+                Utils.E("Scanner has been stopped")
+
             }
+
         } else {
             val errorMessage = "Failed to stop RFID scanning"
             pairStatusCallback.pairFail()

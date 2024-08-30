@@ -4,6 +4,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -28,6 +31,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -88,6 +92,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
     private var isImport = true
 
+    private val CHANNEL_ID = "file_creation_channel"
+
     // Permission for External Storage
     private val permissionsForExternalStorage = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -123,8 +129,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
             if (isImport) {
                 openDocument()
-            }
-            else {
+            } else {
 
                 GetProgressBar.getInstance(requireActivity())?.show()
 
@@ -167,44 +172,42 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
     // Initialize your permission result launcher
     @RequiresApi(Build.VERSION_CODES.R)
-    val storagePermissionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+    val storagePermissionResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
 
-            // Check if permission is granted
-            if (Environment.isExternalStorageManager()) {
+                // Check if permission is granted
+                if (Environment.isExternalStorageManager()) {
 
-                // Permission granted. Now resume your workflow.
-                // Call your method or handle the permission granted state here
-                GetProgressBar.getInstance(requireActivity())?.show()
+                    // Permission granted. Now resume your workflow.
+                    // Call your method or handle the permission granted state here
+                    GetProgressBar.getInstance(requireActivity())?.show()
 
-                lifecycleScope.launch(Dispatchers.IO) {
-                    createExcel(Utils.getAllProductsWithOutLimit())
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        createExcel(Utils.getAllProductsWithOutLimit())
+                    }
+                } else {
+
+                    requestStoragePermission()
+                }
+            } else if (result.resultCode == Activity.RESULT_CANCELED) {
+
+                // Handle case where user cancels the permission request
+                if (Environment.isExternalStorageManager()) {
+
+                    // Permission granted. Now resume your workflow.
+                    // Call your method or handle the permission granted state here
+                    GetProgressBar.getInstance(requireActivity())?.show()
+
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        createExcel(Utils.getAllProductsWithOutLimit())
+                    }
+
+                } else {
+                    requestStoragePermission()
                 }
             }
-            else {
-
-                requestStoragePermission()
-            }
         }
-        else if (result.resultCode == Activity.RESULT_CANCELED) {
-
-            // Handle case where user cancels the permission request
-            if (Environment.isExternalStorageManager()) {
-
-                // Permission granted. Now resume your workflow.
-                // Call your method or handle the permission granted state here
-                GetProgressBar.getInstance(requireActivity())?.show()
-
-                lifecycleScope.launch(Dispatchers.IO) {
-                    createExcel(Utils.getAllProductsWithOutLimit())
-                }
-
-            }
-            else {
-                requestStoragePermission()
-            }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -876,6 +879,64 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
     }
 
+    private fun createNotificationChannel(context: Context) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "File Creation Channel"
+            val descriptionText = "Channel for file creation notifications"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            val notificationManager: NotificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun showNotification(context: Context, fileName: String) {
+
+        Utils.E("Notification has been created ..........")
+
+        // Path to the file you want to open
+        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Excel")
+
+        // Create a Uri for the Downloads folder using FileProvider
+        val folderUri: Uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider", // Replace with your FileProvider authority
+            file
+        )
+
+        // Create an Intent to open the Downloads folder
+        val openFolderIntent = Intent(Intent.ACTION_VIEW).apply {
+            setData(folderUri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            setType("vnd.android.document/directory")
+        }
+
+        // Create a PendingIntent to be triggered when the notification is clicked
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            openFolderIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.logo) // Replace with your app icon
+            .setContentTitle("Excel File Created")
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true) // Automatically removes the notification when clicked
+            .setContentText("The file $fileName has been successfully created.")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(1, notificationBuilder.build())
+    }
+
     private suspend fun createExcel(productDataList: ArrayList<ProductDataModel>) {
 
         val workbook: Workbook = XSSFWorkbook()
@@ -883,25 +944,63 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         val headerRow: Row = sheet.createRow(0)
 
-        for (i in 0..12 ) {
+        for (i in 0..12) {
 
             val cell = headerRow.createCell(i)
 
-            when(i) {
+            when (i) {
 
-                0 -> { cell.setCellValue(ProductColumnName.PRODUCT_NAME.displayName) }
-                1 -> { cell.setCellValue(ProductColumnName.CATEGORY_NAME.displayName) }
-                2 -> { cell.setCellValue(ProductColumnName.METAL_TYPE.displayName) }
-                3 -> { cell.setCellValue(ProductColumnName.DESCRIPTION.displayName) }
-                4 -> { cell.setCellValue(ProductColumnName.COLLECTION_NAME.displayName) }
-                5 -> { cell.setCellValue(ProductColumnName.ORIGIN.displayName) }
-                6 -> { cell.setCellValue(ProductColumnName.WEIGHT.displayName) }
-                7 -> { cell.setCellValue(ProductColumnName.CARAT.displayName) }
-                8 -> { cell.setCellValue(ProductColumnName.PRICE.displayName) }
-                9 -> { cell.setCellValue(ProductColumnName.COST.displayName) }
-                10 -> { cell.setCellValue(ProductColumnName.BARCODE.displayName) }
-                11 -> { cell.setCellValue(ProductColumnName.NAME.displayName) }
-                12 -> { cell.setCellValue(ProductColumnName.PARENT.displayName) }
+                0 -> {
+                    cell.setCellValue(ProductColumnName.PRODUCT_NAME.displayName)
+                }
+
+                1 -> {
+                    cell.setCellValue(ProductColumnName.CATEGORY_NAME.displayName)
+                }
+
+                2 -> {
+                    cell.setCellValue(ProductColumnName.METAL_TYPE.displayName)
+                }
+
+                3 -> {
+                    cell.setCellValue(ProductColumnName.DESCRIPTION.displayName)
+                }
+
+                4 -> {
+                    cell.setCellValue(ProductColumnName.COLLECTION_NAME.displayName)
+                }
+
+                5 -> {
+                    cell.setCellValue(ProductColumnName.ORIGIN.displayName)
+                }
+
+                6 -> {
+                    cell.setCellValue(ProductColumnName.WEIGHT.displayName)
+                }
+
+                7 -> {
+                    cell.setCellValue(ProductColumnName.CARAT.displayName)
+                }
+
+                8 -> {
+                    cell.setCellValue(ProductColumnName.PRICE.displayName)
+                }
+
+                9 -> {
+                    cell.setCellValue(ProductColumnName.COST.displayName)
+                }
+
+                10 -> {
+                    cell.setCellValue(ProductColumnName.BARCODE.displayName)
+                }
+
+                11 -> {
+                    cell.setCellValue(ProductColumnName.NAME.displayName)
+                }
+
+                12 -> {
+                    cell.setCellValue(ProductColumnName.PARENT.displayName)
+                }
 
             }
 
@@ -909,15 +1008,17 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         for ((rowNum, productData) in productDataList.withIndex()) {
 
-            val row: Row = sheet.createRow(rowNum+1)
+            val row: Row = sheet.createRow(rowNum + 1)
 
-            for (i in 0..12 ) {
+            for (i in 0..12) {
 
                 val cell = row.createCell(i)
 
-                when(i) {
+                when (i) {
 
-                    0 -> { cell.setCellValue(productData.productName) }
+                    0 -> {
+                        cell.setCellValue(productData.productName)
+                    }
 
                     1 -> {
 
@@ -939,7 +1040,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
                     }
 
-                    3 -> { cell.setCellValue(productData.productDescription) }
+                    3 -> {
+                        cell.setCellValue(productData.productDescription)
+                    }
 
                     4 -> {
 
@@ -951,9 +1054,13 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                         })
                     }
 
-                    5 -> { cell.setCellValue(productData.productOrigin) }
+                    5 -> {
+                        cell.setCellValue(productData.productOrigin)
+                    }
 
-                    6 -> { productData.productWeight?.let { cell.setCellValue(it) } }
+                    6 -> {
+                        productData.productWeight?.let { cell.setCellValue(it) }
+                    }
 
                     7 -> {
                         cell.setCellValue(productData.productCarat.toString())
@@ -976,9 +1083,10 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                         val stockLocation = productData.stockLocationUUID?.let {
                             Utils.getStockLocation(
                                 it
-                            ) }
+                            )
+                        }
 
-                        cell.setCellValue(stockLocation?.stockLocationName ?: ""  )
+                        cell.setCellValue(stockLocation?.stockLocationName ?: "")
 
                     }
 
@@ -987,14 +1095,16 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                         val stockLocation = productData.stockLocationUUID?.let {
                             Utils.getStockLocation(
                                 it
-                            ) }
+                            )
+                        }
 
                         val stockLocationParent = stockLocation?.stockLocationParentUUID?.let {
                             Utils.getStockLocation(
                                 it
-                            ) }
+                            )
+                        }
 
-                        cell.setCellValue(stockLocationParent?.stockLocationName ?: ""  )
+                        cell.setCellValue(stockLocationParent?.stockLocationName ?: "")
 
                     }
 
@@ -1005,25 +1115,37 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         try {
 
-            // Get the app-specific directory within the Android folder
-            val appFolder = File(context?.getExternalFilesDir(null), "Excel")
+            //  Get the app-specific directory within the Android folder
+            //  val appFolder = File(context?.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "Excel")
+            //  val appFolder = File(context?.filesDir, "Excel")
+
+            val appFolder = File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                "Excel"
+            )
 
             // Ensure the directory exists
             if (!appFolder.exists()) {
                 appFolder.mkdirs() // Create the directory if it doesn't exist
             }
 
-            val file = File(appFolder, "${Utils.generateUUId()}.xlsx")
+            val fileName = "${Utils.generateUUId()}.xlsx"
+
+            val file = File(appFolder,fileName)
             val outputStream = FileOutputStream(file)
             workbook.write(outputStream)
             workbook.close()
             outputStream.close()
 
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 GetProgressBar.getInstance(requireActivity())?.dismiss()
             }
 
             openExcelFile(file)
+
+            createNotificationChannel(requireActivity())
+
+            showNotification(requireActivity(),fileName)
 
             val filePath = file.absolutePath
 
@@ -1033,7 +1155,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         } catch (e: Exception) {
 
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 GetProgressBar.getInstance(requireActivity())?.dismiss()
             }
 
@@ -1046,7 +1168,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         val context = requireActivity()
 
-        Utils.E("Provider is "+context.applicationContext.packageName + ".provider")
+        Utils.E("Provider is " + context.applicationContext.packageName + ".provider")
 
         // Always use FileProvider to get the file's URI
         val fileUri: Uri = FileProvider.getUriForFile(
@@ -1057,7 +1179,10 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
 
         val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(fileUri, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            setDataAndType(
+                fileUri,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
 
@@ -1065,8 +1190,10 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         if (intent.resolveActivity(context.packageManager) != null) {
             context.startActivity(intent)
         } else {
-            Utils.T(requireActivity(),
-                getString(R.string.no_application_available_to_open_excel_file))
+            Utils.T(
+                requireActivity(),
+                getString(R.string.no_application_available_to_open_excel_file)
+            )
         }
     }
 
@@ -1125,9 +1252,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             }
             (requireActivity() as DashboardActivity).navController?.popBackStack()
 
-        }
-
-        else if (v == binding.mcvImport) {
+        } else if (v == binding.mcvImport) {
 
             isImport = true
 
@@ -1140,8 +1265,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                 openDocument()
             }
 
-        }
-        else if (v == binding.mcvExport) {
+        } else if (v == binding.mcvExport) {
 
             isImport = false
 
@@ -1165,9 +1289,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                     requestStoragePermission()
                 }
             }
-        }
-
-        else if (v == binding.mcvPrevious) {
+        } else if (v == binding.mcvPrevious) {
 
             offset = ((offset / Constants.Limit) - 1) * Constants.Limit
 
