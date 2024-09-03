@@ -67,7 +67,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
         if (v == binding.mcvCatalog) {
 
             // Show progress bar
-            GetProgressBar.getInstance(requireActivity())?.show()
+            if (isAdded && !isDetached && !isRemoving) {
+                // Show your dialog here
+                GetProgressBar.getInstance(requireActivity())?.show()
+            }
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.catalog)
         }

@@ -323,6 +323,10 @@
     <string name="vietnam_918_923MHz">Vietnam(918~923MHz)</string>
     <string name="Malaysia">Malaysia</string>
     <string name="advance_setting">Advance Setting</string>
+    <string name="clear">Clear</string>
+    <string name="no_product_exists_with_this_barcode">No product exists with this barcode</string>
+    <string name="a_product_with_this_barcode_already_exists_in_the_cart">A product with this barcode already exists in the cart.</string>
+    <string name="product_has_been_added_to_the_cart">Product has been added to the cart.</string>
 
     <string-array name="arrayFrequency">
 

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Context.PRINT_SERVICE
 import android.content.Intent
@@ -382,6 +383,7 @@ class CartFragment : Fragment(), View.OnClickListener {
         if (orderUUID != null) {
 
             binding?.llSaveToLater?.visibility = View.GONE
+            binding?.llBarcode?.visibility = View.GONE
 
             val cardDataList = ArrayList<CartDataModel>()
 
@@ -593,8 +595,37 @@ class CartFragment : Fragment(), View.OnClickListener {
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setBarcodeEditText() {
+
+        binding?.etBarcode?.requestFocus()
+
+        val editText = binding?.etBarcode
+
+        // Disable keyboard on touch
+        editText?.setOnTouchListener { v, event ->
+
+            editText.requestFocus()
+
+            // Hide the keyboard
+            val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(editText.windowToken, 0)
+
+            true // Return true to consume the touch event
+        }
+
+        editText?.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                editText.requestFocus() // Re-request focus if it is lost
+            }
+        }
+
+    }
+
     //set the Clicks , initialization and setup
     private suspend fun init() {
+
+        setBarcodeEditText()
 
         // Set underline on Back to Home page
         setUnderLine()
@@ -679,6 +710,10 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         // Set Click on Save button
         binding?.mcvSave?.setOnClickListener(this)
+
+        binding?.mcvClear?.setOnClickListener(this)
+
+        binding?.mcvAdd?.setOnClickListener(this)
 
         // Set Click on Place Order button
         binding?.mcvPlaceOrder?.setOnClickListener(this)
@@ -1038,6 +1073,85 @@ class CartFragment : Fragment(), View.OnClickListener {
             binding?.rlCartManagement?.visibility = View.GONE
 
             binding?.llCartEmpty?.visibility = View.VISIBLE
+
+        }
+
+        else if (v == binding?.mcvClear) {
+            binding?.etBarcode?.setText("")
+        }
+
+        else if (v == binding?.mcvAdd) {
+
+            val barcodeData = binding?.etBarcode?.text.toString().trim()
+
+            if (Utils.isBarcodeExist(barcodeData) == true) {
+
+                val productUUID = Utils.getProductUUIDByBarcode(barcodeData)
+
+                val isProductExistInCart = Utils.GetSession().userUUID?.let { productUUID?.let { it1 ->
+                    Utils.isProductExistInCartTable(it,
+                        it1
+                    )
+                } }
+
+                if (isProductExistInCart == true) {
+
+                    Utils.T(requireActivity(),
+                        getString(R.string.a_product_with_this_barcode_already_exists_in_the_cart))
+
+                }
+                else {
+
+                    val cartDataModel = CartDataModel()
+                    cartDataModel.cartUUID = Utils.generateUUId()
+                    cartDataModel.productUUID = productUUID
+                    cartDataModel.productQuantity = 1
+                    cartDataModel.userUUID = Utils.GetSession().userUUID
+
+                    Utils.insertProductInCartTable(cartDataModel)
+
+                    val orderUUID = Utils.getOrderUUID(requireActivity())
+
+                    val orderDataModel = orderUUID?.let { Utils.getOrderByUUID(it) }
+
+                    val productUUIDList = orderDataModel?.productUUIDUri?.split(",")?.toMutableList()
+
+                    productUUID?.let { productUUIDList?.add(it) }
+
+                    val productQuantityList = orderDataModel?.productQuantityUri?.split(",")?.toMutableList()
+
+                    productQuantityList?.add("1")
+
+                    val newOrderDataModel = OrderDataModel()
+
+                    val productDataModel = productUUID?.let { Utils.getProductThroughProductUUID(it) }
+
+                    newOrderDataModel.orderUUID = orderUUID
+                    newOrderDataModel.productUUIDUri = productUUIDList?.joinToString()?.replace(" ","")
+                    newOrderDataModel.productQuantityUri = productQuantityList?.joinToString()?.replace(" ","")
+                    newOrderDataModel.totalAmount = productDataModel?.productPrice?.let { orderDataModel?.totalAmount?.plus(it) }
+
+                    Utils.updateOrder(newOrderDataModel)
+
+                    binding?.etBarcode?.setText("")
+
+                    Utils.T(requireActivity(),
+                        getString(R.string.product_has_been_added_to_the_cart))
+
+                    GetProgressBar.getInstance(requireActivity())?.show()
+
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        init()
+                    }
+
+                }
+
+            }
+
+            else {
+
+                Utils.T(requireActivity(), getString(R.string.no_product_exists_with_this_barcode))
+            }
 
         }
 

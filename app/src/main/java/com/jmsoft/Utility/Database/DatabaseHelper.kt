@@ -166,6 +166,43 @@ class DatabaseHelper(cx: Context) {
         return result
     }
 
+    // Check if barcode exit
+    fun isBarcodeExist(barcodeData: String): Boolean? {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT 1 FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productBarcodeData} = ? LIMIT 1",
+            arrayOf(barcodeData)
+        )
+
+        val result = cursor?.moveToFirst()
+
+        cursor?.close()
+
+        return result
+    }
+
+    // get product uuid through barcode
+    @SuppressLint("Range")
+    fun getProductUUIDByBarcode(barcodeData: String): String? {
+
+        read()
+
+        val cursor = db?.rawQuery(
+            "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productBarcodeData} == ?",
+            arrayOf(barcodeData)
+        )
+
+        cursor?.moveToFirst()
+
+        val productUUID = cursor?.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+
+        cursor?.close()
+
+        return productUUID
+    }
+
     // Check if Metal type exist in the metal type table accept metalTypeUUId
     fun isMetalTypeExistAccept(metalTypeDataModel: MetalTypeDataModel): Boolean? {
 

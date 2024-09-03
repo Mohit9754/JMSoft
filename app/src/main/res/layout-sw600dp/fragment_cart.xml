@@ -94,7 +94,7 @@
             android:layout_below="@+id/llProgressStatusName"
             android:layout_marginHorizontal="@dimen/_25sdp"
             android:layout_marginTop="@dimen/_6sdp"
-            android:layout_marginBottom="@dimen/_15sdp"
+            android:layout_marginBottom="@dimen/_12sdp"
             android:max="100"
             android:visibility="visible" />
 
@@ -106,10 +106,86 @@
             android:layout_marginHorizontal="@dimen/_25sdp"
             android:visibility="visible">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/llBarcode"
+                tools:ignore="UselessLeaf">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvClear"
+                    android:visibility="visible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="@dimen/_7sdp"
+                    android:layout_marginBottom="@dimen/_7sdp"
+                    app:cardBackgroundColor="@color/theme"
+                    app:cardCornerRadius="@dimen/_5sdp"
+                    app:strokeWidth="0dp">
+
+                    <TextView
+                        android:id="@+id/tvClear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_20sdp"
+                        android:layout_marginVertical="@dimen/_5sdp"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
+                        android:text="@string/clear"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <EditText
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:id="@+id/etBarcode"
+                    android:singleLine="true"
+                    android:inputType="none"
+                    android:fontFamily="@font/montserrat_arabic_regular"
+                    android:textSize="14sp"
+                    android:importantForAutofill="no"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvAdd"
+                    android:visibility="visible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginHorizontal="@dimen/_7sdp"
+                    android:layout_marginBottom="@dimen/_7sdp"
+                    app:cardBackgroundColor="@color/theme"
+                    app:cardCornerRadius="@dimen/_5sdp"
+                    app:strokeWidth="0dp">
+
+                    <TextView
+                        android:id="@+id/tvAdd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_20sdp"
+                        android:layout_marginVertical="@dimen/_5sdp"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
+                        android:text="@string/add"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/mcvCardList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/llBarcode"
                 android:layout_marginBottom="@dimen/_29sdp"
                 app:cardBackgroundColor="@color/description_background_color"
                 app:cardCornerRadius="@dimen/_8sdp"

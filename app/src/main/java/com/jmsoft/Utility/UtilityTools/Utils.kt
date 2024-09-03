@@ -1344,6 +1344,16 @@ object Utils {
         return DatabaseHelper.instance.getAddressThroughAddressUUID(addressUUID)
     }
 
+    // Check if barcode exit
+    fun isBarcodeExist(barcodeData: String): Boolean? {
+        return DatabaseHelper.instance.isBarcodeExist(barcodeData)
+    }
+
+    // get product uuid through barcode
+    fun getProductUUIDByBarcode(barcodeData: String): String? {
+        return DatabaseHelper.instance.getProductUUIDByBarcode(barcodeData)
+    }
+
     // Get All Contact of particular user from the Contact table
     fun getAllContactThroughUserUUID(userUUID: String): ArrayList<ContactDataModel> {
         return DatabaseHelper.instance.getAllContactThroughUserUUID(userUUID)
