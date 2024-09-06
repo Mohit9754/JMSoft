@@ -176,7 +176,7 @@
                         android:fontFamily="@font/montserrat_arabic_bold"
                         android:gravity="center_horizontal"
                         android:paddingVertical="@dimen/_6sdp"
-                        android:text="@string/selected"
+                        android:text="@string/scanned"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
 

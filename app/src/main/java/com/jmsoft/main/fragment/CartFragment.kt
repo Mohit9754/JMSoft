@@ -1084,75 +1084,83 @@ class CartFragment : Fragment(), View.OnClickListener {
 
             val barcodeData = binding?.etBarcode?.text.toString().trim()
 
-            if (Utils.isBarcodeExist(barcodeData) == true) {
+            if (barcodeData.isNotEmpty()) {
 
-                val productUUID = Utils.getProductUUIDByBarcode(barcodeData)
+                if (Utils.isBarcodeExist(barcodeData) == true) {
 
-                val isProductExistInCart = Utils.GetSession().userUUID?.let { productUUID?.let { it1 ->
-                    Utils.isProductExistInCartTable(it,
-                        it1
-                    )
-                } }
+                    val productUUID = Utils.getProductUUIDByBarcode(barcodeData)
 
-                if (isProductExistInCart == true) {
+                    val isProductExistInCart = Utils.GetSession().userUUID?.let { productUUID?.let { it1 ->
+                        Utils.isProductExistInCartTable(it,
+                            it1
+                        )
+                    } }
 
-                    Utils.T(requireActivity(),
-                        getString(R.string.a_product_with_this_barcode_already_exists_in_the_cart))
+                    if (isProductExistInCart == true) {
 
-                }
-                else {
+                        Utils.T(requireActivity(),
+                            getString(R.string.a_product_with_this_barcode_already_exists_in_the_cart))
 
-                    val cartDataModel = CartDataModel()
-                    cartDataModel.cartUUID = Utils.generateUUId()
-                    cartDataModel.productUUID = productUUID
-                    cartDataModel.productQuantity = 1
-                    cartDataModel.userUUID = Utils.GetSession().userUUID
+                    }
+                    else {
 
-                    Utils.insertProductInCartTable(cartDataModel)
+                        val cartDataModel = CartDataModel()
+                        cartDataModel.cartUUID = Utils.generateUUId()
+                        cartDataModel.productUUID = productUUID
+                        cartDataModel.productQuantity = 1
+                        cartDataModel.userUUID = Utils.GetSession().userUUID
 
-                    val orderUUID = Utils.getOrderUUID(requireActivity())
+                        Utils.insertProductInCartTable(cartDataModel)
 
-                    val orderDataModel = orderUUID?.let { Utils.getOrderByUUID(it) }
+                        val orderUUID = Utils.getOrderUUID(requireActivity())
 
-                    val productUUIDList = orderDataModel?.productUUIDUri?.split(",")?.toMutableList()
+                        val orderDataModel = orderUUID?.let { Utils.getOrderByUUID(it) }
 
-                    productUUID?.let { productUUIDList?.add(it) }
+                        val productUUIDList = orderDataModel?.productUUIDUri?.split(",")?.toMutableList()
 
-                    val productQuantityList = orderDataModel?.productQuantityUri?.split(",")?.toMutableList()
+                        productUUID?.let { productUUIDList?.add(it) }
 
-                    productQuantityList?.add("1")
+                        val productQuantityList = orderDataModel?.productQuantityUri?.split(",")?.toMutableList()
 
-                    val newOrderDataModel = OrderDataModel()
+                        productQuantityList?.add("1")
 
-                    val productDataModel = productUUID?.let { Utils.getProductThroughProductUUID(it) }
+                        val newOrderDataModel = OrderDataModel()
 
-                    newOrderDataModel.orderUUID = orderUUID
-                    newOrderDataModel.productUUIDUri = productUUIDList?.joinToString()?.replace(" ","")
-                    newOrderDataModel.productQuantityUri = productQuantityList?.joinToString()?.replace(" ","")
-                    newOrderDataModel.totalAmount = productDataModel?.productPrice?.let { orderDataModel?.totalAmount?.plus(it) }
+                        val productDataModel = productUUID?.let { Utils.getProductThroughProductUUID(it) }
 
-                    Utils.updateOrder(newOrderDataModel)
+                        newOrderDataModel.orderUUID = orderUUID
+                        newOrderDataModel.productUUIDUri = productUUIDList?.joinToString()?.replace(" ","")
+                        newOrderDataModel.productQuantityUri = productQuantityList?.joinToString()?.replace(" ","")
+                        newOrderDataModel.totalAmount = productDataModel?.productPrice?.let { orderDataModel?.totalAmount?.plus(it) }
 
-                    binding?.etBarcode?.setText("")
+                        Utils.updateOrder(newOrderDataModel)
 
-                    Utils.T(requireActivity(),
-                        getString(R.string.product_has_been_added_to_the_cart))
+                        binding?.etBarcode?.setText("")
 
-                    GetProgressBar.getInstance(requireActivity())?.show()
+                        Utils.T(requireActivity(),
+                            getString(R.string.product_has_been_added_to_the_cart))
 
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        init()
+                        GetProgressBar.getInstance(requireActivity())?.show()
+
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            init()
+                        }
+
                     }
 
                 }
 
-            }
+                else {
 
+                    Utils.T(requireActivity(), getString(R.string.no_product_exists_with_this_barcode))
+                }
+
+            }
             else {
 
-                Utils.T(requireActivity(), getString(R.string.no_product_exists_with_this_barcode))
-            }
+                Utils.T(requireActivity(), getString(R.string.the_barcode_field_is_empty))
 
+            }
         }
 
     }

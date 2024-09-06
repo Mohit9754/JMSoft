@@ -61,46 +61,43 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:orientation="horizontal"
-            android:gravity="end"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1.8"
-            android:layout_height="wrap_content">
+            android:gravity="end"
+            android:visibility="gone"
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/plus"
-                android:layout_gravity="center_vertical"
                 android:id="@+id/tvPlus"
-                android:padding="@dimen/_2sdp"
-                android:textSize="@dimen/_13sdp"
-                android:textColor="@color/text_hint"
-                />
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:padding="@dimen/_2sdp"
+                android:text="@string/plus"
+                android:textColor="@color/text_hint"
+                android:textSize="@dimen/_13sdp" />
+
+            <TextView
                 android:id="@+id/tvQuantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_marginHorizontal="@dimen/_2sdp"
                 android:padding="@dimen/_1sdp"
-                android:textSize="@dimen/_8sdp"
                 android:textColor="@color/black"
-                />
+                android:textSize="@dimen/_8sdp" />
 
 
             <TextView
+                android:id="@+id/tvMinus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/minus"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/tvMinus"
                 android:padding="@dimen/_2sdp"
-                android:textSize="@dimen/_16sdp"
+                android:text="@string/minus"
                 android:textColor="@color/text_hint"
-                />
-
+                android:textSize="@dimen/_16sdp" />
 
 
         </LinearLayout>
@@ -108,7 +105,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:gravity="end"
-            android:layout_weight="2.2"
+            android:layout_weight="4"
             android:orientation="horizontal"
             android:layout_gravity="center_vertical"
             android:layout_height="wrap_content">

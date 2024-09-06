@@ -327,6 +327,18 @@
     <string name="no_product_exists_with_this_barcode">No product exists with this barcode</string>
     <string name="a_product_with_this_barcode_already_exists_in_the_cart">A product with this barcode already exists in the cart.</string>
     <string name="product_has_been_added_to_the_cart">Product has been added to the cart.</string>
+    <string name="the_barcode_field_is_empty">The barcode field is empty.</string>
+    <string name="add_purchase">Add purchase</string>
+    <string name="order_number">Order number</string>
+    <string name="enter_order_number">Enter order number</string>
+    <string name="supplier">Supplier</string>
+    <string name="enter_supplier">Enter supplier</string>
+    <string name="select_date">Select date</string>
+    <string name="date_">Date</string>
+    <string name="purchase_added_successfully">Purchase added successfully!</string>
+    <string name="purchasing_is_empty">Purchasing is empty</string>
+    <string name="are_you_sure_you_want_to_delete_this_purchase_this_action_cannot_be_undone">Are you sure you want to delete this purchase ? This action cannot be undone</string>
+    <string name="purchase_updated_successfully">Purchase updated successfully!</string>
 
     <string-array name="arrayFrequency">
 
@@ -343,6 +355,13 @@
         <item>@string/Russia_860_867MHZ</item>
         <item>@string/Morocco</item>
         <item>@string/Malaysia</item>
+
+    </string-array>
+
+    <string-array name="arrPurchasingAndSales">
+
+        <item>@string/purchasing</item>
+        <item>@string/sales</item>
 
     </string-array>
 

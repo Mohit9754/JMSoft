@@ -32,17 +32,19 @@ import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogOpenSettingBinding
+import com.jmsoft.databinding.FragmentPurchasingAndSalesBinding
 import com.jmsoft.databinding.FragmentSalesBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.ConfirmOrderAdapter
 import com.jmsoft.main.adapter.NewOrderAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SalesFragment : Fragment(),View.OnClickListener {
 
-    private val binding by lazy { FragmentSalesBinding.inflate(layoutInflater) }
+    private lateinit var binding:FragmentSalesBinding
 
     private var confirmOrderList = ArrayList<OrderDataModel>()
 
@@ -57,6 +59,8 @@ class SalesFragment : Fragment(),View.OnClickListener {
     private var newOrderAdapter:NewOrderAdapter? = null
 
     private var confirmOrderAdapter:ConfirmOrderAdapter? = null
+
+    private var bindingSalesAndPurchasing:FragmentPurchasingAndSalesBinding? = null
 
     // Permission for External Storage
     private val permissionsForExternalStorage = arrayOf(
@@ -130,11 +134,16 @@ class SalesFragment : Fragment(),View.OnClickListener {
         }
     }
 
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
+
+        binding = FragmentSalesBinding.inflate(layoutInflater)
 
         lifecycleScope.launch(Dispatchers.Main) {
             init()
@@ -196,6 +205,8 @@ class SalesFragment : Fragment(),View.OnClickListener {
 
         if (newOrderList.isNotEmpty()) {
 
+            binding.rvNewOrder?.visibility = View.VISIBLE
+
             newOrderAdapter = NewOrderAdapter(requireActivity(),newOrderList)
             binding.rvNewOrder?.layoutManager = GridLayoutManager(context, 4) // 3 is the number of columns
             binding.rvNewOrder?.adapter = newOrderAdapter
@@ -204,6 +215,8 @@ class SalesFragment : Fragment(),View.OnClickListener {
         else {
 
             GetProgressBar.getInstance(requireActivity())?.dismiss()
+
+            Utils.E("Empty is visible")
 
             binding.rvConfirmOrder?.visibility = View.GONE
             binding.rvNewOrder?.visibility = View.GONE
@@ -272,7 +285,7 @@ class SalesFragment : Fragment(),View.OnClickListener {
     override fun onResume() {
         super.onResume()
         getConfirmOrder = true
-        binding.etSearch?.setText("")
+        bindingSalesAndPurchasing?.etSearch?.setText("")
 
     }
 
@@ -280,15 +293,17 @@ class SalesFragment : Fragment(),View.OnClickListener {
     // Set search
     private fun setSearch() {
 
-        binding.etSearch?.addTextChangedListener( object : TextWatcher {
+        bindingSalesAndPurchasing?.etSearch?.addTextChangedListener( object : TextWatcher {
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
 
                 searchFilterList.clear()
 
-                if (binding.etSearch?.text?.isNotEmpty() == true) {
+                if (bindingSalesAndPurchasing?.etSearch?.text?.isNotEmpty() == true) {
 
                     for (orderData in if (isNewOrderStatus) newOrderList else confirmOrderList) {
 
@@ -314,57 +329,57 @@ class SalesFragment : Fragment(),View.OnClickListener {
                                 }
 
                                 if (productDataModel.productName?.contains(
-                                        binding.etSearch?.text.toString().trim(),
+                                        bindingSalesAndPurchasing?.etSearch?.text.toString().trim(),
                                         true
                                     ) == true
                                     ||
                                     productDataModel.productDescription?.contains(
-                                        binding.etSearch?.text.toString().trim(),
+                                        bindingSalesAndPurchasing?.etSearch?.text.toString().trim(),
                                         true
                                     ) == true
                                     ||
                                     productDataModel.productOrigin?.contains(
-                                        binding.etSearch?.text.toString().trim(),
+                                        bindingSalesAndPurchasing?.etSearch?.text.toString().trim(),
                                         true
                                     ) == true
                                     ||
                                     productDataModel.productRFIDCode?.contains(
-                                        binding.etSearch?.text.toString().trim(),
+                                        bindingSalesAndPurchasing?.etSearch?.text.toString().trim(),
                                         true
                                     ) == true
                                     ||
                                     productDataModel.productBarcodeData?.contains(
-                                        binding.etSearch?.text.toString().trim(),
+                                        bindingSalesAndPurchasing?.etSearch?.text.toString().trim(),
                                         true
                                     ) == true
                                     ||
                                     orderData.orderNo?.contains(
-                                        binding.etSearch?.text.toString().trim(),
+                                        bindingSalesAndPurchasing?.etSearch?.text.toString().trim(),
                                         true
                                     ) == true
                                     ||
                                     orderData.date?.contains(
-                                        binding.etSearch?.text.toString().trim(),
+                                        bindingSalesAndPurchasing?.etSearch?.text.toString().trim(),
                                         true
                                     ) == true
                                     ||
                                     addressDataModel?.firstName?.contains(
-                                        binding.etSearch?.text.toString().trim(),
+                                        bindingSalesAndPurchasing?.etSearch?.text.toString().trim(),
                                         true
                                     ) == true
                                     ||
                                     addressDataModel?.lastName?.contains(
-                                        binding.etSearch?.text.toString().trim(),
+                                        bindingSalesAndPurchasing?.etSearch?.text.toString().trim(),
                                         true
                                     ) == true
                                     ||
                                     addressDataModel?.address?.contains(
-                                        binding.etSearch?.text.toString().trim(),
+                                        bindingSalesAndPurchasing?.etSearch?.text.toString().trim(),
                                         true
                                     ) == true
                                     ||
                                     metalTypeName?.contains(
-                                        binding.etSearch?.text.toString().trim(),
+                                        bindingSalesAndPurchasing?.etSearch?.text.toString().trim(),
                                         true
                                     ) == true
 
@@ -410,25 +425,26 @@ class SalesFragment : Fragment(),View.OnClickListener {
                 else {
                     removeSearch()
                 }
-
             }
-
-            override fun afterTextChanged(s: Editable?) {}
-
         })
     }
 
     private fun removeSearch() {
 
-        binding.llEmptySales?.visibility = View.GONE
+        if ((isNewOrderStatus  && newOrderList.isNotEmpty()) || (!isNewOrderStatus  &&  confirmOrderList.isNotEmpty())) {
+           binding.llEmptySales?.visibility = View.GONE
+        }
 
         if (isNewOrderStatus)
             newOrderAdapter?.filterProductDataList(newOrderList)
         else
             confirmOrderAdapter?.filterProductDataList(confirmOrderList)
+
     }
 
     private suspend fun init() {
+
+        bindingSalesAndPurchasing = Utils.purchaseAndSalesBinding.getBinding()
 
         // set new order recycler view
         val job = lifecycleScope.launch(Dispatchers.IO) {
@@ -437,8 +453,8 @@ class SalesFragment : Fragment(),View.OnClickListener {
 
         job.join()
 
-        binding.etSearch?.let {
-            binding.mcvSearch?.let { it1 ->
+        bindingSalesAndPurchasing?.etSearch?.let {
+            bindingSalesAndPurchasing?.mcvSearch?.let { it1 ->
                 Utils.setFocusChangeListener(requireActivity(),
                     it, it1
                 )
@@ -447,15 +463,18 @@ class SalesFragment : Fragment(),View.OnClickListener {
 
         setSearch()
 
-        setNewOrderRecyclerView()
-
         requestPermission()
 
-        binding.mcvBackBtn?.setOnClickListener(this)
+        setNewOrderRecyclerView()
 
-        binding.mcvConfirmOrder?.setOnClickListener(this)
+        bindingSalesAndPurchasing?.mcvConfirmOrder?.setOnClickListener(this)
 
-        binding.mcvNewOrder?.setOnClickListener(this)
+        bindingSalesAndPurchasing?.mcvNewOrder?.setOnClickListener(this)
+
+//        lifecycleScope.launch {
+//            delay(1000) // Delay in milliseconds (e.g., 2000 ms = 2 seconds)
+//            bindingSalesAndPurchasing?.mcvNewOrder?.performClick()
+//        }
 
     }
 
@@ -476,20 +495,16 @@ class SalesFragment : Fragment(),View.OnClickListener {
 
     override fun onClick(v: View?) {
 
-        if (v == binding.mcvBackBtn) {
-            (requireActivity() as DashboardActivity).navController?.popBackStack(R.id.home, false)
-        }
-
-        else if (v == binding.mcvNewOrder) {
+       if (v == bindingSalesAndPurchasing?.mcvNewOrder) {
 
             isNewOrderStatus = true
             removeSearch()
-            binding.etSearch?.setText("")
+           bindingSalesAndPurchasing?.etSearch?.setText("")
 
 
-            binding.mcvNewOrder?.let { binding.tvNewOrder?.let { it1 -> makeSelected(it, it1) } }
+           bindingSalesAndPurchasing?.mcvNewOrder?.let { bindingSalesAndPurchasing?.tvNewOrder?.let { it1 -> makeSelected(it, it1) } }
 
-            binding.mcvConfirmOrder?.let { binding.tvConfirmOrder?.let { it1 ->
+           bindingSalesAndPurchasing?.mcvConfirmOrder?.let { bindingSalesAndPurchasing?.tvConfirmOrder?.let { it1 ->
                 makeUnSelected(it,
                     it1
                 )
@@ -510,15 +525,15 @@ class SalesFragment : Fragment(),View.OnClickListener {
             }
         }
 
-        else if (v == binding.mcvConfirmOrder) {
+        else if (v == bindingSalesAndPurchasing?.mcvConfirmOrder) {
 
             isNewOrderStatus = false
             removeSearch()
-            binding.etSearch?.setText("")
+           bindingSalesAndPurchasing?.etSearch?.setText("")
 
-            binding.mcvConfirmOrder?.let { binding.tvConfirmOrder?.let { it1 -> makeSelected(it, it1) } }
+           bindingSalesAndPurchasing?.mcvConfirmOrder?.let { bindingSalesAndPurchasing?.tvConfirmOrder?.let { it1 -> makeSelected(it, it1) } }
 
-            binding.mcvNewOrder?.let { binding.tvNewOrder?.let { it1 ->
+           bindingSalesAndPurchasing?.mcvNewOrder?.let { bindingSalesAndPurchasing?.tvNewOrder?.let { it1 ->
                 makeUnSelected(it,
                     it1
                 )

@@ -237,6 +237,7 @@ interface Constants {
 
         const val userUUID = "userUUID"
         const val productUUID = "productUUID"
+        const val purchasingUUID = "purchasingUUID"
         const val addDuplicate = "addDuplicate"
         const val frequencyIndex = "frequencyIndex"
         const val frequencyData = "frequencyData"

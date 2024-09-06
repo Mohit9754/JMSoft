@@ -227,7 +227,7 @@
     <string name="enter_product_price">أدخل سعر ثمن البيع</string>
     <string name="explore_collection">استكشاف المجموعة</string>
     <string name="total_">المجموع</string>
-    <string name="scanned">ممسوحة ضوئيا</string>
+    <string name="scanned">موجود</string>
     <string name="missing">مفتقد</string>
     <string name="selected">المحدد</string>
     <string name="unknown">مجهول</string>
@@ -327,6 +327,12 @@
     <string name="Malaysia">Malaysia</string>
 
     <string name="advance_setting">الإعداد المسبق</string>
+
+    <string name="clear">واضح</string>
+    <string name="no_product_exists_with_this_barcode">لا يوجد منتج بهذا الباركود</string>
+    <string name="a_product_with_this_barcode_already_exists_in_the_cart">المنتج الذي يحمل هذا الرمز الشريطي موجود بالفعل في سلة التسوق.</string>
+    <string name="product_has_been_added_to_the_cart">تمت إضافة المنتج إلى سلة التسوق.</string>
+
 
 
 </resources>

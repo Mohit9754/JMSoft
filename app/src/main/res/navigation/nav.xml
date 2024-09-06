@@ -114,4 +114,17 @@
         android:label="AdvancevSetting"
         tool:layout="@layout/fragment_advance_setting"/>
 
+    <fragment
+        android:id="@+id/purchasingAndSales"
+        android:name="com.jmsoft.main.fragment.PurchasingAndSalesFragment"
+        android:label="PurchasingAndSales"
+        tool:layout="@layout/fragment_purchasing_and_sales"/>
+
+    <fragment
+        android:id="@+id/addPurchasing"
+        android:name="com.jmsoft.main.fragment.AddPurchaseFragment"
+        android:label="Add Purchase"
+        tool:layout="@layout/fragment_add_purchase"/>
+
+
 </navigation>

@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.MetalTypeDataModel
+import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.Database.StockLocationDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.validation.ResultReturn
@@ -29,17 +30,15 @@ import com.jmsoft.main.fragment.ProductInventoryFragment
 import com.jmsoft.main.fragment.StockLocationFragment
 import com.jmsoft.main.`interface`.SelectedCallback
 
-class StockLocationDropdownAdapter(
+class ProductNameDropDownAdapter(
     private val context: Context,
-    private var stockLocationList: ArrayList<StockLocationDataModel>,
-    private var productInventoryFragment:ProductInventoryFragment?,
-    private val isFromStockLocation:Boolean,
+    private var stockLocationList: ArrayList<ProductDataModel>,
     private val selectedCallback: SelectedCallback
 ) :
-    RecyclerView.Adapter<StockLocationDropdownAdapter.MyViewHolder>() {
+    RecyclerView.Adapter<ProductNameDropDownAdapter.MyViewHolder>() {
 
-    // Selected stock location position
-    var selectedStockLocationPosition:Int = -1
+    // Selected product name position
+    var selectedProductNamePosition:Int = -1
     var dialogBinding:ItemAddStockLocationBinding? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -57,64 +56,39 @@ class StockLocationDropdownAdapter(
     inner class MyViewHolder(private val binding: ItemStockLocationDropdownBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        // stock location data
-        private lateinit var stockLocationDataModel:StockLocationDataModel
+        private lateinit var productDataModel:ProductDataModel
 
-        // stock location position
         private var position = -1
 
         // Bind method
-        fun bind(stockLocationDataModel: StockLocationDataModel,position: Int) {
+        fun bind(productDataModel: ProductDataModel,position: Int) {
 
-            this.stockLocationDataModel = stockLocationDataModel
+            this.productDataModel = productDataModel
             this.position = position
 
             // Set selected stock location
             setSelectedStockLocation()
 
-            if (isFromStockLocation) {
+            setProductName()
 
-                binding.tvName.text = stockLocationDataModel.stockLocationName
-
-//                binding.llDelAndEditSection.visibility = View.GONE
-            }
-            else {
-
-                binding.tvName.text = stockLocationDataModel.stockLocationName
-
-                setParentName()
-
-                // Set click on delete button
-//                binding.mcvDelete.setOnClickListener(this)
-//
-//                // Set click on edit button
-//                binding.mcvEdit.setOnClickListener(this)
-
-            }
+            binding.tvParent.visibility = View.GONE
 
             // Set click on stock location
             binding.llStockLocation.setOnClickListener(this)
 
         }
 
-        private fun setParentName() {
-
-            val stockLocationDataModel = stockLocationDataModel.stockLocationParentUUID?.let {
-                Utils.getStockLocation(
-                    it
-                )
-            }
-
-            binding.tvParent.text = if (stockLocationDataModel?.stockLocationName != null) stockLocationDataModel.stockLocationName else "_"
+        private fun setProductName() {
+            binding.tvName.text = productDataModel.productName
         }
 
         // Set selected metal type
         private fun setSelectedStockLocation() {
 
-            if (selectedStockLocationPosition == position) {
+            if (selectedProductNamePosition == position) {
 
                 binding.llStockLocation.setBackgroundColor(context.getColor(R.color.selected_drop_down_color))
-                selectedCallback.selected(stockLocationDataModel)
+                selectedCallback.selected(productDataModel)
 
             }
             else {
@@ -129,7 +103,7 @@ class StockLocationDropdownAdapter(
         override fun onClick(v: View?) {
 
             if (v == binding.llStockLocation) {
-                selectedStockLocationPosition = position
+                selectedProductNamePosition = position
                 notifyDataSetChanged()
             }
 

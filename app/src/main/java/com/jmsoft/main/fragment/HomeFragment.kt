@@ -47,7 +47,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         binding.mcvSettings?.setOnClickListener(this)
 
         // Set Click on Sales option
-        binding.mcvSales?.setOnClickListener(this)
+        binding.mcvPurchasingAndSales?.setOnClickListener(this)
 
         // Set Click on Inventory option
         binding.mcvInventory?.setOnClickListener(this)
@@ -80,12 +80,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.setting)
         }
 
-        // Navigate to Cart Fragment
-        else if (v == binding.mcvSales) {
+        else if (v == binding.mcvPurchasingAndSales) {
 
             GetProgressBar.getInstance(requireActivity())?.show()
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.sales)
+            (requireActivity() as DashboardActivity).navController?.navigate(R.id.purchasingAndSales)
 
         }
 

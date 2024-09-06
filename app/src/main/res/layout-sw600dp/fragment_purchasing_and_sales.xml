@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:orientation="horizontal"
+        tools:ignore="UselessLeaf">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcvBackBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/_5sdp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/stroke_color"
+            app:strokeWidth="1dp">
+
+            <ImageView
+                android:id="@+id/ivDeviceIcon"
+                android:layout_width="@dimen/_9sdp"
+                android:layout_height="@dimen/_9sdp"
+                android:layout_margin="@dimen/_4sdp"
+                android:src="@drawable/icon_back_arrow"
+                tools:ignore="ContentDescription" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_13sdp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_7sdp"
+            android:layout_marginBottom="@dimen/_3sdp"
+            android:layout_toEndOf="@+id/mcvBackBtn"
+            app:tabRippleColor="@color/white"
+            app:tabTextAppearance="@style/CustomTabTextAppearance" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_height="wrap_content"
+            android:id="@+id/llSearchSection"
+            tools:ignore="RelativeOverlap">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvSearch"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/_7sdp"
+                android:outlineAmbientShadowColor="@color/ambientShadowColor"
+                android:outlineSpotShadowColor="@color/spotShadowColor"
+                android:visibility="visible"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:strokeColor="@color/text_hint"
+                app:strokeWidth="0.7dp"
+                tools:ignore="UnusedAttribute">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/etSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:layout_marginEnd="@dimen/_22sdp"
+                        android:background="@null"
+                        android:fontFamily="@font/montserrat_arabic_regular"
+                        android:hint="@string/search_here"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:paddingVertical="@dimen/_6sdp"
+                        android:textSize="12sp"
+                        tools:ignore="Autofill,SmallSp,TextFields" />
+
+                    <ImageView
+                        android:layout_width="@dimen/_16sdp"
+                        android:layout_height="@dimen/_16sdp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/_4sdp"
+                        android:padding="@dimen/_3sdp"
+                        android:src="@drawable/icon_search"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvNewOrder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_7sdp"
+                app:cardBackgroundColor="@color/theme"
+                app:cardCornerRadius="@dimen/_4sdp"
+                app:strokeWidth="0dp">
+
+                <TextView
+                    android:id="@+id/tvNewOrder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_8sdp"
+                    android:layout_marginVertical="@dimen/_6sdp"
+                    android:fontFamily="@font/montserrat_arabic_semibold"
+                    android:text="@string/new_order"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvConfirmOrder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/separator_line_color"
+                app:cardCornerRadius="@dimen/_4sdp"
+                app:strokeWidth="0dp">
+
+                <TextView
+                    android:id="@+id/tvConfirmOrder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_8sdp"
+                    android:layout_marginVertical="@dimen/_6sdp"
+                    android:fontFamily="@font/montserrat_arabic_semibold"
+                    android:text="@string/confirm_order"
+                    android:textColor="@color/product_background_color"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/llAdd"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            tools:ignore="RelativeOverlap">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/theme"
+                app:cardCornerRadius="@dimen/_4sdp"
+                app:strokeWidth="0dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_8sdp"
+                    android:layout_marginVertical="@dimen/_6sdp"
+                    android:fontFamily="@font/montserrat_arabic_semibold"
+                    android:text="@string/add"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</LinearLayout>

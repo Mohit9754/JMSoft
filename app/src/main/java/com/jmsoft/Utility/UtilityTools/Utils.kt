@@ -81,6 +81,7 @@ import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.Database.PurchasingDataModel
 import com.jmsoft.Utility.Database.StockLocationDataModel
 import com.jmsoft.Utility.UtilityTools.loadingButton.LoadingButton
 import com.jmsoft.basic.Database.DatabaseHelper
@@ -94,6 +95,7 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.name
 import com.jmsoft.basic.UtilityTools.Constants.Companion.password
 import com.jmsoft.basic.UtilityTools.Constants.Companion.statusBarHeight
 import com.jmsoft.databinding.AlertdialogBinding
+import com.jmsoft.databinding.FragmentPurchasingAndSalesBinding
 import com.jmsoft.databinding.ItemCustomToastBinding
 import com.jmsoft.main.model.DeviceModel
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
@@ -132,6 +134,18 @@ object Utils {
         fun addAmount(amount:Double) {
             totalAmount += amount
         }
+
+    }
+
+    object purchaseAndSalesBinding {
+
+        private lateinit var fragmentPurchasingAndSalesBinding:FragmentPurchasingAndSalesBinding
+
+        fun setBinding(fragmentPurchasingAndSalesBinding:FragmentPurchasingAndSalesBinding) {
+            this.fragmentPurchasingAndSalesBinding = fragmentPurchasingAndSalesBinding
+        }
+
+        fun getBinding() = this.fragmentPurchasingAndSalesBinding
 
     }
 
@@ -948,6 +962,11 @@ object Utils {
         return DatabaseHelper.instance.getAllProducts(offset,categoryUUID)
     }
 
+    // get all product name that does not have rfid code
+    suspend fun getAllProductName(): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductName()
+    }
+
     //Get All Products from the Product table without limit and offset
     suspend fun getAllProductsWithOutLimit(): ArrayList<ProductDataModel> {
         return DatabaseHelper.instance.getAllProductsWithOutLimit()
@@ -1318,6 +1337,30 @@ object Utils {
         DatabaseHelper.instance.deleteProductFromCart(userUUID,productUUID)
     }
 
+    // Add purchase
+    fun addPurchase(purchasingDataModel: PurchasingDataModel) {
+        DatabaseHelper.instance.addPurchase(purchasingDataModel)
+    }
+
+    // Update purchase
+    fun updatePurchase(purchasingDataModel: PurchasingDataModel) {
+        DatabaseHelper.instance.updatePurchase(purchasingDataModel)
+    }
+
+    // delete Purchase
+    fun deletePurchase(purchaseUUID: String) {
+        DatabaseHelper.instance.deletePurchase(purchaseUUID)
+    }
+
+    // Get All Purchase
+    fun getAllPurchase(): ArrayList<PurchasingDataModel> {
+        return DatabaseHelper.instance.getAllPurchase()
+    }
+
+    // get purchase by uuid
+    fun getPurchaseByUUID(purchaseUUID: String): PurchasingDataModel {
+        return DatabaseHelper.instance.getPurchaseByUUID(purchaseUUID)
+    }
 
     //Deleting the address from the address table
     fun deleteAddress(addressUUID: String) {

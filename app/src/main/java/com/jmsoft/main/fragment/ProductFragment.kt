@@ -16,6 +16,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.provider.OpenableColumns
 import android.provider.Settings
 import android.text.Editable
@@ -785,6 +787,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         if (productDataList.isNotEmpty()) {
 
+            binding.mcvExport?.let { Utils.enableButton(it) }
+
             binding.mcvProductList?.visibility = View.VISIBLE
             binding.llEmptyProduct?.visibility = View.GONE
 
@@ -809,6 +813,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         } else {
 
+            binding.mcvExport?.let { Utils.disableButton(it) }
+
             binding.mcvProductList?.visibility = View.GONE
 //            binding.mcvFilter?.visibility = View.GONE
             binding.llEmptyProduct?.visibility = View.VISIBLE
@@ -825,9 +831,12 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         Utils.T(requireActivity(), getString(R.string.readed_successfully))
 
+        if (productList.isNotEmpty())
+            binding.mcvExport?.let { Utils.enableButton(it) }
+
         for (product in productList) {
 
-            Utils.E("Stock location uuid is ${product.stockLocationUUID}")
+//            Utils.E("Stock location uuid is ${product.stockLocationUUID}")
 
             lifecycleScope.launch(Dispatchers.IO) {
                 Utils.addProduct(product)
@@ -1190,10 +1199,18 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         if (intent.resolveActivity(context.packageManager) != null) {
             context.startActivity(intent)
         } else {
-            Utils.T(
-                requireActivity(),
-                getString(R.string.no_application_available_to_open_excel_file)
-            )
+
+            val handler = Handler(Looper.getMainLooper())
+
+            handler.post {
+
+                Utils.T(
+                    requireActivity(),
+                    getString(R.string.no_application_available_to_open_excel_file)
+                )
+
+            }
+
         }
     }
 

@@ -17,6 +17,7 @@ import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.Database.PurchasingDataModel
 import com.jmsoft.Utility.Database.StockLocationDataModel
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.user
@@ -271,6 +272,8 @@ class DatabaseHelper(cx: Context) {
 
     }
 
+
+
     // Get All the metal type from the metal type table
     @SuppressLint("Range")
     fun getAllMetalType(): ArrayList<MetalTypeDataModel> {
@@ -458,6 +461,158 @@ class DatabaseHelper(cx: Context) {
         }
 
         db?.insert(StockLocationDataModel.TABLE_NAME_STOCK_LOCATION, null, stockLocationValue)
+    }
+
+    // Add purchase
+    fun addPurchase(purchasingDataModel: PurchasingDataModel) {
+
+        open()
+
+        val purchasingValue = ContentValues().apply {
+
+            put(PurchasingDataModel.Key_purchasingUUID, purchasingDataModel.purchasingUUID)
+            put(PurchasingDataModel.Key_productUUID, purchasingDataModel.productUUID)
+            put(PurchasingDataModel.Key_orderNo, purchasingDataModel.orderNo)
+            put(PurchasingDataModel.Key_supplier, purchasingDataModel.supplier)
+            put(PurchasingDataModel.Key_totalAmount, purchasingDataModel.totalAmount)
+            put(PurchasingDataModel.Key_date, purchasingDataModel.date)
+
+        }
+
+        Utils.E("Data ${purchasingDataModel.purchasingUUID}")
+        Utils.E("Data ${purchasingDataModel.productUUID}")
+        Utils.E("Data ${purchasingDataModel.orderNo}")
+        Utils.E("Data ${purchasingDataModel.supplier}")
+        Utils.E("Data ${purchasingDataModel.totalAmount}")
+        Utils.E("Data ${purchasingDataModel.date}")
+
+        db?.insert(PurchasingDataModel.TABLE_NAME_PURCHASING, null, purchasingValue)
+    }
+
+    // Update purchase
+    fun updatePurchase(purchasingDataModel: PurchasingDataModel) {
+
+        open()
+
+        val purchasingValue = ContentValues().apply {
+
+            put(PurchasingDataModel.Key_productUUID, purchasingDataModel.productUUID)
+            put(PurchasingDataModel.Key_orderNo, purchasingDataModel.orderNo)
+            put(PurchasingDataModel.Key_supplier, purchasingDataModel.supplier)
+            put(PurchasingDataModel.Key_totalAmount, purchasingDataModel.totalAmount)
+            put(PurchasingDataModel.Key_date, purchasingDataModel.date)
+
+        }
+
+        db?.update(PurchasingDataModel.TABLE_NAME_PURCHASING,purchasingValue,"${PurchasingDataModel.Key_purchasingUUID} == ?", arrayOf(purchasingDataModel.purchasingUUID))
+
+    }
+
+    // delete Purchase
+    fun deletePurchase(purchaseUUID: String) {
+
+        open()
+
+        db?.delete(
+            PurchasingDataModel.TABLE_NAME_PURCHASING, "${PurchasingDataModel.Key_purchasingUUID} == ?",
+            arrayOf(purchaseUUID)
+        )
+    }
+
+    // Get All Purchase
+    @SuppressLint("Range")
+    fun getAllPurchase(): ArrayList<PurchasingDataModel> {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT * FROM ${PurchasingDataModel.TABLE_NAME_PURCHASING}",
+            null
+        )
+
+        cursor?.moveToFirst()
+
+        val purchaseList = ArrayList<PurchasingDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+                val purchasingData = PurchasingDataModel()
+
+                purchasingData.purchasingUUID =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_purchasingUUID))
+
+                purchasingData.productUUID =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productUUID))
+
+                purchasingData.orderNo =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_orderNo))
+
+                purchasingData.supplier =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_supplier))
+
+                purchasingData.totalAmount =
+                    cursor.getDouble(cursor.getColumnIndex(PurchasingDataModel.Key_totalAmount))
+
+                purchasingData.date =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_date))
+
+
+                purchaseList.add(purchasingData)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return purchaseList
+
+    }
+
+    // get purchase by uuid
+    @SuppressLint("Range")
+    fun getPurchaseByUUID(purchaseUUID: String): PurchasingDataModel {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT * FROM ${PurchasingDataModel.TABLE_NAME_PURCHASING} WHERE ${PurchasingDataModel.Key_purchasingUUID} == ?",
+            arrayOf(purchaseUUID)
+        )
+
+        cursor?.moveToFirst()
+
+        val purchasingData = PurchasingDataModel()
+
+        if (cursor != null && cursor.count > 0) {
+
+            purchasingData.purchasingUUID =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_purchasingUUID))
+
+            purchasingData.productUUID =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productUUID))
+
+            purchasingData.orderNo =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_orderNo))
+
+            purchasingData.supplier =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_supplier))
+
+            purchasingData.totalAmount =
+                cursor.getDouble(cursor.getColumnIndex(PurchasingDataModel.Key_totalAmount))
+
+            purchasingData.date =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_date))
+
+
+            cursor.close()
+        }
+        close()
+
+        return purchasingData
     }
 
 
@@ -2251,6 +2406,42 @@ class DatabaseHelper(cx: Context) {
         close()
 
         return productList
+    }
+
+    // get all product name that does not have rfid code
+    @SuppressLint("Range")
+    suspend fun getAllProductName(): ArrayList<ProductDataModel> {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery("SELECT ${ProductDataModel.Key_productUUID},${ProductDataModel.Key_productName} FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} == ? ", arrayOf(""))
+        cursor?.moveToFirst()
+
+        val productList = ArrayList<ProductDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val productData = ProductDataModel()
+
+                productData.productUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+                productData.productName =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
+
+                productList.add(productData)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return productList
+
     }
 
     //Get All Products Accept one Product from product table

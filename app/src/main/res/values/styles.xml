@@ -51,4 +51,14 @@
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
+    <!-- Custom TextAppearance for Tab text -->
+    <style name="CustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <!-- Capitalize the text -->
+        <item name="textAllCaps">false</item>
+        <item name="android:fontFamily">@font/montserrat_arabic_semibold</item>
+        <!-- Optionally adjust other text properties -->
+        <item name="android:textSize">14sp</item>
+<!--        <item name="android:textColor">@color/your_text_color</item>-->
+    </style>
+
 </resources>

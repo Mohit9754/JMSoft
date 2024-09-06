@@ -13,6 +13,7 @@ import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.OrderDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.Utility.Database.PurchasingDataModel
 import com.jmsoft.Utility.Database.StockLocationDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 
@@ -66,6 +67,8 @@ class DataManager
 
         StockLocationDataModel.CreateTable(db)
 
+        PurchasingDataModel.CreateTable(db)
+
     }
 //    override fun onOpen(db: SQLiteDatabase) {
 //        super.onOpen(db)
@@ -115,13 +118,15 @@ class DataManager
 
         StockLocationDataModel.dropTable(db)
 
+        PurchasingDataModel.dropTable(db)
+
         onCreate(db)
 
     }
 
     companion object {
 
-        const val DATABASE_VERSION = 196
+        const val DATABASE_VERSION = 198
         const val DATABASE_NAME = "JM_Soft"
 
     }

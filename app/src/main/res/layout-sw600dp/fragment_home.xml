@@ -65,7 +65,7 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/mcvSales"
+                android:id="@+id/mcvPurchasingAndSales"
                 android:layout_marginHorizontal="@dimen/_40sdp"
                 app:cardBackgroundColor="@color/theme"
                 app:cardCornerRadius="@dimen/_4sdp">
