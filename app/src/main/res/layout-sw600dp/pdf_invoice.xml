@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="2480px"
@@ -12,23 +11,23 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/dark_blue"
-        android:textSize="30sp"
-        android:textAppearance="?attr/textAppearanceListItem"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/_25sdp"
-        android:text="@string/buy_and_sell_all_types_of_jewelry_ar"/>
+        android:text="@string/buy_and_sell_all_types_of_jewelry_ar"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textColor="@color/dark_blue"
+        android:textSize="30sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/dark_blue"
-        android:textSize="30sp"
-        android:textAppearance="?attr/textAppearanceListItem"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/_5sdp"
         android:layout_marginBottom="@dimen/_15sdp"
-        android:text="@string/buy_and_sell_all_types_of_jewelry_en"/>
+        android:text="@string/buy_and_sell_all_types_of_jewelry_en"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textColor="@color/dark_blue"
+        android:textSize="30sp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -38,8 +37,8 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_centerInParent="true"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
 
             android:orientation="vertical"
             tools:ignore="UselessParent">
@@ -49,30 +48,30 @@
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/blue"
                 app:cardCornerRadius="@dimen/_3sdp"
-                app:strokeWidth="1dp"
-                app:strokeColor="@color/dark_blue">
+                app:strokeColor="@color/dark_blue"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/_6sdp"
                     android:layout_marginHorizontal="@dimen/_10sdp"
+                    android:layout_marginVertical="@dimen/_6sdp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
                         android:layout_marginEnd="@dimen/_5sdp"
-                        android:text="@string/order_n"/>
+                        android:text="@string/order_n"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@string/order_no"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:text="@string/order_no"/>
+                        android:textSize="20sp" />
 
 
                 </LinearLayout>
@@ -80,16 +79,15 @@
             </com.google.android.material.card.MaterialCardView>
 
             <TextView
+                android:id="@+id/tvOrderNo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/_016862"
-                android:id="@+id/tvOrderNo"
                 android:layout_gravity="center"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="20sp"
                 android:layout_marginTop="@dimen/_5sdp"
-                />
+                android:text="@string/_016862"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -99,53 +97,55 @@
     <LinearLayout
         android:layout_width="@dimen/_350sdp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:layout_marginHorizontal="@dimen/_20sdp"
-        android:weightSum="4"
         android:layout_gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:orientation="horizontal"
+        android:weightSum="4">
 
         <TextView
+            android:id="@+id/tvDateAr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvDateAr"
-            android:textSize="30sp"
             android:layout_marginEnd="@dimen/_4sdp"
             android:textColor="@color/dark_blue"
-            />
+            android:textSize="30sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="تاريخ :"
-            android:textSize="30sp"
+            android:text="التاريخ :"
             android:textColor="@color/dark_blue"
+            android:textSize="30sp"
             tools:ignore="HardcodedText" />
 
         <LinearLayout
             android:layout_width="0dp"
-            android:orientation="horizontal"
+            android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:layout_height="wrap_content">
+            tools:ignore="UselessLeaf" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
+                android:id="@+id/tvClientNameAr"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_4sdp"
-                android:id="@+id/tvClientNameAr"
-                android:textSize="30sp"
                 android:textAlignment="textEnd"
-                android:layout_weight="4"
                 android:textColor="@color/dark_blue"
-                />
+                android:textSize="30sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="عميل :"
-                android:textSize="30sp"
                 android:layout_marginStart="@dimen/_4sdp"
+                android:text="الزبون  :"
                 android:textColor="@color/dark_blue"
+                android:textSize="30sp"
                 tools:ignore="HardcodedText" />
 
 
@@ -157,33 +157,31 @@
     <LinearLayout
         android:layout_width="@dimen/_350sdp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginHorizontal="@dimen/_20sdp"
-        android:weightSum="4"
-        android:orientation="horizontal">
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="horizontal"
+        android:weightSum="4">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:orientation="horizontal"
+            android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:layout_height="wrap_content">
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/client"
-                android:textSize="30sp"
                 android:textColor="@color/dark_blue"
-                />
+                android:textSize="30sp" />
 
             <TextView
+                android:id="@+id/tvClientName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_4sdp"
-                android:id="@+id/tvClientName"
-                android:textSize="30sp"
                 android:textColor="@color/dark_blue"
-                />
+                android:textSize="30sp" />
 
         </LinearLayout>
 
@@ -191,31 +189,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Date :"
-            android:textSize="30sp"
             android:textColor="@color/dark_blue"
+            android:textSize="30sp"
             tools:ignore="HardcodedText" />
 
         <TextView
+            android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="25 june 2024"
-            android:id="@+id/tvDate"
-            android:textSize="30sp"
             android:layout_marginStart="@dimen/_4sdp"
+            android:text="25 june 2024"
             android:textColor="@color/dark_blue"
-            />
+            android:textSize="30sp" />
 
     </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:strokeWidth="1dp"
-        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginHorizontal="@dimen/_20sdp"
-        app:cardCornerRadius="0dp"
+        android:layout_marginTop="@dimen/_10sdp"
         app:cardBackgroundColor="@color/white"
-        app:strokeColor="@color/blue">
+        app:cardCornerRadius="0dp"
+        app:strokeColor="@color/blue"
+        app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -229,58 +226,59 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="@dimen/_50sdp"
-                    android:orientation="vertical"
-                    android:gravity="center"
+                    android:layout_width="@dimen/_70sdp"
                     android:layout_height="@dimen/_35sdp"
-                    >
+                    android:gravity="end|center_vertical"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/_3sdp"
                         android:text="@string/amount_ar"
-                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
-                        />
+                        android:textSize="25sp" />
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Amount"
-                        android:textSize="25sp"
+                        android:text="Amount (DH)"
+                        android:layout_marginEnd="@dimen/_3sdp"
                         android:textColor="@color/dark_blue"
+                        android:textSize="25sp"
                         tools:ignore="HardcodedText" />
+
 
                 </LinearLayout>
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/blue"
-                    />
+                    android:background="@color/blue" />
 
                 <LinearLayout
-                    android:layout_width="@dimen/_50sdp"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_height="@dimen/_35sdp">
+                    android:layout_width="@dimen/_60sdp"
+                    android:layout_height="@dimen/_35sdp"
+                    android:gravity="end|center_vertical"
+                    android:orientation="vertical">
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/price_ar"
-                        android:textSize="25sp"
+                        android:layout_marginEnd="@dimen/_3sdp"
                         android:textColor="@color/dark_blue"
-                        />
+                        android:textSize="25sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Price"
-                        android:textSize="25sp"
+                        android:text="Price (DH)"
+                        android:layout_marginEnd="@dimen/_3sdp"
                         android:textColor="@color/dark_blue"
+                        android:textSize="25sp"
                         tools:ignore="HardcodedText" />
 
                 </LinearLayout>
@@ -288,30 +286,29 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/blue"
-                    />
+                    android:background="@color/blue" />
 
                 <LinearLayout
                     android:layout_width="@dimen/_50sdp"
-                    android:orientation="vertical"
-                    android:gravity="center"
                     android:layout_height="@dimen/_35sdp"
-                    >
+                    android:gravity="end|center_vertical"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/weight_ar"
-                        android:textSize="25sp"
+                        android:layout_marginEnd="@dimen/_3sdp"
                         android:textColor="@color/dark_blue"
-                        />
+                        android:textSize="25sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Weight"
-                        android:textSize="25sp"
+                        android:layout_marginEnd="@dimen/_3sdp"
                         android:textColor="@color/dark_blue"
+                        android:textSize="25sp"
                         tools:ignore="HardcodedText" />
 
                 </LinearLayout>
@@ -319,31 +316,30 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/blue"
-                    />
+                    android:background="@color/blue" />
 
                 <LinearLayout
                     android:layout_width="@dimen/_50sdp"
-                    android:orientation="vertical"
-                    android:gravity="center"
                     android:layout_height="@dimen/_35sdp"
-                    >
+                    android:gravity="end|center_vertical"
+                    android:orientation="vertical">
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/carat_ar"
-                        android:textSize="25sp"
+                        android:layout_marginEnd="@dimen/_3sdp"
                         android:textColor="@color/dark_blue"
-                        />
+                        android:textSize="25sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Carat"
-                        android:textSize="25sp"
+                        android:layout_marginEnd="@dimen/_3sdp"
                         android:textColor="@color/dark_blue"
+                        android:textSize="25sp"
                         tools:ignore="HardcodedText" />
 
                 </LinearLayout>
@@ -351,31 +347,30 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/blue"
-                    />
+                    android:background="@color/blue" />
 
                 <LinearLayout
-                    android:layout_width="@dimen/_100sdp"
-                    android:orientation="vertical"
-                    android:gravity="center"
+                    android:layout_width="@dimen/_70sdp"
                     android:layout_height="@dimen/_35sdp"
-                    >
+                    android:gravity="end|center_vertical"
+                    android:orientation="vertical">
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/designation_ar"
-                        android:textSize="25sp"
+                        android:layout_marginEnd="@dimen/_3sdp"
                         android:textColor="@color/dark_blue"
-                        />
+                        android:textSize="25sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Designation"
-                        android:textSize="25sp"
+                        android:layout_marginEnd="@dimen/_3sdp"
                         android:textColor="@color/dark_blue"
+                        android:textSize="25sp"
                         tools:ignore="HardcodedText" />
 
                 </LinearLayout>
@@ -383,31 +378,28 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/blue"
-                    />
+                    android:background="@color/blue" />
 
                 <LinearLayout
                     android:layout_width="@dimen/_44sdp"
-                    android:orientation="vertical"
-                    android:gravity="center"
                     android:layout_height="@dimen/_35sdp"
-                    >
+                    android:gravity="end|center_vertical"
+                    android:orientation="vertical">
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/np_ar"
-                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
-                        />
+                        android:textSize="25sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="N.P"
-                        android:textSize="25sp"
                         android:textColor="@color/dark_blue"
+                        android:textSize="25sp"
                         tools:ignore="HardcodedText" />
 
                 </LinearLayout>
@@ -417,15 +409,14 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/blue"/>
+                android:background="@color/blue" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvItems"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/invoice_item"
-                tools:itemCount="2"
-                android:id="@+id/rvItems"
-                />
+                tools:itemCount="1"
+                tools:listitem="@layout/invoice_item" />
 
         </LinearLayout>
 
@@ -433,15 +424,15 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="@dimen/_151sdp"
-        app:cardCornerRadius="0dp"
-        app:strokeWidth="1dp"
         android:id="@+id/mcvTotalPrice"
+        android:layout_width="@dimen/_181sdp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_20sdp"
         android:layout_marginTop="-1dp"
         app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="0dp"
         app:strokeColor="@color/blue"
-        android:layout_height="wrap_content">
+        app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -449,48 +440,46 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="@dimen/_50sdp"
-                android:orientation="vertical"
-                android:gravity="center"
+                android:layout_width="@dimen/_70sdp"
                 android:layout_height="@dimen/_35sdp"
-                >
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tvTotalAmount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="45"
-                    android:id="@+id/tvTotalAmount"
-                    android:textSize="20sp"
                     android:textColor="@color/dark_blue"
-                    />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/blue"/>
+                android:background="@color/blue" />
 
             <LinearLayout
-                android:layout_width="@dimen/_100sdp"
-                android:orientation="vertical"
+                android:layout_width="@dimen/_110sdp"
+                android:layout_height="@dimen/_35sdp"
                 android:gravity="center"
-                android:layout_height="@dimen/_35sdp">
+                android:orientation="vertical">
 
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_amount_ar"
-                    android:textSize="25sp"
-                    android:textColor="@color/dark_blue" />
+                    android:textColor="@color/dark_blue"
+                    android:textSize="25sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Total amount"
-                    android:textSize="25sp"
+                    android:text="Total amount (DH)"
                     android:textColor="@color/dark_blue"
+                    android:textSize="25sp"
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>
@@ -501,7 +490,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_35sdp"/>
+        android:layout_height="@dimen/_35sdp" />
 
 
 </LinearLayout>

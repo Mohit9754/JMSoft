@@ -1243,7 +1243,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         errorValidationModel.add(
             ValidationModel(
-                Validation.Type.NoSpecialChar, binding.etProductName, binding.tvProductNameError
+                Validation.Type.Empty, binding.etProductName, binding.tvProductNameError
             )
         )
 

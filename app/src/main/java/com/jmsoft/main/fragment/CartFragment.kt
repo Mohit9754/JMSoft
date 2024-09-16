@@ -212,6 +212,8 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         val pdfInvoiceBinding = PdfInvoiceBinding.inflate(LayoutInflater.from(context))
 
+        Utils.E("Order no is ${newOrderDataModel?.orderNo}")
+
         pdfInvoiceBinding.tvOrderNo.text = newOrderDataModel?.orderNo
 
         pdfInvoiceBinding.tvClientName.text =

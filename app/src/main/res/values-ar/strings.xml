@@ -252,16 +252,16 @@
     <string name="order_no">الطلب رقم</string>
     <string name="client">Client :</string>
     <string name="date">تاريخ :</string>
-    <string name="amount_ar">كمية</string>
+    <string name="amount_ar">الواجب</string>
     <string name="amount">كمية</string>
-    <string name="price_ar">كمية</string>
-    <string name="weight_ar">وزن</string>
+    <string name="price_ar">ثمن الوحدة</string>
+    <string name="weight_ar">الوزن</string>
     <string name="weight_en">وزن</string>
-    <string name="carat_ar">قيراط</string>
+    <string name="carat_ar">العيار</string>
     <string name="carat_en">قيراط</string>
-    <string name="designation_ar">تعيين</string>
+    <string name="designation_ar">نوع البضاعة</string>
     <string name="designation_en">تعيين</string>
-    <string name="np_ar">كمية</string>
+    <string name="np_ar">العدد</string>
     <string name="n_p_en">N.P</string>
     <string name="total_amount">المبلغ الإجمالي</string>
     <string name="total_amount_ar">المبلغ الإجمالي</string>
@@ -332,6 +332,22 @@
     <string name="no_product_exists_with_this_barcode">لا يوجد منتج بهذا الباركود</string>
     <string name="a_product_with_this_barcode_already_exists_in_the_cart">المنتج الذي يحمل هذا الرمز الشريطي موجود بالفعل في سلة التسوق.</string>
     <string name="product_has_been_added_to_the_cart">تمت إضافة المنتج إلى سلة التسوق.</string>
+
+
+    <string name="the_barcode_field_is_empty">حقل الباركود فارغ.</string>
+    <string name="add_purchase">أضف عملية شراء</string>
+    <string name="order_number">رقم الطلب</string>
+    <string name="enter_order_number">أدخل رقم الطلب</string>
+    <string name="supplier">مزود</string>
+    <string name="enter_supplier">أدخل المورد</string>
+    <string name="select_date">اختر التاريخ</string>
+    <string name="date_">تاريخ</string>
+    <string name="purchase_added_successfully">تمت إضافة الشراء بنجاح!</string>
+    <string name="purchasing_is_empty">الشراء فارغ</string>
+    <string name="are_you_sure_you_want_to_delete_this_purchase_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف عملية الشراء هذه؟ لا يمكن التراجع عن هذا الإجراء</string>
+    <string name="purchase_updated_successfully">تم تحديث الشراء بنجاح!</string>
+    <string name="are_you_sure_you_want_to_delete_this_stock_location_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف موقع المخزون هذا؟ لا يمكن التراجع عن هذا الإجراء.</string>
+
 
 
 
