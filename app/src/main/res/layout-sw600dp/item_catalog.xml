@@ -13,6 +13,7 @@
     android:id="@+id/mcvCatalogItem"
     android:outlineAmbientShadowColor="@color/ambientShadowColor"
     android:outlineSpotShadowColor="@color/spotShadowColor"
+
     app:cardCornerRadius="@dimen/_7sdp"
     tools:ignore="MissingDefaultResource,UnusedAttribute">
 

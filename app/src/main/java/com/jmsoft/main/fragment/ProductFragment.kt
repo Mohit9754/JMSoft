@@ -74,6 +74,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
     private var collectionUUID: String? = null
 
+    private var isPurchase: Boolean? = false
+
     private var productDataList = ArrayList<ProductDataModel>()
 
     private var selectedProductUUIDList = ArrayList<String>()
@@ -85,6 +87,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
     private var selectedCategoryIndex = 0
 
     private lateinit var excelReader: ExcelReader
+
+    private var isEmptyRfidProduct = false
 
     private var offset = 0
 
@@ -334,6 +338,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                     Utils.T(requireContext(), getString(R.string.document_is_encrypted))
 
                 } else {
+
                     excelReader.readExcelFileFromAssets(requireActivity(), this.absolutePath)
                 }
             }
@@ -440,13 +445,27 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         collectionUUID = arguments?.getString(Constants.collectionUUID)
 
-        if (collectionUUID != null) {
+        isPurchase = arguments?.getBoolean(Constants.addPurchase, false)
+
+        if (collectionUUID != null || isPurchase == true) {
 
             binding.mcvAdd?.visibility = View.VISIBLE
             binding.tvTitle?.text = getString(R.string.select_products_to_add)
+            binding.mcvExport?.visibility = View.GONE
+            binding.mcvImport?.visibility = View.GONE
+//            binding.mcvAddProduct?.visibility = View.GONE
+
 
         } else {
             binding.tvTitle?.text = getString(R.string.product)
+        }
+
+        if (isPurchase == true) {
+
+            selectedProductUUIDList = ArrayList(Utils.SelectedProductUUIDList.getProductList())
+            Utils.SelectedProductUUIDList.clearList()
+
+            isEmptyRfidProduct = true
         }
 
     }
@@ -531,12 +550,13 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                     categoryUUID?.let {
                         Utils.getTotalNumberOfProductsOfCollection(
                             collectionUUID!!,
-                            it
+                            it,
+                            isEmptyRfidProduct
                         )
                     }
                 else {
 
-                    categoryUUID?.let { Utils.getTotalNumberOfProducts(it) }
+                    categoryUUID?.let { Utils.getTotalNumberOfProducts(it,isEmptyRfidProduct) }
 
                 }
             } else {
@@ -545,7 +565,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
                     binding.etSearch?.text?.toString()?.trim()?.let {
                         Utils.getTotalNumberOfProductsOfDetailSearchAcceptCollection(
-                            it, collectionUUID!!, categoryUUID
+                            it, collectionUUID!!, categoryUUID,isEmptyRfidProduct
                         )
                     }
 
@@ -556,7 +576,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                             categoryUUID?.let { it1 ->
                                 Utils.getTotalNumberOfProductsOfDetailSearch(
                                     it,
-                                    it1
+                                    it1,
+                                    isEmptyRfidProduct
                                 )
                             }
                         }
@@ -764,7 +785,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             lifecycleScope.launch(Dispatchers.IO) {
 
                 productDataList = Utils.getAllProductsAcceptCollection(
-                    collectionUUID!!, offset, categoryUUID
+                    collectionUUID!!, offset, categoryUUID,isEmptyRfidProduct
                 )
             }
 
@@ -772,7 +793,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
             lifecycleScope.launch(Dispatchers.IO) {
                 if (categoryUUID != null)
-                    productDataList = Utils.getAllProducts(offset, categoryUUID)
+                    productDataList = Utils.getAllProducts(offset, categoryUUID,isEmptyRfidProduct)
             }
         }
 
@@ -787,15 +808,19 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         if (productDataList.isNotEmpty()) {
 
+            binding.mcvAdd?.let { Utils.enableButton(it) }
+
             binding.mcvExport?.let { Utils.enableButton(it) }
 
             binding.mcvProductList?.visibility = View.VISIBLE
             binding.llEmptyProduct?.visibility = View.GONE
 
+            val enableCheckBox = collectionUUID != null || isPurchase == true
+
             productListAdapter = ProductListAdapter(
                 requireActivity(),
                 productDataList,
-                collectionUUID,
+                enableCheckBox,
                 binding,
                 selectedProductUUIDList
             )
@@ -812,6 +837,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             }
 
         } else {
+
+            binding.mcvAdd?.let { Utils.disableButton(it) }
 
             binding.mcvExport?.let { Utils.disableButton(it) }
 
@@ -867,7 +894,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
             lifecycleScope.launch(Dispatchers.IO) {
                 productDataList = Utils.getProductsWithDetailSearchAcceptCollection(
-                    binding.etSearch?.text.toString().trim(), offset, collectionUUID!!, categoryUUID
+                    binding.etSearch?.text.toString().trim(), offset, collectionUUID!!, categoryUUID,isEmptyRfidProduct
                 )
             }
         } else {
@@ -877,7 +904,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                 if (categoryUUID != null)
                     productDataList = Utils.getProductsWithDetailSearch(
                         binding.etSearch?.text.toString().trim(),
-                        offset, categoryUUID
+                        offset, categoryUUID,isEmptyRfidProduct
                     )
             }
         }
@@ -908,7 +935,10 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         Utils.E("Notification has been created ..........")
 
         // Path to the file you want to open
-        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Excel")
+        val file = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+            "Excel"
+        )
 
         // Create a Uri for the Downloads folder using FileProvider
         val folderUri: Uri = FileProvider.getUriForFile(
@@ -976,7 +1006,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                 }
 
                 4 -> {
-                    cell.setCellValue(ProductColumnName.COLLECTION_NAME.displayName)
+                    cell.setCellValue(ProductColumnName.COLLECTION.displayName)
                 }
 
                 5 -> {
@@ -1140,7 +1170,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
             val fileName = "${Utils.generateUUId()}.xlsx"
 
-            val file = File(appFolder,fileName)
+            val file = File(appFolder, fileName)
             val outputStream = FileOutputStream(file)
             workbook.write(outputStream)
             workbook.close()
@@ -1154,7 +1184,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
             createNotificationChannel(requireActivity())
 
-            showNotification(requireActivity(),fileName)
+            showNotification(requireActivity(), fileName)
 
             val filePath = file.absolutePath
 
@@ -1210,10 +1240,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                 )
 
             }
-
         }
     }
-
 
     // Handle all the clicks
     override fun onClick(v: View?) {
@@ -1229,45 +1257,57 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             ProductUUIDList.setStatus(true)
 
             (requireActivity() as DashboardActivity).navController?.navigate(R.id.productInventory)
+
         }
 
         // Clicked on add button
         else if (v == binding.mcvAdd) {
 
-            GetProgressBar.getInstance(requireActivity())?.show()
+            if (isPurchase == true) {
 
-            for (selectedUUID in selectedProductUUIDList) {
+                Utils.SelectedProductUUIDList.setProductList(selectedProductUUIDList)
 
-                for (productData in productDataList) {
-
-                    if (selectedUUID == productData.productUUID) {
-
-                        val collectionUUIDData = productData.collectionUUID
-
-                        val listOfCollection = collectionUUIDData?.split(",")?.toMutableList()
-
-                        if (collectionUUID != null) {
-
-                            listOfCollection?.add(collectionUUID!!)
-
-                            val productDataModel = ProductDataModel()
-                            productDataModel.productUUID = selectedUUID
-                            productDataModel.collectionUUID =
-                                listOfCollection?.joinToString()?.replace(" ", "")
-
-                            Utils.updateCollectionInProduct(productDataModel)
-
-                            Utils.T(
-                                requireActivity(),
-                                context?.getString(R.string.added_successfully)
-                            )
-                        }
-                        break
-                    }
-                }
+                (requireActivity() as DashboardActivity).navController?.popBackStack()
 
             }
-            (requireActivity() as DashboardActivity).navController?.popBackStack()
+            else {
+
+                GetProgressBar.getInstance(requireActivity())?.show()
+
+                for (selectedUUID in selectedProductUUIDList) {
+
+                    for (productData in productDataList) {
+
+                        if (selectedUUID == productData.productUUID) {
+
+                            val collectionUUIDData = productData.collectionUUID
+
+                            val listOfCollection = collectionUUIDData?.split(",")?.toMutableList()
+
+                            if (collectionUUID != null) {
+
+                                listOfCollection?.add(collectionUUID!!)
+
+                                val productDataModel = ProductDataModel()
+                                productDataModel.productUUID = selectedUUID
+                                productDataModel.collectionUUID =
+                                    listOfCollection?.joinToString()?.replace(" ", "")
+
+                                Utils.updateCollectionInProduct(productDataModel)
+
+                                Utils.T(
+                                    requireActivity(),
+                                    context?.getString(R.string.added_successfully)
+                                )
+                            }
+                            break
+                        }
+                    }
+
+                }
+                (requireActivity() as DashboardActivity).navController?.popBackStack()
+
+            }
 
         } else if (v == binding.mcvImport) {
 

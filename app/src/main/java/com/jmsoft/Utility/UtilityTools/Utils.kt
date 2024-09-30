@@ -1,8 +1,6 @@
 package com.jmsoft.basic.UtilityTools
 
 //import com.jmsoft.databinding.AlertdialogBinding
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -158,6 +156,24 @@ object Utils {
             this.flag = false
             return flag
         }
+    }
+
+    object SelectedProductUUIDList {
+
+        private var productUUIDList =  ArrayList<String>()
+
+        fun setProductList(productUUIDList: ArrayList<String>){
+            this.productUUIDList = productUUIDList
+        }
+
+        fun getSize() = productUUIDList.size
+
+        fun clearList(){
+            productUUIDList.clear()
+        }
+
+        fun getProductList() = productUUIDList
+
     }
 
     // Get the language from the shared preference
@@ -948,23 +964,30 @@ object Utils {
     }
 
     // return the total number of products
-    fun getTotalNumberOfProducts(categoryUUID: String): Int {
-        return DatabaseHelper.instance.getTotalNumberOfProducts(categoryUUID)
+    fun getTotalNumberOfProducts(categoryUUID: String, isEmptyRfidProduct: Boolean): Int {
+        return DatabaseHelper.instance.getTotalNumberOfProducts(categoryUUID,isEmptyRfidProduct)
     }
 
     // return the total number of products of collection
-    fun getTotalNumberOfProductsOfCollection(collectionUUID: String,categoryUUID: String): Int {
-        return DatabaseHelper.instance.getTotalNumberOfProductOfCollection(collectionUUID,categoryUUID)
+    fun getTotalNumberOfProductsOfCollection(
+        collectionUUID: String,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): Int {
+        return DatabaseHelper.instance.getTotalNumberOfProductOfCollection(collectionUUID,categoryUUID,isEmptyRfidProduct)
     }
 
     //Get All Products from the Product table with limit and offset
-    suspend fun getAllProducts(offset: Int, categoryUUID: String): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProducts(offset,categoryUUID)
+    suspend fun getAllProducts(offset: Int, categoryUUID: String, isEmptyRfidProduct: Boolean): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProducts(offset,categoryUUID,isEmptyRfidProduct)
     }
 
     // get all product name that does not have rfid code
-    suspend fun getAllProductName(): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProductName()
+    suspend fun getAllProductName(limit:Int,offset: Int): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getProductName(limit, offset)
+    }
+    suspend fun getProductNameWithSearch(search: String,limit:Int,offset: Int): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getProductNameWithSearch(search,limit, offset)
     }
 
     //Get All Products from the Product table without limit and offset
@@ -983,21 +1006,41 @@ object Utils {
     }
 
     // Get Products with search
-    suspend fun getProductsWithDetailSearch(search:String,offset: Int,categoryUUID: String): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getProductsWithDetailSearch(search,offset,categoryUUID)
+    suspend fun getProductsWithDetailSearch(
+        search: String,
+        offset: Int,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getProductsWithDetailSearch(search,offset,categoryUUID,isEmptyRfidProduct)
     }
-    suspend fun getProductsWithDetailSearchAcceptCollection(search:String,offset: Int,collectionUUID: String,categoryUUID: String): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getProductsWithDetailSearchAcceptCollection(search,offset,collectionUUID,categoryUUID)
+    suspend fun getProductsWithDetailSearchAcceptCollection(
+        search: String,
+        offset: Int,
+        collectionUUID: String,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getProductsWithDetailSearchAcceptCollection(search,offset,collectionUUID,categoryUUID,isEmptyRfidProduct)
     }
 
     // Get total number of products of detail search
-     fun getTotalNumberOfProductsOfDetailSearch(search:String,categoryUUID: String): Int {
-        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearch(search,categoryUUID)
+     fun getTotalNumberOfProductsOfDetailSearch(
+        search: String,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): Int {
+        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearch(search,categoryUUID,isEmptyRfidProduct)
     }
 
     // Get total number of products of detail search accept collection
-     fun getTotalNumberOfProductsOfDetailSearchAcceptCollection(search: String,collectionUUID: String,categoryUUID: String): Int {
-        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearchAcceptCollection(search,collectionUUID,categoryUUID)
+     fun getTotalNumberOfProductsOfDetailSearchAcceptCollection(
+        search: String,
+        collectionUUID: String,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): Int {
+        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearchAcceptCollection(search,collectionUUID,categoryUUID,isEmptyRfidProduct)
     }
 
     // Get Products with limit and offset
@@ -1011,8 +1054,8 @@ object Utils {
     }
 
     /* Get All Products from the Product table Accept the collection */
-     suspend fun getAllProductsAcceptCollection(collectionUUID: String,offset: Int,categoryUUID: String): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUID,offset,categoryUUID)
+     suspend fun getAllProductsAcceptCollection(collectionUUID: String,offset: Int,categoryUUID: String,isEmptyRfidProduct:Boolean): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUID,offset,categoryUUID,isEmptyRfidProduct)
     }
 
     //Get All Products from the Product table Accept Category one Category
@@ -1400,6 +1443,10 @@ object Utils {
     // Get All Contact of particular user from the Contact table
     fun getAllContactThroughUserUUID(userUUID: String): ArrayList<ContactDataModel> {
         return DatabaseHelper.instance.getAllContactThroughUserUUID(userUUID)
+    }
+
+    fun getContactByUUID(contactUUID: String): ContactDataModel {
+        return DatabaseHelper.instance.getContactByUUID(contactUUID)
     }
 
     // Getting the Product through Product UUID

@@ -1,5 +1,6 @@
 package com.jmsoft.main.fragment
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
@@ -9,13 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
+import com.jmsoft.Utility.Database.ContactDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
 import com.jmsoft.Utility.Database.PurchasingDataModel
-import com.jmsoft.Utility.Database.StockLocationDataModel
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
@@ -24,35 +24,33 @@ import com.jmsoft.basic.validation.Validation
 import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.FragmentAddPurchaseBinding
 import com.jmsoft.main.activity.DashboardActivity
-import com.jmsoft.main.adapter.ProductNameDropDownAdapter
-import com.jmsoft.main.adapter.StockLocationDropdownAdapter
+import com.jmsoft.main.adapter.SupplierDropDownAdapter
+import com.jmsoft.main.adapter.SelectedProductAdapter
 import com.jmsoft.main.`interface`.SelectedCallback
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import okio.Utf8
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback {
 
-    lateinit var binding: FragmentAddPurchaseBinding
+    private lateinit var binding: FragmentAddPurchaseBinding
 
-    private var productNameDropDownList = ArrayList<ProductDataModel>()
+    private var supplierList = ArrayList<ContactDataModel>()
 
-    private var productNameDropDownAdapter: ProductNameDropDownAdapter? = null
+    private var productNameDropDownAdapter: SupplierDropDownAdapter? = null
 
-    private var selectedProductNameUUID: String? = null
+    private var selectedSupplierUUID: String? = null
 
     private var purchasingDataModel: PurchasingDataModel? = null
+
+    private var selectedProductList = ArrayList<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
 
+        // Inflate the layout for this fragment
         binding = FragmentAddPurchaseBinding.inflate(layoutInflater)
 
         init()
@@ -64,15 +62,6 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback {
 
         binding.etOrderNo?.let {
             binding.mcvOrderNo?.let { it1 ->
-                Utils.setFocusChangeLis(
-                    requireActivity(), it,
-                    it1
-                )
-            }
-        }
-
-        binding.etSupplier?.let {
-            binding.mcvSupplier?.let { it1 ->
                 Utils.setFocusChangeLis(
                     requireActivity(), it,
                     it1
@@ -102,15 +91,6 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback {
             }
         }
 
-        binding.etSupplier?.let {
-            binding.tvSupplierError?.let { it1 ->
-                Utils.setTextChangeListener(
-                    it,
-                    it1
-                )
-            }
-        }
-
         binding.etTotalAmount?.let {
             binding.tvTotalAmountError?.let { it1 ->
                 Utils.setTextChangeListener(
@@ -122,78 +102,114 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback {
 
     }
 
-    // Set product name dropdown
-    private suspend fun setProductNameDropDown() {
+    @SuppressLint("SetTextI18n")
+    private fun setSupplierDropDown() {
 
-        val result = lifecycleScope.async(Dispatchers.IO) {
-            return@async Utils.getAllProductName()
-        }
+        supplierList = Utils.GetSession().userUUID?.let { Utils.getAllContactThroughUserUUID(it) }?: ArrayList()
 
-        productNameDropDownList = result.await()
-
-        productNameDropDownAdapter = ProductNameDropDownAdapter(
+        productNameDropDownAdapter = SupplierDropDownAdapter(
             requireActivity(),
-            productNameDropDownList,
+            supplierList,
             this
         )
 
-        if (selectedProductNameUUID != null) {
+        if (selectedSupplierUUID != null) {
 
-            val index = productNameDropDownList.indexOfFirst { it.productUUID == selectedProductNameUUID }
+            val index = supplierList.indexOfFirst { it.contactUUID == selectedSupplierUUID }
 
-            productNameDropDownAdapter?.selectedProductNamePosition = index
+            productNameDropDownAdapter?.selectedSupplierPosition = index
 
-            val productDataModel = productNameDropDownList[index].productUUID?.let { Utils.getProductThroughProductUUID(it) }
-            binding.tvProductName?.text = productDataModel?.productName
+            val contactDataModel = supplierList[index].contactUUID?.let { Utils.getContactByUUID(it) }
+            binding.tvSupplierError?.text = "${contactDataModel?.firstName} ${contactDataModel?.lastName}"
 
-//            binding.tvProductName?.text =
         }
 
-        binding.rvProductName?.layoutManager =
+        binding.rvSupplier?.layoutManager =
             LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
-        binding.rvProductName?.adapter = productNameDropDownAdapter
+        binding.rvSupplier?.adapter = productNameDropDownAdapter
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun checkAddOrEditStatus() {
 
         val purchasingUUID = arguments?.getString(Constants.purchasingUUID)
 
         if (purchasingUUID != null) {
 
+            binding.tvTitle?.text = getString(R.string.update_purchase)
+
             purchasingDataModel = Utils.getPurchaseByUUID(purchasingUUID)
 
             if (purchasingDataModel != null) {
 
-                selectedProductNameUUID = purchasingDataModel?.productUUID
-                binding.etOrderNo?.setText(purchasingDataModel!!.orderNo)
-                binding.etSupplier?.setText(purchasingDataModel!!.supplier)
+                if (Utils.SelectedProductUUIDList.getSize() == 0) {
+
+                    val productList = purchasingDataModel?.productUUIDUri?.split(",")?.toMutableList() as ArrayList<String>
+
+                    Utils.SelectedProductUUIDList.setProductList(productList)
+
+                }
+
+
+                binding.etOrderNo?.setText(purchasingDataModel?.orderNo)
+                selectedSupplierUUID = purchasingDataModel?.supplierUUID
+
+                val contactDataModel = purchasingDataModel?.supplierUUID?.let {
+                    Utils.getContactByUUID(
+                        it
+                    )
+                }
+
+                binding.tvSupplier?.text = "${contactDataModel?.firstName} ${contactDataModel?.lastName}"
 
                 val totalAmount =
-                    purchasingDataModel!!.totalAmount?.let { Utils.getThousandSeparate(it) }
+                    purchasingDataModel?.totalAmount?.let { Utils.getThousandSeparate(it) }
 
                 binding.etTotalAmount?.setText(totalAmount)
 
-                binding.tvDate?.text = purchasingDataModel!!.date
+                binding.tvDate?.text = purchasingDataModel?.date
 
             }
         }
+    }
+    private fun setSelectedProductRecyclerView() {
 
+        selectedProductList = ArrayList(Utils.SelectedProductUUIDList.getProductList())
+
+        Utils.SelectedProductUUIDList.clearList()
+
+        if (selectedProductList.isNotEmpty()) {
+
+            binding.tvProductName?.visibility = View.GONE
+            binding.rvProduct?.visibility = View.VISIBLE
+
+            val adapter = SelectedProductAdapter(requireActivity(),selectedProductList,binding)
+
+            binding.rvProduct?.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+
+            binding.rvProduct?.adapter = adapter
+
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        checkAddOrEditStatus()
+
+        setSelectedProductRecyclerView()
     }
 
     private fun init() {
-
-        checkAddOrEditStatus()
 
         setFocusChangeLis()
 
         setTextChangLis()
 
-        lifecycleScope.launch(Dispatchers.Main) {
-            setProductNameDropDown()
-        }
+        setSupplierDropDown()
 
-        binding.llProductName?.setOnClickListener(this)
+        binding.llSupplier?.setOnClickListener(this)
 
         binding.mcvBackBtn?.setOnClickListener(this)
 
@@ -201,23 +217,24 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback {
 
         binding.mcvSave?.setOnClickListener(this)
 
-//        if (purchasingDataModel != null)
-//            showOrHideProductNameDropDown()
+        binding.mcvAdd?.setOnClickListener(this)
+
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
 
     }
 
     // Show or hide Product name drop down
-    private fun showOrHideProductNameDropDown() {
+    private fun showOrHideSupplierDropDown() {
 
-        if (binding.mcvProductNameList?.visibility == View.VISIBLE) {
+        if (binding.mcvSupplierList?.visibility == View.VISIBLE) {
 
-            binding.ivProductName.let { it?.let { it1 -> Utils.rotateView(it1, 0f) } }
-            binding.mcvProductNameList.let { it?.let { it1 -> Utils.collapseView(it1) } }
+            binding.ivSupplier.let { it?.let { it1 -> Utils.rotateView(it1, 0f) } }
+            binding.mcvSupplierList.let { it?.let { it1 -> Utils.collapseView(it1) } }
 
         } else {
 
-            binding.ivProductName.let { it?.let { it1 -> Utils.rotateView(it1, 180f) } }
-            binding.mcvProductNameList.let { it?.let { it1 -> Utils.expandView(it1) } }
+            binding.ivSupplier.let { it?.let { it1 -> Utils.rotateView(it1, 180f) } }
+            binding.mcvSupplierList.let { it?.let { it1 -> Utils.expandView(it1) } }
 
         }
     }
@@ -260,9 +277,9 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback {
 
         purchaseDataModel.purchasingUUID =
             if (purchasingDataModel != null) purchasingDataModel!!.purchasingUUID else Utils.generateUUId()
-        purchaseDataModel.productUUID = selectedProductNameUUID
+        purchaseDataModel.productUUIDUri =  selectedProductList.joinToString(",").replace(" ","")
         purchaseDataModel.orderNo = binding.etOrderNo?.text.toString().trim()
-        purchaseDataModel.supplier = binding.etSupplier?.text.toString().trim()
+        purchaseDataModel.supplierUUID = selectedSupplierUUID
         purchaseDataModel.totalAmount = binding.etTotalAmount?.text.toString().toDouble()
         purchaseDataModel.date = binding.tvDate?.text.toString()
 
@@ -289,7 +306,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback {
 
         errorValidationModel.add(
             ValidationModel(
-                Validation.Type.EmptyTextView, binding.tvProductName, binding.tvProductNameError
+                Validation.Type.EmptyArrayList, selectedProductList.size, binding.tvProductNameError,null
             )
         )
 
@@ -301,7 +318,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback {
 
         errorValidationModel.add(
             ValidationModel(
-                Validation.Type.Empty, binding.etSupplier, binding.tvSupplierError
+                Validation.Type.EmptyTextView, binding.tvSupplier, binding.tvSupplierError
             )
         )
 
@@ -354,6 +371,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onClick(view: View?) {
 
         when (view) {
@@ -364,8 +382,8 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback {
 
             }
 
-            binding.llProductName -> {
-                showOrHideProductNameDropDown()
+            binding.llSupplier -> {
+                showOrHideSupplierDropDown()
             }
 
             binding.mcvDate -> {
@@ -376,32 +394,51 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback {
                 validate()
             }
 
+            binding.mcvAdd -> {
+
+                Utils.SelectedProductUUIDList.setProductList(ArrayList(selectedProductList))
+
+//                requireActivity().runOnUiThread {
+//                    if (isAdded && !requireActivity().isFinishing) {
+//                        GetProgressBar.getInstance(requireActivity())?.show()
+//                    }
+//                }
+
+
+                //Giving the fragment status
+                val bundle = Bundle()
+                bundle.putBoolean(Constants.addPurchase,true)
+
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.product,bundle)
+
+            }
+
         }
 
     }
 
+    @SuppressLint("SetTextI18n")
     override fun selected(data: Any) {
 
-        val productDataModel = data as ProductDataModel
+        val contactDataModel = data as ContactDataModel
 
-        if (binding.tvProductName?.text.toString() != productDataModel.productName) {
+        if (binding.tvSupplier?.text.toString() != "${contactDataModel.firstName} ${contactDataModel.lastName}") {
 
-            selectedProductNameUUID = productDataModel.productUUID
-            binding.tvProductName?.text = productDataModel.productName
-            binding.tvProductNameError?.visibility = View.GONE
-            binding.ivProductName.let { it?.let { it1 -> Utils.rotateView(it1, 0f) } }
-            binding.mcvProductNameList.let { it?.let { it1 -> Utils.collapseView(it1) } }
+            selectedSupplierUUID = contactDataModel.contactUUID
+            binding.tvSupplier?.text = "${contactDataModel.firstName} ${contactDataModel.lastName}"
+            binding.tvSupplierError?.visibility = View.GONE
 
+            showOrHideSupplierDropDown()
         }
     }
 
     override fun unselect() {
 
-        selectedProductNameUUID = null
-        binding.tvProductName?.text = ""
-        binding.tvProductNameError?.visibility = View.GONE
-
-        showOrHideProductNameDropDown()
+//        selectedSupplierUUID = null
+//        binding.tvSupplier?.text = ""
+//        binding.tvSupplierError?.visibility = View.GONE
+//
+//        showOrHideSupplierDropDown()
     }
 
 }

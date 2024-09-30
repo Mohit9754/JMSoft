@@ -103,15 +103,35 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                                                     if (firstRow.contains(ProductColumnName.DESCRIPTION.displayName)) {
 
-                                                        if (firstRow.contains(ProductColumnName.BARCODE.displayName)) {
+                                                        if (firstRow.contains(ProductColumnName.COLLECTION.displayName)) {
 
-                                                            if (firstRow.contains(ProductColumnName.NAME.displayName)) {
+                                                            if (firstRow.contains(ProductColumnName.BARCODE.displayName)) {
 
                                                                 if (firstRow.contains(
-                                                                        ProductColumnName.PARENT.displayName
+                                                                        ProductColumnName.NAME.displayName
                                                                     )
                                                                 ) {
 
+                                                                    if (firstRow.contains(
+                                                                            ProductColumnName.PARENT.displayName
+                                                                        )
+                                                                    ) {
+
+
+                                                                    } else {
+
+                                                                        Utils.T(
+                                                                            context,
+                                                                            context.getString(
+                                                                                R.string.column_does_not_exist,
+                                                                                ProductColumnName.PARENT.displayName
+                                                                            )
+                                                                        )
+
+                                                                        excelReadSuccess.onReadFail()
+                                                                        return
+
+                                                                    }
 
                                                                 } else {
 
@@ -119,7 +139,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                                                         context,
                                                                         context.getString(
                                                                             R.string.column_does_not_exist,
-                                                                            ProductColumnName.PARENT.displayName
+                                                                            ProductColumnName.NAME.displayName
                                                                         )
                                                                     )
 
@@ -134,7 +154,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                                                     context,
                                                                     context.getString(
                                                                         R.string.column_does_not_exist,
-                                                                        ProductColumnName.NAME.displayName
+                                                                        ProductColumnName.BARCODE.displayName
                                                                     )
                                                                 )
 
@@ -142,14 +162,13 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                                                 return
 
                                                             }
-
                                                         } else {
 
                                                             Utils.T(
                                                                 context,
                                                                 context.getString(
                                                                     R.string.column_does_not_exist,
-                                                                    ProductColumnName.BARCODE.displayName
+                                                                    ProductColumnName.COLLECTION.displayName
                                                                 )
                                                             )
 
@@ -291,9 +310,15 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                     // Process the data rows
                     val productDataModel = ProductDataModel()
+                    productDataModel.collectionUUID = ""
+                    productDataModel.metalTypeUUID = ""
+                    productDataModel.categoryUUID = ""
+                    productDataModel.stockLocationUUID = ""
+                    productDataModel.productOrigin = ""
+
                     var rowHasData = false
                     var parentUUID = Utils.generateUUId()
-                    var stockLocationName:String = ""
+                    var stockLocationName: String = ""
 
                     for ((index, cell) in row.withIndex()) {
 
@@ -351,7 +376,8 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                             ProductColumnName.PARENT.displayName -> {
 
-                                val isParentExist = Utils.isParentExist(Utils.capitalizeData(cellValue))
+                                val isParentExist =
+                                    Utils.isParentExist(Utils.capitalizeData(cellValue))
 
                                 if (isParentExist == true) {
 
@@ -377,12 +403,13 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                             }
 
-                            ProductColumnName.COLLECTION_NAME.displayName -> {
+                            ProductColumnName.COLLECTION.displayName -> {
 
                                 val isCollectionExist =
                                     Utils.isCollectionExist(Utils.capitalizeData(cellValue))
 
                                 if (isCollectionExist == true) {
+
 
                                     val collectionUUID =
                                         Utils.getCollectionUUIDThroughCollectionName(
@@ -405,6 +432,7 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
                                     productDataModel.collectionUUID = collectionUUID
 
                                 }
+
                             }
 
                             ProductColumnName.ORIGIN.displayName -> {
@@ -566,21 +594,27 @@ class ExcelReader(private val excelReadSuccess: ExcelReadSuccess) {
 
                     if (rowHasData) {
 
-                        val isStockLocationExist = Utils.isStockLocationExist(Utils.capitalizeData(stockLocationName),parentUUID)
+                        val isStockLocationExist = Utils.isStockLocationExist(
+                            Utils.capitalizeData(stockLocationName),
+                            parentUUID
+                        )
 
                         if (isStockLocationExist) {
 
-                            val stockLocationUUID = Utils.getStockLocationUUID(Utils.capitalizeData(stockLocationName),parentUUID)
+                            val stockLocationUUID = Utils.getStockLocationUUID(
+                                Utils.capitalizeData(stockLocationName),
+                                parentUUID
+                            )
 
                             productDataModel.stockLocationUUID = stockLocationUUID
-                        }
-                        else {
+                        } else {
 
                             val stockLocationUUID = Utils.generateUUId()
 
                             val stockLocationDataModel = StockLocationDataModel()
                             stockLocationDataModel.stockLocationUUID = stockLocationUUID
-                            stockLocationDataModel.stockLocationName = Utils.capitalizeData(stockLocationName)
+                            stockLocationDataModel.stockLocationName =
+                                Utils.capitalizeData(stockLocationName)
                             stockLocationDataModel.stockLocationParentUUID = parentUUID
 
                             Utils.addStockLocation(stockLocationDataModel)

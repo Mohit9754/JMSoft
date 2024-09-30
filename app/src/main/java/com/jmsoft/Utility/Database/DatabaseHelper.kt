@@ -79,11 +79,13 @@ class DatabaseHelper(cx: Context) {
 
 
     // Deleting the product from the cart through cart
-    fun deleteProductFromCart(userUUID: String,productUUID: String) {
+    fun deleteProductFromCart(userUUID: String, productUUID: String) {
 
         open()
         db!!.delete(
-            CartDataModel.TABLE_NAME_CART, "${CartDataModel.Key_userUUID} = ? AND ${CartDataModel.Key_productUUID} = ? ", arrayOf(userUUID,productUUID)
+            CartDataModel.TABLE_NAME_CART,
+            "${CartDataModel.Key_userUUID} = ? AND ${CartDataModel.Key_productUUID} = ? ",
+            arrayOf(userUUID, productUUID)
         )
         close()
     }
@@ -134,7 +136,7 @@ class DatabaseHelper(cx: Context) {
     }
 
     // Update Quantity of Product in Cart Table
-    fun updateProductQuantityInCart(userUUID: String,productUUID: String,quantity: Int) {
+    fun updateProductQuantityInCart(userUUID: String, productUUID: String, quantity: Int) {
 
         open()
 
@@ -145,7 +147,7 @@ class DatabaseHelper(cx: Context) {
             CartDataModel.TABLE_NAME_CART,
             values,
             "${CartDataModel.Key_userUUID} = ? AND ${CartDataModel.Key_productUUID} = ?",
-            arrayOf(userUUID,productUUID)
+            arrayOf(userUUID, productUUID)
         )
         close()
     }
@@ -211,7 +213,7 @@ class DatabaseHelper(cx: Context) {
 
         val cursor = db?.rawQuery(
             "SELECT * FROM ${MetalTypeDataModel.TABLE_NAME_METAL_TYPE} WHERE ${MetalTypeDataModel.Key_metalTypeUUID} != ? AND ${MetalTypeDataModel.Key_metalTypeName} == ?",
-            arrayOf(metalTypeDataModel.metalTypeUUID,metalTypeDataModel.metalTypeName)
+            arrayOf(metalTypeDataModel.metalTypeUUID, metalTypeDataModel.metalTypeName)
         )
 
         val result = cursor?.moveToFirst()
@@ -223,13 +225,16 @@ class DatabaseHelper(cx: Context) {
 
 
     // Deleting Metal Type from the Product table
-    private fun deleteMetalTypeUUIDFromProductTable(metalTypeUUID: String){
+    private fun deleteMetalTypeUUIDFromProductTable(metalTypeUUID: String) {
         open()
 
         val contentValues = ContentValues()
-        contentValues.put(ProductDataModel.Key_metalTypeUUID,"")
+        contentValues.put(ProductDataModel.Key_metalTypeUUID, "")
 
-        db?.update(ProductDataModel.TABLE_NAME_PRODUCT,contentValues,"${ProductDataModel.Key_metalTypeUUID} = ?",
+        db?.update(
+            ProductDataModel.TABLE_NAME_PRODUCT,
+            contentValues,
+            "${ProductDataModel.Key_metalTypeUUID} = ?",
             arrayOf(metalTypeUUID)
         )
 
@@ -271,7 +276,6 @@ class DatabaseHelper(cx: Context) {
         )
 
     }
-
 
 
     // Get All the metal type from the metal type table
@@ -375,14 +379,14 @@ class DatabaseHelper(cx: Context) {
 
             cursor.moveToLast()
 
-                stockLocationDataModel.stockLocationUUID =
-                    cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationUUID))
+            stockLocationDataModel.stockLocationUUID =
+                cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationUUID))
 
-                stockLocationDataModel.stockLocationParentUUID =
-                    cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationParentUUID))
+            stockLocationDataModel.stockLocationParentUUID =
+                cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationParentUUID))
 
-                stockLocationDataModel.stockLocationName =
-                    cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationName))
+            stockLocationDataModel.stockLocationName =
+                cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationName))
 
 
             cursor.close()
@@ -419,8 +423,14 @@ class DatabaseHelper(cx: Context) {
 
         val stockLocationValue = ContentValues().apply {
 
-            put(StockLocationDataModel.Key_stockLocationUUID, stockLocationDataModel.stockLocationUUID)
-            put(StockLocationDataModel.Key_stockLocationName, stockLocationDataModel.stockLocationName)
+            put(
+                StockLocationDataModel.Key_stockLocationUUID,
+                stockLocationDataModel.stockLocationUUID
+            )
+            put(
+                StockLocationDataModel.Key_stockLocationName,
+                stockLocationDataModel.stockLocationName
+            )
         }
 
         db?.update(
@@ -431,7 +441,6 @@ class DatabaseHelper(cx: Context) {
         )
 
     }
-
 
 
     // Add Metal type in Metal_Type table
@@ -455,9 +464,18 @@ class DatabaseHelper(cx: Context) {
 
         val stockLocationValue = ContentValues().apply {
 
-            put(StockLocationDataModel.Key_stockLocationUUID, stockLocationDataModel.stockLocationUUID)
-            put(StockLocationDataModel.Key_stockLocationParentUUID, stockLocationDataModel.stockLocationParentUUID)
-            put(StockLocationDataModel.Key_stockLocationName, stockLocationDataModel.stockLocationName)
+            put(
+                StockLocationDataModel.Key_stockLocationUUID,
+                stockLocationDataModel.stockLocationUUID
+            )
+            put(
+                StockLocationDataModel.Key_stockLocationParentUUID,
+                stockLocationDataModel.stockLocationParentUUID
+            )
+            put(
+                StockLocationDataModel.Key_stockLocationName,
+                stockLocationDataModel.stockLocationName
+            )
         }
 
         db?.insert(StockLocationDataModel.TABLE_NAME_STOCK_LOCATION, null, stockLocationValue)
@@ -471,20 +489,13 @@ class DatabaseHelper(cx: Context) {
         val purchasingValue = ContentValues().apply {
 
             put(PurchasingDataModel.Key_purchasingUUID, purchasingDataModel.purchasingUUID)
-            put(PurchasingDataModel.Key_productUUID, purchasingDataModel.productUUID)
+            put(PurchasingDataModel.Key_productUUIDUri, purchasingDataModel.productUUIDUri)
             put(PurchasingDataModel.Key_orderNo, purchasingDataModel.orderNo)
-            put(PurchasingDataModel.Key_supplier, purchasingDataModel.supplier)
+            put(PurchasingDataModel.Key_supplierUUID, purchasingDataModel.supplierUUID)
             put(PurchasingDataModel.Key_totalAmount, purchasingDataModel.totalAmount)
             put(PurchasingDataModel.Key_date, purchasingDataModel.date)
 
         }
-
-        Utils.E("Data ${purchasingDataModel.purchasingUUID}")
-        Utils.E("Data ${purchasingDataModel.productUUID}")
-        Utils.E("Data ${purchasingDataModel.orderNo}")
-        Utils.E("Data ${purchasingDataModel.supplier}")
-        Utils.E("Data ${purchasingDataModel.totalAmount}")
-        Utils.E("Data ${purchasingDataModel.date}")
 
         db?.insert(PurchasingDataModel.TABLE_NAME_PURCHASING, null, purchasingValue)
     }
@@ -496,15 +507,20 @@ class DatabaseHelper(cx: Context) {
 
         val purchasingValue = ContentValues().apply {
 
-            put(PurchasingDataModel.Key_productUUID, purchasingDataModel.productUUID)
+            put(PurchasingDataModel.Key_productUUIDUri, purchasingDataModel.productUUIDUri)
             put(PurchasingDataModel.Key_orderNo, purchasingDataModel.orderNo)
-            put(PurchasingDataModel.Key_supplier, purchasingDataModel.supplier)
+            put(PurchasingDataModel.Key_supplierUUID, purchasingDataModel.supplierUUID)
             put(PurchasingDataModel.Key_totalAmount, purchasingDataModel.totalAmount)
             put(PurchasingDataModel.Key_date, purchasingDataModel.date)
 
         }
 
-        db?.update(PurchasingDataModel.TABLE_NAME_PURCHASING,purchasingValue,"${PurchasingDataModel.Key_purchasingUUID} == ?", arrayOf(purchasingDataModel.purchasingUUID))
+        db?.update(
+            PurchasingDataModel.TABLE_NAME_PURCHASING,
+            purchasingValue,
+            "${PurchasingDataModel.Key_purchasingUUID} == ?",
+            arrayOf(purchasingDataModel.purchasingUUID)
+        )
 
     }
 
@@ -514,7 +530,8 @@ class DatabaseHelper(cx: Context) {
         open()
 
         db?.delete(
-            PurchasingDataModel.TABLE_NAME_PURCHASING, "${PurchasingDataModel.Key_purchasingUUID} == ?",
+            PurchasingDataModel.TABLE_NAME_PURCHASING,
+            "${PurchasingDataModel.Key_purchasingUUID} == ?",
             arrayOf(purchaseUUID)
         )
     }
@@ -544,14 +561,14 @@ class DatabaseHelper(cx: Context) {
                 purchasingData.purchasingUUID =
                     cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_purchasingUUID))
 
-                purchasingData.productUUID =
-                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productUUID))
+                purchasingData.productUUIDUri =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productUUIDUri))
 
                 purchasingData.orderNo =
                     cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_orderNo))
 
-                purchasingData.supplier =
-                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_supplier))
+                purchasingData.supplierUUID =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_supplierUUID))
 
                 purchasingData.totalAmount =
                     cursor.getDouble(cursor.getColumnIndex(PurchasingDataModel.Key_totalAmount))
@@ -592,21 +609,20 @@ class DatabaseHelper(cx: Context) {
             purchasingData.purchasingUUID =
                 cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_purchasingUUID))
 
-            purchasingData.productUUID =
-                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productUUID))
+            purchasingData.productUUIDUri =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productUUIDUri))
 
             purchasingData.orderNo =
                 cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_orderNo))
 
-            purchasingData.supplier =
-                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_supplier))
+            purchasingData.supplierUUID =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_supplierUUID))
 
             purchasingData.totalAmount =
                 cursor.getDouble(cursor.getColumnIndex(PurchasingDataModel.Key_totalAmount))
 
             purchasingData.date =
                 cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_date))
-
 
             cursor.close()
         }
@@ -810,7 +826,10 @@ class DatabaseHelper(cx: Context) {
 
         read()
 
-        val cursor = db?.rawQuery("SELECT ${AddressDataModel.Key_address} FROM ${AddressDataModel.TABLE_NAME_ADDRESS} WHERE ${AddressDataModel.Key_addressUUID}  == ? ", arrayOf(addressUUID))
+        val cursor = db?.rawQuery(
+            "SELECT ${AddressDataModel.Key_address} FROM ${AddressDataModel.TABLE_NAME_ADDRESS} WHERE ${AddressDataModel.Key_addressUUID}  == ? ",
+            arrayOf(addressUUID)
+        )
         return cursor?.moveToFirst()
 
     }
@@ -905,7 +924,6 @@ class DatabaseHelper(cx: Context) {
     }
 
 
-
     // Inserting Order in Order table
     fun insertOrder(orderDataModel: OrderDataModel) {
 
@@ -946,7 +964,7 @@ class DatabaseHelper(cx: Context) {
     }
 
     // delete order
-     fun deleteOrder(orderUUID: String) {
+    fun deleteOrder(orderUUID: String) {
 
         open()
 
@@ -963,7 +981,7 @@ class DatabaseHelper(cx: Context) {
         read()
 
         val cursor: Cursor? = db?.rawQuery(
-            "SELECT * FROM ${OrderDataModel.TABLE_NAME_ORDER} WHERE ${OrderDataModel.Key_orderUUID} == ?" ,
+            "SELECT * FROM ${OrderDataModel.TABLE_NAME_ORDER} WHERE ${OrderDataModel.Key_orderUUID} == ?",
             arrayOf(orderUUID)
         )
 
@@ -971,15 +989,20 @@ class DatabaseHelper(cx: Context) {
 
         if (cursor != null && cursor.moveToFirst()) {
 
-            orderDataModel.orderNo = cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_orderNo))
+            orderDataModel.orderNo =
+                cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_orderNo))
 
-            orderDataModel.orderUUID = cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_orderUUID))
+            orderDataModel.orderUUID =
+                cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_orderUUID))
 
-            orderDataModel.productUUIDUri = cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_productUUIDUri))
+            orderDataModel.productUUIDUri =
+                cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_productUUIDUri))
 
-            orderDataModel.productQuantityUri = cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_productQuantityUri))
+            orderDataModel.productQuantityUri =
+                cursor.getString(cursor.getColumnIndex(OrderDataModel.Key_productQuantityUri))
 
-            orderDataModel.totalAmount = cursor.getDouble(cursor.getColumnIndex(OrderDataModel.Key_totalAmount))
+            orderDataModel.totalAmount =
+                cursor.getDouble(cursor.getColumnIndex(OrderDataModel.Key_totalAmount))
 
         }
 
@@ -994,7 +1017,7 @@ class DatabaseHelper(cx: Context) {
 
         val cursor: Cursor? = db?.rawQuery(
             "SELECT ${OrderDataModel.Key_orderUUID} FROM ${OrderDataModel.TABLE_NAME_ORDER} WHERE ${OrderDataModel.Key_userUUID} == ? AND ${OrderDataModel.Key_productUUIDUri} == ? AND ${OrderDataModel.Key_status} == ?",
-            arrayOf(userUUID,productUUID,Constants.New)
+            arrayOf(userUUID, productUUID, Constants.New)
         )
 
         cursor?.moveToFirst()
@@ -1008,13 +1031,13 @@ class DatabaseHelper(cx: Context) {
 
     // get orders of particular user
     @SuppressLint("Recycle", "Range")
-    fun getOrders(userUUID: String,status:String): ArrayList<OrderDataModel> {
+    fun getOrders(userUUID: String, status: String): ArrayList<OrderDataModel> {
 
         read()
 
         val cursor: Cursor? = db?.rawQuery(
             "SELECT * FROM ${OrderDataModel.TABLE_NAME_ORDER} WHERE ${OrderDataModel.Key_userUUID} == ? AND ${OrderDataModel.Key_status} == ?",
-            arrayOf(userUUID,status)
+            arrayOf(userUUID, status)
         )
 
         cursor?.moveToFirst()
@@ -1078,7 +1101,12 @@ class DatabaseHelper(cx: Context) {
 
         }
 
-        db?.update(OrderDataModel.TABLE_NAME_ORDER,orderValue,"${OrderDataModel.Key_orderUUID} == ?", arrayOf(orderDataModel.orderUUID))
+        db?.update(
+            OrderDataModel.TABLE_NAME_ORDER,
+            orderValue,
+            "${OrderDataModel.Key_orderUUID} == ?",
+            arrayOf(orderDataModel.orderUUID)
+        )
 
     }
 
@@ -1096,7 +1124,12 @@ class DatabaseHelper(cx: Context) {
 
         }
 
-        db?.update(OrderDataModel.TABLE_NAME_ORDER,orderValue,"${OrderDataModel.Key_orderUUID} == ?", arrayOf(orderDataModel.orderUUID))
+        db?.update(
+            OrderDataModel.TABLE_NAME_ORDER,
+            orderValue,
+            "${OrderDataModel.Key_orderUUID} == ?",
+            arrayOf(orderDataModel.orderUUID)
+        )
 
 
     }
@@ -1108,10 +1141,15 @@ class DatabaseHelper(cx: Context) {
 
         val orderValue = ContentValues().apply {
             put(OrderDataModel.Key_productQuantityUri, orderDataModel.productQuantityUri)
-            put(OrderDataModel.Key_totalAmount,orderDataModel.totalAmount)
+            put(OrderDataModel.Key_totalAmount, orderDataModel.totalAmount)
         }
 
-        db?.update(OrderDataModel.TABLE_NAME_ORDER,orderValue,"${OrderDataModel.Key_orderUUID} == ?", arrayOf(orderDataModel.orderUUID))
+        db?.update(
+            OrderDataModel.TABLE_NAME_ORDER,
+            orderValue,
+            "${OrderDataModel.Key_orderUUID} == ?",
+            arrayOf(orderDataModel.orderUUID)
+        )
 
 
     }
@@ -1220,6 +1258,55 @@ class DatabaseHelper(cx: Context) {
         close()
 
         return contactList
+    }
+
+    @SuppressLint("Range")
+    fun getContactByUUID(contactUUID: String): ContactDataModel {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT * FROM ${ContactDataModel.TABLE_NAME_CONTACT} WHERE ${ContactDataModel.Key_contactUUID} = ?",
+            arrayOf(contactUUID)
+        )
+
+        cursor?.moveToFirst()
+
+        val contactDataModel = ContactDataModel()
+
+        if (cursor != null && cursor.count > 0) {
+
+            contactDataModel.contactUUID =
+                cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_contactUUID))
+            contactDataModel.userUUID =
+                cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_userUUID))
+
+            contactDataModel.profileUri =
+                cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_profileUri))
+
+            contactDataModel.firstName =
+                cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_firstName))
+
+            contactDataModel.lastName =
+                cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_lastName))
+
+            contactDataModel.phoneNumber =
+                cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_phoneNumber))
+
+            contactDataModel.emailAddress =
+                cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_emailAddress))
+
+            contactDataModel.type =
+                cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_type))
+
+
+        }
+
+        cursor?.close()
+
+        close()
+
+        return contactDataModel
     }
 
     //Get All Address of particular user from the Address table
@@ -1412,7 +1499,7 @@ class DatabaseHelper(cx: Context) {
     suspend fun getProductsThroughCollection(
         collectionUUIDList: List<String>,
         productUUID: String,
-        numberOfItems:Int
+        numberOfItems: Int
     ): ArrayList<ProductDataModel> {
 
         read()
@@ -1422,7 +1509,8 @@ class DatabaseHelper(cx: Context) {
             "${ProductDataModel.Key_collectionUUID} LIKE ?"
         }
 
-        val query = "SELECT DISTINCT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} != ? AND ${ProductDataModel.Key_productRFIDCode} != ? AND $likeConditions LIMIT $numberOfItems"
+        val query =
+            "SELECT DISTINCT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} != ? AND ${ProductDataModel.Key_productRFIDCode} != ? AND $likeConditions LIMIT $numberOfItems"
 
         val queryArgs = mutableListOf<String>()
 
@@ -1475,7 +1563,7 @@ class DatabaseHelper(cx: Context) {
                 productData.productImageUri =
                     cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
 
-                if (productUUID != productData.productUUID){
+                if (productUUID != productData.productUUID) {
                     productList.add(productData)
                 }
 
@@ -1490,7 +1578,7 @@ class DatabaseHelper(cx: Context) {
     }
 
 
-    //Get All Products of particular Collection  from the Product table
+//Get All Products of particular Collection  from the Product table
 //    @SuppressLint("Range")
 //    fun getProductsThroughCollection(
 //        collectionUUIDList: List<String>,
@@ -1577,7 +1665,7 @@ class DatabaseHelper(cx: Context) {
 
         val cursor: Cursor? = db?.rawQuery(
             "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} == ? AND ${ProductDataModel.Key_collectionUUID} LIKE ?",
-            arrayOf(categoryUUID,"%$collectionUUID%")
+            arrayOf(categoryUUID, "%$collectionUUID%")
         )
 
         cursor?.moveToFirst()
@@ -1634,7 +1722,10 @@ class DatabaseHelper(cx: Context) {
 
     // Get All Products from the Product table Accept Collection
     @SuppressLint("Range", "Recycle")
-    fun getAllProductsAcceptCollection(collectionUUIDList: List<String>,offset: Int): ArrayList<ProductDataModel> {
+    fun getAllProductsAcceptCollection(
+        collectionUUIDList: List<String>,
+        offset: Int
+    ): ArrayList<ProductDataModel> {
 
         read()
 
@@ -1644,7 +1735,8 @@ class DatabaseHelper(cx: Context) {
         }
 
         // Build the SQL query with the dynamically constructed "NOT LIKE" conditions
-        val query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE $notLikeConditions AND ${ProductDataModel.Key_productRFIDCode} != ? LIMIT ? OFFSET ?"
+        val query =
+            "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE $notLikeConditions AND ${ProductDataModel.Key_productRFIDCode} != ? LIMIT ? OFFSET ?"
 
         val queryArgs = mutableListOf<String>()
 
@@ -1727,7 +1819,11 @@ class DatabaseHelper(cx: Context) {
 
     // Get total number of products of detail search
     @SuppressLint("Recycle")
-    fun getTotalNumberOfProductsOfDetailSearch(search: String, categoryUUID: String): Int {
+    fun getTotalNumberOfProductsOfDetailSearch(
+        search: String,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): Int {
 
         val productNameSubstring = "%$search%"
         val queryBuilder = StringBuilder()
@@ -1740,7 +1836,21 @@ class DatabaseHelper(cx: Context) {
         queryBuilder.append("LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR ")
         queryBuilder.append("LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?))")
 
-        args.addAll(listOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring))
+        args.addAll(
+            listOf(
+                productNameSubstring,
+                productNameSubstring,
+                productNameSubstring,
+                productNameSubstring,
+                productNameSubstring
+            )
+        )
+
+        if (isEmptyRfidProduct) {
+
+            queryBuilder.append(" AND ${ProductDataModel.Key_productRFIDCode} = ?")
+            args.add("")
+        }
 
         if (categoryUUID != Constants.All) {
             queryBuilder.append(" AND LOWER(${ProductDataModel.Key_categoryUUID}) = LOWER(?)")
@@ -1762,10 +1872,16 @@ class DatabaseHelper(cx: Context) {
 
     // Get total number of products of detail search accept collection
     @SuppressLint("Recycle")
-    fun getTotalNumberOfProductsOfDetailSearchAcceptCollection(search: String, collectionUUID: String, categoryUUID: String): Int {
+    fun getTotalNumberOfProductsOfDetailSearchAcceptCollection(
+        search: String,
+        collectionUUID: String,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): Int {
         val productNameSubstring = "%$search%"
         val queryBuilder = StringBuilder()
         val args = mutableListOf<String>()
+
 
         queryBuilder.append("SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE (")
         queryBuilder.append("LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR ")
@@ -1775,7 +1891,26 @@ class DatabaseHelper(cx: Context) {
         queryBuilder.append("LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)) ")
         queryBuilder.append("AND LOWER(${ProductDataModel.Key_collectionUUID}) != ?")
 
-        args.addAll(listOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, collectionUUID))
+        args.addAll(
+            listOf(
+                productNameSubstring,
+                productNameSubstring,
+                productNameSubstring,
+                productNameSubstring,
+                productNameSubstring,
+                collectionUUID
+            )
+        )
+
+        if (isEmptyRfidProduct) {
+
+            queryBuilder.append("AND ${ProductDataModel.Key_productRFIDCode}}) = ?")
+            args.add("")
+
+        }
+
+
+
 
         if (categoryUUID != Constants.All) {
             queryBuilder.append(" AND LOWER(${ProductDataModel.Key_categoryUUID}) = LOWER(?)")
@@ -1797,7 +1932,12 @@ class DatabaseHelper(cx: Context) {
 
     // Get Products with search
     @SuppressLint("Recycle", "Range")
-    fun getProductsWithDetailSearch(search:String,offset: Int,categoryUUID: String): ArrayList<ProductDataModel> {
+    fun getProductsWithDetailSearch(
+        search: String,
+        offset: Int,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): ArrayList<ProductDataModel> {
 
         val substring = "%$search%"
 
@@ -1806,33 +1946,66 @@ class DatabaseHelper(cx: Context) {
 
         if (categoryUUID == Constants.All) {
             // Query to get all products that match the search criteria
+
+            args.addAll(
+                listOf(
+                    substring,
+                    substring,
+                    substring,
+                    substring,
+                    substring))
+
             query = """
-            SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
-            WHERE (
-                LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
+                SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
+                WHERE (
+                    LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
+                )
+                ${if (isEmptyRfidProduct){args.add(""); "AND ${ProductDataModel.Key_productRFIDCode} = ?" }else ""}
+                LIMIT ? OFFSET ?
+            """
+
+            args.addAll(
+                listOf(
+                    Constants.Limit.toString(),
+                    offset.toString()
+                )
             )
-            LIMIT ? OFFSET ?
-        """
-            args.addAll(listOf(substring, substring, substring, substring, substring, Constants.Limit.toString(), offset.toString()))
         } else {
             // Query to get products by categoryUUID that match the search criteria
+
+            args.addAll(
+                listOf(
+                    substring,
+                    substring,
+                    substring,
+                    substring,
+                    substring,
+                    categoryUUID))
+
             query = """
-            SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
-            WHERE (
-                LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
+                SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
+                WHERE (
+                    LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
+                )
+                AND ${ProductDataModel.Key_categoryUUID} = ?
+                ${if (isEmptyRfidProduct){args.add(""); "AND ${ProductDataModel.Key_productRFIDCode} = ?" } else ""}
+                LIMIT ? OFFSET ?
+            """
+
+            args.addAll(
+                listOf(
+                    Constants.Limit.toString(),
+                    offset.toString()
+                )
             )
-            AND ${ProductDataModel.Key_categoryUUID} = ?
-            LIMIT ? OFFSET ?
-        """
-            args.addAll(listOf(substring, substring, substring, substring, substring, categoryUUID, Constants.Limit.toString(), offset.toString()))
         }
 
         val cursor: Cursor? = db?.rawQuery(query, args.toTypedArray())
@@ -1896,7 +2069,13 @@ class DatabaseHelper(cx: Context) {
     }
 
     @SuppressLint("Range")
-    fun getProductsWithDetailSearchAcceptCollection(search:String, offset: Int, collectionUUID: String, categoryUUID: String): ArrayList<ProductDataModel> {
+    fun getProductsWithDetailSearchAcceptCollection(
+        search: String,
+        offset: Int,
+        collectionUUID: String,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): ArrayList<ProductDataModel> {
 
         val productNameSubstring = "%$search%"
 
@@ -1905,35 +2084,68 @@ class DatabaseHelper(cx: Context) {
 
         if (categoryUUID == Constants.All) {
             // Query to get all products that match the search criteria and do not match the collectionUUID
+
+            args.addAll(
+                listOf(
+                    productNameSubstring,
+                    productNameSubstring,
+                    productNameSubstring,
+                    productNameSubstring,
+                    productNameSubstring,
+                    collectionUUID))
+
             query = """
-            SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
-            WHERE (
-                LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
+                SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
+                WHERE (
+                    LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
+                )
+                AND ${ProductDataModel.Key_collectionUUID} != ?
+                ${ if (isEmptyRfidProduct){ args.add(""); "AND ${ProductDataModel.Key_productRFIDCode} = ?" }else ""}
+                LIMIT ? OFFSET ?
+            """
+            args.addAll(
+                listOf(
+                    Constants.Limit.toString(),
+                    offset.toString()
+                )
             )
-            AND ${ProductDataModel.Key_collectionUUID} != ?
-            LIMIT ? OFFSET ?
-        """
-            args.addAll(listOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, collectionUUID, Constants.Limit.toString(), offset.toString()))
         } else {
             // Query to get products by categoryUUID that match the search criteria and do not match the collectionUUID
+
+            args.addAll(
+                listOf(
+                    productNameSubstring,
+                    productNameSubstring,
+                    productNameSubstring,
+                    productNameSubstring,
+                    productNameSubstring,
+                    collectionUUID,
+                    categoryUUID))
+
             query = """
-            SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
-            WHERE (
-                LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR
-                LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
+                SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
+                WHERE (
+                    LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productDescription}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productOrigin}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR
+                    LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
+                )
+                AND ${ProductDataModel.Key_collectionUUID} != ?
+                AND ${ProductDataModel.Key_categoryUUID} = ?
+                ${if (isEmptyRfidProduct){ args.add("");  "AND ${ProductDataModel.Key_productRFIDCode} = ?" } else "" }
+                LIMIT ? OFFSET ?
+            """
+            args.addAll(
+                listOf(
+                    Constants.Limit.toString(),
+                    offset.toString()
+                )
             )
-            AND ${ProductDataModel.Key_collectionUUID} != ?
-            AND ${ProductDataModel.Key_categoryUUID} = ?
-            LIMIT ? OFFSET ?
-        """
-            args.addAll(listOf(productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, productNameSubstring, collectionUUID, categoryUUID, Constants.Limit.toString(), offset.toString()))
         }
 
         val cursor: Cursor? = db?.rawQuery(query, args.toTypedArray())
@@ -1997,9 +2209,10 @@ class DatabaseHelper(cx: Context) {
 
     // Get Products with detail search
     @SuppressLint("Recycle", "Range")
-    fun getProductsWithSearch(search:String,offset: Int): ArrayList<ProductDataModel> {
+    fun getProductsWithSearch(search: String, offset: Int): ArrayList<ProductDataModel> {
 
-        val productNameSubstring = "%$search%" // Replace "substring" with the actual substring you're looking for
+        val productNameSubstring =
+            "%$search%" // Replace "substring" with the actual substring you're looking for
 
         val cursor: Cursor? =
             db?.rawQuery(
@@ -2064,7 +2277,7 @@ class DatabaseHelper(cx: Context) {
 
     // Get Products with limit and offset
     @SuppressLint("Recycle", "Range")
-    fun getProductsWithLimitAndOffset(offset:Int): ArrayList<ProductDataModel> {
+    fun getProductsWithLimitAndOffset(offset: Int): ArrayList<ProductDataModel> {
 
         read()
 
@@ -2130,7 +2343,7 @@ class DatabaseHelper(cx: Context) {
 
     // Get All Products that has RFID from the Product table
     @SuppressLint("Range")
-    suspend fun getAllProductsThatHasRFID(stockLocationUUID:String): ArrayList<ProductDataModel> {
+    suspend fun getAllProductsThatHasRFID(stockLocationUUID: String): ArrayList<ProductDataModel> {
 
         read()
 
@@ -2204,23 +2417,24 @@ class DatabaseHelper(cx: Context) {
 
     // return the total number of products
     @SuppressLint("Recycle")
-    fun getTotalNumberOfProducts(categoryUUID: String): Int {
+    fun getTotalNumberOfProducts(categoryUUID: String, isEmptyRfidProduct: Boolean): Int {
         read()
 
         val query: String
-        val args: Array<String>
+        val args: MutableList<String> = mutableListOf()
 
         if (categoryUUID == Constants.All) {
             // Query to count all products
-            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT}"
-            args = emptyArray()
+            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} "+ if (isEmptyRfidProduct) { args.add(""); "WHERE ${ProductDataModel.Key_productRFIDCode} = ?"} else ""
         } else {
             // Query to count products by categoryUUID
-            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ?"
-            args = arrayOf(categoryUUID)
+
+            args.add(categoryUUID)
+            query =
+                "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ?"+ if (isEmptyRfidProduct) { args.add(""); "AND ${ProductDataModel.Key_productRFIDCode} = ?"} else ""
         }
 
-        val cursor: Cursor? = db?.rawQuery(query, args)
+        val cursor: Cursor? = db?.rawQuery(query, args.toTypedArray())
         var totalCount = 0
 
         cursor?.use {
@@ -2234,24 +2448,34 @@ class DatabaseHelper(cx: Context) {
 
     // return the total number of products of collection
     @SuppressLint("Recycle")
-    fun getTotalNumberOfProductOfCollection(collectionUUID: String,categoryUUID: String): Int {
+    fun getTotalNumberOfProductOfCollection(
+        collectionUUID: String,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): Int {
 
         read()
 
         val query: String
-        val args: Array<String>
+        val args: MutableList<String> = mutableListOf()
 
         if (categoryUUID == Constants.All) {
             // Query to count all products
-            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} != ? "
-            args = arrayOf(collectionUUID)
+            args.add(collectionUUID)
+            query =
+                "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} != ?"+ if (isEmptyRfidProduct) {args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?" } else ""
+
         } else {
+
             // Query to count products by categoryUUID
-            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? AND ${ProductDataModel.Key_collectionUUID} != ?"
-            args = arrayOf(categoryUUID,collectionUUID)
+            args.add(categoryUUID)
+            args.add(collectionUUID)
+
+            query =
+                "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? AND ${ProductDataModel.Key_collectionUUID} != ? "+ if (isEmptyRfidProduct) {args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?" } else ""
         }
 
-        val cursor: Cursor? = db?.rawQuery(query, args)
+        val cursor: Cursor? = db?.rawQuery(query, args.toTypedArray())
         var totalCount = 0
 
         cursor?.use {
@@ -2271,7 +2495,7 @@ class DatabaseHelper(cx: Context) {
 
         val query: String = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}"
 
-        val cursor: Cursor? = db?.rawQuery(query,null)
+        val cursor: Cursor? = db?.rawQuery(query, null)
         cursor?.moveToFirst()
 
         val productList = ArrayList<ProductDataModel>()
@@ -2330,27 +2554,50 @@ class DatabaseHelper(cx: Context) {
     }
 
 
-
     //Get All Products from the Product table with limit and offset
     @SuppressLint("Range")
-    suspend fun getAllProducts(offset: Int,categoryUUID: String): ArrayList<ProductDataModel> {
+    suspend fun getAllProducts(
+        offset: Int,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): ArrayList<ProductDataModel> {
 
         read()
 
         val query: String
-        val args: Array<String>
+        val args: MutableList<String> = mutableListOf()
 
         if (categoryUUID == Constants.All) {
-            // Query to get all products
-            query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} LIMIT ? OFFSET ?"
-            args = arrayOf(Constants.Limit.toString(), offset.toString())
+
+            query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}" +
+                    if (isEmptyRfidProduct) {
+                        // Add condition for empty RFID
+                        args.add("") // Bind empty string for the RFID condition
+                        " WHERE ${ProductDataModel.Key_productRFIDCode} = ?"
+                    } else {
+                        ""
+                    } +
+                    " LIMIT ? OFFSET ?"
+
+            // Always bind LIMIT and OFFSET parameters
+            args.add(Constants.Limit.toString())
+            args.add(offset.toString())
+
         } else {
             // Query to get products by category UUID
-            query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? LIMIT ? OFFSET ?"
-            args = arrayOf(categoryUUID, Constants.Limit.toString(), offset.toString())
+
+            args.add(categoryUUID)
+
+            query =
+                "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ?" +
+                        if (isEmptyRfidProduct) { args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?" }else "" +
+                                " LIMIT ? OFFSET ?"
+
+            args.add(Constants.Limit.toString())
+            args.add(offset.toString())
         }
 
-        val cursor: Cursor? = db?.rawQuery(query, args)
+        val cursor: Cursor? = db?.rawQuery(query, args.toTypedArray())
         cursor?.moveToFirst()
 
         val productList = ArrayList<ProductDataModel>()
@@ -2410,11 +2657,64 @@ class DatabaseHelper(cx: Context) {
 
     // get all product name that does not have rfid code
     @SuppressLint("Range")
-    suspend fun getAllProductName(): ArrayList<ProductDataModel> {
+    fun getProductName(limit: Int, offset: Int): ArrayList<ProductDataModel> {
 
         read()
 
-        val cursor: Cursor? = db?.rawQuery("SELECT ${ProductDataModel.Key_productUUID},${ProductDataModel.Key_productName} FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} == ? ", arrayOf(""))
+        val cursor: Cursor? = db?.rawQuery(
+            "SELECT ${ProductDataModel.Key_productUUID},${ProductDataModel.Key_productName} FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productRFIDCode} = ? LIMIT ? OFFSET ?",
+            arrayOf("", limit.toString(), offset.toString())
+        )
+        cursor?.moveToFirst()
+
+        val productList = ArrayList<ProductDataModel>()
+
+        if (cursor != null && cursor.count > 0) {
+
+            cursor.moveToLast()
+
+            do {
+
+                val productData = ProductDataModel()
+
+                productData.productUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
+                productData.productName =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
+
+                productList.add(productData)
+
+            } while (cursor.moveToPrevious())
+
+            cursor.close()
+        }
+        close()
+
+        return productList
+
+    }
+
+    // get all product name that does not have rfid code
+    @SuppressLint("Range")
+    fun getProductNameWithSearch(
+        search: String,
+        limit: Int,
+        offset: Int
+    ): ArrayList<ProductDataModel> {
+
+        read()
+
+        val cursor: Cursor? = db?.rawQuery(
+            """
+                    SELECT ${ProductDataModel.Key_productUUID}, ${ProductDataModel.Key_productName} 
+                    FROM ${ProductDataModel.TABLE_NAME_PRODUCT} 
+                    WHERE ${ProductDataModel.Key_productRFIDCode} = ? 
+                    AND LOWER(${ProductDataModel.Key_productName}) LIKE LOWER(?) 
+                    LIMIT ? OFFSET ?
+                    """,
+            arrayOf("", "%$search%", limit.toString(), offset.toString())
+        )
+
         cursor?.moveToFirst()
 
         val productList = ArrayList<ProductDataModel>()
@@ -2446,12 +2746,15 @@ class DatabaseHelper(cx: Context) {
 
     //Get All Products Accept one Product from product table
     @SuppressLint("Range")
-    fun getAllProductsAcceptProduct(productUUID: String,offset: Int): ArrayList<ProductDataModel> {
+    fun getAllProductsAcceptProduct(productUUID: String, offset: Int): ArrayList<ProductDataModel> {
 
         read()
 
         val cursor: Cursor? =
-            db?.rawQuery("SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} != ? AND ${ProductDataModel.Key_productRFIDCode} != ? LIMIT ? OFFSET ? ", arrayOf(productUUID,"",Constants.Limit.toString(),offset.toString()))
+            db?.rawQuery(
+                "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} != ? AND ${ProductDataModel.Key_productRFIDCode} != ? LIMIT ? OFFSET ? ",
+                arrayOf(productUUID, "", Constants.Limit.toString(), offset.toString())
+            )
 
         cursor?.moveToFirst()
 
@@ -2510,25 +2813,51 @@ class DatabaseHelper(cx: Context) {
 
     /* Get All Products from the Product table Accept the collection */
     @SuppressLint("Range", "Recycle")
-    suspend fun getAllProductsAcceptCollection(collectionUUID: String,offset: Int,categoryUUID: String): ArrayList<ProductDataModel> {
+    suspend fun getAllProductsAcceptCollection(
+        collectionUUID: String,
+        offset: Int,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): ArrayList<ProductDataModel> {
 
         read()
 
         val query: String
-        val args: Array<String>
+        val args: MutableList<String> = mutableListOf()
 
         if (categoryUUID == Constants.All) {
             // Query to get all products that do not match the collectionUUID
-            query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} NOT LIKE ? LIMIT ? OFFSET ?"
-            args = arrayOf("%$collectionUUID%", Constants.Limit.toString(), offset.toString())
+
+            args.add("%$collectionUUID%")
+
+            query =
+                "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} NOT LIKE ?" +
+                        if (isEmptyRfidProduct){ args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?" } else "" +
+                                " LIMIT ? OFFSET ?"
+            //query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} NOT LIKE ? LIMIT ? OFFSET ?"
+
+            args.add(Constants.Limit.toString())
+            args.add(offset.toString())
+
 
         } else {
             // Query to get products by categoryUUID that do not match the collectionUUID
-            query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? AND ${ProductDataModel.Key_collectionUUID} NOT LIKE ? LIMIT ? OFFSET ?"
-            args = arrayOf(categoryUUID, "%$collectionUUID%", Constants.Limit.toString(), offset.toString())
+
+            args.add(categoryUUID)
+            args.add("%$collectionUUID%")
+
+            query =
+                "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? AND ${ProductDataModel.Key_collectionUUID} NOT LIKE ?" +
+                        if (isEmptyRfidProduct) { args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?" } else "" +
+                                " LIMIT ? OFFSET ?"
+
+            args.add(Constants.Limit.toString())
+            args.add(offset.toString())
+
+            //query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? AND ${ProductDataModel.Key_collectionUUID} NOT LIKE ? LIMIT ? OFFSET ?"
         }
 
-        val cursor: Cursor? = db?.rawQuery(query, args)
+        val cursor: Cursor? = db?.rawQuery(query, args.toTypedArray())
 
         cursor?.moveToFirst()
 
@@ -2588,7 +2917,7 @@ class DatabaseHelper(cx: Context) {
 
     //Getting the Product through Product UUID
     @SuppressLint("Range", "Recycle")
-     fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
+    fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
 
         read()
 
@@ -2677,7 +3006,7 @@ class DatabaseHelper(cx: Context) {
 
     // Get all products uuid
     @SuppressLint("Range")
-    fun getAllProductUUID():ArrayList<String> {
+    fun getAllProductUUID(): ArrayList<String> {
 
         read()
 
@@ -2711,7 +3040,7 @@ class DatabaseHelper(cx: Context) {
 
     // Getting the Product through RFIDCode
     @SuppressLint("Range", "Recycle")
-    fun getProductThroughRFIDCode(rFIDCode: String,stockLocationUUID: String): ProductDataModel {
+    fun getProductThroughRFIDCode(rFIDCode: String, stockLocationUUID: String): ProductDataModel {
 
         read()
 
@@ -2842,7 +3171,8 @@ class DatabaseHelper(cx: Context) {
 
         if (cursor != null && cursor.count > 0) {
             while (cursor.moveToNext()) {
-                val categoryUUID = cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
+                val categoryUUID =
+                    cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
                 // Fetch category details using the getCategoryThroughCategoryUUID function
                 val categoryDataModel = getCategoryThroughCategoryUUID(categoryUUID)
                 categoryDataList.add(categoryDataModel)
@@ -2861,7 +3191,7 @@ class DatabaseHelper(cx: Context) {
 
         val cursor = db?.rawQuery(
             "SELECT  ${ProductDataModel.Key_collectionUUID} FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} == ? AND ${ProductDataModel.Key_collectionUUID} LIKE ?",
-            arrayOf(productUUID,"%$collectionUUID%")
+            arrayOf(productUUID, "%$collectionUUID%")
         )
 
         val result = cursor?.moveToFirst()
@@ -2872,13 +3202,16 @@ class DatabaseHelper(cx: Context) {
     }
 
     // Delete collection uuid from the product table
-    fun deleteCollectionUUIDFromProductTable(collectionUUID: String){
+    fun deleteCollectionUUIDFromProductTable(collectionUUID: String) {
         open()
 
         val contentValues = ContentValues()
-        contentValues.put(ProductDataModel.Key_collectionUUID,"")
+        contentValues.put(ProductDataModel.Key_collectionUUID, "")
 
-        db?.update(ProductDataModel.TABLE_NAME_PRODUCT,contentValues,"${ProductDataModel.Key_collectionUUID} LIKE ?",
+        db?.update(
+            ProductDataModel.TABLE_NAME_PRODUCT,
+            contentValues,
+            "${ProductDataModel.Key_collectionUUID} LIKE ?",
             arrayOf("%$collectionUUID%")
         )
 
@@ -2933,7 +3266,8 @@ class DatabaseHelper(cx: Context) {
         open()
 
         db?.delete(
-            CollectionDataModel.TABLE_NAME_COLLECTION, "${CollectionDataModel.Key_collectionUUID} == ?",
+            CollectionDataModel.TABLE_NAME_COLLECTION,
+            "${CollectionDataModel.Key_collectionUUID} == ?",
             arrayOf(collectionUUID)
         )
 
@@ -3035,7 +3369,10 @@ class DatabaseHelper(cx: Context) {
             put(ProductDataModel.Key_stockLocationUUID, productDataModel.stockLocationUUID)
         }
 
-        db?.update(ProductDataModel.TABLE_NAME_PRODUCT, productValue, "${ProductDataModel.Key_productUUID} == ?",
+        db?.update(
+            ProductDataModel.TABLE_NAME_PRODUCT,
+            productValue,
+            "${ProductDataModel.Key_productUUID} == ?",
             arrayOf(productDataModel.productUUID)
         )
 
@@ -3075,13 +3412,13 @@ class DatabaseHelper(cx: Context) {
 
     // Check if stock Location exist
     @SuppressLint("Recycle")
-    fun isStockLocationExist(stockLocationName:String,parentUUID:String): Boolean {
+    fun isStockLocationExist(stockLocationName: String, parentUUID: String): Boolean {
 
         read()
 
         val cursor = db?.rawQuery(
-            "SELECT 1 FROM ${StockLocationDataModel.TABLE_NAME_STOCK_LOCATION} WHERE ${StockLocationDataModel.Key_stockLocationName} = ? AND ${StockLocationDataModel.Key_stockLocationParentUUID} = ?" ,
-            arrayOf(stockLocationName,parentUUID)
+            "SELECT 1 FROM ${StockLocationDataModel.TABLE_NAME_STOCK_LOCATION} WHERE ${StockLocationDataModel.Key_stockLocationName} = ? AND ${StockLocationDataModel.Key_stockLocationParentUUID} = ?",
+            arrayOf(stockLocationName, parentUUID)
         )
 
         val exists = cursor?.moveToFirst() == true
@@ -3091,12 +3428,12 @@ class DatabaseHelper(cx: Context) {
 
     // get Stock location uuid
     @SuppressLint("Range")
-    fun getStockLocationUUID(stockLocationName:String, parentUUID:String): String {
+    fun getStockLocationUUID(stockLocationName: String, parentUUID: String): String {
 
         read()
 
         val cursor = db?.rawQuery(
-            "SELECT ${StockLocationDataModel.Key_stockLocationUUID} FROM ${StockLocationDataModel.TABLE_NAME_STOCK_LOCATION} WHERE ${StockLocationDataModel.Key_stockLocationName} = ? AND ${StockLocationDataModel.Key_stockLocationParentUUID} = ?" ,
+            "SELECT ${StockLocationDataModel.Key_stockLocationUUID} FROM ${StockLocationDataModel.TABLE_NAME_STOCK_LOCATION} WHERE ${StockLocationDataModel.Key_stockLocationName} = ? AND ${StockLocationDataModel.Key_stockLocationParentUUID} = ?",
             arrayOf(stockLocationName, parentUUID)
         )
 
@@ -3104,13 +3441,13 @@ class DatabaseHelper(cx: Context) {
 
         if (cursor != null && cursor.moveToFirst()) {
 
-            stockLocationUUID = cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationUUID))
+            stockLocationUUID =
+                cursor.getString(cursor.getColumnIndex(StockLocationDataModel.Key_stockLocationUUID))
         }
         cursor?.close()
 
         return stockLocationUUID
     }
-
 
 
     /* Check if Category exist in the category table accept category uuid */
@@ -3121,7 +3458,7 @@ class DatabaseHelper(cx: Context) {
 
         val cursor = db?.rawQuery(
             "SELECT * FROM ${CategoryDataModel.TABLE_NAME_CATEGORY} WHERE ${CategoryDataModel.Key_categoryUUID} != ? AND ${CategoryDataModel.Key_categoryName} == ?",
-            arrayOf(categoryDataModel.categoryUUID,categoryDataModel.categoryName)
+            arrayOf(categoryDataModel.categoryUUID, categoryDataModel.categoryName)
         )
 
         val result = cursor?.moveToFirst()
@@ -3131,7 +3468,7 @@ class DatabaseHelper(cx: Context) {
 
     // Check if Collection exist in the category table
     @SuppressLint("Recycle")
-    fun isCollectionExist(collectionName:String): Boolean? {
+    fun isCollectionExist(collectionName: String): Boolean? {
 
         read()
 
@@ -3153,7 +3490,7 @@ class DatabaseHelper(cx: Context) {
 
         val cursor = db?.rawQuery(
             "SELECT * FROM ${CollectionDataModel.TABLE_NAME_COLLECTION} WHERE ${CollectionDataModel.Key_collectionUUID} != ? AND ${CollectionDataModel.Key_collectionName} == ?",
-            arrayOf(collectionDataModel.collectionUUID,collectionDataModel.collectionName)
+            arrayOf(collectionDataModel.collectionUUID, collectionDataModel.collectionName)
         )
 
         val result = cursor?.moveToFirst()
@@ -3176,9 +3513,12 @@ class DatabaseHelper(cx: Context) {
 
         if (cursor != null && cursor.moveToFirst()) {
 
-            collectionDataModel.collectionUUID = cursor.getString(cursor.getColumnIndex(CollectionDataModel.Key_collectionUUID))
-            collectionDataModel.collectionName = cursor.getString(cursor.getColumnIndex(CollectionDataModel.Key_collectionName))
-            collectionDataModel.collectionImageUri = cursor.getString(cursor.getColumnIndex(CollectionDataModel.Key_collectionImageUri))
+            collectionDataModel.collectionUUID =
+                cursor.getString(cursor.getColumnIndex(CollectionDataModel.Key_collectionUUID))
+            collectionDataModel.collectionName =
+                cursor.getString(cursor.getColumnIndex(CollectionDataModel.Key_collectionName))
+            collectionDataModel.collectionImageUri =
+                cursor.getString(cursor.getColumnIndex(CollectionDataModel.Key_collectionImageUri))
         }
 
         cursor?.close()
@@ -3214,9 +3554,11 @@ class DatabaseHelper(cx: Context) {
             put(ProductDataModel.Key_collectionUUID, productDataModel.collectionUUID)
         }
 
-        db?.update(ProductDataModel.TABLE_NAME_PRODUCT, collectionValues,
+        db?.update(
+            ProductDataModel.TABLE_NAME_PRODUCT, collectionValues,
             "${ProductDataModel.Key_productUUID} = ?",
-            arrayOf(productDataModel.productUUID) )
+            arrayOf(productDataModel.productUUID)
+        )
 
     }
 
@@ -3234,8 +3576,10 @@ class DatabaseHelper(cx: Context) {
         val categoryDataModel = CategoryDataModel()
 
         if (cursor != null && cursor.moveToFirst()) {
-            categoryDataModel.categoryUUID = cursor.getString(cursor.getColumnIndex(CategoryDataModel.Key_categoryUUID))
-            categoryDataModel.categoryName = cursor.getString(cursor.getColumnIndex(CategoryDataModel.Key_categoryName))
+            categoryDataModel.categoryUUID =
+                cursor.getString(cursor.getColumnIndex(CategoryDataModel.Key_categoryUUID))
+            categoryDataModel.categoryName =
+                cursor.getString(cursor.getColumnIndex(CategoryDataModel.Key_categoryName))
         }
 
         return categoryDataModel
@@ -3286,8 +3630,8 @@ class DatabaseHelper(cx: Context) {
         // generate new order UUID
         Utils.storeOrderUUID(cx, Utils.generateUUId())
 
-        imageBitmap?.let { Utils.saveToInternalStorage(cx, it,Constants.Default_Image) }
-        imageBitmap?.let { Utils.saveToInternalStorage(cx, it,Constants.Default_Image) }
+        imageBitmap?.let { Utils.saveToInternalStorage(cx, it, Constants.Default_Image) }
+        imageBitmap?.let { Utils.saveToInternalStorage(cx, it, Constants.Default_Image) }
 
     }
 
@@ -3484,7 +3828,7 @@ class DatabaseHelper(cx: Context) {
         read()
         val cursor = db!!.rawQuery(
             "SELECT * From ${ContactDataModel.TABLE_NAME_CONTACT} where ${ContactDataModel.Key_phoneNumber} = ? And ${ContactDataModel.Key_contactUUID} != ?",
-            arrayOf(phoneNumber,contactUUID)
+            arrayOf(phoneNumber, contactUUID)
         )
         val result = cursor.moveToFirst()
         cursor?.close()
@@ -3501,7 +3845,7 @@ class DatabaseHelper(cx: Context) {
         read()
         val cursor = db!!.rawQuery(
             "SELECT * From ${ContactDataModel.TABLE_NAME_CONTACT} where ${ContactDataModel.Key_emailAddress} = ? And ${ContactDataModel.Key_contactUUID} != ?",
-            arrayOf(email,contactUUID)
+            arrayOf(email, contactUUID)
         )
         val result = cursor.moveToFirst()
         cursor?.close()

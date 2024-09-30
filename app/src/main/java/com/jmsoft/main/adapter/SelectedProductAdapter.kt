@@ -6,58 +6,52 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.basic.UtilityTools.Utils
-import com.jmsoft.databinding.FragmentProductInventoryBinding
+import com.jmsoft.databinding.FragmentAddPurchaseBinding
 import com.jmsoft.databinding.ItemSelectedCollectionBinding
-import com.jmsoft.main.model.SelectedCollectionModel
 
-class SelectedCollectionAdapter(
+class SelectedProductAdapter(
 
     private val context: Context,
-    private var selectedCollectionDataList: ArrayList<SelectedCollectionModel>,
-    private val fragmentProductInventoryBinding: FragmentProductInventoryBinding
-
+    private var selectedProductList: ArrayList<String>,
+    private val fragmentAddPurchaseBinding: FragmentAddPurchaseBinding
 ) :
-    RecyclerView.Adapter<SelectedCollectionAdapter.MyViewHolder>() {
+    RecyclerView.Adapter<SelectedProductAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemSelectedCollectionBinding.inflate(LayoutInflater.from(context), parent, false)
         return MyViewHolder(view)
     }
 
-    override fun getItemCount() = selectedCollectionDataList.size
+    override fun getItemCount() = selectedProductList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(selectedCollectionDataList[position],position)
+        holder.bind(selectedProductList[position],position)
     }
 
     inner class MyViewHolder(private val binding: ItemSelectedCollectionBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        // Selected collection data
-        private lateinit var selectedCollectionData:SelectedCollectionModel
+        private lateinit var productUUID:String
 
         // Selected collection position
         private var position = -1
 
         // Bind method
-        fun bind(selectedCollectionData: SelectedCollectionModel,position: Int) {
+        fun bind(productUUID: String,position: Int) {
 
-            this.selectedCollectionData = selectedCollectionData
+            this.productUUID = productUUID
             this.position = position
 
-            // Set collection name
-            setCollectionName()
+            setProductName()
 
             // Set click on cross button
             binding.ivCross.setOnClickListener(this)
 
         }
 
-        // Set collection name
-        private fun setCollectionName() {
-            binding.tvCollectionName.text = selectedCollectionData.collectionDataModel.collectionName
+        private fun setProductName() {
+            binding.tvCollectionName.text = Utils.getProductThroughProductUUID(productUUID).productName
         }
 
         // Handle all the clicks
@@ -67,13 +61,10 @@ class SelectedCollectionAdapter(
             // Clicked on cross button
             if (v == binding.ivCross) {
 
-                selectedCollectionDataList.removeAt(position)
-                selectedCollectionData.checkbox.isChecked = false
+                selectedProductList.removeAt(position)
 
-                if (selectedCollectionDataList.isEmpty()) {
-
-                    fragmentProductInventoryBinding.tvCollection.visibility = View.VISIBLE
-                }
+                if (selectedProductList.isEmpty())
+                    fragmentAddPurchaseBinding.tvProductName?.visibility = View.VISIBLE
 
                 notifyDataSetChanged()
 

@@ -11,7 +11,7 @@
     tools:ignore="MissingDefaultResource">
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="@dimen/_350sdp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:strokeWidth="1dp"
         android:layout_marginTop="@dimen/_10sdp"
@@ -30,71 +30,83 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="@dimen/_181sdp"
-        app:cardCornerRadius="0dp"
-        app:strokeWidth="1dp"
-        android:id="@+id/mcvTotalPrice"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:weightSum="7.1"
         android:layout_marginHorizontal="@dimen/_20sdp"
-        android:layout_marginBottom="@dimen/_35sdp"
         android:layout_marginTop="-1dp"
-        app:cardBackgroundColor="@color/white"
-        app:strokeColor="@color/blue"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:ignore="UselessLeaf">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcvTotalPrice"
+            android:layout_width="0dp"
+            android:layout_weight="3.5"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="0dp"
+            app:strokeColor="@color/blue"
+            app:strokeWidth="1dp">
 
             <LinearLayout
-                android:layout_width="@dimen/_70sdp"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_height="@dimen/_35sdp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="3.5"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="45"
-                    android:id="@+id/tvTotalAmount"
-                    android:textSize="20sp"
-                    android:textColor="@color/dark_blue"
-                    tools:ignore="SmallSp" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_35sdp"
+                    android:gravity="center"
+                    android:layout_weight="1.5"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvTotalAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="45"
+                        android:textColor="@color/dark_blue"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/blue" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total_amount_ar"
+                        android:textColor="@color/dark_blue"
+                        android:textSize="25sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total amount (DH)"
+                        android:textColor="@color/dark_blue"
+                        android:textSize="25sp"
+                        tools:ignore="HardcodedText" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/blue"/>
+        </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
-                android:layout_width="@dimen/_110sdp"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_height="@dimen/_35sdp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/total_amount_ar"
-                    android:textSize="25sp"
-                    android:textColor="@color/dark_blue" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Total amount (DH)"
-                    android:textSize="25sp"
-                    android:textColor="@color/dark_blue"
-                    tools:ignore="HardcodedText" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
 
 
 </LinearLayout>

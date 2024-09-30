@@ -249,6 +249,7 @@ interface Constants {
         const val path = "Invoice/"
 
         const val collectionUUID = "collectionUUID"
+        const val addPurchase = "addPurchase"
         const val productSectionHeight = "productSectionHeight"
 
         // State

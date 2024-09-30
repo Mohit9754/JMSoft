@@ -6,7 +6,7 @@ enum class ProductColumnName(val displayName: String) {
     CATEGORY_NAME("category"),
     METAL_TYPE("metaltype"),
     DESCRIPTION("description"),
-    COLLECTION_NAME("collection"),
+    COLLECTION("collection"),
     ORIGIN("origin"),
     WEIGHT("weight"),
     CARAT("carat"),

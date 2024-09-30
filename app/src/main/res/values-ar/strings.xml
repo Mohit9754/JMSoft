@@ -348,6 +348,12 @@
     <string name="purchase_updated_successfully">تم تحديث الشراء بنجاح!</string>
     <string name="are_you_sure_you_want_to_delete_this_stock_location_this_action_cannot_be_undone">هل أنت متأكد أنك تريد حذف موقع المخزون هذا؟ لا يمكن التراجع عن هذا الإجراء.</string>
 
+    <string name="add_products">أضف المنتجات</string>
+    <string name="select_supplier">حدد المورد</string>
+    <string name="product_s">منتجات)</string>
+    <string name="update_purchase">تحديث الشراء</string>
+    <string name="add_new_product">إضافة منتج جديد</string>
+    <string name="submit">يُقدِّم</string>
 
 
 

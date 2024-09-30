@@ -169,16 +169,34 @@
                 app:cardCornerRadius="@dimen/_4sdp"
                 app:strokeWidth="0dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_8sdp"
-                    android:layout_marginVertical="@dimen/_6sdp"
-                    android:fontFamily="@font/montserrat_arabic_semibold"
-                    android:text="@string/add"
-                    android:textColor="@color/white"
-                    android:textSize="10sp"
-                    tools:ignore="SmallSp" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_marginHorizontal="@dimen/_1sdp"
+                        android:layout_marginVertical="2dp"
+                        android:src="@drawable/icon_add_device"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/tvButtonName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
+                        android:text="@string/add"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        tools:ignore="SmallSp" />
+
+
+                </LinearLayout>
 
 
             </com.google.android.material.card.MaterialCardView>

@@ -130,7 +130,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     // Set up collection Recycler view
     private suspend fun setUpCollectionItemRecyclerView(collectionUUID: String, productUUID: String) {
 
-        if (collectionUUID.isNotEmpty()) {
+        if (collectionUUID.trim().isNotEmpty()) {
 
             val collectionUUIDList = productData.collectionUUID?.split(",")
 
@@ -347,6 +347,8 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
         // Checks if Product Already Added in card
         isProductAlreadyAddedInCard()
+
+        Utils.E("Collection id is ${productData.collectionUUID}")
 
         // Set up collection Recycler view
         val jobCollection = lifecycleScope.launch(Dispatchers.IO) {

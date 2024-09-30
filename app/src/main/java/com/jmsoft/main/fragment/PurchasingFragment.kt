@@ -60,9 +60,6 @@ class PurchasingFragment : Fragment(), View.OnClickListener {
 
         setPurchasingRecyclerView()
 
-        GetProgressBar.getInstance(requireActivity())?.dismiss()
-
-
     }
 
     override fun onClick(view: View?) {

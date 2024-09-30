@@ -1,44 +1,26 @@
 package com.jmsoft.main.adapter
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.view.animation.AnimationUtils
-import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.MetalTypeDataModel
+import com.jmsoft.Utility.Database.ContactDataModel
 import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.Database.StockLocationDataModel
-import com.jmsoft.basic.UtilityTools.Utils
-import com.jmsoft.basic.validation.ResultReturn
-import com.jmsoft.basic.validation.Validation
-import com.jmsoft.basic.validation.ValidationModel
-import com.jmsoft.databinding.DialogDeleteUserBinding
-import com.jmsoft.databinding.FragmentInventoryBinding
 import com.jmsoft.databinding.ItemAddStockLocationBinding
-import com.jmsoft.databinding.ItemMetalTypeDropdownBinding
 import com.jmsoft.databinding.ItemStockLocationDropdownBinding
-import com.jmsoft.main.fragment.InventoryFragment
-import com.jmsoft.main.fragment.ProductInventoryFragment
-import com.jmsoft.main.fragment.StockLocationFragment
 import com.jmsoft.main.`interface`.SelectedCallback
 
-class ProductNameDropDownAdapter(
+class SupplierDropDownAdapter(
     private val context: Context,
-    private var stockLocationList: ArrayList<ProductDataModel>,
+    private var supplierList: ArrayList<ContactDataModel>,
     private val selectedCallback: SelectedCallback
 ) :
-    RecyclerView.Adapter<ProductNameDropDownAdapter.MyViewHolder>() {
+    RecyclerView.Adapter<SupplierDropDownAdapter.MyViewHolder>() {
 
-    // Selected product name position
-    var selectedProductNamePosition:Int = -1
+    var selectedSupplierPosition:Int = -1
     var dialogBinding:ItemAddStockLocationBinding? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -46,30 +28,29 @@ class ProductNameDropDownAdapter(
         return MyViewHolder(view)
     }
 
-    override fun getItemCount() = stockLocationList.size
+    override fun getItemCount() = supplierList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(stockLocationList[position],position)
+        holder.bind(supplierList[position],position)
     }
-
 
     inner class MyViewHolder(private val binding: ItemStockLocationDropdownBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        private lateinit var productDataModel:ProductDataModel
+        private lateinit var contactDataModel:ContactDataModel
 
         private var position = -1
 
         // Bind method
-        fun bind(productDataModel: ProductDataModel,position: Int) {
+        fun bind(contactDataModel: ContactDataModel,position: Int) {
 
-            this.productDataModel = productDataModel
+            this.contactDataModel = contactDataModel
             this.position = position
 
             // Set selected stock location
             setSelectedStockLocation()
 
-            setProductName()
+            setSupplierName()
 
             binding.tvParent.visibility = View.GONE
 
@@ -78,17 +59,18 @@ class ProductNameDropDownAdapter(
 
         }
 
-        private fun setProductName() {
-            binding.tvName.text = productDataModel.productName
+        @SuppressLint("SetTextI18n")
+        private fun setSupplierName() {
+            binding.tvName.text = "${contactDataModel.firstName} ${contactDataModel.lastName}"
         }
 
         // Set selected metal type
         private fun setSelectedStockLocation() {
 
-            if (selectedProductNamePosition == position) {
+            if (selectedSupplierPosition == position) {
 
                 binding.llStockLocation.setBackgroundColor(context.getColor(R.color.selected_drop_down_color))
-                selectedCallback.selected(productDataModel)
+                selectedCallback.selected(contactDataModel)
 
             }
             else {
@@ -103,7 +85,7 @@ class ProductNameDropDownAdapter(
         override fun onClick(v: View?) {
 
             if (v == binding.llStockLocation) {
-                selectedProductNamePosition = position
+                selectedSupplierPosition = position
                 notifyDataSetChanged()
             }
 

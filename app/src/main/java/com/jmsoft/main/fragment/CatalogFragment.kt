@@ -28,7 +28,6 @@ import kotlinx.coroutines.withContext
 
 class CatalogFragment : Fragment(), View.OnClickListener {
 
-
     private lateinit var binding: FragmentCatalogBinding
 
     private var catalogAdapter:CatalogAdapter? = null

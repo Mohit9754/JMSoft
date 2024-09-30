@@ -339,6 +339,12 @@
     <string name="purchasing_is_empty">Purchasing is empty</string>
     <string name="are_you_sure_you_want_to_delete_this_purchase_this_action_cannot_be_undone">Are you sure you want to delete this purchase ? This action cannot be undone</string>
     <string name="purchase_updated_successfully">Purchase updated successfully!</string>
+    <string name="add_products">Add Products</string>
+    <string name="select_supplier">Select supplier</string>
+    <string name="product_s">Product (s)</string>
+    <string name="update_purchase">Update purchase</string>
+    <string name="add_new_product">Add new Product</string>
+    <string name="submit">Submit</string>
 
     <string-array name="arrayFrequency">
 

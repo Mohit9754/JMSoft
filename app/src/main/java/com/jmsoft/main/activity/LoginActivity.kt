@@ -144,6 +144,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     private fun validate() {
 
         errorValidationModels.clear()
+
         errorValidationModels.add(
             ValidationModel(
                 Validation.Type.Email,
@@ -151,6 +152,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                 binding.tvEmailAddressError
             )
         )
+
         errorValidationModels.add(
             ValidationModel(
                 Validation.Type.Empty,

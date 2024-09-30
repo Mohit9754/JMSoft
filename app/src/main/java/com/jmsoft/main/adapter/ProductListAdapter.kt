@@ -28,7 +28,7 @@ import com.jmsoft.main.activity.DashboardActivity
 class ProductListAdapter(
     private val context: Context,
     private var productDataList: ArrayList<ProductDataModel>,
-    private val collectionUUID: String?,
+    private val enableCheckBox: Boolean,
     private val fragmentProductBinding: FragmentProductBinding,
     private val selectedProductUUIDList: ArrayList<String>
 
@@ -212,10 +212,13 @@ class ProductListAdapter(
         // Checks state of the product list if it is for showing or adding in the collection
         private fun checkState() {
 
-            if (collectionUUID != null) {
+            if (enableCheckBox) {
 
                 binding.cbProduct.visibility = View.VISIBLE
                 binding.mcvDelete.visibility = View.GONE
+
+                if (selectedProductUUIDList.any { it == productData.productUUID  })
+                    binding.cbProduct.isChecked = true
 
                 binding.cbProduct.setOnCheckedChangeListener { _, isChecked ->
 

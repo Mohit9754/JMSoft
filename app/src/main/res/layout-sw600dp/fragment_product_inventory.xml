@@ -715,8 +715,6 @@
                                 android:visibility="visible"
                                 tools:ignore="Autofill,SmallSp,TextFields,TouchTargetSizeCheck" />
 
-
-
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rvCollectionSelectedList"
                                 android:layout_width="0dp"

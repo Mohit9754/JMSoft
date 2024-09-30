@@ -34,8 +34,6 @@ import androidx.navigation.NavOptions
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.MultiFormatWriter
 import com.jmsoft.R
 import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
@@ -57,7 +55,6 @@ import com.jmsoft.databinding.DialogAddMetalTypeBinding
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.DialogProfileBinding
 import com.jmsoft.databinding.FragmentProductInventoryBinding
-import com.jmsoft.databinding.ItemAddStockLocationBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.AddImageAdapter
 import com.jmsoft.main.adapter.CategoryDropdownAdapter

@@ -102,6 +102,7 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3")
     //Google
     implementation("com.google.android.gms:play-services-location:21.2.0")
+
     implementation("no.nordicsemi.android:dfu:1.9.0") {
         exclude(group = "com.android.support")
     }
