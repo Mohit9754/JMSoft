@@ -265,7 +265,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback {
         )
 
         // Set the maximum selectable date to today
-        datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+//        datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
 
         datePickerDialog.show()
 

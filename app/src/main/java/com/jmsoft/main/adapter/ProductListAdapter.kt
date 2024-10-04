@@ -172,8 +172,6 @@ class ProductListAdapter(
             // Set Click on Edit Icon
             binding.mcvEdit.setOnClickListener(this)
 
-            // Set Click on product
-            binding.mcvProduct.setOnClickListener(this)
 
         }
 
@@ -229,6 +227,11 @@ class ProductListAdapter(
                         selectedProductUUIDList.remove(productData.productUUID)
                     }
                 }
+            }
+
+            else {
+                // Set Click on product
+                binding.mcvProduct.setOnClickListener(this)
             }
         }
 
