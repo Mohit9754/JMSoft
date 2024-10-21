@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="0dp"
+    android:id="@+id/mcvProduct"
+    android:layout_marginHorizontal="@dimen/_4sdp"
+    android:layout_marginVertical="@dimen/_4sdp"
+    app:cardCornerRadius="@dimen/_4sdp"
+    app:cardBackgroundColor="@color/white"
+    tools:ignore="MissingDefaultResource">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:weightSum="6.5"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_weight="1.5"
+            tools:ignore="RtlSymmetry">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:visibility="visible"
+                android:layout_marginVertical="@dimen/_4sdp"
+                app:cardBackgroundColor="@color/off_white"
+                app:cardCornerRadius="@dimen/_15sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:scaleType="centerCrop"
+                    android:id="@+id/ivProduct"
+                    android:elevation="0dp"
+                    android:src="@drawable/img_ring_product"
+                    tools:ignore="ContentDescription" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_gravity="center_vertical"
+                app:strokeWidth="1dp"
+                android:id="@+id/mcvProductName"
+                app:cardCornerRadius="@dimen/_1sdp"
+                app:cardElevation="0dp"
+                android:layout_marginStart="@dimen/_2sdp"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/etProductName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/royal_gold_ring"
+                    android:fontFamily="@font/montserrat_arabic_regular"
+                    android:textColor="@color/black"
+                    android:hint="@string/enter_product_name"
+                    android:padding="@dimen/_5sdp"
+                    android:enabled="false"
+                    android:background="@null"
+                    android:inputType="text"
+                    android:textSize="10sp"
+                    tools:ignore="Autofill,LabelFor,RelativeOverlap,SmallSp" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </LinearLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_gravity="center_vertical"
+            app:strokeWidth="1dp"
+            android:layout_weight="1.5"
+            android:id="@+id/mcvRFIDCode"
+            app:cardCornerRadius="@dimen/_1sdp"
+            app:cardElevation="0dp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_arabic_regular"
+                android:gravity="center"
+                android:id="@+id/etRfIdCode"
+                android:enabled="false"
+                android:padding="@dimen/_5sdp"
+                android:background="@null"
+                android:inputType="text"
+                android:hint="@string/enter_rfid_code"
+                android:textColorHint="@color/text_hint"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                tools:ignore="Autofill,LabelFor,SmallSp" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_gravity="center_vertical"
+            app:strokeWidth="1dp"
+            android:layout_weight="1"
+            android:id="@+id/mcvWeight"
+            app:cardCornerRadius="@dimen/_1sdp"
+            app:cardElevation="0dp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/_50g"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@null"
+                android:padding="@dimen/_5sdp"
+                android:enabled="false"
+                android:hint="@string/enter_product_weight"
+                android:textColorHint="@color/text_hint"
+                android:inputType="numberDecimal"
+                android:id="@+id/etProductWeight"
+                android:fontFamily="@font/montserrat_arabic_regular"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                tools:ignore="Autofill,LabelFor,SmallSp,TextFields" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_gravity="center_vertical"
+            app:strokeWidth="1dp"
+            android:layout_weight="1"
+            android:id="@+id/mcvPrice"
+            app:cardCornerRadius="@dimen/_1sdp"
+            app:cardElevation="0dp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/_1200_dh"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:padding="@dimen/_5sdp"
+                android:hint="@string/enter_product_price"
+                android:textColorHint="@color/text_hint"
+                android:background="@null"
+                android:id="@+id/etProductPrice"
+                android:inputType="number"
+                android:fontFamily="@font/montserrat_arabic_regular"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                tools:ignore="Autofill,LabelFor,SmallSp" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/llEditAndDelete"
+                android:visibility="visible"
+                tools:ignore="UselessParent">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvRFID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    app:cardBackgroundColor="@color/mcv_background_color"
+                    app:cardCornerRadius="@dimen/_4sdp"
+                    app:cardElevation="0dp"
+                    tools:ignore="NestedWeights,RtlSymmetry">
+
+                    <ImageView
+                        android:layout_width="@dimen/_8sdp"
+                        android:layout_height="@dimen/_8sdp"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        android:src="@drawable/icon_rfid_code"
+                        tools:ignore="ContentDescription" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/mcv_background_color"
+                    app:cardCornerRadius="@dimen/_4sdp"
+                    app:cardElevation="0dp"
+                    tools:ignore="NestedWeights,RtlSymmetry">
+
+                    <ImageView
+                        android:layout_width="@dimen/_8sdp"
+                        android:layout_height="@dimen/_8sdp"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        android:src="@drawable/icon_edit"
+                        android:id="@+id/ivEdit"
+                        tools:ignore="ContentDescription" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/mcv_background_color"
+                    app:cardCornerRadius="@dimen/_4sdp"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_9sdp"
+                        android:layout_height="@dimen/_9sdp"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        android:src="@drawable/icon_delete"
+                        android:id="@+id/ivDelete"
+                        tools:ignore="ContentDescription" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/llSaveAndRemove"
+                android:visibility="gone"
+                tools:ignore="UselessParent">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/mcv_background_color"
+                    app:cardCornerRadius="@dimen/_4sdp"
+                    app:cardElevation="0dp"
+                    tools:ignore="NestedWeights,RtlSymmetry">
+
+                    <ImageView
+                        android:layout_width="@dimen/_8sdp"
+                        android:layout_height="@dimen/_8sdp"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        android:src="@drawable/ic_save"
+                        tools:ignore="ContentDescription" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvRemove"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/mcv_background_color"
+                    app:cardCornerRadius="@dimen/_4sdp"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:layout_marginHorizontal="@dimen/_4sdp"
+                        android:layout_marginVertical="@dimen/_4sdp"
+                        android:src="@drawable/icon_cross"
+                        android:tint="@color/product_background_color"
+                        tools:ignore="ContentDescription,UseAppTint" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvReadOnly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:visibility="gone"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                app:cardBackgroundColor="@color/mcv_background_color"
+                app:cardCornerRadius="@dimen/_4sdp"
+                app:cardElevation="0dp"
+                tools:ignore="NestedWeights,RtlSymmetry">
+
+                <ImageView
+                    android:layout_width="@dimen/_8sdp"
+                    android:layout_height="@dimen/_8sdp"
+                    android:layout_marginHorizontal="@dimen/_3sdp"
+                    android:layout_marginVertical="@dimen/_3sdp"
+                    android:src="@drawable/icon_show"
+                    android:tint="@color/selected"
+                    tools:ignore="ContentDescription,UseAppTint" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
+

@@ -86,11 +86,11 @@ dependencies {
     implementation ("com.joanzapata.pdfview:android-pdfview:1.0.4@aar")
 
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
 
     implementation ("io.reactivex.rxjava3:rxandroid:3.0.0")
     implementation ("com.karumi:dexter:6.2.2")
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.8.1")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
 
 
@@ -101,7 +101,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3")
     //Google
-    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     implementation("no.nordicsemi.android:dfu:1.9.0") {
         exclude(group = "com.android.support")

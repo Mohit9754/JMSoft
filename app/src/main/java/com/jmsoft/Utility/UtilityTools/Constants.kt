@@ -1,6 +1,5 @@
 package com.jmsoft.basic.UtilityTools
 
-import com.google.android.datatransport.BuildConfig
 import com.google.android.gms.maps.model.LatLng
 
 interface Constants {
@@ -251,6 +250,8 @@ interface Constants {
         const val collectionUUID = "collectionUUID"
         const val addPurchase = "addPurchase"
         const val productSectionHeight = "productSectionHeight"
+        const val pending = "pending"
+        const val confirm = "confirm"
 
         // State
         const val bluetoothUuid = "00001101-0000-1000-8000-00805F9B34FB"

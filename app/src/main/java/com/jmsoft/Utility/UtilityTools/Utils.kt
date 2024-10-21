@@ -63,6 +63,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.model.LatLng
@@ -93,6 +94,7 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.name
 import com.jmsoft.basic.UtilityTools.Constants.Companion.password
 import com.jmsoft.basic.UtilityTools.Constants.Companion.statusBarHeight
 import com.jmsoft.databinding.AlertdialogBinding
+import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentPurchasingAndSalesBinding
 import com.jmsoft.databinding.ItemCustomToastBinding
 import com.jmsoft.main.model.DeviceModel
@@ -125,11 +127,11 @@ object Utils {
 
         fun getTotalAmount() = totalAmount
 
-        fun resetTotalAmount(){
+        fun resetTotalAmount() {
             totalAmount = 0.0
         }
 
-        fun addAmount(amount:Double) {
+        fun addAmount(amount: Double) {
             totalAmount += amount
         }
 
@@ -137,9 +139,9 @@ object Utils {
 
     object purchaseAndSalesBinding {
 
-        private lateinit var fragmentPurchasingAndSalesBinding:FragmentPurchasingAndSalesBinding
+        private lateinit var fragmentPurchasingAndSalesBinding: FragmentPurchasingAndSalesBinding
 
-        fun setBinding(fragmentPurchasingAndSalesBinding:FragmentPurchasingAndSalesBinding) {
+        fun setBinding(fragmentPurchasingAndSalesBinding: FragmentPurchasingAndSalesBinding) {
             this.fragmentPurchasingAndSalesBinding = fragmentPurchasingAndSalesBinding
         }
 
@@ -160,15 +162,23 @@ object Utils {
 
     object SelectedProductUUIDList {
 
-        private var productUUIDList =  ArrayList<String>()
+        private var productUUIDList = ArrayList<String>()
 
-        fun setProductList(productUUIDList: ArrayList<String>){
+        fun setProductList(productUUIDList: ArrayList<String>) {
             this.productUUIDList = productUUIDList
+        }
+
+        fun addProductUUID(productUUID: String) {
+            productUUIDList.add(productUUID)
+        }
+
+        fun removeProductUUID(productUUID: String) {
+            productUUIDList.remove(productUUID)
         }
 
         fun getSize() = productUUIDList.size
 
-        fun clearList(){
+        fun clearList() {
             productUUIDList.clear()
         }
 
@@ -183,7 +193,7 @@ object Utils {
     }
 
     // Store the language in the shared preference
-     private fun storeLang(context: Context,lang:String) {
+    private fun storeLang(context: Context, lang: String) {
 
         val sharedPreferences = context.getSharedPreferences(
             Constants.appLang,
@@ -193,7 +203,7 @@ object Utils {
         myEdit.putString(Constants.lang, lang)
         myEdit.apply()
 
-         E("Store is $lang")
+        E("Store is $lang")
     }
 
     // Decimal digit filter (2 digit after point)
@@ -219,23 +229,23 @@ object Utils {
 
 
     // Save picture in internal storage and return the uri
-    fun getPictureUri(context: Context,bitmap: Bitmap): String {
+    fun getPictureUri(context: Context, bitmap: Bitmap): String {
 
         val pictureUri = generateUUId()
 
-        saveToInternalStorage(context, bitmap,pictureUri)
+        saveToInternalStorage(context, bitmap, pictureUri)
 
         return pictureUri
     }
 
     // Capitalize the string data
     @SuppressLint("DefaultLocale")
-    fun capitalizeData(data:String): String {
+    fun capitalizeData(data: String): String {
         return data.trim().lowercase(Locale.getDefault()).capitalize(Locale.ROOT)
     }
 
     // Convert data to barcode
-     fun genBarcodeBitmap(context: Context,data: String): Bitmap? {
+    fun genBarcodeBitmap(context: Context, data: String): Bitmap? {
 
         // Getting input value from the EditText
         if (data.isNotEmpty()) {
@@ -269,7 +279,7 @@ object Utils {
         return null
     }
 
-    fun showError(context: Context,textView: TextView,msg: String) {
+    fun showError(context: Context, textView: TextView, msg: String) {
 
         textView.visibility = View.VISIBLE
         textView.text = msg
@@ -295,9 +305,22 @@ object Utils {
         })
     }
 
+    fun setFocusAndTextChangeListener(
+        context: Context,
+        editText: EditText,
+        materialCardView: MaterialCardView,
+        textView: TextView
+    ) {
+        setFocusChangeListener(context, editText, materialCardView)
+        setTextChangeListener(editText, textView)
+    }
 
     //setting the selector on material card view
-    fun setFocusChangeListener(context: Context,editText: EditText, materialCardView: MaterialCardView) {
+    fun setFocusChangeListener(
+        context: Context,
+        editText: EditText,
+        materialCardView: MaterialCardView
+    ) {
 
         editText.setOnFocusChangeListener { _, hasFocus ->
 
@@ -450,7 +473,11 @@ object Utils {
     }
 
     //setting the selector on material card view
-    fun setFocusChangeLis(context: Context,editText: EditText, materialCardView: MaterialCardView) {
+    fun setFocusChangeLis(
+        context: Context,
+        editText: EditText,
+        materialCardView: MaterialCardView
+    ) {
 
         editText.setOnFocusChangeListener { _, hasFocus ->
 
@@ -458,6 +485,23 @@ object Utils {
                 materialCardView.strokeColor = context.getColor(R.color.theme)
             } else {
                 materialCardView.strokeColor = context.getColor(R.color.text_hint)
+            }
+        }
+    }
+
+    //setting the selector on material card view
+    fun setFocusChangeLisWhite(
+        context: Context,
+        editText: EditText,
+        materialCardView: MaterialCardView
+    ) {
+
+        editText.setOnFocusChangeListener { _, hasFocus ->
+
+            if (hasFocus) {
+                materialCardView.strokeColor = context.getColor(R.color.theme)
+            } else {
+                materialCardView.strokeColor = context.getColor(R.color.white)
             }
         }
     }
@@ -521,11 +565,26 @@ object Utils {
     }
 
     //get the image from the internal storage
+//    fun getImageFromInternalStorage(context: Context, imageFileName: String): Bitmap? {
+//        val directory = context.filesDir
+//        val file = File(directory, imageFileName)
+//        return BitmapFactory.decodeStream(FileInputStream(file))
+//    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
     fun getImageFromInternalStorage(context: Context, imageFileName: String): Bitmap? {
         val directory = context.filesDir
         val file = File(directory, imageFileName)
-        return BitmapFactory.decodeStream(FileInputStream(file))
+
+        return if (file.exists()) {
+            // Load the image if it exists
+            BitmapFactory.decodeStream(FileInputStream(file))
+        } else {
+            // Load the default image from resources if the file is not found
+            context.getDrawable(R.drawable.default_image)?.toBitmap()
+        }
     }
+
 
     //delete image from the internal storage
     fun deleteImageFromInternalStorage(context: Context, imageFileName: String): Boolean {
@@ -534,7 +593,7 @@ object Utils {
         return file.delete()
     }
 
-    fun setAppLanguage(context: Context){
+    fun setAppLanguage(context: Context) {
 
         if (Flag.getFlag()) {
             setLocale(context, getLang(context))
@@ -551,7 +610,7 @@ object Utils {
 //        context.createConfigurationContext(configuration)
 
         // store the language
-        storeLang(context,languageCode)
+        storeLang(context, languageCode)
 
         // Recreate the current activity
         if (context is Activity) {
@@ -642,29 +701,41 @@ object Utils {
     }
 
     // Checks if rFIDCode Exist in the product table
-    fun isRFIDExist(rFIDCode: String,stockLocationUUID: String): Boolean? {
-        return DatabaseHelper.instance.isRFIDExist(rFIDCode,stockLocationUUID)
+    fun isRFIDExist(rFIDCode: String, stockLocationUUID: String): Boolean? {
+        return DatabaseHelper.instance.isRFIDExist(rFIDCode, stockLocationUUID)
     }
 
     // Getting the Product through RFIDCode
-    fun getProductThroughRFIDCode(rFIDCode: String,stockLocationUUID: String): ProductDataModel {
-        return DatabaseHelper.instance.getProductThroughRFIDCode(rFIDCode,stockLocationUUID)
+    fun getProductThroughRFIDCode(rFIDCode: String, stockLocationUUID: String): ProductDataModel {
+        return DatabaseHelper.instance.getProductThroughRFIDCode(rFIDCode, stockLocationUUID)
     }
 
 
     // Checks is Phone Number Already Exist in the Address table accept my phone number
-    fun isPhoneNumberExistInAddressTableAcceptMine(phoneNumber: String, addressUUID: String): Boolean {
-        return DatabaseHelper.instance.isPhoneNumberExistInAddressTableAcceptMine(phoneNumber,addressUUID)
+    fun isPhoneNumberExistInAddressTableAcceptMine(
+        phoneNumber: String,
+        addressUUID: String
+    ): Boolean {
+        return DatabaseHelper.instance.isPhoneNumberExistInAddressTableAcceptMine(
+            phoneNumber,
+            addressUUID
+        )
     }
 
     // Checks is Phone Number Already Exist in the Contact table accept my phone number
-    fun isPhoneNumberExistInContactTableAcceptMine(phoneNumber: String, contactUUID: String): Boolean {
-        return DatabaseHelper.instance.isPhoneNumberExistInContactTableAcceptMine(phoneNumber,contactUUID)
+    fun isPhoneNumberExistInContactTableAcceptMine(
+        phoneNumber: String,
+        contactUUID: String
+    ): Boolean {
+        return DatabaseHelper.instance.isPhoneNumberExistInContactTableAcceptMine(
+            phoneNumber,
+            contactUUID
+        )
     }
 
     // Checks is email Already Exist in the Contact table accept my email
     fun isEmailExistInContactTableAcceptMine(email: String, contactUUID: String): Boolean {
-        return DatabaseHelper.instance.isEmailExistInContactTableAcceptMine(email,contactUUID)
+        return DatabaseHelper.instance.isEmailExistInContactTableAcceptMine(email, contactUUID)
     }
 
     // Delete collection uuid from the product table
@@ -673,7 +744,7 @@ object Utils {
     }
 
     // Remove rfid data of product
-    fun removeRfidCode(productUUID: String){
+    fun removeRfidCode(productUUID: String) {
         DatabaseHelper.instance.removeRfidCode(productUUID)
     }
 
@@ -783,13 +854,13 @@ object Utils {
     }
 
     // Check if stock Location exist
-    fun isStockLocationExist(stockLocationName:String,parentUUID:String): Boolean {
-        return DatabaseHelper.instance.isStockLocationExist(stockLocationName,parentUUID)
+    fun isStockLocationExist(stockLocationName: String, parentUUID: String): Boolean {
+        return DatabaseHelper.instance.isStockLocationExist(stockLocationName, parentUUID)
     }
 
     // get Stock location uuid
-    fun getStockLocationUUID(stockLocationName:String,parentUUID:String): String {
-        return DatabaseHelper.instance.getStockLocationUUID(stockLocationName,parentUUID)
+    fun getStockLocationUUID(stockLocationName: String, parentUUID: String): String {
+        return DatabaseHelper.instance.getStockLocationUUID(stockLocationName, parentUUID)
     }
 
     /* Check if Category exist in the category table accept category uuid */
@@ -809,7 +880,7 @@ object Utils {
 
     // Check if Collection exist in the product section
     fun isCollectionExistInTheProduct(productUUID: String, collectionUUID: String): Boolean? {
-        return DatabaseHelper.instance.isCollectionExistInTheProduct(productUUID,collectionUUID)
+        return DatabaseHelper.instance.isCollectionExistInTheProduct(productUUID, collectionUUID)
     }
 
     // add Category in the Category table
@@ -823,9 +894,14 @@ object Utils {
     }
 
     //Get All Products of particular category and collection  from the Product table
-    fun getAllProductsThroughCategoryAndCollection(categoryUUID: String,
-           collectionUUID: String): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProductsThroughCategoryAndCollection(categoryUUID,collectionUUID)
+    fun getAllProductsThroughCategoryAndCollection(
+        categoryUUID: String,
+        collectionUUID: String
+    ): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsThroughCategoryAndCollection(
+            categoryUUID,
+            collectionUUID
+        )
     }
 
     // get collection through Collection UUID
@@ -863,26 +939,26 @@ object Utils {
 
     // Get all the category form the category table
     fun getAllCategory(): ArrayList<CategoryDataModel> {
-        return  DatabaseHelper.instance.getAllCategory()
+        return DatabaseHelper.instance.getAllCategory()
     }
 
     // Check if Metal type already Exit in the metal Type Table
-    fun isMetalTypeExist(metalTypeName:String): Boolean? {
-        return  DatabaseHelper.instance.isMetalTypeExist(metalTypeName)
+    fun isMetalTypeExist(metalTypeName: String): Boolean? {
+        return DatabaseHelper.instance.isMetalTypeExist(metalTypeName)
     }
 
     // Check if Metal type exist in the metal type table accept metalTypeUUId
     fun isMetalTypeExistAccept(metalTypeDataModel: MetalTypeDataModel): Boolean? {
-        return  DatabaseHelper.instance.isMetalTypeExistAccept(metalTypeDataModel)
+        return DatabaseHelper.instance.isMetalTypeExistAccept(metalTypeDataModel)
     }
 
     // Delete Metal Type from the metal type table
-    fun deleteMetalType(metalTypeUUID:String) {
+    fun deleteMetalType(metalTypeUUID: String) {
         DatabaseHelper.instance.deleteMetalType(metalTypeUUID)
     }
 
     // Delete Stock Location
-    fun deleteStockLocation(stockLocationUUID:String) {
+    fun deleteStockLocation(stockLocationUUID: String) {
         DatabaseHelper.instance.deleteStockLocation(stockLocationUUID)
     }
 
@@ -897,8 +973,8 @@ object Utils {
     }
 
     // Updating metal type from the metal type table
-    fun updateMetalType(metalTypeUUID:String,metalTypeName: String){
-        DatabaseHelper.instance.updateMetalType(metalTypeUUID,metalTypeName)
+    fun updateMetalType(metalTypeUUID: String, metalTypeName: String) {
+        DatabaseHelper.instance.updateMetalType(metalTypeUUID, metalTypeName)
     }
 
     // Add Metal type in Metal_Type table
@@ -923,7 +999,7 @@ object Utils {
     }
 
     // Get All Stock location
-    fun getStockLocation(stockLocationUUID: String):StockLocationDataModel  {
+    fun getStockLocation(stockLocationUUID: String): StockLocationDataModel {
         return DatabaseHelper.instance.getStockLocation(stockLocationUUID)
     }
 
@@ -951,9 +1027,13 @@ object Utils {
     suspend fun getProductsThroughCollection(
         collectionUUIDList: List<String>,
         productUUID: String,
-        numberOfItems:Int
+        numberOfItems: Int
     ): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getProductsThroughCollection(collectionUUIDList, productUUID,numberOfItems)
+        return DatabaseHelper.instance.getProductsThroughCollection(
+            collectionUUIDList,
+            productUUID,
+            numberOfItems
+        )
     }
 
 
@@ -965,7 +1045,7 @@ object Utils {
 
     // return the total number of products
     fun getTotalNumberOfProducts(categoryUUID: String, isEmptyRfidProduct: Boolean): Int {
-        return DatabaseHelper.instance.getTotalNumberOfProducts(categoryUUID,isEmptyRfidProduct)
+        return DatabaseHelper.instance.getTotalNumberOfProducts(categoryUUID, isEmptyRfidProduct)
     }
 
     // return the total number of products of collection
@@ -974,20 +1054,33 @@ object Utils {
         categoryUUID: String,
         isEmptyRfidProduct: Boolean
     ): Int {
-        return DatabaseHelper.instance.getTotalNumberOfProductOfCollection(collectionUUID,categoryUUID,isEmptyRfidProduct)
+        return DatabaseHelper.instance.getTotalNumberOfProductOfCollection(
+            collectionUUID,
+            categoryUUID,
+            isEmptyRfidProduct
+        )
     }
 
     //Get All Products from the Product table with limit and offset
-    suspend fun getAllProducts(offset: Int, categoryUUID: String, isEmptyRfidProduct: Boolean): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProducts(offset,categoryUUID,isEmptyRfidProduct)
+    suspend fun getAllProducts(
+        offset: Int,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProducts(offset, categoryUUID, isEmptyRfidProduct)
     }
 
     // get all product name that does not have rfid code
-    suspend fun getAllProductName(limit:Int,offset: Int): ArrayList<ProductDataModel> {
+    suspend fun getAllProductName(limit: Int, offset: Int): ArrayList<ProductDataModel> {
         return DatabaseHelper.instance.getProductName(limit, offset)
     }
-    suspend fun getProductNameWithSearch(search: String,limit:Int,offset: Int): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getProductNameWithSearch(search,limit, offset)
+
+    suspend fun getProductNameWithSearch(
+        search: String,
+        limit: Int,
+        offset: Int
+    ): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getProductNameWithSearch(search, limit, offset)
     }
 
     //Get All Products from the Product table without limit and offset
@@ -996,12 +1089,12 @@ object Utils {
     }
 
     // Get All Products that has RFID from the Product table
-    suspend fun getAllProductsThatHasRFID(stockLocationUUID:String): ArrayList<ProductDataModel> {
+    suspend fun getAllProductsThatHasRFID(stockLocationUUID: String): ArrayList<ProductDataModel> {
         return DatabaseHelper.instance.getAllProductsThatHasRFID(stockLocationUUID)
     }
 
     // Get Products with limit and offset
-    suspend fun getProductsWithLimitAndOffset(offset:Int): ArrayList<ProductDataModel> {
+    suspend fun getProductsWithLimitAndOffset(offset: Int): ArrayList<ProductDataModel> {
         return DatabaseHelper.instance.getProductsWithLimitAndOffset(offset)
     }
 
@@ -1012,8 +1105,14 @@ object Utils {
         categoryUUID: String,
         isEmptyRfidProduct: Boolean
     ): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getProductsWithDetailSearch(search,offset,categoryUUID,isEmptyRfidProduct)
+        return DatabaseHelper.instance.getProductsWithDetailSearch(
+            search,
+            offset,
+            categoryUUID,
+            isEmptyRfidProduct
+        )
     }
+
     suspend fun getProductsWithDetailSearchAcceptCollection(
         search: String,
         offset: Int,
@@ -1021,46 +1120,74 @@ object Utils {
         categoryUUID: String,
         isEmptyRfidProduct: Boolean
     ): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getProductsWithDetailSearchAcceptCollection(search,offset,collectionUUID,categoryUUID,isEmptyRfidProduct)
+        return DatabaseHelper.instance.getProductsWithDetailSearchAcceptCollection(
+            search,
+            offset,
+            collectionUUID,
+            categoryUUID,
+            isEmptyRfidProduct
+        )
     }
 
     // Get total number of products of detail search
-     fun getTotalNumberOfProductsOfDetailSearch(
+    fun getTotalNumberOfProductsOfDetailSearch(
         search: String,
         categoryUUID: String,
         isEmptyRfidProduct: Boolean
     ): Int {
-        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearch(search,categoryUUID,isEmptyRfidProduct)
+        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearch(
+            search,
+            categoryUUID,
+            isEmptyRfidProduct
+        )
     }
 
     // Get total number of products of detail search accept collection
-     fun getTotalNumberOfProductsOfDetailSearchAcceptCollection(
+    fun getTotalNumberOfProductsOfDetailSearchAcceptCollection(
         search: String,
         collectionUUID: String,
         categoryUUID: String,
         isEmptyRfidProduct: Boolean
     ): Int {
-        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearchAcceptCollection(search,collectionUUID,categoryUUID,isEmptyRfidProduct)
+        return DatabaseHelper.instance.getTotalNumberOfProductsOfDetailSearchAcceptCollection(
+            search,
+            collectionUUID,
+            categoryUUID,
+            isEmptyRfidProduct
+        )
     }
 
     // Get Products with limit and offset
-    suspend fun getProductsWithSearch(search:String,offset: Int): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getProductsWithSearch(search,offset)
+    suspend fun getProductsWithSearch(search: String, offset: Int): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getProductsWithSearch(search, offset)
     }
 
     //Get All Products Accept one Product from product table
-    fun getAllProductsAcceptProduct(productUUID: String,offset: Int): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProductsAcceptProduct(productUUID,offset)
+    fun getAllProductsAcceptProduct(productUUID: String, offset: Int): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsAcceptProduct(productUUID, offset)
     }
 
     /* Get All Products from the Product table Accept the collection */
-     suspend fun getAllProductsAcceptCollection(collectionUUID: String,offset: Int,categoryUUID: String,isEmptyRfidProduct:Boolean): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUID,offset,categoryUUID,isEmptyRfidProduct)
+    suspend fun getAllProductsAcceptCollection(
+        collectionUUID: String,
+        offset: Int,
+        categoryUUID: String,
+        isEmptyRfidProduct: Boolean
+    ): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsAcceptCollection(
+            collectionUUID,
+            offset,
+            categoryUUID,
+            isEmptyRfidProduct
+        )
     }
 
     //Get All Products from the Product table Accept Category one Category
-    fun getAllProductsAcceptCollection(collectionUUIDList:List<String>,offset: Int): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUIDList,offset)
+    fun getAllProductsAcceptCollection(
+        collectionUUIDList: List<String>,
+        offset: Int
+    ): ArrayList<ProductDataModel> {
+        return DatabaseHelper.instance.getAllProductsAcceptCollection(collectionUUIDList, offset)
     }
 
     // Getting the Category Name through Category UUID
@@ -1114,77 +1241,79 @@ object Utils {
     }
 
     // get orders of particular user
-    fun getOrders(userUUID: String,status:String): ArrayList<OrderDataModel> {
+    fun getOrders(userUUID: String, status: String): ArrayList<OrderDataModel> {
 
-        return DatabaseHelper.instance.getOrders(userUUID,status)
+        return DatabaseHelper.instance.getOrders(userUUID, status)
     }
 
     // print pdf
-     fun printPdf(context: Context,file: File) {
+    fun printPdf(context: Context, file: File) {
 
         val printManager = context.getSystemService(Context.PRINT_SERVICE) as PrintManager
         val jobName = context.getString(R.string.app_name) + " Document"
 
-        printManager.print(jobName, object : PrintDocumentAdapter() {
+        printManager.print(
+            jobName, object : PrintDocumentAdapter() {
 
-            override fun onLayout(
+                override fun onLayout(
 
-                oldAttributes: PrintAttributes?,
-                newAttributes: PrintAttributes?,
-                cancellationSignal: CancellationSignal?,
-                callback: LayoutResultCallback?,
-                extras: Bundle?
-            ) {
-                if (cancellationSignal?.isCanceled == true) {
-                    callback?.onLayoutCancelled()
-                    return
-                }
-
-                val pdi = PrintDocumentInfo.Builder(file.name)
-                    .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
-                    .setPageCount(PrintDocumentInfo.PAGE_COUNT_UNKNOWN)
-                    .build()
-
-                callback?.onLayoutFinished(pdi, true)
-            }
-
-            override fun onWrite(
-                pages: Array<out PageRange>?,
-                destination: ParcelFileDescriptor?,
-                cancellationSignal: CancellationSignal?,
-                callback: WriteResultCallback?
-            ) {
-                var input: FileInputStream? = null
-                var output: FileOutputStream? = null
-
-                try {
-                    input = FileInputStream(file)
-                    output = FileOutputStream(destination?.fileDescriptor)
-
-                    val buf = ByteArray(1024)
-                    var bytesRead: Int
-
-                    while (input.read(buf).also { bytesRead = it } > 0) {
-                        output.write(buf, 0, bytesRead)
+                    oldAttributes: PrintAttributes?,
+                    newAttributes: PrintAttributes?,
+                    cancellationSignal: CancellationSignal?,
+                    callback: LayoutResultCallback?,
+                    extras: Bundle?
+                ) {
+                    if (cancellationSignal?.isCanceled == true) {
+                        callback?.onLayoutCancelled()
+                        return
                     }
 
-                    callback?.onWriteFinished(arrayOf(PageRange.ALL_PAGES))
-                } catch (e: IOException) {
-                    callback?.onWriteFailed(e.toString())
-                } finally {
+                    val pdi = PrintDocumentInfo.Builder(file.name)
+                        .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
+                        .setPageCount(PrintDocumentInfo.PAGE_COUNT_UNKNOWN)
+                        .build()
+
+                    callback?.onLayoutFinished(pdi, true)
+                }
+
+                override fun onWrite(
+                    pages: Array<out PageRange>?,
+                    destination: ParcelFileDescriptor?,
+                    cancellationSignal: CancellationSignal?,
+                    callback: WriteResultCallback?
+                ) {
+                    var input: FileInputStream? = null
+                    var output: FileOutputStream? = null
+
                     try {
-                        input?.close()
-                        output?.close()
+                        input = FileInputStream(file)
+                        output = FileOutputStream(destination?.fileDescriptor)
+
+                        val buf = ByteArray(1024)
+                        var bytesRead: Int
+
+                        while (input.read(buf).also { bytesRead = it } > 0) {
+                            output.write(buf, 0, bytesRead)
+                        }
+
+                        callback?.onWriteFinished(arrayOf(PageRange.ALL_PAGES))
                     } catch (e: IOException) {
-                        e.printStackTrace()
+                        callback?.onWriteFailed(e.toString())
+                    } finally {
+                        try {
+                            input?.close()
+                            output?.close()
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
                     }
                 }
-            }
-        }, PrintAttributes.Builder()
-            .setMediaSize(PrintAttributes.MediaSize.ISO_A4.asPortrait())
-            .setResolution(PrintAttributes.Resolution("id", "label", 600, 600))
-            .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
-            .build())
+            }, PrintAttributes.Builder()
+                .setMediaSize(PrintAttributes.MediaSize.ISO_A4.asPortrait())
+                .setResolution(PrintAttributes.Resolution("id", "label", 600, 600))
+                .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
+                .build()
+        )
 
     }
 
@@ -1194,7 +1323,7 @@ object Utils {
     }
 
     // store OrderUUID in shared preference
-    fun storeOrderUUID(context: Context,orderUUID: String) {
+    fun storeOrderUUID(context: Context, orderUUID: String) {
 
         val sharedPreferences = context.getSharedPreferences(
             Constants.orderData,
@@ -1215,12 +1344,12 @@ object Utils {
             AppCompatActivity.MODE_PRIVATE
         )
 
-        return  sharedPreferences.getString(Constants.orderUUID,null)
+        return sharedPreferences.getString(Constants.orderUUID, null)
     }
 
 
     // insert Order in the order table
-    fun insertOrder(context: Context,productUUID: String,productPrice:Double) {
+    fun insertOrder(context: Context, productUUID: String, productPrice: Double) {
 
         val orderUUID = getOrderUUID(context)
 
@@ -1232,12 +1361,12 @@ object Utils {
 
             val newOrderDataModel = OrderDataModel()
 
-           if (orderDataModel.productUUIDUri?.isEmpty() == true) {
+            if (orderDataModel.productUUIDUri?.isEmpty() == true) {
                 newOrderDataModel.productUUIDUri = productUUID
-            }
-            else {
+            } else {
 
-                val productUUIDList = orderDataModel.productUUIDUri?.split(",")?.toMutableList() ?: mutableListOf()
+                val productUUIDList =
+                    orderDataModel.productUUIDUri?.split(",")?.toMutableList() ?: mutableListOf()
                 // Add the new product UUID to the list
                 productUUIDList.add(productUUID)
                 newOrderDataModel.productUUIDUri = productUUIDList.joinToString().replace(" ", "")
@@ -1246,13 +1375,15 @@ object Utils {
 
             if (orderDataModel.productQuantityUri?.isEmpty() == true) {
                 newOrderDataModel.productQuantityUri = ""
-            }
-            else {
+            } else {
 
-                val productQuantityList = orderDataModel.productQuantityUri?.split(",")?.toMutableList() ?: mutableListOf()
+                val productQuantityList =
+                    orderDataModel.productQuantityUri?.split(",")?.toMutableList()
+                        ?: mutableListOf()
                 // Add the quantity to the list
                 productQuantityList.add("1")
-                newOrderDataModel.productQuantityUri = productQuantityList.joinToString().replace(" ", "")
+                newOrderDataModel.productQuantityUri =
+                    productQuantityList.joinToString().replace(" ", "")
 
             }
 
@@ -1262,15 +1393,14 @@ object Utils {
 
             updateOrder(newOrderDataModel)
 
-        }
-
-        else {
+        } else {
 
             val orderDataModel = OrderDataModel()
 
             orderDataModel.orderUUID = orderUUID
 
-            orderDataModel.orderNo = formatToSixDigitNumber(DatabaseHelper.instance.getTotalOrder()+1)
+            orderDataModel.orderNo =
+                formatToSixDigitNumber(DatabaseHelper.instance.getTotalOrder() + 1)
 
             orderDataModel.productUUIDUri = productUUID
 
@@ -1294,7 +1424,7 @@ object Utils {
     }
 
     // remove order from the order table
-    fun removeOrder(context: Context,productUUID: String,productPrice: Double) {
+    fun removeOrder(context: Context, productUUID: String, productPrice: Double) {
 
         val orderDataModel = getOrderUUID(context)?.let { getOrderByUUID(it) }
 
@@ -1309,8 +1439,7 @@ object Utils {
             // generate new order UUID
             storeOrderUUID(context, generateUUId())
 
-        }
-        else {
+        } else {
 
             val newOrderDataModel = OrderDataModel()
 
@@ -1341,12 +1470,12 @@ object Utils {
     }
 
     // Update Address in the Address Table
-    fun updateAddressInTheAddressTable(addressDataModel: AddressDataModel){
+    fun updateAddressInTheAddressTable(addressDataModel: AddressDataModel) {
         return DatabaseHelper.instance.updateAddressInTheAddressTable(addressDataModel)
     }
 
     // Update Contact in the Contact Table
-    fun updateContactInTheContactTable(contactDataModel: ContactDataModel){
+    fun updateContactInTheContactTable(contactDataModel: ContactDataModel) {
         return DatabaseHelper.instance.updateContactInTheContactTable(contactDataModel)
     }
 
@@ -1366,8 +1495,8 @@ object Utils {
     }
 
     // Update Quantity of Product in Card Table
-    fun updateProductQuantityInCart(userUUID: String,productUUID: String,quantity: Int) {
-        DatabaseHelper.instance.updateProductQuantityInCart(userUUID, productUUID,quantity)
+    fun updateProductQuantityInCart(userUUID: String, productUUID: String, quantity: Int) {
+        DatabaseHelper.instance.updateProductQuantityInCart(userUUID, productUUID, quantity)
     }
 
     //Deleting the cart from the cart table
@@ -1376,13 +1505,17 @@ object Utils {
     }
 
     //Deleting the cart from the cart table
-    fun deleteProductFromCart(userUUID: String,productUUID: String) {
-        DatabaseHelper.instance.deleteProductFromCart(userUUID,productUUID)
+    fun deleteProductFromCart(userUUID: String, productUUID: String) {
+        DatabaseHelper.instance.deleteProductFromCart(userUUID, productUUID)
     }
 
     // Add purchase
     fun addPurchase(purchasingDataModel: PurchasingDataModel) {
         DatabaseHelper.instance.addPurchase(purchasingDataModel)
+    }
+
+    fun updatePurchaseStatus(purchasingUUID: String) {
+        DatabaseHelper.instance.updatePurchaseStatus(purchasingUUID)
     }
 
     // Update purchase
@@ -1396,7 +1529,7 @@ object Utils {
     }
 
     // Get All Purchase
-    fun getAllPurchase(): ArrayList<PurchasingDataModel> {
+    suspend fun getAllPurchase(): ArrayList<PurchasingDataModel> {
         return DatabaseHelper.instance.getAllPurchase()
     }
 
@@ -1450,13 +1583,17 @@ object Utils {
     }
 
     // Getting the Product through Product UUID
-     fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
+    fun getProductThroughProductUUID(productUUID: String): ProductDataModel {
         return DatabaseHelper.instance.getProductThroughProductUUID(productUUID)
     }
 
     // update Product in the Product table
     suspend fun updateProduct(productDataModel: ProductDataModel) {
-         DatabaseHelper.instance.updateProduct(productDataModel)
+        DatabaseHelper.instance.updateProduct(productDataModel)
+    }
+
+    fun updateProductDetails(productDataModel: ProductDataModel) {
+        DatabaseHelper.instance.updateProductDetails(productDataModel)
     }
 
     @JvmStatic
@@ -1858,7 +1995,6 @@ object Utils {
     }
 
 
-
 //    fun collapseView(view: View) {
 //        val initialHeight = view.height
 //        view.animate()
@@ -1891,6 +2027,7 @@ object Utils {
         rotateAnimator.start()
     }
 
+
     fun rotateView(view: View, degrees: Float) {
         // Create an ObjectAnimator to animate the rotation property
         val rotateAnimator = ObjectAnimator.ofFloat(view, "rotation", view.rotation, degrees)
@@ -1902,7 +2039,6 @@ object Utils {
         // Start the animation
         rotateAnimator.start()
     }
-
 
 
     fun expandOrCollapseView(v: View, expand: Boolean) {
@@ -1976,11 +2112,11 @@ object Utils {
         return Uri.parse(path)
     }
 
-//    val currentDate: String
+    //    val currentDate: String
 //        get() {
 //
 //        }
-    fun currentDate():String {
+    fun currentDate(): String {
         val c = Calendar.getInstance().time
         E("Current time => $c")
         val df =

@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ImageView
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,11 +27,15 @@ import com.jmsoft.databinding.FragmentPurchasingBinding
 import com.jmsoft.databinding.ItemImagesBinding
 import com.jmsoft.databinding.ItemPurchasingBinding
 import com.jmsoft.main.activity.DashboardActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class AdapterPurchasing(
     private val context: Context,
     private val purchasingList: ArrayList<PurchasingDataModel>,
-    private val fragmentPurchasingBinding: FragmentPurchasingBinding
+    private val fragmentPurchasingBinding: FragmentPurchasingBinding,
+    private val lifecycleScope: LifecycleCoroutineScope
 ) :
     RecyclerView.Adapter<AdapterPurchasing.MyViewHolder>() {
 
@@ -45,7 +51,11 @@ class AdapterPurchasing(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun showPurchaseDeleteDialog(position: Int, purchaseUUID: String) {
+    private fun showPurchaseDeleteDialog(
+        position: Int,
+        purchaseUUID: String,
+        productImageUri: String
+    ) {
 
         val dialog = Dialog(context)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -64,6 +74,14 @@ class AdapterPurchasing(
             dialog.dismiss()
 
             Utils.deletePurchase(purchaseUUID)
+
+            for (productImage in productImageUri.split(",")) {
+
+                if (productImage != Constants.Default_Image) {
+                    Utils.deleteImageFromInternalStorage(context,productImage)
+                }
+
+            }
 
             // Remove the item from the local list
             purchasingList.removeAt(position)
@@ -92,10 +110,9 @@ class AdapterPurchasing(
 
     }
 
-
     fun setImage(productDataModel: ProductDataModel,imageView:ImageView) {
 
-        val imageUri = productDataModel.productImageUri?.split(",")?.get(0)
+        val imageUri = productDataModel.productImageUri
 
         val imageBitmap = imageUri?.let { Utils.getImageFromInternalStorage(context, it) }
 
@@ -137,14 +154,32 @@ class AdapterPurchasing(
             this.purchasingDataModel = purchasingDataModel
             this.position = position
 
-            if (purchasingDataModel.productUUIDUri != null) {
+            if (purchasingDataModel.productWeights != null && purchasingDataModel.productRFIDs != null && purchasingDataModel.productUUIDs != null && purchasingDataModel.productImageUri != null && purchasingDataModel.productNames != null && purchasingDataModel.productPrices != null) {
 
-                for (productUUID in purchasingDataModel.productUUIDUri?.split(",")!!) {
+                val productImageList = purchasingDataModel.productImageUri?.split(",")?: listOf()
+                val productNameList = purchasingDataModel.productNames?.split(",")?: listOf()
+                val productPriceList = purchasingDataModel.productPrices?.split(",")?: listOf()
+                val productUUIDList = purchasingDataModel.productUUIDs?.split(",")?: listOf()
+                val productRFIDList = purchasingDataModel.productRFIDs?.split(",")?: listOf()
+                val productWeightList = purchasingDataModel.productWeights?.split(",")?: listOf()
 
-                    productDataModelList.add(Utils.getProductThroughProductUUID(productUUID))
+                for (i in productImageList.indices) {
+
+                    val productDataModel = ProductDataModel()
+
+                    productDataModel.productUUID = productUUIDList[i]
+                    productDataModel.productImageUri = productImageList[i]
+                    productDataModel.productName = productNameList[i]
+                    productDataModel.productPrice = productPriceList[i].toDouble()
+                    productDataModel.productRFIDCode = productRFIDList[i]
+                    productDataModel.productWeight = productWeightList[i].toDouble()
+
+                    productDataModelList.add(productDataModel)
 
                 }
             }
+
+            checkPurchasingStatus()
 
             setProductImageRecyclerView()
 
@@ -167,6 +202,21 @@ class AdapterPurchasing(
 
             binding.ivDropDown.setOnClickListener(this)
 
+            binding.mcvCheck.setOnClickListener(this)
+
+        }
+
+        private fun checkPurchasingStatus() {
+
+            if (purchasingDataModel.purchaseStatus == Constants.confirm) {
+
+                binding.mcvDelete.visibility = View.GONE
+                binding.mcvCheck.visibility = View.GONE
+            }
+            else {
+                binding.mcvDelete.visibility = View.VISIBLE
+                binding.mcvCheck.visibility = View.VISIBLE
+            }
         }
 
         private fun setProductImageRecyclerView() {
@@ -182,7 +232,6 @@ class AdapterPurchasing(
                 }
 
                 override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-
                     holder.bind(position,productDataModelList[position],productDataModelList.size)
                 }
 
@@ -223,6 +272,31 @@ class AdapterPurchasing(
 
         }
 
+        private suspend fun updateProductDetails() {
+
+            GetProgressBar.getInstance(context)?.show()
+
+            val result = lifecycleScope.async(Dispatchers.IO) {
+
+                for(productDataModel in productDataModelList) {
+                    Utils.updateProductDetails(productDataModel)
+                }
+
+                purchasingDataModel.purchasingUUID?.let { Utils.updatePurchaseStatus(it) }
+
+                return@async true
+            }
+
+            result.await()
+
+            GetProgressBar.getInstance(context)?.dismiss()
+
+            Utils.T(context, context.getString(R.string.product_updated_successfully))
+
+            binding.mcvCheck.visibility = View.GONE
+            binding.mcvDelete.visibility = View.GONE
+        }
+
         // Handle All the Clicks
         @SuppressLint("NotifyDataSetChanged")
         override fun onClick(view: View?) {
@@ -232,10 +306,12 @@ class AdapterPurchasing(
                 binding.mcvDelete -> {
 
                     purchasingDataModel.purchasingUUID?.let {
-                        showPurchaseDeleteDialog(
-                            position,
-                            it
-                        )
+                        purchasingDataModel.productImageUri?.let { it1 ->
+                            showPurchaseDeleteDialog(
+                                position,
+                                it, it1
+                            )
+                        }
                     }
 
                 }
@@ -253,8 +329,6 @@ class AdapterPurchasing(
                         R.id.addPurchasing,
                         bundle
                     )
-
-
                 }
 
                 binding.ivDropDown -> {
@@ -270,8 +344,14 @@ class AdapterPurchasing(
                     }
                 }
 
-            }
+                binding.mcvCheck -> {
 
+                    lifecycleScope.launch {
+                        updateProductDetails()
+                    }
+                }
+
+            }
 
         }
 

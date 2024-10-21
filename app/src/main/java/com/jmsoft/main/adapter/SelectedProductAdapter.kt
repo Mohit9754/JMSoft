@@ -64,7 +64,7 @@ class SelectedProductAdapter(
                 selectedProductList.removeAt(position)
 
                 if (selectedProductList.isEmpty())
-                    fragmentAddPurchaseBinding.tvProductName?.visibility = View.VISIBLE
+//                    fragmentAddPurchaseBinding.tvProductName?.visibility = View.VISIBLE
 
                 notifyDataSetChanged()
 

@@ -442,7 +442,6 @@
                                     android:id="@+id/rvMetalType"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-
                                     tools:listitem="@layout/item_metal_type_dropdown" />
 
                             </LinearLayout>

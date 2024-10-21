@@ -26,7 +26,7 @@
     <color name="bottom_sheet_stroke_color">#e09c39</color>
     <color name="spotShadowColor">#66000000</color>
     <color name="ambientShadowColor">#0D141719</color>
-    <color name="product_background_color">#666666</color>
+        <color name="product_background_color">#666666</color>
     <color name="description_background_color">#F0F0F0</color>
     <color name="unselect_color">#ACACAC</color>
     <color name="confirmation_background_color">#DCAF6E</color>

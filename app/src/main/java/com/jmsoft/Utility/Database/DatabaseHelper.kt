@@ -12,7 +12,7 @@ import com.jmsoft.Utility.Database.CartDataModel
 import com.jmsoft.Utility.Database.CategoryDataModel
 import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.Utility.Database.ContactDataModel
-//import com.jmsoft.Utility.Database.CollectionDataModel
+
 import com.jmsoft.Utility.Database.DeviceDataModel
 import com.jmsoft.Utility.Database.MetalTypeDataModel
 import com.jmsoft.Utility.Database.OrderDataModel
@@ -489,12 +489,17 @@ class DatabaseHelper(cx: Context) {
         val purchasingValue = ContentValues().apply {
 
             put(PurchasingDataModel.Key_purchasingUUID, purchasingDataModel.purchasingUUID)
-            put(PurchasingDataModel.Key_productUUIDUri, purchasingDataModel.productUUIDUri)
+            put(PurchasingDataModel.Key_productImageUri, purchasingDataModel.productImageUri)
+            put(PurchasingDataModel.Key_productNames, purchasingDataModel.productNames)
+            put(PurchasingDataModel.Key_productRFIDs, purchasingDataModel.productRFIDs)
+            put(PurchasingDataModel.Key_productWeights, purchasingDataModel.productWeights)
+            put(PurchasingDataModel.Key_productPrices, purchasingDataModel.productPrices)
             put(PurchasingDataModel.Key_orderNo, purchasingDataModel.orderNo)
             put(PurchasingDataModel.Key_supplierUUID, purchasingDataModel.supplierUUID)
             put(PurchasingDataModel.Key_totalAmount, purchasingDataModel.totalAmount)
             put(PurchasingDataModel.Key_date, purchasingDataModel.date)
-
+            put(PurchasingDataModel.Key_productUUIDs, purchasingDataModel.productUUIDs)
+            put(PurchasingDataModel.Key_purchaseStatus, purchasingDataModel.purchaseStatus)
         }
 
         db?.insert(PurchasingDataModel.TABLE_NAME_PURCHASING, null, purchasingValue)
@@ -507,11 +512,16 @@ class DatabaseHelper(cx: Context) {
 
         val purchasingValue = ContentValues().apply {
 
-            put(PurchasingDataModel.Key_productUUIDUri, purchasingDataModel.productUUIDUri)
+            put(PurchasingDataModel.Key_productImageUri, purchasingDataModel.productImageUri)
+            put(PurchasingDataModel.Key_productNames, purchasingDataModel.productNames)
+            put(PurchasingDataModel.Key_productRFIDs, purchasingDataModel.productRFIDs)
+            put(PurchasingDataModel.Key_productWeights, purchasingDataModel.productWeights)
+            put(PurchasingDataModel.Key_productPrices, purchasingDataModel.productPrices)
             put(PurchasingDataModel.Key_orderNo, purchasingDataModel.orderNo)
             put(PurchasingDataModel.Key_supplierUUID, purchasingDataModel.supplierUUID)
             put(PurchasingDataModel.Key_totalAmount, purchasingDataModel.totalAmount)
             put(PurchasingDataModel.Key_date, purchasingDataModel.date)
+            put(PurchasingDataModel.Key_productUUIDs, purchasingDataModel.productUUIDs)
 
         }
 
@@ -523,6 +533,20 @@ class DatabaseHelper(cx: Context) {
         )
 
     }
+
+    fun updatePurchaseStatus(purchasingUUID: String) {
+        open()
+
+        db?.update(
+            PurchasingDataModel.TABLE_NAME_PURCHASING,
+            ContentValues().apply {
+                put(PurchasingDataModel.Key_purchaseStatus, Constants.confirm)
+            },
+            "${PurchasingDataModel.Key_purchasingUUID} = ?",
+            arrayOf(purchasingUUID)
+        )
+    }
+
 
     // delete Purchase
     fun deletePurchase(purchaseUUID: String) {
@@ -538,7 +562,7 @@ class DatabaseHelper(cx: Context) {
 
     // Get All Purchase
     @SuppressLint("Range")
-    fun getAllPurchase(): ArrayList<PurchasingDataModel> {
+    suspend fun getAllPurchase(): ArrayList<PurchasingDataModel> {
 
         read()
 
@@ -561,8 +585,14 @@ class DatabaseHelper(cx: Context) {
                 purchasingData.purchasingUUID =
                     cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_purchasingUUID))
 
-                purchasingData.productUUIDUri =
-                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productUUIDUri))
+                purchasingData.productImageUri =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productImageUri))
+
+                purchasingData.productNames =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productNames))
+
+                purchasingData.productPrices =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productPrices))
 
                 purchasingData.orderNo =
                     cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_orderNo))
@@ -575,6 +605,18 @@ class DatabaseHelper(cx: Context) {
 
                 purchasingData.date =
                     cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_date))
+
+                purchasingData.productRFIDs =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productRFIDs))
+
+                purchasingData.productWeights =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productWeights))
+
+                purchasingData.productUUIDs =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productUUIDs))
+
+                purchasingData.purchaseStatus =
+                    cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_purchaseStatus))
 
 
                 purchaseList.add(purchasingData)
@@ -609,9 +651,6 @@ class DatabaseHelper(cx: Context) {
             purchasingData.purchasingUUID =
                 cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_purchasingUUID))
 
-            purchasingData.productUUIDUri =
-                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productUUIDUri))
-
             purchasingData.orderNo =
                 cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_orderNo))
 
@@ -623,6 +662,27 @@ class DatabaseHelper(cx: Context) {
 
             purchasingData.date =
                 cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_date))
+
+            purchasingData.productImageUri =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productImageUri))
+
+            purchasingData.productNames =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productNames))
+
+            purchasingData.productRFIDs =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productRFIDs))
+
+            purchasingData.productWeights =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productWeights))
+
+            purchasingData.productPrices =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productPrices))
+
+            purchasingData.productUUIDs =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_productUUIDs))
+
+            purchasingData.purchaseStatus =
+                cursor.getString(cursor.getColumnIndex(PurchasingDataModel.Key_purchaseStatus))
 
             cursor.close()
         }
@@ -891,7 +951,7 @@ class DatabaseHelper(cx: Context) {
         val contactValue = ContentValues().apply {
 
             put(ContactDataModel.Key_contactUUID, contactDataModel.contactUUID)
-            put(ContactDataModel.Key_profileUri, contactDataModel.profileUri)
+
             put(ContactDataModel.Key_firstName, contactDataModel.firstName)
             put(ContactDataModel.Key_lastName, contactDataModel.lastName)
             put(ContactDataModel.Key_phoneNumber, contactDataModel.phoneNumber)
@@ -1184,7 +1244,6 @@ class DatabaseHelper(cx: Context) {
 
         val contactValue = ContentValues().apply {
 
-            put(ContactDataModel.Key_profileUri, contactDataModel.profileUri)
             put(ContactDataModel.Key_firstName, contactDataModel.firstName)
             put(ContactDataModel.Key_lastName, contactDataModel.lastName)
             put(ContactDataModel.Key_emailAddress, contactDataModel.emailAddress)
@@ -1230,9 +1289,6 @@ class DatabaseHelper(cx: Context) {
                     cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_contactUUID))
                 contactData.userUUID =
                     cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_userUUID))
-
-                contactData.profileUri =
-                    cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_profileUri))
 
                 contactData.firstName =
                     cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_firstName))
@@ -1280,9 +1336,6 @@ class DatabaseHelper(cx: Context) {
                 cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_contactUUID))
             contactDataModel.userUUID =
                 cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_userUUID))
-
-            contactDataModel.profileUri =
-                cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_profileUri))
 
             contactDataModel.firstName =
                 cursor.getString(cursor.getColumnIndex(ContactDataModel.Key_firstName))
@@ -1953,7 +2006,9 @@ class DatabaseHelper(cx: Context) {
                     substring,
                     substring,
                     substring,
-                    substring))
+                    substring
+                )
+            )
 
             query = """
                 SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
@@ -1964,7 +2019,11 @@ class DatabaseHelper(cx: Context) {
                     LOWER(${ProductDataModel.Key_productRFIDCode}) LIKE LOWER(?) OR
                     LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
                 )
-                ${if (isEmptyRfidProduct){args.add(""); "AND ${ProductDataModel.Key_productRFIDCode} = ?" }else ""}
+                ${
+                if (isEmptyRfidProduct) {
+                    args.add(""); "AND ${ProductDataModel.Key_productRFIDCode} = ?"
+                } else ""
+            }
                 LIMIT ? OFFSET ?
             """
 
@@ -1984,7 +2043,9 @@ class DatabaseHelper(cx: Context) {
                     substring,
                     substring,
                     substring,
-                    categoryUUID))
+                    categoryUUID
+                )
+            )
 
             query = """
                 SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
@@ -1996,7 +2057,11 @@ class DatabaseHelper(cx: Context) {
                     LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
                 )
                 AND ${ProductDataModel.Key_categoryUUID} = ?
-                ${if (isEmptyRfidProduct){args.add(""); "AND ${ProductDataModel.Key_productRFIDCode} = ?" } else ""}
+                ${
+                if (isEmptyRfidProduct) {
+                    args.add(""); "AND ${ProductDataModel.Key_productRFIDCode} = ?"
+                } else ""
+            }
                 LIMIT ? OFFSET ?
             """
 
@@ -2092,7 +2157,9 @@ class DatabaseHelper(cx: Context) {
                     productNameSubstring,
                     productNameSubstring,
                     productNameSubstring,
-                    collectionUUID))
+                    collectionUUID
+                )
+            )
 
             query = """
                 SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
@@ -2104,7 +2171,11 @@ class DatabaseHelper(cx: Context) {
                     LOWER(${ProductDataModel.Key_productBarcodeData}) LIKE LOWER(?)
                 )
                 AND ${ProductDataModel.Key_collectionUUID} != ?
-                ${ if (isEmptyRfidProduct){ args.add(""); "AND ${ProductDataModel.Key_productRFIDCode} = ?" }else ""}
+                ${
+                if (isEmptyRfidProduct) {
+                    args.add(""); "AND ${ProductDataModel.Key_productRFIDCode} = ?"
+                } else ""
+            }
                 LIMIT ? OFFSET ?
             """
             args.addAll(
@@ -2124,7 +2195,9 @@ class DatabaseHelper(cx: Context) {
                     productNameSubstring,
                     productNameSubstring,
                     collectionUUID,
-                    categoryUUID))
+                    categoryUUID
+                )
+            )
 
             query = """
                 SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT}
@@ -2137,7 +2210,11 @@ class DatabaseHelper(cx: Context) {
                 )
                 AND ${ProductDataModel.Key_collectionUUID} != ?
                 AND ${ProductDataModel.Key_categoryUUID} = ?
-                ${if (isEmptyRfidProduct){ args.add("");  "AND ${ProductDataModel.Key_productRFIDCode} = ?" } else "" }
+                ${
+                if (isEmptyRfidProduct) {
+                    args.add(""); "AND ${ProductDataModel.Key_productRFIDCode} = ?"
+                } else ""
+            }
                 LIMIT ? OFFSET ?
             """
             args.addAll(
@@ -2425,13 +2502,18 @@ class DatabaseHelper(cx: Context) {
 
         if (categoryUUID == Constants.All) {
             // Query to count all products
-            query = "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} "+ if (isEmptyRfidProduct) { args.add(""); "WHERE ${ProductDataModel.Key_productRFIDCode} = ?"} else ""
+            query =
+                "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} " + if (isEmptyRfidProduct) {
+                    args.add(""); "WHERE ${ProductDataModel.Key_productRFIDCode} = ?"
+                } else ""
         } else {
             // Query to count products by categoryUUID
 
             args.add(categoryUUID)
             query =
-                "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ?"+ if (isEmptyRfidProduct) { args.add(""); "AND ${ProductDataModel.Key_productRFIDCode} = ?"} else ""
+                "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ?" + if (isEmptyRfidProduct) {
+                    args.add(""); "AND ${ProductDataModel.Key_productRFIDCode} = ?"
+                } else ""
         }
 
         val cursor: Cursor? = db?.rawQuery(query, args.toTypedArray())
@@ -2463,7 +2545,9 @@ class DatabaseHelper(cx: Context) {
             // Query to count all products
             args.add(collectionUUID)
             query =
-                "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} != ?"+ if (isEmptyRfidProduct) {args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?" } else ""
+                "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} != ?" + if (isEmptyRfidProduct) {
+                    args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?"
+                } else ""
 
         } else {
 
@@ -2472,7 +2556,9 @@ class DatabaseHelper(cx: Context) {
             args.add(collectionUUID)
 
             query =
-                "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? AND ${ProductDataModel.Key_collectionUUID} != ? "+ if (isEmptyRfidProduct) {args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?" } else ""
+                "SELECT COUNT(*) FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? AND ${ProductDataModel.Key_collectionUUID} != ? " + if (isEmptyRfidProduct) {
+                    args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?"
+                } else ""
         }
 
         val cursor: Cursor? = db?.rawQuery(query, args.toTypedArray())
@@ -2590,7 +2676,9 @@ class DatabaseHelper(cx: Context) {
 
             query =
                 "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ?" +
-                        if (isEmptyRfidProduct) { args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?" }else "" +
+                        if (isEmptyRfidProduct) {
+                            args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?"
+                        } else "" +
                                 " LIMIT ? OFFSET ?"
 
             args.add(Constants.Limit.toString())
@@ -2832,7 +2920,9 @@ class DatabaseHelper(cx: Context) {
 
             query =
                 "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} NOT LIKE ?" +
-                        if (isEmptyRfidProduct){ args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?" } else "" +
+                        if (isEmptyRfidProduct) {
+                            args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?"
+                        } else "" +
                                 " LIMIT ? OFFSET ?"
             //query = "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_collectionUUID} NOT LIKE ? LIMIT ? OFFSET ?"
 
@@ -2848,7 +2938,9 @@ class DatabaseHelper(cx: Context) {
 
             query =
                 "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_categoryUUID} = ? AND ${ProductDataModel.Key_collectionUUID} NOT LIKE ?" +
-                        if (isEmptyRfidProduct) { args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?" } else "" +
+                        if (isEmptyRfidProduct) {
+                            args.add(""); " AND ${ProductDataModel.Key_productRFIDCode} = ?"
+                        } else "" +
                                 " LIMIT ? OFFSET ?"
 
             args.add(Constants.Limit.toString())
@@ -3367,6 +3459,27 @@ class DatabaseHelper(cx: Context) {
             put(ProductDataModel.Key_productBarcodeData, productDataModel.productBarcodeData)
             put(ProductDataModel.Key_productImageUri, productDataModel.productImageUri)
             put(ProductDataModel.Key_stockLocationUUID, productDataModel.stockLocationUUID)
+        }
+
+        db?.update(
+            ProductDataModel.TABLE_NAME_PRODUCT,
+            productValue,
+            "${ProductDataModel.Key_productUUID} == ?",
+            arrayOf(productDataModel.productUUID)
+        )
+
+    }
+
+    fun updateProductDetails(productDataModel: ProductDataModel) {
+
+        open()
+
+        val productValue = ContentValues().apply {
+
+            put(ProductDataModel.Key_productName, productDataModel.productName)
+            put(ProductDataModel.Key_productRFIDCode, productDataModel.productRFIDCode)
+            put(ProductDataModel.Key_productWeight, productDataModel.productWeight)
+            put(ProductDataModel.Key_productPrice, productDataModel.productPrice)
         }
 
         db?.update(

@@ -61,7 +61,6 @@ class ContactFragment : Fragment(), View.OnClickListener {
 
     private var selectedContactData: ContactDataModel? = null
 
-
     // for Opening the Camera Dialog
     private var forCameraSettingDialog = 100
 
@@ -154,7 +153,7 @@ class ContactFragment : Fragment(), View.OnClickListener {
     }
 
     // Open Setting Dialog
-    private fun showOpenSettingDialog(dialogCode: Int) {
+    fun showOpenSettingDialog(dialogCode: Int) {
 
         val dialog = Dialog(requireActivity())
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -301,14 +300,6 @@ class ContactFragment : Fragment(), View.OnClickListener {
                             binding.etEmail?.setText(contactDataModel.emailAddress)
                             binding.tvType?.text = contactDataModel.type
 
-                            isProfileSelected = true
-
-                            binding.ivProfile?.setImageBitmap(contactDataModel.profileUri?.let {
-                                Utils.getImageFromInternalStorage(
-                                    requireActivity(),
-                                    it
-                                )
-                            })
 
                             selectedContactData = contactDataModel
 
@@ -375,18 +366,7 @@ class ContactFragment : Fragment(), View.OnClickListener {
 
         val contactDataModel = ContactDataModel()
 
-        val profileUri = Utils.generateUUId()
-
-        binding.ivProfile?.drawable?.let {
-            Utils.saveToInternalStorage(
-                requireActivity(),
-                it.toBitmap(), profileUri
-            )
-        }
-
         contactDataModel.contactUUID = Utils.generateUUId()
-        contactDataModel.profileUri = profileUri
-
 
         contactDataModel.firstName = binding.etFirstName?.text.toString().trim()
         contactDataModel.lastName = binding.etLastName?.text.toString().trim()
@@ -409,7 +389,7 @@ class ContactFragment : Fragment(), View.OnClickListener {
         // Setting Up Contact List Recycler View
         setContactRecyclerView()
 
-//        GetProgressBar.getInstance(requireActivity())?.dismiss()
+        GetProgressBar.getInstance(requireActivity())?.dismiss()
 
     }
 
@@ -426,7 +406,6 @@ class ContactFragment : Fragment(), View.OnClickListener {
         binding.llPhysicalPerson?.setBackgroundColor(requireActivity().getColor(R.color.white))
         binding.llLegalEntity?.setBackgroundColor(requireActivity().getColor(R.color.white))
 
-
     }
 
     // Update Contact
@@ -434,24 +413,9 @@ class ContactFragment : Fragment(), View.OnClickListener {
 
         val contactDataModel = ContactDataModel()
 
-        selectedContactData?.profileUri?.let {
-            Utils.deleteImageFromInternalStorage(
-                requireActivity(),
-                it
-            )
-        }
-
-        val profileUri = Utils.generateUUId()
-
 
         withContext(Dispatchers.Main) {
 
-            binding.ivProfile?.drawable?.let {
-                Utils.saveToInternalStorage(
-                    requireActivity(),
-                    it.toBitmap(), profileUri
-                )
-            }
             contactDataModel.firstName = binding.etFirstName?.text.toString().trim()
             contactDataModel.lastName = binding.etLastName?.text.toString().trim()
             contactDataModel.phoneNumber = binding.etPhoneNumber?.text.toString().trim()
@@ -462,7 +426,6 @@ class ContactFragment : Fragment(), View.OnClickListener {
         }
 
         contactDataModel.contactUUID = selectedContactData?.contactUUID
-        contactDataModel.profileUri = profileUri
 
         Utils.updateContactInTheContactTable(contactDataModel)
 
@@ -700,14 +663,8 @@ class ContactFragment : Fragment(), View.OnClickListener {
             (requireActivity() as DashboardActivity).navController?.popBackStack()
         } else if (v == binding.mcvSave) {
 
-            if (isProfileSelected) {
-
-                lifecycleScope.launch(Dispatchers.Main) {
-                    validate()
-                }
-
-            } else {
-                Utils.T(requireActivity(), getString(R.string.please_select_profile))
+            lifecycleScope.launch(Dispatchers.Main) {
+                validate()
             }
 
         } else if (v == binding.mcvEditProfile) {

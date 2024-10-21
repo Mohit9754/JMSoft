@@ -7,7 +7,6 @@ class ContactDataModel {
 
     var contactId:Int? = null
     var contactUUID:String? = null
-    var profileUri:String? = null
     var firstName:String? = null
     var lastName:String? = null
     var phoneNumber:String? = null
@@ -24,7 +23,6 @@ class ContactDataModel {
 
         const val Key_contactId = "contactId"
         const val Key_contactUUID = "contactUUID"
-        const val Key_profileUri = "profileUri"
         const val Key_firstName= "firstName"
         const val Key_lastName= "lastName"
         const val Key_phoneNumber= "phoneNumber"
@@ -38,7 +36,6 @@ class ContactDataModel {
             val CreateTableAddressQuery = ("create table " + TABLE_NAME_CONTACT + " ("
                     + Key_contactId + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     Key_contactUUID + " text," +
-                    Key_profileUri + " text," +
                     Key_firstName + " text," +
                     Key_lastName + " text," +
                     Key_phoneNumber + " text," +

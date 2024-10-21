@@ -5,15 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentPurchasingBinding
-import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.AdapterPurchasing
-import com.jmsoft.main.adapter.ProductListAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class PurchasingFragment : Fragment(), View.OnClickListener {
 
@@ -31,16 +32,20 @@ class PurchasingFragment : Fragment(), View.OnClickListener {
         return binding.root
     }
 
-    private fun setPurchasingRecyclerView() {
+    private suspend fun setPurchasingRecyclerView() {
 
-        val purchasingList = Utils.getAllPurchase()
+        val result = lifecycleScope.async(Dispatchers.IO) {
+            return@async Utils.getAllPurchase()
+        }
+
+        val purchasingList = result.await()
 
         if (purchasingList.isNotEmpty()) {
 
             binding.llEmptyPurchasing?.visibility = View.GONE
             binding.mcvPurchasingList?.visibility = View.VISIBLE
 
-            val adapterPurchasing = AdapterPurchasing(requireActivity(),purchasingList,binding)
+            val adapterPurchasing = AdapterPurchasing(requireActivity(),purchasingList,binding,lifecycleScope)
 
             binding.rvPurchasing?.layoutManager =
                 LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
@@ -58,7 +63,9 @@ class PurchasingFragment : Fragment(), View.OnClickListener {
 
     private fun init() {
 
-        setPurchasingRecyclerView()
+        lifecycleScope.launch {
+            setPurchasingRecyclerView()
+        }
 
     }
 

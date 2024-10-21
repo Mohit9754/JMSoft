@@ -834,8 +834,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
                     addDuplicate = true
                     newProduct()
-                }
-                else {
+                } else {
 
                     binding.etRFIDCode.setText(productData.productRFIDCode)
 
@@ -1075,7 +1074,11 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     // Add or update product
     @SuppressLint("NotifyDataSetChanged")
-    private suspend fun addOrUpdateProduct(productDataModel: ProductDataModel?) {
+    private suspend fun addOrUpdateProduct(
+        productDataModel: ProductDataModel?,
+        isSaveButtonClicked: Boolean,
+        isNextButtonClicked: Boolean
+    ) {
 
         val productData = ProductDataModel()
 
@@ -1155,11 +1158,22 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         withContext(Dispatchers.Main) {
 
-            if (addDuplicate) {
-                (requireActivity() as DashboardActivity).navController?.popBackStack()
-            }
+            if (isSaveButtonClicked) {
 
-            (requireActivity() as DashboardActivity).navController?.popBackStack()
+                if (addDuplicate) {
+                    (requireActivity() as DashboardActivity).navController?.popBackStack()
+                }
+
+                (requireActivity() as DashboardActivity).navController?.popBackStack()
+
+            } else {
+
+                if (isNextButtonClicked) {
+                    changePage(1)
+                } else {
+                    changePage(-1)
+                }
+            }
         }
     }
 
@@ -1234,7 +1248,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
     }
 
     /* validate input details */
-    private fun validate() {
+    private fun validate(isSaveButtonClicked: Boolean, isNextButtonClicked: Boolean) {
 
         val errorValidationModel: MutableList<ValidationModel> = ArrayList()
 
@@ -1318,7 +1332,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         if (resultReturn?.aBoolean == true) {
 
             lifecycleScope.launch(Dispatchers.Default) {
-                addOrUpdateProduct(productDataModel)
+                addOrUpdateProduct(productDataModel, isSaveButtonClicked, isNextButtonClicked)
             }
 
         } else {
@@ -1813,33 +1827,40 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
                     GetProgressBar.getInstance(requireContext())?.show()
 
-                    val sharedPreferences = requireActivity().getSharedPreferences(Constants.frequencyData, Context.MODE_PRIVATE)
+                    val sharedPreferences = requireActivity().getSharedPreferences(
+                        Constants.frequencyData,
+                        Context.MODE_PRIVATE
+                    )
 
                     val defaultValue = 0 // Default value if the key doesn't exist
-                    val frequencyIndex = sharedPreferences.getInt(Constants.frequencyIndex, defaultValue)
+                    val frequencyIndex =
+                        sharedPreferences.getInt(Constants.frequencyIndex, defaultValue)
 
-                    rfidSetUp?.onResume(device[0].address,fValues[frequencyIndex], object : PairStatusCallback {
+                    rfidSetUp?.onResume(
+                        device[0].address,
+                        fValues[frequencyIndex],
+                        object : PairStatusCallback {
 
-                        override fun pairSuccess() {
+                            override fun pairSuccess() {
 
-                            GetProgressBar.getInstance(requireContext())?.dismiss()
+                                GetProgressBar.getInstance(requireContext())?.dismiss()
 
 
 //                            Utils.T(requireActivity(),"Scanning started")
 
 
-                        }
+                            }
 
-                        override fun pairFail() {
+                            override fun pairFail() {
 
-                            GetProgressBar.getInstance(requireContext())?.dismiss()
+                                GetProgressBar.getInstance(requireContext())?.dismiss()
 
 
 //                            binding.ivScan?.setImageResource(R.drawable.icon_play)
 
-                        }
+                            }
 
-                    })
+                        })
                 }
             }
 
@@ -1883,7 +1904,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         if (productUUIDIndex != -1) {
 
-            GetProgressBar.getInstance(requireActivity())?.show()
+            //GetProgressBar.getInstance(requireActivity())?.show()
 
             val navOptions = NavOptions.Builder()
                 .setPopUpTo(R.id.productInventory, true)
@@ -1968,10 +1989,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             showAddOrEditCategoryDialog(null, null)
         } else if (v == binding.mcvSave) {
 
-            // Dismiss progress bar
             GetProgressBar.getInstance(requireActivity())?.show()
 
-            validate()
+            validate(true, false)
         }
 
         // When Back button clicked
@@ -2027,10 +2047,18 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         } else if (v == binding.root) {
             hideKeyboard(requireActivity())
         } else if (v == binding.mcvPrevious) {
-            changePage(-1)
+
+            GetProgressBar.getInstance(requireActivity())?.show()
+
+            validate(false, false)
+
+
         } else if (v == binding.mcvNext) {
 
-            changePage(1)
+            GetProgressBar.getInstance(requireActivity())?.show()
+
+            validate(false, true)
+
 
         }
     }

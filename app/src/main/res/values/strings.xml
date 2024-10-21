@@ -338,6 +338,7 @@
     <string name="purchase_added_successfully">Purchase added successfully!</string>
     <string name="purchasing_is_empty">Purchasing is empty</string>
     <string name="are_you_sure_you_want_to_delete_this_purchase_this_action_cannot_be_undone">Are you sure you want to delete this purchase ? This action cannot be undone</string>
+
     <string name="purchase_updated_successfully">Purchase updated successfully!</string>
     <string name="add_products">Add Products</string>
     <string name="select_supplier">Select supplier</string>
@@ -345,6 +346,17 @@
     <string name="update_purchase">Update purchase</string>
     <string name="add_new_product">Add new Product</string>
     <string name="submit">Submit</string>
+    <string name="product_list">Product List</string>
+    <string name="please_add_at_least_one_product">Please add at least one product.</string>
+    <string name="total_amount_">Total Amount -</string>
+    <string name="please_enter_the_product_price">Please enter the product price.</string>
+    <string name="please_enter_the_product_weight">Please enter the product weight.</string>
+    <string name="please_enter_the_product_name">Please enter the product name.</string>
+    <string name="price_dh">Price (DH)</string>
+    <string name="reference">Reference</string>
+    <string name="enter_reference">Enter reference</string>
+    <string name="add_supplier">Add supplier</string>
+    <string name="product_updated_successfully">Product updated successfully</string>
 
     <string-array name="arrayFrequency">
 

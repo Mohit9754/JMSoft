@@ -215,6 +215,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             }
         }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -395,6 +396,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
             binding.spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
+                @RequiresApi(Build.VERSION_CODES.N)
                 override fun onItemSelected(
                     parent: AdapterView<*>?,
                     view: View?,
@@ -455,7 +457,6 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             binding.mcvImport?.visibility = View.GONE
 //            binding.mcvAddProduct?.visibility = View.GONE
 
-
         } else {
             binding.tvTitle?.text = getString(R.string.product)
         }
@@ -463,7 +464,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         if (isPurchase == true) {
 
             selectedProductUUIDList = ArrayList(Utils.SelectedProductUUIDList.getProductList())
-            Utils.SelectedProductUUIDList.clearList()
+//            Utils.SelectedProductUUIDList.clearList()
 
             isEmptyRfidProduct = true
         }
@@ -530,6 +531,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
     }
 
     // Set page no recycler view
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun setPageNoRecyclerView() {
 
         binding.llPageIndicator?.visibility = View.VISIBLE
@@ -681,6 +683,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private suspend fun init() {
 
         // Checks fragment state
@@ -754,6 +757,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
+            @RequiresApi(Build.VERSION_CODES.N)
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
                 if (s?.isEmpty() == true) {
@@ -774,6 +778,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
     }
 
     // Get Product data
+    @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("SuspiciousIndentation")
     private suspend fun getProductData() {
 
@@ -804,7 +809,13 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
     }
 
     // Set Product Recycler View
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun setProductRecyclerView() {
+
+        if (isPurchase == true) {
+            val selectedProductUUIDSet = selectedProductUUIDList.toSet()
+            productDataList.removeIf { it.productUUID in selectedProductUUIDSet }
+        }
 
         if (productDataList.isNotEmpty()) {
 
@@ -854,6 +865,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onReadSuccess(productList: ArrayList<ProductDataModel>) {
 
         Utils.T(requireActivity(), getString(R.string.readed_successfully))
@@ -885,6 +897,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         GetProgressBar.getInstance(requireActivity())?.dismiss()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private suspend fun getProductWithDetailSearch() {
 
         val categoryUUID =
@@ -1244,6 +1257,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
     }
 
     // Handle all the clicks
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onClick(v: View?) {
 
         // Clicked on back button
@@ -1265,8 +1279,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
             if (isPurchase == true) {
 
-                Utils.SelectedProductUUIDList.setProductList(selectedProductUUIDList)
+                GetProgressBar.getInstance(requireActivity())?.show()
 
+                //  Utils.SelectedProductUUIDList.setProductList(selectedProductUUIDList)
                 (requireActivity() as DashboardActivity).navController?.popBackStack()
 
             }

@@ -35,7 +35,6 @@ class ProductListAdapter(
 ) :
     RecyclerView.Adapter<ProductListAdapter.MyViewHolder>() {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = ItemProductListBinding.inflate(LayoutInflater.from(context), parent, false)
         return MyViewHolder(view)
@@ -215,16 +214,20 @@ class ProductListAdapter(
                 binding.cbProduct.visibility = View.VISIBLE
                 binding.mcvDelete.visibility = View.GONE
 
-                if (selectedProductUUIDList.any { it == productData.productUUID  })
+                if (selectedProductUUIDList.any { it == productData.productUUID  }){
                     binding.cbProduct.isChecked = true
+                    productData.productUUID?.let { Utils.SelectedProductUUIDList.addProductUUID(it) }
+                }
 
                 binding.cbProduct.setOnCheckedChangeListener { _, isChecked ->
 
                     if (isChecked) {
-                        productData.productUUID?.let { selectedProductUUIDList.add(it) }
+                       // productData.productUUID?.let { selectedProductUUIDList.add(it) }
+                        productData.productUUID?.let { Utils.SelectedProductUUIDList.addProductUUID(it) }
 
                     } else {
-                        selectedProductUUIDList.remove(productData.productUUID)
+                        productData.productUUID?.let { Utils.SelectedProductUUIDList.removeProductUUID(it) }
+//                        selectedProductUUIDList.remove(productData.productUUID)
                     }
                 }
             }

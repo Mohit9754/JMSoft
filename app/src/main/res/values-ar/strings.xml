@@ -355,6 +355,14 @@
     <string name="add_new_product">إضافة منتج جديد</string>
     <string name="submit">يُقدِّم</string>
 
-
+    <string name="product_list">قائمة المنتجات</string>
+    <string name="please_add_at_least_one_product">الرجاء إضافة منتج واحد على الأقل.</string>
+    <string name="total_amount_">المبلغ الإجمالي -</string>
+    <string name="please_enter_the_product_price">الرجاء إدخال سعر المنتج.</string>
+    <string name="please_enter_the_product_weight">الرجاء إدخال وزن المنتج.</string>
+    <string name="please_enter_the_product_name">الرجاء إدخال اسم المنتج.</string>
+    <string name="price_dh">السعر (درهم)</string>
+    <string name="reference">مرجع</string>
+    <string name="enter_reference">أدخل المرجع</string>
 
 </resources>
