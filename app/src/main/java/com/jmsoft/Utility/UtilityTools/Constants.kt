@@ -229,6 +229,15 @@ interface Constants {
         const val edit = "edit"
         const val add = "add"
 
+        //wifi security
+        const val WEP = "WEP"
+        const val WPA = "WPA"
+        const val WPA2 = "WPA2"
+        const val WPA3 = "WPA3"
+        const val PSK = "PSK"
+        const val EAP = "EAP"
+
+
         const val Status = "Status"
 //        const val Pending = "Pending"
         const val Completed = "Completed"

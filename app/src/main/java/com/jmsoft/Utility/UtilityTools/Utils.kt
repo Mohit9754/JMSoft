@@ -22,6 +22,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.location.Address
 import android.location.Geocoder
+import android.location.LocationManager
 import android.media.MediaMetadataRetriever
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -44,6 +45,8 @@ import android.text.InputType
 import android.text.Spanned
 import android.text.TextWatcher
 import android.text.format.DateFormat
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Base64
 import android.util.DisplayMetrics
 import android.util.Log
@@ -244,6 +247,23 @@ object Utils {
         return data.trim().lowercase(Locale.getDefault()).capitalize(Locale.ROOT)
     }
 
+    fun openWifiSettings(context: Context) {
+        val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
+        context.startActivity(intent)
+    }
+
+    fun openLocationSettings(context: Context) {
+        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        context.startActivity(intent)
+    }
+
+    fun isLocationEnabled(context: Context): Boolean {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+
     // Convert data to barcode
     fun genBarcodeBitmap(context: Context, data: String): Bitmap? {
 
@@ -303,6 +323,24 @@ object Utils {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+    }
+
+    fun passwordVisibility(isPasswordVisible:Boolean,etPassword: EditText,imageVisibility: ImageView) {
+
+        if (!isPasswordVisible) {
+
+            imageVisibility.setImageResource(R.drawable.icon_hide)
+            etPassword.transformationMethod =
+                HideReturnsTransformationMethod.getInstance()
+            etPassword.setSelection(etPassword.length())
+
+        } else {
+
+            imageVisibility.setImageResource(R.drawable.icon_show)
+            etPassword.transformationMethod =
+                PasswordTransformationMethod.getInstance()
+            etPassword.setSelection(etPassword.length())
+        }
     }
 
     fun setFocusAndTextChangeListener(

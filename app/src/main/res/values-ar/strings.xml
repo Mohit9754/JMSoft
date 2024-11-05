@@ -365,4 +365,15 @@
     <string name="reference">مرجع</string>
     <string name="enter_reference">أدخل المرجع</string>
 
+    <string name="add_supplier">إضافة المورد</string>
+    <string name="product_updated_successfully">تم تحديث المنتج بنجاح</string>
+    <string name="connect">يتصل</string>
+    <string name="wpa_wpa2_personal">WPA/WPA2-Personal</string>
+    <string name="security">حماية</string>
+    <string name="connected_successfully">تم الاتصال بنجاح</string>
+    <string name="authentication_failed_please_check_your_password_and_try_again">فشلت المصادقة. يرجى التحقق من كلمة المرور الخاصة بك والمحاولة مرة أخرى.</string>
+    <string name="failed_to_connect_to_the_network">فشل الاتصال بالشبكة.</string>
+    <string name="device_is_already_connected">الجهاز متصل بالفعل</string>
+
+
 </resources>

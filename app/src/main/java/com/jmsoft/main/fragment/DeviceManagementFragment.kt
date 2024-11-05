@@ -5,11 +5,21 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.wifi.ScanResult
+import android.net.wifi.WifiInfo
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +38,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.Utility.UtilityTools.RFIDSetUp
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_Scanner
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_tag_Printer
 import com.jmsoft.basic.UtilityTools.Constants.Companion.ticket_Printer
@@ -40,13 +49,18 @@ import com.jmsoft.databinding.FragmentDeviceManagementBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.BluetoothScanAdapter
 import com.jmsoft.main.adapter.DeviceListAdapter
+import com.jmsoft.main.adapter.WIFIScanAdapter
 import com.jmsoft.main.`interface`.BluetoothOffCallback
 import com.jmsoft.main.`interface`.ConnectedDeviceCallback
 import com.jmsoft.main.`interface`.DeviceFoundCallback
 import com.jmsoft.main.model.BluetoothScanModel
 import com.jmsoft.main.model.DeviceModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+
 
 class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
@@ -59,6 +73,21 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     private var isAddDeviceClicked = false
     private var addedDeviceList: ArrayList<DeviceModel> = ArrayList()
 
+    private var wifiScanList = ArrayList<ScanResult>()
+
+    private lateinit var wifiManager: WifiManager
+    private lateinit var connectivityManager: ConnectivityManager
+
+    private val scanIntervalMillis = 30000L // 30 seconds
+
+    private var wifiScanAdapter: WIFIScanAdapter? = null
+
+    private var bottomSheetWIFIScan: BottomSheetDialog? = null
+    private var bottomSheetWIFIBinding: BottomSheetDialog? = null
+    private var wifiScanReceiver: BroadcastReceiver? = null
+
+    private var isBluetoothReceiverRegistered = false
+
     // Permission for above 11 version
     @RequiresApi(Build.VERSION_CODES.S)
     val permissionsForVersionAbove11 = arrayOf(
@@ -67,16 +96,19 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         Manifest.permission.BLUETOOTH_SCAN,
         Manifest.permission.BLUETOOTH_ADMIN,
         Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_WIFI_STATE,
+        Manifest.permission.CHANGE_WIFI_STATE
     )
 
     // Permission for below 12 version
     private val permissionsForVersionBelow12 = arrayOf(
-
         Manifest.permission.BLUETOOTH,
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.BLUETOOTH_ADMIN
+        Manifest.permission.BLUETOOTH_ADMIN,
+        Manifest.permission.ACCESS_WIFI_STATE,
+        Manifest.permission.CHANGE_WIFI_STATE
     )
 
     // Bluetooth Intent for turn on the bluetooth
@@ -91,7 +123,6 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
                     addDeviceBottomSheet()
                     isAddDeviceClicked = false
                 } else {
-
                     //set Up the Device list
                     setRecyclerOfDeviceList()
                 }
@@ -99,7 +130,6 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
                 Utils.T(requireActivity(), "Turn on Bluetooth for Scanning")
             }
         }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -173,7 +203,6 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
     // Checks All the necessary permission related to bluetooth
     private var customPermissionLauncher = registerForActivityResult(
-
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         var allPermissionsGranted = true // Flag to track permission status
@@ -256,6 +285,13 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     // set the Clicks And initialization
     private suspend fun init() {
 
+        // Initialize the WifiManager
+        wifiManager =
+            requireActivity().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
+        connectivityManager =
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
         //Checks the Android Version And  Launch Custom Permission ,according to Version
         val job = lifecycleScope.launch(Dispatchers.Main) {
             checkAndroidVersionAndLaunchPermission()
@@ -277,6 +313,95 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Function to start continuous Wi-Fi scanning using Coroutines
+    @SuppressLint("MissingPermission")
+    private fun startContinuousWifiScan() {
+        wifiScanReceiver = object : BroadcastReceiver() {
+            @SuppressLint("MissingPermission")
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val wifiScanResults: List<ScanResult> = wifiManager.scanResults
+                handleScanResults(wifiScanResults)
+
+                // Unregister after receiving scan results to avoid multiple registrations
+                context?.unregisterReceiver(this)
+                isBluetoothReceiverRegistered = false // Update the registration status
+            }
+        }
+
+        // Use lifecycleScope to launch the coroutine
+        viewLifecycleOwner.lifecycleScope.launch {
+            while (isActive) {
+                // Check if Fragment is added before proceeding
+                if (isAdded) {
+                    if (wifiManager.isWifiEnabled) {
+                        // Register the receiver just before starting the scan
+                        if (!isBluetoothReceiverRegistered) {
+                            context?.registerReceiver(
+                                wifiScanReceiver,
+                                IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
+                            )
+                            isBluetoothReceiverRegistered = true // Update the registration status
+                        }
+
+                        val success = wifiManager.startScan()
+                        if (!success) {
+                            if (!Utils.isLocationEnabled(requireActivity())) {
+                                Utils.openLocationSettings(requireActivity())
+                            }
+                        }
+                    } else {
+                        Utils.openWifiSettings(requireActivity())
+                    }
+                } else {
+                    // If the Fragment is not added, exit the loop
+                    break
+                }
+                delay(scanIntervalMillis) // Wait before the next scan
+            }
+        }
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        // Unregister the receiver only if it is registered
+        if (isBluetoothReceiverRegistered) {
+            context?.unregisterReceiver(wifiScanReceiver)
+            isReceiverRegistered = false // Reset the registration status
+        }
+
+        // Cancel the background scanning coroutine when the view is destroyed
+//        coroutineContext.cancel()
+    }
+
+    // Function to handle Wi-Fi scan results
+    @SuppressLint("NotifyDataSetChanged")
+    private fun handleScanResults(scanResults: List<ScanResult>) {
+
+        for (result in scanResults) {
+
+            val ssid = result.SSID
+            val bssid = result.BSSID
+            val signalLevel = result.level
+
+            // Check if the BSSID is already in the list before adding
+            if (wifiScanList.none { it.SSID == ssid }) {
+                wifiScanList.add(result)
+            }
+
+            // Process or display the network details as needed
+            Utils.E("scan data is  SSID: $ssid, BSSID: $bssid, Signal: $signalLevel")
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            wifiScanAdapter?.notifyDataSetChanged()
+
+            Utils.E("scan data ${wifiScanList.size} ${wifiScanAdapter == null}")
+
+        }
+    }
+
     //Checks the Android Version And  Launch Custom Permission ,according to Version
     private fun checkAndroidVersionAndLaunchPermission() {
 
@@ -288,6 +413,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
         }
     }
+
 
     //Creating Add device Bottom Sheet Dialog
     private fun addDeviceBottomSheet() {
@@ -308,7 +434,9 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
             deviceType = rfid_tag_Printer
             bottomSheetAddDevice.dismiss()
-            bluetoothScanBottomSheet()
+//            bluetoothScanBottomSheet()
+
+            wifiScanBottomSheet()
         }
 
         addDeviceBottomSheetBinding.mcvTicketPrinter.setOnClickListener {
@@ -337,7 +465,6 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             //set up Recycler View
             setRecyclerOfDeviceList()
         }
-
 
         val bluetoothScanList = ArrayList<BluetoothScanModel>()
         val adapter = BluetoothScanAdapter(
@@ -389,6 +516,84 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         bottomSheetBluetoothScan.show()
     }
 
+    @SuppressLint("MissingPermission")
+    private fun checkConnectedStatus(callBack: (WifiInfo?) -> Unit) {
+
+        val cm = context?.getSystemService(ConnectivityManager::class.java)
+
+        val activeNetwork = cm?.activeNetwork
+
+        val netCaps = cm?.getNetworkCapabilities(activeNetwork)
+
+        if (netCaps != null && netCaps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+
+            // Get the transportInfo, which should be of type WifiInfo
+            val wifiInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                netCaps.transportInfo as? WifiInfo
+            } else {
+                @Suppress("DEPRECATION") // Suppress deprecation warning for older versions
+                wifiManager.connectionInfo
+            }
+
+            // If wifiInfo is not null, retrieve the SSID
+            if (wifiInfo != null) {
+
+                callBack(wifiInfo)
+
+
+            } else {
+                // Handle the case when WifiInfo is null
+
+                callBack(null)
+
+            }
+        } else {
+            // Handle the case when there is no active network or it's not Wi-Fi
+            callBack(null)
+
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun wifiScanBottomSheet() {
+
+        bottomSheetWIFIScan = BottomSheetDialog(requireContext())
+        val bottomSheetWIFIBinding = BottomSheetBluetoothScanListBinding.inflate(layoutInflater)
+        bottomSheetWIFIScan?.setCancelable(true)
+        bottomSheetWIFIScan?.behavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetWIFIScan?.behavior?.maxWidth = LayoutParams.MATCH_PARENT
+        bottomSheetWIFIScan?.setContentView(bottomSheetWIFIBinding.root)
+
+        // val wifiInfo = wifiManager.connectionInfo
+
+        checkConnectedStatus {
+
+            Handler(Looper.getMainLooper()).post {
+
+                wifiScanAdapter = WIFIScanAdapter(requireActivity(), wifiScanList, it?.ssid,it?.bssid)
+                bottomSheetWIFIBinding.rvBtScanList.layoutManager =
+                    LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+                bottomSheetWIFIBinding.rvBtScanList.adapter = wifiScanAdapter
+
+            }
+        }
+
+        //show bottom sheet
+        // Check if the fragment is added and visible
+        if (isAdded && isVisible) {
+            // If the bottom sheet is already showing, dismiss it
+            if (bottomSheetWIFIScan?.isShowing == true) {
+                bottomSheetWIFIScan?.dismiss()
+            }
+            // Show the bottom sheet dialog
+            bottomSheetWIFIScan?.show()
+        }
+
+        //Scanning start
+        startContinuousWifiScan()
+
+    }
+
     //Handles All the Clicks
 
     override fun onClick(v: View?) {
@@ -399,6 +604,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             isAddDeviceClicked = true
             //Checks the Android Version And  Launch Custom Permission ,according to Version
             checkAndroidVersionAndLaunchPermission()
+
         } else if (v == binding.mcvBackBtn || v == binding.mcvNoDeviceBackBtn) {
 
             (requireActivity() as DashboardActivity).navController?.popBackStack()
@@ -417,6 +623,13 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             //Unregister Bluetooth State Receiver
             BluetoothUtils.unRegisterBluetoothStateReceiver(requireActivity())
         }
+
+        // Dismiss the bottom sheet if it's showing
+        bottomSheetWIFIScan?.dismiss()
+        bottomSheetWIFIScan = null // Optional: Clear reference to prevent memory leaks
+
     }
 
 }
+
+

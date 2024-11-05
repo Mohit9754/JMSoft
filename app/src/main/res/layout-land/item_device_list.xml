@@ -126,6 +126,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/_3sdp"
             android:layout_height="wrap_content">
 
             <ImageView
@@ -135,7 +136,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/_2sdp"
                 android:padding="@dimen/_3sdp"
-                android:src="@drawable/icon_delete" />
+                android:src="@drawable/icon_delete"
+                tools:ignore="ContentDescription" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/mcvReconnect"
