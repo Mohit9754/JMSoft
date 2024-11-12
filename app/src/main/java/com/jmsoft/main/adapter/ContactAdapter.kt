@@ -12,19 +12,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ImageView
-import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.R.color
-import com.jmsoft.Utility.Database.AddressDataModel
-import com.jmsoft.Utility.Database.ContactDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.ContactDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
-import com.jmsoft.databinding.FragmentCartBinding
 import com.jmsoft.databinding.FragmentContactBinding
 import com.jmsoft.databinding.ItemCardAddressBinding
-import com.jmsoft.main.`interface`.AddressSelectionStatus
 import com.jmsoft.main.`interface`.ContactSelectionStatus
 
 class ContactAdapter(
@@ -259,7 +255,7 @@ class ContactAdapter(
                     unSelectContact()
 
                     selectedContactBinding = null
-//                    Utils.T(context,"Already selected")
+
                 } else {
 
                     // making the previous selected contact normal
@@ -271,7 +267,6 @@ class ContactAdapter(
                     // Callback for Managing if any contact is selected or not
                     contactSelectionStatus.contactSelected(contactData)
                 }
-
             }
         }
     }

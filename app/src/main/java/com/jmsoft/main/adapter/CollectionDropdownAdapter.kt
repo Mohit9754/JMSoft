@@ -6,8 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.jmsoft.Utility.Database.CollectionDataModel
-import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.utility.database.CollectionDataModel
 import com.jmsoft.databinding.ItemCollectionDropdownBinding
 import com.jmsoft.main.`interface`.CollectionStatusCallback
 import com.jmsoft.main.model.SelectedCollectionModel

@@ -1,6 +1,6 @@
 package com.jmsoft.main.`interface`
 
-import com.jmsoft.Utility.Database.ContactDataModel
+import com.jmsoft.utility.database.ContactDataModel
 
 interface ContactSelectionStatus {
     fun contactSelected(contactDataModel: ContactDataModel)

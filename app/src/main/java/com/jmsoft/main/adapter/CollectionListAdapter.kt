@@ -12,8 +12,8 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CollectionDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.CollectionDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
@@ -21,7 +21,7 @@ import com.jmsoft.databinding.FragmentMetalTypeBinding
 import com.jmsoft.databinding.ItemInventoryBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.`interface`.EditInventoryCallback
-import java.util.UUID
+
 
 /**
  * Collection List Adapter
@@ -169,33 +169,36 @@ class CollectionListAdapter(
         override fun onClick(v: View?) {
 
             // When delete button Clicked
-            if (v == binding.mcvDelete) {
+            when (v) {
 
-                // Show Metal Type Delete Dialog
-                collectionData.collectionUUID?.let { collectionData.collectionImageUri?.let { it1 ->
-                    showCollectionDeleteDialog(position, it,
-                        it1
-                    )
-                } }
-            }
+                binding.mcvDelete -> {
 
-            // When edit button Clicked
-            else if(v == binding.mcvEdit) {
-                collectionData.collectionUUID?.let { editCollectionCallback.editInventory(it,position) }
-            }
+                    // Show Metal Type Delete Dialog
+                    collectionData.collectionUUID?.let { collectionData.collectionImageUri?.let { it1 ->
+                        showCollectionDeleteDialog(position, it,
+                            it1
+                        )
+                    } }
+                }
 
-            // Clicked on collection
-            else if (v == binding.mcvInventory) {
+                // When edit button Clicked
+                binding.mcvEdit -> {
+                    collectionData.collectionUUID?.let { editCollectionCallback.editInventory(it,position) }
+                }
 
-                GetProgressBar.getInstance(context)?.show()
+                // Clicked on collection
+                binding.mcvInventory -> {
 
-                val bundle = Bundle()
+                    GetProgressBar.getInstance(context)?.show()
 
-                //Giving the collection UUID
-                bundle.putString(Constants.collectionUUID,collectionData.collectionUUID)
+                    val bundle = Bundle()
 
-                (context as DashboardActivity).navController?.navigate(R.id.collectionDetail, bundle)
+                    //Giving the collection UUID
+                    bundle.putString(Constants.collectionUUID,collectionData.collectionUUID)
 
+                    (context as DashboardActivity).navController?.navigate(R.id.collectionDetail, bundle)
+
+                }
             }
 
         }

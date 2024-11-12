@@ -33,7 +33,8 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_arabic_semibold"
                 android:text="@string/jenny_wilson"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                tools:ignore="SmallSp" />
 
             <TextView
                 android:id="@+id/tvEmail"
@@ -43,7 +44,8 @@
                 android:fontFamily="@font/montserrat_arabic_regular"
                 android:text="@string/jenny_123gmail_com"
                 android:textColor="@color/device_text_color"
-                android:textSize="9sp" />
+                android:textSize="9sp"
+                tools:ignore="SmallSp" />
 
             <TextView
                 android:id="@+id/tvPhoneNumber"
@@ -53,7 +55,8 @@
                 android:fontFamily="@font/montserrat_arabic_semibold"
                 android:text="@string/_21_987654321"
                 android:textColor="@color/device_text_color"
-                android:textSize="9sp" />
+                android:textSize="9sp"
+                tools:ignore="SmallSp" />
 
         </LinearLayout>
 
@@ -65,7 +68,8 @@
             android:layout_marginTop="@dimen/_2sdp"
             android:layout_marginEnd="@dimen/_3sdp"
             android:padding="@dimen/_2sdp"
-            android:src="@drawable/icon_delete" />
+            android:src="@drawable/icon_delete"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:layout_width="@dimen/_14sdp"
@@ -74,7 +78,8 @@
             android:id="@+id/ivEditProfile"
             android:layout_toStartOf="@+id/ivDelete"
             android:padding="@dimen/_2sdp"
-            android:src="@drawable/icon_edit" />
+            android:src="@drawable/icon_edit"
+            tools:ignore="ContentDescription" />
 
 
     </RelativeLayout>

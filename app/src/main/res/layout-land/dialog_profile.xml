@@ -19,7 +19,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:id="@+id/llTakePhoto">
+            android:id="@+id/llTakePhoto"
+            tools:ignore="UselessParent">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -62,7 +63,8 @@
                     android:paddingVertical="@dimen/_6sdp"
                     android:text="@string/choose_from_photo_library"
                     android:textColor="@color/theme"
-                    android:textSize="10sp" />
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -86,7 +88,8 @@
                     android:paddingVertical="@dimen/_6sdp"
                     android:text="@string/capture_with_camera"
                     android:textColor="@color/white"
-                    android:textSize="10sp" />
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
 
             </com.google.android.material.card.MaterialCardView>
 

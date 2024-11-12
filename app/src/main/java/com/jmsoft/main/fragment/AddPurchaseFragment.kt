@@ -16,7 +16,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,18 +27,18 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toBitmap
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.ContactDataModel
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.Database.PurchasingDataModel
-import com.jmsoft.Utility.UtilityTools.BluetoothUtils
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.Utility.UtilityTools.RFIDSetUp
+import com.jmsoft.utility.database.ContactDataModel
+import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.utility.database.PurchasingDataModel
+import com.jmsoft.utility.UtilityTools.BluetoothUtils
+import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.UtilityTools.RFIDSetUp
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.validation.ResultReturn
@@ -62,6 +61,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+@Suppress("DEPRECATION")
 class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
     RFIDSetUp.RFIDCallback {
 
@@ -253,8 +253,8 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val image_uri: Uri? = result.data?.data
-                addSupplierBinding?.ivProfile?.setImageURI(image_uri)
+                val imageUri: Uri? = result.data?.data
+                addSupplierBinding?.ivProfile?.setImageURI(imageUri)
                 isProfileSelected = true
 
 //                updateProfile(binding.ivProfile?.drawable?.toBitmap())
@@ -266,12 +266,10 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
     private var cameraActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result != null) {
-            if (result.resultCode == Activity.RESULT_OK) {
-                addSupplierBinding?.ivProfile?.setImageBitmap(result.data?.extras?.get("data") as Bitmap?)
-                isProfileSelected = true
+        if (result.resultCode == Activity.RESULT_OK) {
+            addSupplierBinding?.ivProfile?.setImageBitmap(result.data?.extras?.get("data") as Bitmap?)
+            isProfileSelected = true
 //                updateProfile(binding.ivProfile?.drawable?.toBitmap())
-            }
         }
     }
 
@@ -618,7 +616,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
 
     }
 
-    private suspend fun setProductList(): Boolean {
+    private fun setProductList(): Boolean {
 
         productDataModelList.clear()
 
@@ -659,7 +657,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         return true
     }
 
-    private suspend fun storeImageInInternalStorage(): Boolean {
+    private fun storeImageInInternalStorage(): Boolean {
 
         for (product in productDataModelList) {
 

@@ -36,8 +36,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jmsoft.R
-import com.jmsoft.Utility.UtilityTools.BluetoothUtils
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.UtilityTools.BluetoothUtils
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_Scanner
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_tag_Printer
 import com.jmsoft.basic.UtilityTools.Constants.Companion.ticket_Printer
@@ -61,7 +61,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-
+@Suppress("DEPRECATION")
 class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentDeviceManagementBinding
@@ -83,7 +83,6 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
     private var wifiScanAdapter: WIFIScanAdapter? = null
 
     private var bottomSheetWIFIScan: BottomSheetDialog? = null
-    private var bottomSheetWIFIBinding: BottomSheetDialog? = null
     private var wifiScanReceiver: BroadcastReceiver? = null
 
     private var isBluetoothReceiverRegistered = false
@@ -371,8 +370,6 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             isReceiverRegistered = false // Reset the registration status
         }
 
-        // Cancel the background scanning coroutine when the view is destroyed
-//        coroutineContext.cancel()
     }
 
     // Function to handle Wi-Fi scan results
@@ -554,6 +551,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // Wifi Scan BottomSheet
     @SuppressLint("MissingPermission")
     private fun wifiScanBottomSheet() {
 
@@ -570,7 +568,8 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
             Handler(Looper.getMainLooper()).post {
 
-                wifiScanAdapter = WIFIScanAdapter(requireActivity(), wifiScanList, it?.ssid,it?.bssid)
+                wifiScanAdapter =
+                    WIFIScanAdapter(requireActivity(), wifiScanList, it?.ssid, it?.bssid)
                 bottomSheetWIFIBinding.rvBtScanList.layoutManager =
                     LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
                 bottomSheetWIFIBinding.rvBtScanList.adapter = wifiScanAdapter

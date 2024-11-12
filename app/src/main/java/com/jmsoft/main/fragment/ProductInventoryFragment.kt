@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.jmsoft.main.fragment
 
 import android.Manifest
@@ -35,15 +37,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CategoryDataModel
-import com.jmsoft.Utility.Database.CollectionDataModel
-import com.jmsoft.Utility.Database.MetalTypeDataModel
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.Database.StockLocationDataModel
-import com.jmsoft.Utility.UtilityTools.BluetoothUtils
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.Utility.UtilityTools.ProductUUIDList
-import com.jmsoft.Utility.UtilityTools.RFIDSetUp
+import com.jmsoft.utility.database.CategoryDataModel
+import com.jmsoft.utility.database.CollectionDataModel
+import com.jmsoft.utility.database.MetalTypeDataModel
+import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.utility.database.StockLocationDataModel
+import com.jmsoft.utility.UtilityTools.BluetoothUtils
+import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.UtilityTools.ProductUUIDList
+import com.jmsoft.utility.UtilityTools.RFIDSetUp
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.KeyboardUtils.hideKeyboard
 import com.jmsoft.basic.UtilityTools.Utils
@@ -421,7 +423,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         stockLocationDropdownAdapter = StockLocationDropdownAdapter(
             requireActivity(),
             stockLocationDropdownList,
-            this,
             false,
             object : SelectedCallback {
 
@@ -1743,12 +1744,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             }
         } else {
 
-            if (isCollectionShow) {
+            isCollectionShow = if (isCollectionShow) {
                 binding.ivCollection.let { Utils.rotateView(it, 0f) }
-                isCollectionShow = false
+                false
             } else {
                 binding.ivCollection.let { Utils.rotateView(it, 180f) }
-                isCollectionShow = true
+                true
             }
         }
     }
@@ -1991,7 +1992,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
             GetProgressBar.getInstance(requireActivity())?.show()
 
-            validate(true, false)
+            validate(isSaveButtonClicked = true, isNextButtonClicked = false)
         }
 
         // When Back button clicked
@@ -2010,24 +2011,21 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
             if (binding.etBarcode.text?.isNotEmpty() == true) {
 
-                if (binding.etBarcode != null && binding.ivBarcodeImage != null) {
+                val barcodeBitmap = Utils.genBarcodeBitmap(
+                    requireActivity(),
+                    binding.etBarcode.text.toString().trim()
+                )
 
-                    val barcodeBitmap = Utils.genBarcodeBitmap(
-                        requireActivity(),
-                        binding.etBarcode.text.toString().trim()
-                    )
+                if (barcodeBitmap != null) {
 
-                    if (barcodeBitmap != null) {
+                    barcodeData = binding.etBarcode.text.toString().trim()
 
-                        barcodeData = binding.etBarcode.text.toString().trim()
+                    binding.mcvBarcodeImage.visibility = View.VISIBLE
+                    binding.tvBarcodeError.visibility = View.GONE
 
-                        binding.mcvBarcodeImage.visibility = View.VISIBLE
-                        binding.tvBarcodeError.visibility = View.GONE
+                    binding.ivBarcodeImage.setImageBitmap(barcodeBitmap)
+                    barcodeBitmap.let { barcodeImage.add(it) }
 
-                        binding.ivBarcodeImage.setImageBitmap(barcodeBitmap)
-                        barcodeBitmap.let { barcodeImage.add(it) }
-
-                    }
                 }
             } else {
 
@@ -2050,14 +2048,14 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
             GetProgressBar.getInstance(requireActivity())?.show()
 
-            validate(false, false)
+            validate(isSaveButtonClicked = false, isNextButtonClicked = false)
 
 
         } else if (v == binding.mcvNext) {
 
             GetProgressBar.getInstance(requireActivity())?.show()
 
-            validate(false, true)
+            validate(isSaveButtonClicked = false, isNextButtonClicked = true)
 
 
         }

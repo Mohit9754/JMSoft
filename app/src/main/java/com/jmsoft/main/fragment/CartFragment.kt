@@ -4,25 +4,14 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.content.Context.PRINT_SERVICE
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.CancellationSignal
 import android.os.Environment
-import android.os.ParcelFileDescriptor
-import android.print.PageRange
-import android.print.PrintAttributes
-import android.print.PrintDocumentAdapter
-import android.print.PrintDocumentInfo
-import android.print.PrintManager
-import android.provider.Settings
 import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
 import android.text.Editable
 import android.text.SpannableString
@@ -38,25 +27,22 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
-import com.intuit.ssp.BuildConfig
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.AddressDataModel
-import com.jmsoft.Utility.Database.CartDataModel
-import com.jmsoft.Utility.Database.OrderDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.Utility.pdf_helper.FailureResponse
-import com.jmsoft.Utility.pdf_helper.PdfGenerator
-import com.jmsoft.Utility.pdf_helper.PdfGeneratorListener
-import com.jmsoft.Utility.pdf_helper.SuccessResponse
+import com.jmsoft.utility.database.AddressDataModel
+import com.jmsoft.utility.database.CartDataModel
+import com.jmsoft.utility.database.OrderDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.pdf_helper.FailureResponse
+import com.jmsoft.utility.pdf_helper.PdfGenerator
+import com.jmsoft.utility.pdf_helper.PdfGeneratorListener
+import com.jmsoft.utility.pdf_helper.SuccessResponse
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.address
-import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.confirmation
 import com.jmsoft.basic.UtilityTools.Constants.Companion.firstName
 import com.jmsoft.basic.UtilityTools.Constants.Companion.information
@@ -67,8 +53,6 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.state
 import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
 import com.jmsoft.basic.UtilityTools.Constants.Companion.zipCode
 import com.jmsoft.basic.UtilityTools.Utils
-import com.jmsoft.basic.UtilityTools.Utils.GetSession
-import com.jmsoft.basic.UtilityTools.Utils.getCartThroughUserUUID
 import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation
 import com.jmsoft.basic.validation.ValidationModel
@@ -82,14 +66,9 @@ import com.jmsoft.main.adapter.CartAddressAdapter
 import com.jmsoft.main.adapter.CartListAdapter
 import com.jmsoft.main.adapter.PdfInvoiceAdapter
 import com.jmsoft.main.`interface`.AddressSelectionStatus
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
 
 class CartFragment : Fragment(), View.OnClickListener {
 
@@ -116,11 +95,11 @@ class CartFragment : Fragment(), View.OnClickListener {
 
     private val pdfName = Utils.generateUUId()
 
-    private var cartListAdapter:CartListAdapter? = null
+    private var cartListAdapter: CartListAdapter? = null
 
-    private var orderUUID:String? = null
+    private var orderUUID: String? = null
 
-    private var newOrderDataModel:OrderDataModel? = null
+    private var newOrderDataModel: OrderDataModel? = null
 
     // Checks All the necessary permission related to External Storage
     private var customPermissionLauncher = registerForActivityResult(
@@ -157,35 +136,33 @@ class CartFragment : Fragment(), View.OnClickListener {
 
     // Initialize your permission result launcher
     @RequiresApi(Build.VERSION_CODES.R)
-    val storagePermissionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+    val storagePermissionResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
 
-            // Check if permission is granted
-            if (Environment.isExternalStorageManager()) {
+                // Check if permission is granted
+                if (Environment.isExternalStorageManager()) {
 
-                // Permission granted. Now resume your workflow.
-                // Call your method or handle the permission granted state here
-                generatePDF()
-            }
-            else {
+                    // Permission granted. Now resume your workflow.
+                    // Call your method or handle the permission granted state here
+                    generatePDF()
+                } else {
 
-                requestStoragePermission()
+                    requestStoragePermission()
+                }
+            } else if (result.resultCode == Activity.RESULT_CANCELED) {
+
+                // Handle case where user cancels the permission request
+                if (Environment.isExternalStorageManager()) {
+
+                    // Permission granted. Now resume your workflow.
+                    // Call your method or handle the permission granted state here
+                    generatePDF()
+                } else {
+                    requestStoragePermission()
+                }
             }
         }
-        else if (result.resultCode == Activity.RESULT_CANCELED) {
-
-            // Handle case where user cancels the permission request
-            if (Environment.isExternalStorageManager()) {
-
-                // Permission granted. Now resume your workflow.
-                // Call your method or handle the permission granted state here
-                generatePDF()
-            }
-            else {
-                requestStoragePermission()
-            }
-        }
-    }
 
     // Method to request MANAGE_EXTERNAL_STORAGE permission
     @RequiresApi(Build.VERSION_CODES.R)
@@ -203,8 +180,11 @@ class CartFragment : Fragment(), View.OnClickListener {
     @SuppressLint("SetTextI18n")
     private fun generatePDF() {
 
-        newOrderDataModel = if (orderUUID != null) Utils.getOrderByUUID(orderUUID!!) else Utils.getOrderUUID(requireActivity())
-            ?.let { Utils.getOrderByUUID(it) }
+        newOrderDataModel =
+            if (orderUUID != null) Utils.getOrderByUUID(orderUUID!!) else Utils.getOrderUUID(
+                requireActivity()
+            )
+                ?.let { Utils.getOrderByUUID(it) }
 
         GetProgressBar.getInstance(requireActivity())?.show()
 
@@ -229,31 +209,43 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         if (10 >= cardList.size) {
 
-            val pdfInvoiceAdapter = PdfInvoiceAdapter(requireActivity(), cardList,pdfInvoiceBinding.tvTotalAmount,null)
+            val pdfInvoiceAdapter = PdfInvoiceAdapter(
+                requireActivity(),
+                cardList,
+                pdfInvoiceBinding.tvTotalAmount,
+                null
+            )
             pdfInvoiceBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
             pdfInvoiceBinding.rvItems.setAdapter(pdfInvoiceAdapter)
 
             viewList.add(pdfInvoiceBinding.root)
 
-        }
-        else {
+        } else {
 
             pdfInvoiceBinding.mcvTotalPrice.visibility = View.GONE
 
             val chunkedList = cardList.chunked(10)
 
-            val pdfInvoiceAdapterFirstPart = PdfInvoiceAdapter(requireActivity(), chunkedList[0],null,null)
+            val pdfInvoiceAdapterFirstPart =
+                PdfInvoiceAdapter(requireActivity(), chunkedList[0], null, null)
             pdfInvoiceBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
             pdfInvoiceBinding.rvItems.setAdapter(pdfInvoiceAdapterFirstPart)
             viewList.add(pdfInvoiceBinding.root)
 
             for (i in 1 until chunkedList.size) {
 
-                val pdfInvoiceSecondBinding = PdfInvoiceSecondBinding.inflate(LayoutInflater.from(context))
+                val pdfInvoiceSecondBinding =
+                    PdfInvoiceSecondBinding.inflate(LayoutInflater.from(context))
 
-                val tvTotalAmount: TextView? = if (i+1 == chunkedList.size) pdfInvoiceSecondBinding.tvTotalAmount else null
+                val tvTotalAmount: TextView? =
+                    if (i + 1 == chunkedList.size) pdfInvoiceSecondBinding.tvTotalAmount else null
 
-                val pdfInvoiceAdapterSecondPart =  PdfInvoiceAdapter(requireActivity(), chunkedList[i],tvTotalAmount,pdfInvoiceSecondBinding.mcvTotalPrice)
+                val pdfInvoiceAdapterSecondPart = PdfInvoiceAdapter(
+                    requireActivity(),
+                    chunkedList[i],
+                    tvTotalAmount,
+                    pdfInvoiceSecondBinding.mcvTotalPrice
+                )
                 pdfInvoiceSecondBinding.rvItems.setLayoutManager(LinearLayoutManager(requireActivity()))
                 pdfInvoiceSecondBinding.rvItems.setAdapter(pdfInvoiceAdapterSecondPart)
                 viewList.add(pdfInvoiceSecondBinding.root)
@@ -268,7 +260,7 @@ class CartFragment : Fragment(), View.OnClickListener {
             .setFileName(pdfName)
             .setFolderNameOrPath(path)
             .actionAfterPDFGeneration(PdfGenerator.ActionAfterPDFGeneration.NONE)
-            .build ( object : PdfGeneratorListener() {
+            .build(object : PdfGeneratorListener() {
 
                 override fun onFailure(failureResponse: FailureResponse?) {
                     super.onFailure(failureResponse)
@@ -403,10 +395,11 @@ class CartFragment : Fragment(), View.OnClickListener {
 
                 val cartDataModel = CartDataModel()
                 cartDataModel.productUUID = productUUIDList[i]
-                cartDataModel.productQuantity = if (isListNotEmpty) productQuantityList[i].toInt() else 1
+                cartDataModel.productQuantity =
+                    if (isListNotEmpty) productQuantityList[i].toInt() else 1
                 cartDataModel.cartUUID = orderDataModel.orderUUID
 
-                cardDataList.add(0,cartDataModel)
+                cardDataList.add(0, cartDataModel)
 
             }
             cardList = cardDataList
@@ -415,15 +408,14 @@ class CartFragment : Fragment(), View.OnClickListener {
                 binding?.let { it1 ->
                     CartListAdapter(
                         requireActivity(), it,
-                        it1,true
+                        it1, true
                     )
                 }
             }
-        }
+        } else {
 
-        else {
-
-            cardList = Utils.GetSession().userUUID?.let { Utils.getCartThroughUserUUID(it) } ?: ArrayList()
+            cardList =
+                Utils.GetSession().userUUID?.let { Utils.getCartThroughUserUUID(it) } ?: ArrayList()
 
             if (cardList.isNotEmpty()) {
 
@@ -431,7 +423,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                     binding?.let { it1 ->
                         CartListAdapter(
                             requireActivity(), it,
-                            it1,false
+                            it1, false
                         )
                     }
                 }
@@ -567,32 +559,39 @@ class CartFragment : Fragment(), View.OnClickListener {
     // SetState method for Setting the state when fragment recreate
     private fun setState(state: String) {
 
-        if (state == information) {
+        when (state) {
 
-            binding?.rlInformation?.visibility = View.VISIBLE
-            binding?.llConfirmation?.visibility = View.GONE
-            binding?.rlVerification?.visibility = View.GONE
-            currentState = information
-            binding?.progressBar?.progress = 66
+            information -> {
 
-
-        } else if (state == confirmation) {
-
-            binding?.rlInformation?.visibility = View.GONE
-            binding?.rlVerification?.visibility = View.GONE
-            binding?.llProgressStatusName?.visibility = View.GONE
-            binding?.progressBar?.visibility = View.GONE
-            binding?.llConfirmation?.visibility = View.VISIBLE
-            currentState = confirmation
+                binding?.rlInformation?.visibility = View.VISIBLE
+                binding?.llConfirmation?.visibility = View.GONE
+                binding?.rlVerification?.visibility = View.GONE
+                currentState = information
+                binding?.progressBar?.progress = 66
 
 
-        } else if (state == verification) {
+            }
 
-            binding?.rlInformation?.visibility = View.GONE
-            binding?.llConfirmation?.visibility = View.GONE
-            binding?.rlVerification?.visibility = View.VISIBLE
+            confirmation -> {
+
+                binding?.rlInformation?.visibility = View.GONE
+                binding?.rlVerification?.visibility = View.GONE
+                binding?.llProgressStatusName?.visibility = View.GONE
+                binding?.progressBar?.visibility = View.GONE
+                binding?.llConfirmation?.visibility = View.VISIBLE
+                currentState = confirmation
 
 
+            }
+
+            verification -> {
+
+                binding?.rlInformation?.visibility = View.GONE
+                binding?.llConfirmation?.visibility = View.GONE
+                binding?.rlVerification?.visibility = View.VISIBLE
+
+
+            }
         }
 
     }
@@ -605,18 +604,18 @@ class CartFragment : Fragment(), View.OnClickListener {
         val editText = binding?.etBarcode
 
         // Disable keyboard on touch
-        editText?.setOnTouchListener { v, event ->
+        editText?.setOnTouchListener { _, _ ->
 
             editText.requestFocus()
 
             // Hide the keyboard
-            val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(editText.windowToken, 0)
 
             true // Return true to consume the touch event
         }
 
-        editText?.setOnFocusChangeListener { v, hasFocus ->
+        editText?.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 editText.requestFocus() // Re-request focus if it is lost
             }
@@ -1027,11 +1026,7 @@ class CartFragment : Fragment(), View.OnClickListener {
 
             if (selectedAddressData == null) {
 
-                if (binding?.radioButton?.isChecked == true) {
-                    binding?.radioButton?.isChecked = false
-                } else {
-                    binding?.radioButton?.isChecked = true
-                }
+                binding?.radioButton?.isChecked = binding?.radioButton?.isChecked != true
             } else {
 
                 selectedAddressData = null
@@ -1045,8 +1040,8 @@ class CartFragment : Fragment(), View.OnClickListener {
         // Click on Share button
         else if (v == binding?.mcvOpen) {
 
-            val intent = Intent(requireActivity(),PdfViewActivity::class.java)
-            intent.putExtra(Constants.pdfName,pdfName)
+            val intent = Intent(requireActivity(), PdfViewActivity::class.java)
+            intent.putExtra(Constants.pdfName, pdfName)
             startActivity(intent)
 
         }
@@ -1058,14 +1053,11 @@ class CartFragment : Fragment(), View.OnClickListener {
 
             if (pdfFile.exists()) {
 
-                Utils.printPdf(requireActivity(),pdfFile)
-            }
-            else {
+                Utils.printPdf(requireActivity(), pdfFile)
+            } else {
                 Utils.T(requireActivity(), getString(R.string.file_not_found))
             }
-        }
-
-        else if (v == binding?.llSaveToLater) {
+        } else if (v == binding?.llSaveToLater) {
 
             Utils.GetSession().userUUID?.let { Utils.deleteCart(it) }
 
@@ -1076,13 +1068,9 @@ class CartFragment : Fragment(), View.OnClickListener {
 
             binding?.llCartEmpty?.visibility = View.VISIBLE
 
-        }
-
-        else if (v == binding?.mcvClear) {
+        } else if (v == binding?.mcvClear) {
             binding?.etBarcode?.setText("")
-        }
-
-        else if (v == binding?.mcvAdd) {
+        } else if (v == binding?.mcvAdd) {
 
             val barcodeData = binding?.etBarcode?.text.toString().trim()
 
@@ -1092,19 +1080,23 @@ class CartFragment : Fragment(), View.OnClickListener {
 
                     val productUUID = Utils.getProductUUIDByBarcode(barcodeData)
 
-                    val isProductExistInCart = Utils.GetSession().userUUID?.let { productUUID?.let { it1 ->
-                        Utils.isProductExistInCartTable(it,
-                            it1
-                        )
-                    } }
+                    val isProductExistInCart = Utils.GetSession().userUUID?.let {
+                        productUUID?.let { it1 ->
+                            Utils.isProductExistInCartTable(
+                                it,
+                                it1
+                            )
+                        }
+                    }
 
                     if (isProductExistInCart == true) {
 
-                        Utils.T(requireActivity(),
-                            getString(R.string.a_product_with_this_barcode_already_exists_in_the_cart))
+                        Utils.T(
+                            requireActivity(),
+                            getString(R.string.a_product_with_this_barcode_already_exists_in_the_cart)
+                        )
 
-                    }
-                    else {
+                    } else {
 
                         val cartDataModel = CartDataModel()
                         cartDataModel.cartUUID = Utils.generateUUId()
@@ -1118,29 +1110,38 @@ class CartFragment : Fragment(), View.OnClickListener {
 
                         val orderDataModel = orderUUID?.let { Utils.getOrderByUUID(it) }
 
-                        val productUUIDList = orderDataModel?.productUUIDUri?.split(",")?.toMutableList()
+                        val productUUIDList =
+                            orderDataModel?.productUUIDUri?.split(",")?.toMutableList()
 
                         productUUID?.let { productUUIDList?.add(it) }
 
-                        val productQuantityList = orderDataModel?.productQuantityUri?.split(",")?.toMutableList()
+                        val productQuantityList =
+                            orderDataModel?.productQuantityUri?.split(",")?.toMutableList()
 
                         productQuantityList?.add("1")
 
                         val newOrderDataModel = OrderDataModel()
 
-                        val productDataModel = productUUID?.let { Utils.getProductThroughProductUUID(it) }
+                        val productDataModel =
+                            productUUID?.let { Utils.getProductThroughProductUUID(it) }
 
                         newOrderDataModel.orderUUID = orderUUID
-                        newOrderDataModel.productUUIDUri = productUUIDList?.joinToString()?.replace(" ","")
-                        newOrderDataModel.productQuantityUri = productQuantityList?.joinToString()?.replace(" ","")
-                        newOrderDataModel.totalAmount = productDataModel?.productPrice?.let { orderDataModel?.totalAmount?.plus(it) }
+                        newOrderDataModel.productUUIDUri =
+                            productUUIDList?.joinToString()?.replace(" ", "")
+                        newOrderDataModel.productQuantityUri =
+                            productQuantityList?.joinToString()?.replace(" ", "")
+                        newOrderDataModel.totalAmount = productDataModel?.productPrice?.let {
+                            orderDataModel?.totalAmount?.plus(it)
+                        }
 
                         Utils.updateOrder(newOrderDataModel)
 
                         binding?.etBarcode?.setText("")
 
-                        Utils.T(requireActivity(),
-                            getString(R.string.product_has_been_added_to_the_cart))
+                        Utils.T(
+                            requireActivity(),
+                            getString(R.string.product_has_been_added_to_the_cart)
+                        )
 
                         GetProgressBar.getInstance(requireActivity())?.show()
 
@@ -1150,15 +1151,15 @@ class CartFragment : Fragment(), View.OnClickListener {
 
                     }
 
+                } else {
+
+                    Utils.T(
+                        requireActivity(),
+                        getString(R.string.no_product_exists_with_this_barcode)
+                    )
                 }
 
-                else {
-
-                    Utils.T(requireActivity(), getString(R.string.no_product_exists_with_this_barcode))
-                }
-
-            }
-            else {
+            } else {
 
                 Utils.T(requireActivity(), getString(R.string.the_barcode_field_is_empty))
 

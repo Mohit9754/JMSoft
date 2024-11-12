@@ -29,6 +29,7 @@ class PurchasingAndSalesFragment : Fragment(), View.OnClickListener {
         return binding.root
     }
 
+    // Set Tab And ViewPager
     private fun setTabAndViewPager() {
 
         Utils.purchaseAndSalesBinding.setBinding(binding)

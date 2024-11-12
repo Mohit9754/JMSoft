@@ -67,7 +67,8 @@
                         android:layout_height="wrap_content"
                         android:text="45"
                         android:textColor="@color/dark_blue"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 

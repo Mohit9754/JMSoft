@@ -14,15 +14,12 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.basic.Database.UserDataModel
+import com.jmsoft.utility.database.UserDataModel
 import com.jmsoft.basic.UtilityTools.Constants.Companion.Default_Country_Code
-import com.jmsoft.basic.UtilityTools.Constants.Companion.Default_Country_Region
-import com.jmsoft.basic.UtilityTools.Constants.Companion.defaultCoordinates
 import com.jmsoft.basic.UtilityTools.Constants.Companion.userUUID
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemUserManagementBinding
 import com.jmsoft.main.activity.DashboardActivity
-import com.jmsoft.main.fragment.UserManagementFragment
 
 class UserManagementAdapter(
     private val context: Context,
@@ -79,7 +76,7 @@ class UserManagementAdapter(
         private lateinit var userDataModel: UserDataModel
         private var position = -1
 
-        fun bind(userDataModel: UserDataModel,position: Int) {
+        fun bind(userDataModel: UserDataModel, position: Int) {
             this.userDataModel = userDataModel
             this.position = position
 

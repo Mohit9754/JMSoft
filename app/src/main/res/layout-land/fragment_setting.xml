@@ -2,6 +2,7 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,7 +17,8 @@
             android:layout_width="@dimen/_250sdp"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            tools:ignore="UselessParent">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/mcvBackBtn"
@@ -35,7 +37,8 @@
                     android:layout_width="@dimen/_9sdp"
                     android:layout_height="@dimen/_9sdp"
                     android:layout_margin="@dimen/_4sdp"
-                    android:src="@drawable/icon_back_arrow" />
+                    android:src="@drawable/icon_back_arrow"
+                    tools:ignore="ContentDescription" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -65,7 +68,8 @@
                         android:layout_centerVertical="true"
                         android:fontFamily="@font/montserrat_arabic_semibold"
                         android:textColor="@color/black"
-                        android:textSize="11sp" />
+                        android:textSize="11sp"
+                        tools:ignore="RelativeOverlap" />
 
                     <ImageView
                         android:layout_width="@dimen/_11sdp"
@@ -73,7 +77,8 @@
                         android:layout_marginEnd="@dimen/_4sdp"
                         android:src="@drawable/icon_edit"
                         android:layout_alignParentEnd="true"
-                        app:tint="@color/theme" />
+                        app:tint="@color/theme"
+                        tools:ignore="ContentDescription" />
 
                 </RelativeLayout>
 
@@ -107,7 +112,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/img_default_profile" />
+                            android:src="@drawable/img_default_profile"
+                            tools:ignore="ContentDescription" />
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -129,7 +135,8 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/icon_edit" />
+                            android:src="@drawable/icon_edit"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -173,7 +180,8 @@
                                 android:layout_height="@dimen/_9sdp"
                                 android:layout_marginHorizontal="@dimen/_3sdp"
                                 android:layout_marginVertical="@dimen/_3sdp"
-                                android:src="@drawable/user_management" />
+                                android:src="@drawable/user_management"
+                                tools:ignore="ContentDescription" />
 
                         </com.google.android.material.card.MaterialCardView>
 
@@ -186,7 +194,8 @@
                             android:fontFamily="@font/montserrat_arabic_regular"
                             android:text="@string/user_management"
                             android:textColor="@color/black"
-                            android:textSize="11sp" />
+                            android:textSize="11sp"
+                            tools:ignore="RelativeOverlap" />
 
                         <ImageView
                             android:layout_width="@dimen/_11sdp"
@@ -194,7 +203,8 @@
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="@dimen/_4sdp"
-                            android:src="@drawable/icon_tabler_circle" />
+                            android:src="@drawable/icon_tabler_circle"
+                            tools:ignore="ContentDescription" />
 
                     </RelativeLayout>
 
@@ -229,7 +239,8 @@
                                 android:layout_height="@dimen/_9sdp"
                                 android:layout_marginHorizontal="@dimen/_3sdp"
                                 android:layout_marginVertical="@dimen/_3sdp"
-                                android:src="@drawable/icon_vendors" />
+                                android:src="@drawable/icon_vendors"
+                                tools:ignore="ContentDescription" />
 
                         </com.google.android.material.card.MaterialCardView>
 
@@ -242,7 +253,8 @@
                             android:fontFamily="@font/montserrat_arabic_regular"
                             android:text="@string/vendors_and_customers"
                             android:textColor="@color/black"
-                            android:textSize="11sp" />
+                            android:textSize="11sp"
+                            tools:ignore="RelativeOverlap" />
 
                         <ImageView
                             android:layout_width="@dimen/_11sdp"
@@ -250,7 +262,8 @@
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="@dimen/_4sdp"
-                            android:src="@drawable/icon_tabler_circle" />
+                            android:src="@drawable/icon_tabler_circle"
+                            tools:ignore="ContentDescription" />
 
                     </RelativeLayout>
 
@@ -286,7 +299,8 @@
                                 android:layout_height="@dimen/_9sdp"
                                 android:layout_marginHorizontal="@dimen/_3sdp"
                                 android:layout_marginVertical="@dimen/_3sdp"
-                                android:src="@drawable/icon_device_management" />
+                                android:src="@drawable/icon_device_management"
+                                tools:ignore="ContentDescription" />
 
                         </com.google.android.material.card.MaterialCardView>
 
@@ -299,7 +313,8 @@
                             android:fontFamily="@font/montserrat_arabic_regular"
                             android:text="@string/device_management"
                             android:textColor="@color/black"
-                            android:textSize="11sp" />
+                            android:textSize="11sp"
+                            tools:ignore="RelativeOverlap" />
 
                         <ImageView
                             android:layout_width="@dimen/_11sdp"
@@ -307,7 +322,9 @@
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="@dimen/_4sdp"
-                            android:src="@drawable/icon_tabler_circle" />
+                            android:src="@drawable/icon_tabler_circle"
+                            android:importantForAccessibility="no"
+                            tools:ignore="ContentDescription" />
 
                     </RelativeLayout>
 
@@ -343,7 +360,8 @@
                                 android:layout_height="@dimen/_9sdp"
                                 android:layout_marginHorizontal="@dimen/_3sdp"
                                 android:layout_marginVertical="@dimen/_3sdp"
-                                android:src="@drawable/icon_logout" />
+                                android:src="@drawable/icon_logout"
+                                tools:ignore="ContentDescription" />
 
                         </com.google.android.material.card.MaterialCardView>
 

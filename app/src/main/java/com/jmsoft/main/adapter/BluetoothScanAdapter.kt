@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.DeviceDataModel
-import com.jmsoft.Utility.UtilityTools.BluetoothUtils
+import com.jmsoft.utility.database.DeviceDataModel
+import com.jmsoft.utility.UtilityTools.BluetoothUtils
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.connected
 import com.jmsoft.basic.UtilityTools.Utils
@@ -36,6 +36,7 @@ import com.jmsoft.main.model.BluetoothScanModel
  * Make Connection
  */
 
+@Suppress("ControlFlowWithEmptyBody")
 class BluetoothScanAdapter(
     private val context: Context,
     private val bluetoothScanList: ArrayList<BluetoothScanModel>,
@@ -125,19 +126,19 @@ class BluetoothScanAdapter(
         }
 
         // Method to move the Connected to the first position
-        private fun moveToFirstPosition() {
-
-            if (position != 0) {
-
-                bluetoothScanList.remove(bluetoothScanList[position])
-                bluetoothScanList.add(
-                    0,
-                    bluetoothScanList[position]
-                ) // Add item to the beginning of the list
-                notifyItemMoved(position, 0) // Notify adapter about the move
-
-            }
-        }
+//        private fun moveToFirstPosition() {
+//
+//            if (position != 0) {
+//
+//                bluetoothScanList.remove(bluetoothScanList[position])
+//                bluetoothScanList.add(
+//                    0,
+//                    bluetoothScanList[position]
+//                ) // Add item to the beginning of the list
+//                notifyItemMoved(position, 0) // Notify adapter about the move
+//
+//            }
+//        }
 
         //Setting the Status of the Connected Device
         private fun setConnectedStatus() {
@@ -330,7 +331,6 @@ class BluetoothScanAdapter(
                     bottomSheetBluetoothScan.dismiss()
 
                 }
-
             }
         }
     }

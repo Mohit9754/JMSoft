@@ -1,7 +1,6 @@
 package com.jmsoft.main.fragment
 
 import android.Manifest
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.bluetooth.BluetoothAdapter
@@ -16,7 +15,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.view.animation.LinearInterpolator
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResultLauncher
@@ -27,12 +25,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CategoryDataModel
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.Database.StockLocationDataModel
-import com.jmsoft.Utility.UtilityTools.BluetoothUtils
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.Utility.UtilityTools.RFIDSetUp
+import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.utility.database.StockLocationDataModel
+import com.jmsoft.utility.UtilityTools.BluetoothUtils
+import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.UtilityTools.RFIDSetUp
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.frequencyData
 import com.jmsoft.basic.UtilityTools.Constants.Companion.frequencyIndex
@@ -128,8 +125,6 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
     private var rFIDSetUp: RFIDSetUp? = null
 
-//    private var isRFIDScanning = false
-
     private var scannedProductList = ArrayList<ProductDataModel>()
 
     private var unKnownList = ArrayList<String>()
@@ -204,6 +199,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
         dialog.show()
     }
 
+    // Set Expected RecyclerView
     private suspend fun setExpectedRecyclerView(stockLocationUUID: String) {
 
         val result = lifecycleScope.async(Dispatchers.IO) {
@@ -227,6 +223,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
     }
 
+    // Set Scanned RecyclerView
     private fun setScannedRecyclerView() {
 
         adapterScanned = ScannedAdapter(requireContext(), scannedProductList)
@@ -239,6 +236,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
     }
 
+    // Set UnKnown RecyclerView
     private fun setUnKnownRecyclerView() {
 
         adapterUnKnown = UnknownAdapter(requireActivity(), unKnownList)
@@ -268,7 +266,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
             }
 
         })
-//        binding.ivScan?.setImageResource(R.drawable.icon_play)
+
     }
 
     override fun onDestroy() {
@@ -286,6 +284,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
     }
 
+    // Set StockLocation Spinner
     private suspend fun setStockLocationSpinner() {
 
         val result = lifecycleScope.async(Dispatchers.IO) {
@@ -327,9 +326,6 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
             }
         }
     }
-
-
-
 
     private suspend fun init() {
 
@@ -526,7 +522,6 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
             Utils.E("Status is ... ${rFIDSetUp?.getScanningStatus()}")
 
-//            GetProgressBar.getInstance(requireContext())?.show()
 
             if (rFIDSetUp?.getScanningStatus() == true) {
                 rFIDSetUp?.onPause(object : PairStatusCallback {

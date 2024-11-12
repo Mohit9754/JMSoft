@@ -35,61 +35,6 @@
         android:textSize="10sp"
         tools:ignore="MissingDefaultResource,NestedWeights,SmallSp" />
 
-    <!--
-
-
-    <LinearLayout
-        android:id="@+id/llDelAndEditSection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:visibility="gone">
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/mcvEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_5sdp"
-            app:cardBackgroundColor="@color/mcv_background_color"
-            app:cardCornerRadius="@dimen/_4sdp"
-            app:cardElevation="0dp"
-            tools:ignore="RtlSymmetry">
-
-            <ImageView
-                android:layout_width="@dimen/_7sdp"
-                android:layout_height="@dimen/_7sdp"
-                android:layout_marginHorizontal="@dimen/_4sdp"
-                android:layout_marginVertical="@dimen/_4sdp"
-                android:src="@drawable/icon_edit"
-                tools:ignore="ContentDescription" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/mcvDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/_2sdp"
-            android:layout_marginStart="@dimen/_5sdp"
-            app:cardBackgroundColor="@color/mcv_background_color"
-            app:cardCornerRadius="@dimen/_4sdp"
-            app:cardElevation="0dp">
-
-            <ImageView
-                android:layout_width="@dimen/_8sdp"
-                android:layout_height="@dimen/_8sdp"
-                android:layout_marginHorizontal="@dimen/_3sdp"
-                android:layout_marginVertical="@dimen/_3sdp"
-                android:src="@drawable/icon_delete"
-                tools:ignore="ContentDescription" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-    </LinearLayout>
-
-    -->
-
-
 
 </LinearLayout>
 

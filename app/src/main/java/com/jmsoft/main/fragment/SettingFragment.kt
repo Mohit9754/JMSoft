@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.jmsoft.main.fragment
 
 import android.Manifest
@@ -22,7 +24,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.Database.DatabaseHelper
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
@@ -95,8 +97,8 @@ class SettingFragment : Fragment(), View.OnClickListener {
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == RESULT_OK) {
-                val image_uri: Uri? = result.data?.data
-                binding.ivProfile?.setImageURI(image_uri)
+                val imageUri: Uri? = result.data?.data
+                binding.ivProfile?.setImageURI(imageUri)
 
                 updateProfile(binding.ivProfile?.drawable?.toBitmap())
 
@@ -320,61 +322,61 @@ class SettingFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
 
         // Click on Device Management
-        if (v == binding.mcvDeviceManagement) {
+        when (v) {
+            binding.mcvDeviceManagement -> {
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.deviceManagement)
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.deviceManagement)
 
-        }
+            }
 
-        // Click on User Management
-        else if (v == binding.mcvUserManagement) {
+            // Click on User Management
+            binding.mcvUserManagement -> {
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
-        }
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.userManagement)
+            }
 
-        // Click on Back Button
-        else if (v == binding.mcvBackBtn) {
+            // Click on Back Button
+            binding.mcvBackBtn -> {
 
-            (requireActivity() as DashboardActivity).navController?.popBackStack(R.id.home, false)
-        }
-        // Click on Username
-        else if (v == binding.mcvUserName) {
+                (requireActivity() as DashboardActivity).navController?.popBackStack(R.id.home, false)
+            }
+            // Click on Username
+            binding.mcvUserName -> {
 
-            //Navigate to Edit Profile
-            val bundle = Bundle()
-            Utils.GetSession().userUUID?.let { bundle.putString(Constants.userUUID, it) }
-            bundle.putBoolean(updateInSession, true)
+                //Navigate to Edit Profile
+                val bundle = Bundle()
+                Utils.GetSession().userUUID?.let { bundle.putString(Constants.userUUID, it) }
+                bundle.putBoolean(updateInSession, true)
 
-            (context as DashboardActivity).navController?.navigate(R.id.editProfile, bundle)
-        }
+                (context as DashboardActivity).navController?.navigate(R.id.editProfile, bundle)
+            }
 
-        // When LogOut button Clicked
-        else if (v == binding.mcvLogOut) {
+            // When LogOut button Clicked
+            binding.mcvLogOut -> {
 
-            //Showing the LogOut Dialog
-            showLogOutDialog()
-        }
+                //Showing the LogOut Dialog
+                showLogOutDialog()
+            }
 
-        //When Edit Profile Clicked
-        else if (v == binding.mcvEditProfile) {
+            //When Edit Profile Clicked
+            binding.mcvEditProfile -> {
 
-            showEditProfileDialog()
-        }
+                showEditProfileDialog()
+            }
+            binding.mcvVendorsAndCustomers -> {
 
-        else if (v == binding.mcvVendorsAndCustomers) {
+                GetProgressBar.getInstance(requireActivity())?.show()
 
-            GetProgressBar.getInstance(requireActivity())?.show()
+                (context as DashboardActivity).navController?.navigate(R.id.contact)
 
-            (context as DashboardActivity).navController?.navigate(R.id.contact)
+            }
+            binding.mcvAdvanceSetting -> {
 
-        }
+                //            GetProgressBar.getInstance(requireActivity())?.show()
 
-        else if (v == binding.mcvAdvanceSetting) {
+                (context as DashboardActivity).navController?.navigate(R.id.advanceSetting)
 
-//            GetProgressBar.getInstance(requireActivity())?.show()
-
-            (context as DashboardActivity).navController?.navigate(R.id.advanceSetting)
-
+            }
         }
 
     }

@@ -9,15 +9,13 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CartDataModel
-import com.jmsoft.Utility.Database.OrderDataModel
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.Utility.UtilityTools.ProductUUIDList
+import com.jmsoft.utility.database.CartDataModel
+import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.UtilityTools.ProductUUIDList
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
 import com.jmsoft.basic.UtilityTools.Utils
-import com.jmsoft.databinding.FragmentCatalogBinding
 import com.jmsoft.databinding.ItemCatalogBinding
 import com.jmsoft.main.activity.DashboardActivity
 
@@ -156,7 +154,6 @@ class CatalogAdapter(
 
             val arrayOfImages = productData.productImageUri?.split(",")?.toTypedArray()
 
-            Utils.E("product image is # ${arrayOfImages?.get(0).toString()}")
 
             val bitmap = Utils.getImageFromInternalStorage(
                 context,

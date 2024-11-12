@@ -2,11 +2,10 @@ package com.jmsoft.main.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.utility.database.CategoryDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentCollectionDetailBinding
 import com.jmsoft.databinding.ItemCollectionDetailBinding
@@ -16,7 +15,6 @@ import com.jmsoft.databinding.ItemCollectionDetailBinding
  *
  *
  */
-
 class CollectionDetailAdapter(
     private val context: Context,
     private val categoryDataList: ArrayList<CategoryDataModel>,

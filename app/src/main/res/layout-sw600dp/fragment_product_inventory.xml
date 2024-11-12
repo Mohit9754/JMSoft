@@ -411,7 +411,7 @@
                                         android:layout_height="wrap_content"
                                         android:gravity="center_vertical"
                                         android:orientation="horizontal"
-                                        tools:ignore="UseCompoundDrawables">
+                                        tools:ignore="TooDeepLayout,UseCompoundDrawables">
 
                                         <ImageView
                                             android:layout_width="@dimen/_12sdp"
@@ -815,7 +815,8 @@
                         android:layout_marginTop="@dimen/_1sdp"
                         app:cardCornerRadius="@dimen/_3sdp"
                         app:strokeColor="@color/text_hint"
-                        app:strokeWidth="1dp">
+                        app:strokeWidth="1dp"
+                        tools:ignore="UnusedAttribute">
 
                         <EditText
                             android:id="@+id/etOrigin"
@@ -828,7 +829,7 @@
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:paddingVertical="@dimen/_7sdp"
                             android:textSize="10sp"
-                            tools:ignore="Autofill,SmallSp,TouchTargetSizeCheck" />
+                            tools:ignore="Autofill,SmallSp,TooManyViews,TouchTargetSizeCheck" />
 
                     </com.google.android.material.card.MaterialCardView>
 

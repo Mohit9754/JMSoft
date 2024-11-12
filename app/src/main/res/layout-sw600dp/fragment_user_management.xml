@@ -35,7 +35,8 @@
                     android:layout_width="@dimen/_9sdp"
                     android:layout_height="@dimen/_9sdp"
                     android:layout_margin="@dimen/_4sdp"
-                    android:src="@drawable/icon_back_arrow" />
+                    android:src="@drawable/icon_back_arrow"
+                    tools:ignore="ContentDescription" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -58,20 +59,23 @@
                 android:layout_centerVertical="true"
                 app:cardBackgroundColor="@color/theme"
                 app:cardCornerRadius="@dimen/_5sdp"
-                app:strokeWidth="0dp">
+                app:strokeWidth="0dp"
+                tools:ignore="RelativeOverlap">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="@dimen/_15sdp"
                         android:layout_height="@dimen/_15sdp"
                         android:layout_marginHorizontal="@dimen/_1sdp"
                         android:layout_marginVertical="@dimen/_1sdp"
-                        android:src="@drawable/icon_add_device" />
+                        android:src="@drawable/icon_add_device"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -107,6 +111,7 @@
         android:src="@drawable/no_user_found"
         android:layout_centerInParent="true"
         android:visibility="gone"
-        android:id="@+id/ivNoUser"/>
+        android:id="@+id/ivNoUser"
+        tools:ignore="ContentDescription" />
 
 </RelativeLayout>

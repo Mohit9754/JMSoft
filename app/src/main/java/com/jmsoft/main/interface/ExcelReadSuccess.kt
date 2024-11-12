@@ -1,6 +1,6 @@
 package com.jmsoft.main.`interface`
 
-import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.utility.database.ProductDataModel
 
 interface ExcelReadSuccess {
 

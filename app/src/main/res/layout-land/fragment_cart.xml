@@ -14,7 +14,8 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:visibility="gone"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:id="@+id/ivEmptyCard"
@@ -763,7 +764,8 @@
                             app:cardCornerRadius="@dimen/_2sdp"
                             app:cardElevation="0dp"
                             app:strokeColor="@color/theme"
-                            app:strokeWidth="0.7dp">
+                            app:strokeWidth="0.7dp"
+                            tools:ignore="TooManyViews">
 
                             <TextView
                                 android:layout_width="wrap_content"

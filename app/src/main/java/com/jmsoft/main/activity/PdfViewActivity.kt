@@ -22,6 +22,7 @@ class PdfViewActivity : AppCompatActivity() {
 
     }
 
+    // get pdfName and open it
     private fun init() {
 
         val pdfName = intent.getStringExtra(Constants.pdfName)

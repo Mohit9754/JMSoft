@@ -12,13 +12,10 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.basic.UtilityTools.Constants
-import com.jmsoft.basic.UtilityTools.Constants.Companion.appLang
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english
 import com.jmsoft.basic.UtilityTools.Constants.Companion.information
-import com.jmsoft.basic.UtilityTools.Constants.Companion.lang
 import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
 import com.jmsoft.basic.UtilityTools.KeyboardUtils.hideKeyboard
 import com.jmsoft.basic.UtilityTools.Utils
@@ -174,28 +171,29 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
 
         override fun handleOnBackPressed() {
 
-            if (navController?.currentDestination?.id == R.id.home) {
-                finish()
-            }
-            else if (navController?.currentDestination?.id == R.id.cart){
+            when (navController?.currentDestination?.id) {
+                R.id.home -> {
+                    finish()
+                }
+                R.id.cart -> {
 
-                if (currentState == information){
+                    if (currentState == information){
+
+                        navController?.popBackStack()
+                        navController?.navigate(R.id.cart)
+                    } else {
+                        navController?.popBackStack()
+                    }
+
+                    currentState = verification
+                }
+                else -> {
+
+                    GetProgressBar.getInstance(activity)?.show()
 
                     navController?.popBackStack()
-                    navController?.navigate(R.id.cart)
+
                 }
-                else {
-                    navController?.popBackStack()
-                }
-
-                currentState = verification
-            }
-            else {
-
-                GetProgressBar.getInstance(activity)?.show()
-
-                navController?.popBackStack()
-
             }
         }
     }

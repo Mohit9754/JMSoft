@@ -58,7 +58,7 @@
                 android:id="@+id/tvProductName"
                 android:text="Ring"
                 android:layout_marginBottom="@dimen/_2sdp"
-                />
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
                 android:id="@+id/tvPrice"
                 android:fontFamily="@font/montserrat_arabic_regular"
                 android:text="35,000DH"
-                />
+                tools:ignore="HardcodedText" />
             
         </LinearLayout>
 

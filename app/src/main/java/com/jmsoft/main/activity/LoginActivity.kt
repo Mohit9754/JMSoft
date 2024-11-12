@@ -17,7 +17,6 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CollectionDataModel
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
 import com.jmsoft.basic.UtilityTools.Constants.Companion.english

@@ -1,3 +1,5 @@
+@file:Suppress("ControlFlowWithEmptyBody")
+
 package com.jmsoft.main.fragment
 
 import android.Manifest
@@ -14,7 +16,6 @@ import android.os.Environment
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,28 +24,27 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.OrderDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.OrderDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentPurchasingAndSalesBinding
 import com.jmsoft.databinding.FragmentSalesBinding
-import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.ConfirmOrderAdapter
 import com.jmsoft.main.adapter.NewOrderAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SalesFragment : Fragment(),View.OnClickListener {
+class SalesFragment : Fragment(), View.OnClickListener {
 
-    private lateinit var binding:FragmentSalesBinding
+    private lateinit var binding: FragmentSalesBinding
 
     private var confirmOrderList = ArrayList<OrderDataModel>()
 
@@ -56,11 +56,11 @@ class SalesFragment : Fragment(),View.OnClickListener {
 
     private var isNewOrderStatus = true
 
-    private var newOrderAdapter:NewOrderAdapter? = null
+    private var newOrderAdapter: NewOrderAdapter? = null
 
-    private var confirmOrderAdapter:ConfirmOrderAdapter? = null
+    private var confirmOrderAdapter: ConfirmOrderAdapter? = null
 
-    private var bindingSalesAndPurchasing:FragmentPurchasingAndSalesBinding? = null
+    private var bindingSalesAndPurchasing: FragmentPurchasingAndSalesBinding? = null
 
     // Permission for External Storage
     private val permissionsForExternalStorage = arrayOf(
@@ -70,36 +70,34 @@ class SalesFragment : Fragment(),View.OnClickListener {
 
     // Initialize your permission result launcher
     @RequiresApi(Build.VERSION_CODES.R)
-    val storagePermissionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+    val storagePermissionResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
 
-            // Check if permission is granted
-            if (Environment.isExternalStorageManager()) {
+                // Check if permission is granted
+                if (Environment.isExternalStorageManager()) {
 
-                // Permission granted. Now resume your workflow.
-                // Call your method or handle the permission granted state here
+                    // Permission granted. Now resume your workflow.
+                    // Call your method or handle the permission granted state here
 //                generatePDF()
-            }
-            else {
+                } else {
 
-                requestStoragePermission()
+                    requestStoragePermission()
+                }
+            } else if (result.resultCode == Activity.RESULT_CANCELED) {
+
+                // Handle case where user cancels the permission request
+                if (Environment.isExternalStorageManager()) {
+
+                    // Permission granted. Now resume your workflow.
+                    // Call your method or handle the permission granted state here
+//                generatePDF()
+                } else {
+
+                    requestStoragePermission()
+                }
             }
         }
-        else if (result.resultCode == Activity.RESULT_CANCELED) {
-
-            // Handle case where user cancels the permission request
-            if (Environment.isExternalStorageManager()) {
-
-                // Permission granted. Now resume your workflow.
-                // Call your method or handle the permission granted state here
-//                generatePDF()
-            }
-            else {
-
-                requestStoragePermission()
-            }
-        }
-    }
 
     // Checks All the necessary permission related to External Storage
     private var customPermissionLauncher = registerForActivityResult(
@@ -133,9 +131,6 @@ class SalesFragment : Fragment(),View.OnClickListener {
 
         }
     }
-
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -180,18 +175,18 @@ class SalesFragment : Fragment(),View.OnClickListener {
     }
 
     // Set confirm order recycler view
-    private  fun setConfirmOrderRecyclerView() {
+    private fun setConfirmOrderRecyclerView() {
 
         if (confirmOrderList.isNotEmpty()) {
 
             binding.rvConfirmOrder?.visibility = View.VISIBLE
 
-            confirmOrderAdapter = ConfirmOrderAdapter(requireActivity(),confirmOrderList)
-            binding.rvConfirmOrder?.layoutManager = GridLayoutManager(context, 3) // 3 is the number of columns
+            confirmOrderAdapter = ConfirmOrderAdapter(requireActivity(), confirmOrderList)
+            binding.rvConfirmOrder?.layoutManager =
+                GridLayoutManager(context, 3) // 3 is the number of columns
             binding.rvConfirmOrder?.adapter = confirmOrderAdapter
 
-        }
-        else {
+        } else {
 
             GetProgressBar.getInstance(requireActivity())?.dismiss()
 
@@ -201,18 +196,18 @@ class SalesFragment : Fragment(),View.OnClickListener {
     }
 
     // Set new order recycler view
-    private  fun setNewOrderRecyclerView() {
+    private fun setNewOrderRecyclerView() {
 
         if (newOrderList.isNotEmpty()) {
 
             binding.rvNewOrder?.visibility = View.VISIBLE
 
-            newOrderAdapter = NewOrderAdapter(requireActivity(),newOrderList)
-            binding.rvNewOrder?.layoutManager = GridLayoutManager(context, 4) // 3 is the number of columns
+            newOrderAdapter = NewOrderAdapter(requireActivity(), newOrderList)
+            binding.rvNewOrder?.layoutManager =
+                GridLayoutManager(context, 4) // 3 is the number of columns
             binding.rvNewOrder?.adapter = newOrderAdapter
 
-        }
-        else {
+        } else {
 
             GetProgressBar.getInstance(requireActivity())?.dismiss()
 
@@ -224,13 +219,14 @@ class SalesFragment : Fragment(),View.OnClickListener {
         }
     }
 
+    // get Confirm Order List
     private suspend fun getConfirmOrderList() {
 
         val result = lifecycleScope.async(Dispatchers.IO) {
-            return@async Utils.GetSession().userUUID?.let { Utils.getOrders(it,Constants.Confirm) }
+            return@async Utils.GetSession().userUUID?.let { Utils.getOrders(it, Constants.Confirm) }
         }
 
-        this.confirmOrderList  = result.await()!!
+        this.confirmOrderList = result.await()!!
 
         GetProgressBar.getInstance(requireActivity())?.dismiss()
 
@@ -238,13 +234,14 @@ class SalesFragment : Fragment(),View.OnClickListener {
 
     }
 
+    // get New Order List
     private suspend fun getNewOrderList() {
 
         val result = lifecycleScope.async(Dispatchers.IO) {
-            return@async Utils.GetSession().userUUID?.let { Utils.getOrders(it,Constants.New) }
+            return@async Utils.GetSession().userUUID?.let { Utils.getOrders(it, Constants.New) }
         }
 
-        this.newOrderList  = result.await()!!
+        this.newOrderList = result.await()!!
 
     }
 
@@ -259,6 +256,7 @@ class SalesFragment : Fragment(),View.OnClickListener {
         storagePermissionResultLauncher.launch(intent)
     }
 
+    // Request Permission
     private fun requestPermission() {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
@@ -293,7 +291,7 @@ class SalesFragment : Fragment(),View.OnClickListener {
     // Set search
     private fun setSearch() {
 
-        bindingSalesAndPurchasing?.etSearch?.addTextChangedListener( object : TextWatcher {
+        bindingSalesAndPurchasing?.etSearch?.addTextChangedListener(object : TextWatcher {
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -320,7 +318,8 @@ class SalesFragment : Fragment(),View.OnClickListener {
 
                             for (productUUID in productUUIDList) {
 
-                                val productDataModel = Utils.getProductThroughProductUUID(productUUID)
+                                val productDataModel =
+                                    Utils.getProductThroughProductUUID(productUUID)
 
                                 val metalTypeName = productDataModel.metalTypeUUID?.let {
                                     Utils.getMetalTypeNameThroughMetalTypeUUID(
@@ -385,7 +384,7 @@ class SalesFragment : Fragment(),View.OnClickListener {
 
                                 ) {
 
-                                    if(!searchFilterList.contains(orderData)) {
+                                    if (!searchFilterList.contains(orderData)) {
 
                                         searchFilterList.add(orderData)
 
@@ -407,8 +406,7 @@ class SalesFragment : Fragment(),View.OnClickListener {
                         else
                             confirmOrderAdapter?.filterProductDataList(searchFilterList)
 
-                    }
-                    else {
+                    } else {
 
                         if (isNewOrderStatus)
                             newOrderAdapter?.filterProductDataList(searchFilterList)
@@ -420,19 +418,18 @@ class SalesFragment : Fragment(),View.OnClickListener {
 
 //                        binding.llEmptyProduct?.visibility = View.VISIBLE
                     }
-                }
-
-                else {
+                } else {
                     removeSearch()
                 }
             }
         })
     }
 
+    // Remove Search
     private fun removeSearch() {
 
-        if ((isNewOrderStatus  && newOrderList.isNotEmpty()) || (!isNewOrderStatus  &&  confirmOrderList.isNotEmpty())) {
-           binding.llEmptySales?.visibility = View.GONE
+        if ((isNewOrderStatus && newOrderList.isNotEmpty()) || (!isNewOrderStatus && confirmOrderList.isNotEmpty())) {
+            binding.llEmptySales?.visibility = View.GONE
         }
 
         if (isNewOrderStatus)
@@ -455,7 +452,8 @@ class SalesFragment : Fragment(),View.OnClickListener {
 
         bindingSalesAndPurchasing?.etSearch?.let {
             bindingSalesAndPurchasing?.mcvSearch?.let { it1 ->
-                Utils.setFocusChangeListener(requireActivity(),
+                Utils.setFocusChangeListener(
+                    requireActivity(),
                     it, it1
                 )
             }
@@ -471,77 +469,106 @@ class SalesFragment : Fragment(),View.OnClickListener {
 
         bindingSalesAndPurchasing?.mcvNewOrder?.setOnClickListener(this)
 
-//        lifecycleScope.launch {
-//            delay(1000) // Delay in milliseconds (e.g., 2000 ms = 2 seconds)
-//            bindingSalesAndPurchasing?.mcvNewOrder?.performClick()
-//        }
-
     }
 
+    // Make Selected
     @SuppressLint("ResourceAsColor")
-    private fun makeSelected(materialCardView: MaterialCardView,textView: TextView) {
+    private fun makeSelected(materialCardView: MaterialCardView, textView: TextView) {
 
-        materialCardView.setCardBackgroundColor(ContextCompat.getColor(requireActivity(), R.color.theme))
+        materialCardView.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.theme
+            )
+        )
         textView.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white))
 
     }
 
+    // Make UnSelected
     @SuppressLint("ResourceAsColor")
     private fun makeUnSelected(materialCardView: MaterialCardView, textView: TextView) {
 
-        materialCardView.setCardBackgroundColor(ContextCompat.getColor(requireActivity(), R.color.separator_line_color))
-        textView.setTextColor(ContextCompat.getColor(requireActivity(), R.color.product_background_color))
+        materialCardView.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.separator_line_color
+            )
+        )
+        textView.setTextColor(
+            ContextCompat.getColor(
+                requireActivity(),
+                R.color.product_background_color
+            )
+        )
     }
 
     override fun onClick(v: View?) {
 
-       if (v == bindingSalesAndPurchasing?.mcvNewOrder) {
+        if (v == bindingSalesAndPurchasing?.mcvNewOrder) {
 
             isNewOrderStatus = true
             removeSearch()
-           bindingSalesAndPurchasing?.etSearch?.setText("")
+            bindingSalesAndPurchasing?.etSearch?.setText("")
 
 
-           bindingSalesAndPurchasing?.mcvNewOrder?.let { bindingSalesAndPurchasing?.tvNewOrder?.let { it1 -> makeSelected(it, it1) } }
+            bindingSalesAndPurchasing?.mcvNewOrder?.let {
+                bindingSalesAndPurchasing?.tvNewOrder?.let { it1 ->
+                    makeSelected(
+                        it,
+                        it1
+                    )
+                }
+            }
 
-           bindingSalesAndPurchasing?.mcvConfirmOrder?.let { bindingSalesAndPurchasing?.tvConfirmOrder?.let { it1 ->
-                makeUnSelected(it,
-                    it1
-                )
-            } }
+            bindingSalesAndPurchasing?.mcvConfirmOrder?.let {
+                bindingSalesAndPurchasing?.tvConfirmOrder?.let { it1 ->
+                    makeUnSelected(
+                        it,
+                        it1
+                    )
+                }
+            }
 
             binding.llEmptySales?.visibility = View.GONE
 //            binding.rvNewOrder?.visibility  = View.VISIBLE
-            binding.rvConfirmOrder?.visibility  = View.GONE
+            binding.rvConfirmOrder?.visibility = View.GONE
 
             if (newOrderList.isNotEmpty()) {
 
-                binding.rvNewOrder?.visibility  = View.VISIBLE
+                binding.rvNewOrder?.visibility = View.VISIBLE
 //                binding.rvConfirmOrder?.visibility  = View.GONE
-            }
-            else {
+            } else {
 
-                binding.llEmptySales?.visibility  = View.VISIBLE
+                binding.llEmptySales?.visibility = View.VISIBLE
             }
-        }
-
-        else if (v == bindingSalesAndPurchasing?.mcvConfirmOrder) {
+        } else if (v == bindingSalesAndPurchasing?.mcvConfirmOrder) {
 
             isNewOrderStatus = false
             removeSearch()
-           bindingSalesAndPurchasing?.etSearch?.setText("")
+            bindingSalesAndPurchasing?.etSearch?.setText("")
 
-           bindingSalesAndPurchasing?.mcvConfirmOrder?.let { bindingSalesAndPurchasing?.tvConfirmOrder?.let { it1 -> makeSelected(it, it1) } }
+            bindingSalesAndPurchasing?.mcvConfirmOrder?.let {
+                bindingSalesAndPurchasing?.tvConfirmOrder?.let { it1 ->
+                    makeSelected(
+                        it,
+                        it1
+                    )
+                }
+            }
 
-           bindingSalesAndPurchasing?.mcvNewOrder?.let { bindingSalesAndPurchasing?.tvNewOrder?.let { it1 ->
-                makeUnSelected(it,
-                    it1
-                )
-            } }
+            bindingSalesAndPurchasing?.mcvNewOrder?.let {
+                bindingSalesAndPurchasing?.tvNewOrder?.let { it1 ->
+                    makeUnSelected(
+                        it,
+                        it1
+                    )
+                }
+            }
 
             binding.llEmptySales?.visibility = View.GONE
 //            binding.rvConfirmOrder?.visibility  = View.VISIBLE
-            binding.rvNewOrder?.visibility  = View.GONE
+            binding.rvNewOrder?.visibility = View.GONE
 
             if (getConfirmOrder) {
 
@@ -552,17 +579,15 @@ class SalesFragment : Fragment(),View.OnClickListener {
                 }
 
                 getConfirmOrder = false
-            }
-            else {
+            } else {
 
                 if (confirmOrderList.isNotEmpty()) {
 
-                    binding.rvConfirmOrder?.visibility  = View.VISIBLE
-                }
-                else {
+                    binding.rvConfirmOrder?.visibility = View.VISIBLE
+                } else {
 
-                    binding.rvConfirmOrder?.visibility  = View.GONE
-                    binding.llEmptySales?.visibility  = View.VISIBLE
+                    binding.rvConfirmOrder?.visibility = View.GONE
+                    binding.llEmptySales?.visibility = View.VISIBLE
                 }
 
             }

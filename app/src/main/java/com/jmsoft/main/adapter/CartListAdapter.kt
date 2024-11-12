@@ -6,22 +6,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CartDataModel
-import com.jmsoft.Utility.Database.OrderDataModel
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.CartDataModel
+import com.jmsoft.utility.database.OrderDataModel
+import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentCartBinding
 import com.jmsoft.databinding.ItemCardListBinding
 import com.jmsoft.main.activity.DashboardActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 /**
  * Cart list Adapter
@@ -155,7 +150,7 @@ class CartListAdapter(
 
         }
 
-        //Set the Product quantity
+        // Set the Product quantity
         private fun setProductQuantity() {
 
             Utils.E("Product quantity is ###${cartData.productQuantity}###")
@@ -223,7 +218,6 @@ class CartListAdapter(
                 //Increment the product quantity by 1
                 cartData.productQuantity = cartData.productQuantity?.plus(1)
 
-//                cartData.productQuantity = cartData.productQuantity?.plus(1)
 
                 // Update the Product Quantity in Cart table
                 if (!orderStatus) updateQuantityOfProduct() else Utils.GetSession().userUUID?.let {

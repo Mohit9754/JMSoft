@@ -11,24 +11,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.view.animation.AnimationUtils
-import android.view.inputmethod.InputMethodManager
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.StockLocationDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.StockLocationDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
-import com.jmsoft.basic.validation.ResultReturn
-import com.jmsoft.basic.validation.Validation
-import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.DialogDeleteUserBinding
 import com.jmsoft.databinding.FragmentStockLocationBinding
-import com.jmsoft.databinding.ItemAddStockLocationBinding
 import com.jmsoft.databinding.ItemStockLocationBinding
 import com.jmsoft.main.activity.DashboardActivity
-import com.jmsoft.main.fragment.ProductInventoryFragment
 import com.jmsoft.main.fragment.StockLocationFragment
 
 class StockLocationAdapter(
@@ -148,28 +141,28 @@ class StockLocationAdapter(
         @SuppressLint("NotifyDataSetChanged")
         override fun onClick(v: View?) {
 
-            if (v == binding.mcvDelete) {
+            when (v) {
+                binding.mcvDelete -> {
 
-                stockLocationDataModel.stockLocationUUID?.let { showStockLocationDeleteDialog(it,position) }
-            }
+                    stockLocationDataModel.stockLocationUUID?.let { showStockLocationDeleteDialog(it,position) }
+                }
+                binding.mcvEdit -> {
 
-            else if (v == binding.mcvEdit) {
+                    stockLocationFragment.showAddStockLocationDialog(position,stockLocationDataModel)
 
-                stockLocationFragment.showAddStockLocationDialog(position,stockLocationDataModel)
+                }
+                binding.mcvAddProduct -> {
 
-            }
+                    GetProgressBar.getInstance(context)?.show()
 
-            else if (v == binding.mcvAddProduct) {
+                    val bundle = Bundle()
 
-                GetProgressBar.getInstance(context)?.show()
+                    //Giving the product UUID
+                    bundle.putString(Constants.stockLocationUUID, stockLocationDataModel.stockLocationUUID)
 
-                val bundle = Bundle()
+                    (context as DashboardActivity).navController?.navigate(R.id.productInventory, bundle)
 
-                //Giving the product UUID
-                bundle.putString(Constants.stockLocationUUID, stockLocationDataModel.stockLocationUUID)
-
-                (context as DashboardActivity).navController?.navigate(R.id.productInventory, bundle)
-
+                }
             }
         }
     }

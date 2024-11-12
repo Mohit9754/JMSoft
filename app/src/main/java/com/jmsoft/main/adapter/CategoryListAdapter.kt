@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.utility.database.CategoryDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
 import com.jmsoft.databinding.FragmentMetalTypeBinding

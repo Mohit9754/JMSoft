@@ -1,33 +1,23 @@
 package com.jmsoft.main.adapter
 
-import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CartDataModel
-import com.jmsoft.Utility.Database.OrderDataModel
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.CartDataModel
+import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
-import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
 import com.jmsoft.basic.UtilityTools.Utils
-import com.jmsoft.databinding.DialogDeleteUserBinding
 import com.jmsoft.databinding.ItemCollectionBinding
 import com.jmsoft.main.activity.DashboardActivity
-
 
 class ProductCollectionAdapter(
     private val context: Context,
     private val productList: ArrayList<ProductDataModel>,
-
 ) :
     RecyclerView.Adapter<ProductCollectionAdapter.MyViewHolder>() {
 

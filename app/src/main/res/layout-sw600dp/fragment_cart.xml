@@ -245,7 +245,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="@dimen/_2sdp"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                tools:ignore="RelativeOverlap">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -789,7 +790,7 @@
                         android:text="@string/place_order"
                         android:textColor="@color/white"
                         android:textSize="12sp"
-                        tools:ignore="SmallSp" />
+                        tools:ignore="SmallSp,TooManyViews" />
 
 
                 </com.google.android.material.card.MaterialCardView>

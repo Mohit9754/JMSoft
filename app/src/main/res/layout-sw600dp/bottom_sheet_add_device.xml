@@ -46,7 +46,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    tools:ignore="UselessParent">
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="@dimen/_23sdp"
@@ -57,13 +58,15 @@
                         android:outlineAmbientShadowColor="@color/ambientShadowColor"
                         android:outlineSpotShadowColor="@color/spotShadowColor"
                         app:strokeColor="@color/bottom_sheet_stroke_color"
-                        app:strokeWidth="0.7dp">
+                        app:strokeWidth="0.7dp"
+                        tools:ignore="UnusedAttribute">
 
                         <ImageView
                             android:layout_width="@dimen/_12sdp"
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
-                            android:src="@drawable/icon_scanner_bottom_sheet" />
+                            android:src="@drawable/icon_scanner_bottom_sheet"
+                            tools:ignore="ContentDescription" />
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -105,7 +108,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    tools:ignore="UselessParent">
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="@dimen/_23sdp"
@@ -116,13 +120,15 @@
                         android:outlineAmbientShadowColor="@color/ambientShadowColor"
                         android:outlineSpotShadowColor="@color/spotShadowColor"
                         app:strokeColor="@color/bottom_sheet_stroke_color"
-                        app:strokeWidth="0.7dp">
+                        app:strokeWidth="0.7dp"
+                        tools:ignore="UnusedAttribute">
 
                         <ImageView
                             android:layout_width="@dimen/_12sdp"
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
-                            android:src="@drawable/icon_tag_printer_bottom_sheet" />
+                            android:src="@drawable/icon_tag_printer_bottom_sheet"
+                            tools:ignore="ContentDescription" />
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -163,7 +169,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    tools:ignore="UselessParent">
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="@dimen/_23sdp"
@@ -174,13 +181,15 @@
                         android:outlineAmbientShadowColor="@color/ambientShadowColor"
                         android:outlineSpotShadowColor="@color/spotShadowColor"
                         app:strokeColor="@color/bottom_sheet_stroke_color"
-                        app:strokeWidth="0.7dp">
+                        app:strokeWidth="0.7dp"
+                        tools:ignore="UnusedAttribute">
 
                         <ImageView
                             android:layout_width="@dimen/_12sdp"
                             android:layout_height="@dimen/_12sdp"
                             android:layout_gravity="center"
-                            android:src="@drawable/icon_ticket_printer_bottom_sheet" />
+                            android:src="@drawable/icon_ticket_printer_bottom_sheet"
+                            tools:ignore="ContentDescription" />
 
                     </com.google.android.material.card.MaterialCardView>
 

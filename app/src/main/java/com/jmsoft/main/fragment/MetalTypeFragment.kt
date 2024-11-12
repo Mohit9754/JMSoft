@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.jmsoft.main.fragment
 
 import android.Manifest
@@ -27,10 +29,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CategoryDataModel
-import com.jmsoft.Utility.Database.CollectionDataModel
-import com.jmsoft.Utility.Database.MetalTypeDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.CategoryDataModel
+import com.jmsoft.utility.database.CollectionDataModel
+import com.jmsoft.utility.database.MetalTypeDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.category
 import com.jmsoft.basic.UtilityTools.Constants.Companion.collection
@@ -133,14 +135,13 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val image_uri: Uri? = result.data?.data
+                val imageUri: Uri? = result.data?.data
 
                 dialogMetalBinding.llAddImageSection.visibility = View.GONE
                 dialogMetalBinding.mcvCrossBtn.visibility = View.VISIBLE
                 isCollectionImageSelected = true
-                dialogMetalBinding.ivCollectionImage.setImageURI(image_uri)
+                dialogMetalBinding.ivCollectionImage.setImageURI(imageUri)
                 dialogMetalBinding.tvCollectionImageError.visibility = View.GONE
-//                updateProfile(binding.ivProfile?.drawable?.toBitmap())
 
             }
         }
@@ -156,7 +157,6 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
             dialogMetalBinding.mcvCrossBtn.visibility = View.VISIBLE
             isCollectionImageSelected = true
             dialogMetalBinding.tvCollectionImageError.visibility = View.GONE
-//                updateProfile(binding.ivProfile?.drawable?.toBitmap())
 
         }
     }
@@ -504,79 +504,83 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
     // Set state of the inventory dialog
     private fun setInventoryDialogState(inventoryUUID: String?, position: Int?) {
 
-        if (fragmentState == metalType) {
+        when (fragmentState) {
+            metalType -> {
 
-            if (position != null && inventoryUUID != null) {
+                if (position != null && inventoryUUID != null) {
 
-                dialogMetalBinding.tvTitle.text = getString(R.string.edit_metal_type)
-                dialogMetalBinding.etMetalType.setText(metalTypeDataList[position].metalTypeName)
+                    dialogMetalBinding.tvTitle.text = getString(R.string.edit_metal_type)
+                    dialogMetalBinding.etMetalType.setText(metalTypeDataList[position].metalTypeName)
 
-            } else {
+                } else {
 
-                dialogMetalBinding.tvTitle.text =
-                    requireActivity().getString(R.string.add_metal_type)
+                    dialogMetalBinding.tvTitle.text =
+                        requireActivity().getString(R.string.add_metal_type)
 
-            }
+                }
 
-            dialogMetalBinding.tvName.text = requireActivity().getString(R.string.metal_type)
-            dialogMetalBinding.etMetalType.hint =
-                requireActivity().getString(R.string.enter_metal_type)
-
-        } else if (fragmentState == collection) {
-
-            if (position != null && inventoryUUID != null) {
-
-                dialogMetalBinding.tvTitle.text = getString(R.string.update_collection)
-                dialogMetalBinding.etMetalType.setText(collectionDataList[position].collectionName)
-
-                dialogMetalBinding.llAddImageSection.visibility = View.GONE
-                dialogMetalBinding.mcvCrossBtn.visibility = View.VISIBLE
-                isCollectionImageSelected = true
-
-                dialogMetalBinding.ivCollectionImage.setImageBitmap(collectionDataList[position].collectionImageUri?.let {
-                    Utils.getImageFromInternalStorage(
-                        requireActivity(),
-                        it
-                    )
-                })
-
-            } else {
-
-                dialogMetalBinding.tvTitle.text =
-                    requireActivity().getString(R.string.add_collection)
-            }
-
-            dialogMetalBinding.tvName.text = requireActivity().getString(R.string.collection)
-            dialogMetalBinding.etMetalType.hint = getString(R.string.enter_collection_name)
-            dialogMetalBinding.llAddImage.visibility = View.VISIBLE
-
-            dialogMetalBinding.llAddImageSection.setOnClickListener {
-                showImageSelectionDialog()
-            }
-
-            dialogMetalBinding.mcvCrossBtn.setOnClickListener {
-
-                dialogMetalBinding.ivCollectionImage.setImageDrawable(null)
-                dialogMetalBinding.llAddImageSection.visibility = View.VISIBLE
-                dialogMetalBinding.mcvCrossBtn.visibility = View.GONE
-                isCollectionImageSelected = false
+                dialogMetalBinding.tvName.text = requireActivity().getString(R.string.metal_type)
+                dialogMetalBinding.etMetalType.hint =
+                    requireActivity().getString(R.string.enter_metal_type)
 
             }
-        } else if (fragmentState == category) {
+            collection -> {
 
-            if (position != null && inventoryUUID != null) {
+                if (position != null && inventoryUUID != null) {
 
-                dialogMetalBinding.tvTitle.text = getString(R.string.edit_category)
-                dialogMetalBinding.etMetalType.setText(categoryDataList[position].categoryName)
+                    dialogMetalBinding.tvTitle.text = getString(R.string.update_collection)
+                    dialogMetalBinding.etMetalType.setText(collectionDataList[position].collectionName)
 
-            } else {
-                dialogMetalBinding.tvTitle.text = requireActivity().getString(R.string.add_category)
+                    dialogMetalBinding.llAddImageSection.visibility = View.GONE
+                    dialogMetalBinding.mcvCrossBtn.visibility = View.VISIBLE
+                    isCollectionImageSelected = true
+
+                    dialogMetalBinding.ivCollectionImage.setImageBitmap(collectionDataList[position].collectionImageUri?.let {
+                        Utils.getImageFromInternalStorage(
+                            requireActivity(),
+                            it
+                        )
+                    })
+
+                } else {
+
+                    dialogMetalBinding.tvTitle.text =
+                        requireActivity().getString(R.string.add_collection)
+                }
+
+                dialogMetalBinding.tvName.text = requireActivity().getString(R.string.collection)
+                dialogMetalBinding.etMetalType.hint = getString(R.string.enter_collection_name)
+                dialogMetalBinding.llAddImage.visibility = View.VISIBLE
+
+                dialogMetalBinding.llAddImageSection.setOnClickListener {
+                    showImageSelectionDialog()
+                }
+
+                dialogMetalBinding.mcvCrossBtn.setOnClickListener {
+
+                    dialogMetalBinding.ivCollectionImage.setImageDrawable(null)
+                    dialogMetalBinding.llAddImageSection.visibility = View.VISIBLE
+                    dialogMetalBinding.mcvCrossBtn.visibility = View.GONE
+                    isCollectionImageSelected = false
+
+                }
             }
+            category -> {
 
-            dialogMetalBinding.tvName.text = requireActivity().getString(R.string.category)
-            dialogMetalBinding.etMetalType.hint =
-                requireActivity().getString(R.string.enter_category_name)
+                if (position != null && inventoryUUID != null) {
 
+                    dialogMetalBinding.tvTitle.text = getString(R.string.edit_category)
+                    dialogMetalBinding.etMetalType.setText(categoryDataList[position].categoryName)
+
+                } else {
+                    dialogMetalBinding.tvTitle.text = requireActivity().getString(R.string.add_category)
+                }
+
+                dialogMetalBinding.tvName.text = requireActivity().getString(R.string.category)
+                dialogMetalBinding.etMetalType.hint =
+                    requireActivity().getString(R.string.enter_category_name)
+
+            }
         }
 
         Utils.setFocusChangeLis(requireActivity(),dialogMetalBinding.etMetalType, dialogMetalBinding.mcvMetalType)
@@ -756,28 +760,32 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
         // getting the state
         fragmentState = arguments?.getString(Constants.state)
 
-        if (fragmentState == metalType) {
+        when (fragmentState) {
+            metalType -> {
 
-            binding.tvTitle?.text = requireActivity().getString(R.string.metal_type)
-            binding.tvButtonName?.text = requireActivity().getString(R.string.add_metal_type)
+                binding.tvTitle?.text = requireActivity().getString(R.string.metal_type)
+                binding.tvButtonName?.text = requireActivity().getString(R.string.add_metal_type)
 
-            // Set Metal Type Recycler View
-            setMetalTypeRecyclerView()
-        } else if (fragmentState == collection) {
+                // Set Metal Type Recycler View
+                setMetalTypeRecyclerView()
+            }
+            collection -> {
 
-            binding.tvTitle?.text = requireActivity().getString(R.string.collection)
-            binding.tvButtonName?.text = requireActivity().getString(R.string.add_collection)
+                binding.tvTitle?.text = requireActivity().getString(R.string.collection)
+                binding.tvButtonName?.text = requireActivity().getString(R.string.add_collection)
 
-            // Set Collection Recycler View
-            setCollectionRecyclerView()
+                // Set Collection Recycler View
+                setCollectionRecyclerView()
 
-        } else if (fragmentState == category) {
+            }
+            category -> {
 
-            binding.tvTitle?.text = requireActivity().getString(R.string.category)
-            binding.tvButtonName?.text = getString(R.string.add_category)
+                binding.tvTitle?.text = requireActivity().getString(R.string.category)
+                binding.tvButtonName?.text = getString(R.string.add_category)
 
-            // Set Collection Recycler View
-            setCategoryRecyclerView()
+                // Set Collection Recycler View
+                setCategoryRecyclerView()
+            }
         }
 
     }

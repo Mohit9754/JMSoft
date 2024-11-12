@@ -18,9 +18,8 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.MetalTypeDataModel
-import com.jmsoft.Utility.Database.StockLocationDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.StockLocationDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation
@@ -28,7 +27,6 @@ import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.FragmentStockLocationBinding
 import com.jmsoft.databinding.ItemAddStockLocationBinding
 import com.jmsoft.main.activity.DashboardActivity
-import com.jmsoft.main.adapter.MetalTypeDropdownAdapter
 import com.jmsoft.main.adapter.StockLocationAdapter
 import com.jmsoft.main.adapter.StockLocationDropdownAdapter
 import com.jmsoft.main.`interface`.SelectedCallback
@@ -56,6 +54,7 @@ class StockLocationFragment : Fragment(), View.OnClickListener {
         return binding.root
     }
 
+    // Get StockLocation List
     private fun getStockLocationList() {
 
         stockLocationList = Utils.getAllStockLocation()
@@ -64,6 +63,7 @@ class StockLocationFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Remove Item From DropdownList
     @RequiresApi(Build.VERSION_CODES.N)
     fun removeItemFromDropdownList(stockLocationUUID:String) {
         stockLocationDropdownList.removeIf { it.stockLocationUUID == stockLocationUUID }
@@ -77,6 +77,7 @@ class StockLocationFragment : Fragment(), View.OnClickListener {
         setStockLocationRecyclerView()
     }
 
+    // Set StockLocation RecyclerView
     private fun setStockLocationRecyclerView() {
 
         if (stockLocationList.isNotEmpty()) {
@@ -110,12 +111,12 @@ class StockLocationFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Set Parent RecyclerView
     private fun setParentRecyclerView() {
 
         stockLocationDropdownAdapter = StockLocationDropdownAdapter(
             requireActivity(),
             stockLocationDropdownList,
-            null,
             true,
             object : SelectedCallback {
 
@@ -141,15 +142,7 @@ class StockLocationFragment : Fragment(), View.OnClickListener {
                     }
                 }
 
-                override fun unselect() {
-
-//                    selectedMetalTypeUUID = null
-//                    binding.tvMetalType.text = ""
-//                    binding.tvMetalTypeError.visibility = View.GONE
-////                    binding.mcvMetalTypeList?.visibility = View.GONE
-//                    showOrHideMetalTypeDropDown()
-
-                }
+                override fun unselect() {}
             }
         )
 
@@ -164,6 +157,7 @@ class StockLocationFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Show Add StockLocation Dialog
     @SuppressLint("NotifyDataSetChanged")
     fun showAddStockLocationDialog(
         position: Int?,

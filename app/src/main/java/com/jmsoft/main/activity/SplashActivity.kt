@@ -1,10 +1,10 @@
 package com.jmsoft.main.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.jmsoft.R
-import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 
 /**
@@ -14,6 +14,7 @@ import com.jmsoft.basic.UtilityTools.Utils
  *
  */
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
     private val activity: Activity = this@SplashActivity
@@ -35,17 +36,16 @@ class SplashActivity : AppCompatActivity() {
 
                     // If Session present then intent to Dashboard Activity
                     if (Utils.IS_LOGIN()) {
-                        Utils.I_clear(this@SplashActivity, DashboardActivity::class.java, null)
+                        Utils.I_clear(activity, DashboardActivity::class.java, null)
                     } else {
 
                         //Intent to login Activity with clear back Stack
-                        Utils.I_clear(this@SplashActivity, LoginActivity::class.java, null)
+                        Utils.I_clear(activity, LoginActivity::class.java, null)
                     }
                 }
             }
         }
         thread.start()
-
     }
 
 }

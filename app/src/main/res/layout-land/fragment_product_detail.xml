@@ -146,7 +146,7 @@
                                         android:text="@string/weight"
                                         android:textColor="@color/text_color"
                                         android:textSize="11sp"
-                                        tools:ignore="SmallSp" />
+                                        tools:ignore="SmallSp,TooDeepLayout" />
 
                                     <TextView
                                         android:id="@+id/tvProductWeight"
@@ -194,7 +194,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
                                 android:layout_marginEnd="@dimen/_7sdp"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                tools:ignore="ObsoleteLayoutParam">
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -316,7 +317,8 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            tools:ignore="RelativeOverlap">
 
                             <TextView
                                 android:layout_width="wrap_content"

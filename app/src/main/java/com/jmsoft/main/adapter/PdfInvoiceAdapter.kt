@@ -5,17 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
-import com.jmsoft.Utility.Database.CartDataModel
-import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.utility.database.CartDataModel
+import com.jmsoft.utility.database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.InvoiceItemBinding
-import com.jmsoft.databinding.PdfInvoiceSecondBinding
-import com.jmsoft.main.model.Data
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 
 class PdfInvoiceAdapter(
     private val context: Context,
@@ -70,7 +65,6 @@ class PdfInvoiceAdapter(
                     tvTotalAmount?.text = Utils.getThousandSeparate(Utils.TotalAmount.getTotalAmount())
                     Utils.TotalAmount.resetTotalAmount()
 
-//                    Utils.TotalAmount.resetTotalAmount()
                 }
                 else {
                     mcvTotalAmount?.visibility = View.GONE

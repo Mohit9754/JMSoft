@@ -18,8 +18,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.basic.Database.UserDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.UserDataModel
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
 import com.jmsoft.basic.UtilityTools.Constants.Companion.updateInSession
@@ -99,7 +99,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     private fun setOnEditorActionListener(){
 
         // Set up editor action listener for editText1
-        binding.etFirstName?.setOnEditorActionListener { v, actionId, event ->
+        binding.etFirstName?.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_NEXT) {
                 binding.etLastName?.requestFocus() // Move focus to etLastName
                 return@setOnEditorActionListener true
@@ -314,30 +314,32 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     // Handles All the Clicks
     override fun onClick(v: View?) {
 
-        //when Save button Click
-        if (v == binding.mcvSave) {
-            validate()
-        }
-        //show And hide Password
-        else if (v == binding.ivPasswordVisibility) {
+        // when Save button Click
+        when (v) {
+            binding.mcvSave -> {
+                validate()
+            }
+            //show And hide Password
+            binding.ivPasswordVisibility -> {
 
-            showAndHidePassword(binding.etPassword!!, binding.ivPasswordVisibility!!)
-        }
+                showAndHidePassword(binding.etPassword!!, binding.ivPasswordVisibility!!)
+            }
 
-        //Back Button pressed
-        else if(v == binding.mcvBackBtn){
+            //Back Button pressed
+            binding.mcvBackBtn -> {
 
-            (requireActivity() as DashboardActivity).navController?.popBackStack()
-        }
+                (requireActivity() as DashboardActivity).navController?.popBackStack()
+            }
 
-        // Clicked on phone number
-        else if (v == binding.etPhoneNumber){
-            Utils.T(requireActivity(), getString(R.string.only_admin_can_edit_phone_number))
-        }
+            // Clicked on phone number
+            binding.etPhoneNumber -> {
+                Utils.T(requireActivity(), getString(R.string.only_admin_can_edit_phone_number))
+            }
 
-        // Clicked on email address
-        else if (v == binding.etEmailAddress){
-            Utils.T(requireActivity(), getString(R.string.only_admin_can_edit_email_address))
+            // Clicked on email address
+            binding.etEmailAddress -> {
+                Utils.T(requireActivity(), getString(R.string.only_admin_can_edit_email_address))
+            }
         }
     }
 

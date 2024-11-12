@@ -15,7 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.basic.Database.UserDataModel
+import com.jmsoft.utility.database.UserDataModel
 import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.email
@@ -41,6 +41,7 @@ import java.util.ArrayList
  *  intent to login activity
  */
 
+@Suppress("LABEL_NAME_CLASH")
 class SignUpActivity : BaseActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivitySignUpBinding
@@ -102,7 +103,7 @@ class SignUpActivity : BaseActivity(), View.OnClickListener {
     private fun setOnEditorActionListener(){
 
         // Set up editor action listener for editText1
-        binding.etFirstName?.setOnEditorActionListener { v, actionId, event ->
+        binding.etFirstName?.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_NEXT) {
                 binding.etLastName?.requestFocus() // Move focus to etLastName
                 return@setOnEditorActionListener true

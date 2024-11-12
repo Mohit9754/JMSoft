@@ -12,9 +12,9 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.Utility.UtilityTools.ProductUUIDList
+import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.UtilityTools.ProductUUIDList
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.currency
 import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
@@ -23,7 +23,6 @@ import com.jmsoft.databinding.DialogDeleteUserBinding
 import com.jmsoft.databinding.FragmentProductBinding
 import com.jmsoft.databinding.ItemProductListBinding
 import com.jmsoft.main.activity.DashboardActivity
-
 
 class ProductListAdapter(
     private val context: Context,
@@ -48,7 +47,7 @@ class ProductListAdapter(
 
     // Show Product Delete Dialog
     @SuppressLint("NotifyDataSetChanged")
-    private fun showProductDeleteDialog(position: Int, productUUID: String,productImageUri:String,barcodeImageUri:String) {
+    private fun showProductDeleteDialog(position: Int, productUUID: String,barcodeImageUri:String) {
 
         val dialog = Dialog(context)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -331,46 +330,49 @@ class ProductListAdapter(
         override fun onClick(v: View?) {
 
             // When delete button Clicked
-            if (v == binding.mcvDelete) {
+            when (v) {
 
-                // Show Category Delete Dialog
-                productData.productUUID?.let { productData.productImageUri?.let { it1 ->
-                    productData.productBarcodeUri?.let { it2 ->
-                        showProductDeleteDialog(position, it,
-                            it1, it2
-                        )
-                    }
-                } }
-            }
+                binding.mcvDelete -> {
 
-            // When edit button Clicked
-            else if (v == binding.mcvEdit) {
+                    // Show Category Delete Dialog
+                    productData.productUUID?.let { productData.productImageUri?.let { it1 ->
+                        productData.productBarcodeUri?.let {
+                            showProductDeleteDialog(position, it,
+                                it1
+                            )
+                        }
+                    } }
+                }
 
-                GetProgressBar.getInstance(context)?.show()
+                // When edit button Clicked
+                binding.mcvEdit -> {
 
-                ProductUUIDList.setStatus(false)
+                    GetProgressBar.getInstance(context)?.show()
 
-                val bundle = Bundle()
-                // Giving the product UUID
-                bundle.putString(Constants.productUUID, productData.productUUID)
+                    ProductUUIDList.setStatus(false)
 
-                (context as DashboardActivity).navController?.navigate(
-                    R.id.productInventory,
-                    bundle
-                )
+                    val bundle = Bundle()
+                    // Giving the product UUID
+                    bundle.putString(Constants.productUUID, productData.productUUID)
 
-            }
-            // Clicked on product
-            else if (v == binding.mcvProduct) {
+                    (context as DashboardActivity).navController?.navigate(
+                        R.id.productInventory,
+                        bundle
+                    )
 
-                GetProgressBar.getInstance(context)?.show()
+                }
+                // Clicked on product
+                binding.mcvProduct -> {
 
-                val bundle = Bundle()
-                //Giving the product UUID
-                bundle.putString(Constants.productUUID, productData.productUUID)
+                    GetProgressBar.getInstance(context)?.show()
 
-                (context as DashboardActivity).navController?.navigate(R.id.productDetail, bundle)
+                    val bundle = Bundle()
+                    //Giving the product UUID
+                    bundle.putString(Constants.productUUID, productData.productUUID)
 
+                    (context as DashboardActivity).navController?.navigate(R.id.productDetail, bundle)
+
+                }
             }
         }
     }

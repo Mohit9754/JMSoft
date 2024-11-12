@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.MetalTypeDataModel
+import com.jmsoft.utility.database.MetalTypeDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
 import com.jmsoft.databinding.ItemMetalTypeDropdownBinding
@@ -145,21 +145,23 @@ class MetalTypeDropdownAdapter(
         override fun onClick(v: View?) {
 
             // Clicked on metal type
-            if (v == binding.llMetalType) {
-                selectedMetalTypePosition = position
-                notifyDataSetChanged()
-            }
+            when (v) {
+                binding.llMetalType -> {
+                    selectedMetalTypePosition = position
+                    notifyDataSetChanged()
+                }
 
-            // Clicked on delete button
-            else if (v == binding.mcvDelete) {
+                // Clicked on delete button
+                binding.mcvDelete -> {
 
-                metalTypeData.metalTypeUUID?.let { showMetalTypeDeleteDialog(position, it) }
-            }
+                    metalTypeData.metalTypeUUID?.let { showMetalTypeDeleteDialog(position, it) }
+                }
 
-            // Clicked on edit button
-            else if (v == binding.mcvEdit) {
+                // Clicked on edit button
+                binding.mcvEdit -> {
 
-                productInventoryFragment.showAddOrEditMetalTypeDialog(position,metalTypeData.metalTypeUUID)
+                    productInventoryFragment.showAddOrEditMetalTypeDialog(position,metalTypeData.metalTypeUUID)
+                }
             }
 
         }

@@ -1,3 +1,5 @@
+@file:Suppress("KotlinConstantConditions")
+
 package com.jmsoft.main.fragment
 
 import android.Manifest
@@ -41,11 +43,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CategoryDataModel
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.UtilityTools.ExcelReader
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.Utility.UtilityTools.ProductUUIDList
+import com.jmsoft.utility.database.CategoryDataModel
+import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.utility.UtilityTools.ExcelReader
+import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.UtilityTools.ProductUUIDList
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.All
 import com.jmsoft.basic.UtilityTools.Utils
@@ -64,6 +66,7 @@ import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.abs
 import kotlin.math.ceil
 
 class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
@@ -98,7 +101,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
     private var isImport = true
 
-    private val CHANNEL_ID = "file_creation_channel"
+    private val channelId = "file_creation_channel"
 
     // Permission for External Storage
     private val permissionsForExternalStorage = arrayOf(
@@ -149,20 +152,6 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         }
     }
 
-//    // Storage Permission Launcher
-//    private var storagePermissionLauncher = registerForActivityResult(
-//        ActivityResultContracts.RequestPermission()
-//    ) { isGranted: Boolean? ->
-//
-//        if (isGranted == true) {
-//
-//            openDocument()
-//
-//        } else {
-//
-//            showOpenSettingDialog()
-//        }
-//    }
 
     // Method to request MANAGE_EXTERNAL_STORAGE permission
     @RequiresApi(Build.VERSION_CODES.R)
@@ -231,6 +220,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         return binding.root
     }
 
+    // open document
     private fun openDocument() {
 
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
@@ -242,22 +232,22 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
     }
 
     private fun Uri.getExtension(context: Context): String? {
-        var extension: String? = ""
-        extension = if (this.scheme == ContentResolver.SCHEME_CONTENT) {
+
+        val extension: String? = if (this.scheme == ContentResolver.SCHEME_CONTENT) {
             val mime = MimeTypeMap.getSingleton()
             mime.getExtensionFromMimeType(context.contentResolver.getType(this))
         } else {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 MimeTypeMap.getFileExtensionFromUrl(
                     FileProvider.getUriForFile(
                         context,
                         context.packageName + ".provider",
-                        File(this.path)
+                        File(this.path.toString())
                     )
                         .toString()
                 )
             } else {
-                MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(File(this.path)).toString())
+                MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(File(this.path.toString())).toString())
             }
         }
         return extension
@@ -277,7 +267,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                 if (!mimeTypeExtension.isNullOrEmpty()) {
                     if (mimeTypeExtension == "xlsx" || mimeTypeExtension == "xls") {
 //                        Log.e("MainActivity", "Selected file mimeTypeExtension valid: $mimeTypeExtension")
-                        copyFileAndExtract(uri, mimeTypeExtension)
+                        copyFileAndExtract(uri)
                     } else {
                         Utils.T(requireActivity(), getString(R.string.invalid_file_selected))
                     }
@@ -302,13 +292,13 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         else -> uri.path?.let(::File)?.name
     }
 
-    private fun copyFileAndExtract(uri: Uri, extension: String) {
+    private fun copyFileAndExtract(uri: Uri) {
         GetProgressBar.getInstance(requireActivity())?.show()
 
         val dir = File(requireActivity().filesDir, "doc")
         dir.mkdirs()
         val fileName = getFileName(uri)
-        file = File(dir, fileName)
+        file = File(dir, fileName.toString())
         file?.createNewFile()
         val fout = FileOutputStream(file)
         try {
@@ -524,7 +514,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         // Ensure the size is exactly totalVisible by removing the farthest elements if necessary
         while (visiblePages.size > totalVisible) {
             // Remove the farthest elements from currentPage
-            visiblePages.remove(visiblePages.minByOrNull { Math.abs(it - currentPage) })
+            visiblePages.remove(visiblePages.minByOrNull { abs(it - currentPage) })
         }
 
         return visiblePages.sorted()
@@ -694,17 +684,17 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         System.setProperty(
             "org.apache.poi.javax.xml.stream.XMLInputFactory",
             "com.fasterxml.aalto.stax.InputFactoryImpl"
-        );
+        )
 
         System.setProperty(
             "org.apache.poi.javax.xml.stream.XMLOutputFactory",
             "com.fasterxml.aalto.stax.OutputFactoryImpl"
-        );
+        )
 
         System.setProperty(
             "org.apache.poi.javax.xml.stream.XMLEventFactory",
             "com.fasterxml.aalto.stax.EventFactoryImpl"
-        );
+        )
 
         val job = lifecycleScope.launch(Dispatchers.Main) {
             getProductData()
@@ -934,7 +924,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             val name = "File Creation Channel"
             val descriptionText = "Channel for file creation notifications"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+            val channel = NotificationChannel(channelId, name, importance).apply {
                 description = descriptionText
             }
             val notificationManager: NotificationManager =
@@ -943,6 +933,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         }
     }
 
+    @SuppressLint("IntentReset")
     private fun showNotification(context: Context, fileName: String) {
 
         Utils.E("Notification has been created ..........")
@@ -976,7 +967,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+        val notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.logo) // Replace with your app icon
             .setContentTitle("Excel File Created")
             .setContentIntent(pendingIntent)
@@ -1184,10 +1175,14 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             val fileName = "${Utils.generateUUId()}.xlsx"
 
             val file = File(appFolder, fileName)
-            val outputStream = FileOutputStream(file)
+            val outputStream = withContext(Dispatchers.IO) {
+                FileOutputStream(file)
+            }
             workbook.write(outputStream)
             workbook.close()
-            outputStream.close()
+            withContext(Dispatchers.IO) {
+                outputStream.close()
+            }
 
             withContext(Dispatchers.Main) {
                 GetProgressBar.getInstance(requireActivity())?.dismiss()

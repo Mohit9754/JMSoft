@@ -1,16 +1,12 @@
 package com.jmsoft.main.adapter
 
 import android.content.Context
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.Utility.UtilityTools.ProductUUIDList
-import com.jmsoft.basic.UtilityTools.Constants
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.databinding.ItemExpectedBinding
 import com.jmsoft.main.activity.DashboardActivity
 
@@ -59,13 +55,7 @@ class UnknownAdapter(
                 // Show progress bar
                 GetProgressBar.getInstance(context)?.show()
 
-//                val bundle = Bundle()
-//                //Giving the product UUID
-//                bundle.putString(Constants.rfidCode, rfidCode)
-//                ProductUUIDList.setStatus(true)
-
                 (context as DashboardActivity).navController?.navigate(R.id.catalog, null)
-
 
             }
         }

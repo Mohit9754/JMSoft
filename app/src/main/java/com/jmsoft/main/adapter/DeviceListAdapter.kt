@@ -14,7 +14,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.UtilityTools.BluetoothUtils
+import com.jmsoft.utility.UtilityTools.BluetoothUtils
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rotation
 import com.jmsoft.basic.UtilityTools.Utils
 
@@ -65,7 +65,7 @@ class DeviceListAdapter(
 
         private val rotateAnimator = ObjectAnimator.ofFloat(binding.ivReconnect, rotation, 360f, 0f)
 
-        //position of DeviceModel
+        // position of DeviceModel
         private var position: Int = 0
 
         //Device for reconnecting
@@ -102,22 +102,27 @@ class DeviceListAdapter(
         //Setting Device Icon And Device Type
         private fun setDeviceIcon() {
 
-            if (deviceModel.deviceType == context.getString(R.string.rfid_scanner)) {
+            when (deviceModel.deviceType) {
 
-                binding.ivDeviceIcon.setImageResource(R.drawable.icon_scanner)
-                binding.tvDeviceType.text = context.getString(R.string.rfid_scanner)
+                context.getString(R.string.rfid_scanner) -> {
 
-            } else if (deviceModel.deviceType == context.getString(R.string.rfid_tag_printer)) {
+                    binding.ivDeviceIcon.setImageResource(R.drawable.icon_scanner)
+                    binding.tvDeviceType.text = context.getString(R.string.rfid_scanner)
 
-                binding.ivDeviceIcon.setImageResource(R.drawable.icon_tag_printer)
-                binding.tvDeviceType.text = context.getString(R.string.rfid_tag_printer)
+                }
+                context.getString(R.string.rfid_tag_printer) -> {
+
+                    binding.ivDeviceIcon.setImageResource(R.drawable.icon_tag_printer)
+                    binding.tvDeviceType.text = context.getString(R.string.rfid_tag_printer)
 
 
-            } else if (deviceModel.deviceType == context.getString(R.string.ticket_printer)) {
+                }
+                context.getString(R.string.ticket_printer) -> {
 
-                binding.ivDeviceIcon.setImageResource(R.drawable.icon_ticket_printer)
-                binding.tvDeviceType.text = context.getString(R.string.ticket_printer)
+                    binding.ivDeviceIcon.setImageResource(R.drawable.icon_ticket_printer)
+                    binding.tvDeviceType.text = context.getString(R.string.ticket_printer)
 
+                }
             }
 
         }

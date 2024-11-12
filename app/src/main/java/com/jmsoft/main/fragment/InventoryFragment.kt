@@ -1,18 +1,16 @@
 package com.jmsoft.main.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.jmsoft.R
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.category
 import com.jmsoft.basic.UtilityTools.Constants.Companion.collection
 import com.jmsoft.basic.UtilityTools.Constants.Companion.metalType
-import com.jmsoft.basic.UtilityTools.Constants.Companion.product
-import com.jmsoft.databinding.FragmentHomeBinding
 import com.jmsoft.databinding.FragmentInventoryBinding
 import com.jmsoft.main.activity.DashboardActivity
 
@@ -64,62 +62,64 @@ class InventoryFragment : Fragment() ,View.OnClickListener {
         val bundle = Bundle()
 
         // When Back button clicked
-        if (v == binding.mcvBackBtn) {
-            (requireActivity() as DashboardActivity).navController?.popBackStack()
-        }
+        when (v) {
 
-        // When metal type clicked
-        else if(v == binding.mcvMetalType) {
+            binding.mcvBackBtn -> {
+                (requireActivity() as DashboardActivity).navController?.popBackStack()
+            }
 
-            GetProgressBar.getInstance(requireActivity())?.show()
+            // When metal type clicked
+            binding.mcvMetalType -> {
 
-            //Giving the fragment status
-            bundle.putString(Constants.state, metalType)
+                GetProgressBar.getInstance(requireActivity())?.show()
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.metalType,bundle)
-        }
+                //Giving the fragment status
+                bundle.putString(Constants.state, metalType)
 
-        // Clicked on collection
-        else if(v == binding.mcvCollection) {
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.metalType,bundle)
+            }
 
-            GetProgressBar.getInstance(requireActivity())?.show()
+            // Clicked on collection
+            binding.mcvCollection -> {
 
-            //Giving the fragment status
-            bundle.putString(Constants.state, collection)
+                GetProgressBar.getInstance(requireActivity())?.show()
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.metalType,bundle)
+                //Giving the fragment status
+                bundle.putString(Constants.state, collection)
 
-        }
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.metalType,bundle)
 
-        // Clicked on Category
-        else if (v == binding.mcvCategory) {
+            }
 
-            GetProgressBar.getInstance(requireActivity())?.show()
+            // Clicked on Category
+            binding.mcvCategory -> {
 
-            //Giving the fragment status
-            bundle.putString(Constants.state, category)
+                GetProgressBar.getInstance(requireActivity())?.show()
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.metalType,bundle)
+                //Giving the fragment status
+                bundle.putString(Constants.state, category)
 
-        }
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.metalType,bundle)
 
-        // Clicked on product
-        else if (v == binding.mcvProduct) {
+            }
 
-            // Show progress bar
-            GetProgressBar.getInstance(requireActivity())?.show()
+            // Clicked on product
+            binding.mcvProduct -> {
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.product)
+                // Show progress bar
+                GetProgressBar.getInstance(requireActivity())?.show()
 
-        }
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.product)
 
-        else if (v == binding.mcvStockLocation) {
+            }
+            binding.mcvStockLocation -> {
 
-            // Show progress bar
-            GetProgressBar.getInstance(requireActivity())?.show()
+                // Show progress bar
+                GetProgressBar.getInstance(requireActivity())?.show()
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.stockLocation)
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.stockLocation)
 
+            }
         }
 
     }

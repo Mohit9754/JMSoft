@@ -112,7 +112,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/_7sdp"
                 android:orientation="vertical"
-                tools:ignore="RelativeOverlap">
+                tools:ignore="ObsoleteLayoutParam,RelativeOverlap">
 
                 <LinearLayout
                     android:layout_width="wrap_content"

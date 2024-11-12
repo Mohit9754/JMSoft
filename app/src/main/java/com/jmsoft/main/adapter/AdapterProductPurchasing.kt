@@ -2,12 +2,10 @@ package com.jmsoft.main.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.provider.ContactsContract.Contacts
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.utility.database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Constants.Companion.currency
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemPurchasingProductBinding

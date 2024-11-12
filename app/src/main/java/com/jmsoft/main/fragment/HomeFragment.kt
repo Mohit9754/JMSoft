@@ -1,15 +1,12 @@
 package com.jmsoft.main.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.Fragment
 import com.jmsoft.R
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.basic.UtilityTools.Constants
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
 import com.jmsoft.databinding.FragmentHomeBinding
 import com.jmsoft.main.activity.DashboardActivity
@@ -64,42 +61,43 @@ class HomeFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
 
         // Navigate to Catalog Fragment
-        if (v == binding.mcvCatalog) {
+        when (v) {
 
-            // Show progress bar
-            if (isAdded && !isDetached && !isRemoving) {
-                // Show your dialog here
-                GetProgressBar.getInstance(requireActivity())?.show()
+            binding.mcvCatalog -> {
+
+                // Show progress bar
+                if (isAdded && !isDetached && !isRemoving) {
+                    // Show your dialog here
+                    GetProgressBar.getInstance(requireActivity())?.show()
+                }
+
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.catalog)
             }
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.catalog)
-        }
+            // Navigate to Setting Fragment
+            binding.mcvSettings -> {
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.setting)
+            }
+            binding.mcvPurchasingAndSales -> {
 
-        // Navigate to Setting Fragment
-        else if (v == binding.mcvSettings) {
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.setting)
-        }
+                GetProgressBar.getInstance(requireActivity())?.show()
 
-        else if (v == binding.mcvPurchasingAndSales) {
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.purchasingAndSales)
 
-            GetProgressBar.getInstance(requireActivity())?.show()
+            }
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.purchasingAndSales)
+            // Navigate to Inventory Fragment
+            binding.mcvInventory -> {
 
-        }
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.inventory)
 
-        // Navigate to Inventory Fragment
-        else if (v == binding.mcvInventory) {
+            }
+            binding.mcvAudit -> {
 
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.inventory)
+                GetProgressBar.getInstance(requireActivity())?.show()
+                (requireActivity() as DashboardActivity).navController?.navigate(R.id.audit)
 
-        }
-
-        else if(v == binding.mcvAudit) {
-
-            GetProgressBar.getInstance(requireActivity())?.show()
-            (requireActivity() as DashboardActivity).navController?.navigate(R.id.audit)
-
+            }
         }
     }
 

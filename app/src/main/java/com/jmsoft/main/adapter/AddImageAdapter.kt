@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
-import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemAddImageProductBinding
 import com.jmsoft.main.fragment.ProductInventoryFragment
 

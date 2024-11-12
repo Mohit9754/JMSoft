@@ -12,8 +12,8 @@ import android.view.Window
 import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
@@ -48,6 +48,7 @@ class AdapterSelectedProductPurchasing(
         holder.bind(productList[position], position)
     }
 
+    // delete dialog
     @SuppressLint("NotifyDataSetChanged")
     private fun showProductDeleteDialog(
         position: Int,
@@ -105,13 +106,6 @@ class AdapterSelectedProductPurchasing(
         notifyDataSetChanged()
 
         selectedProductUUIDList.removeAt(position)
-
-        // Notify the adapter about the removed item
-//        notifyItemRemoved(position)
-//
-//        // Notify the adapter about the range of changed items
-//        notifyItemRangeChanged(position, productList.size - position)
-
 
         if (productList.isEmpty()) {
             fragmentAddPurchaseBinding.nsvProduct?.visibility = View.GONE
@@ -227,7 +221,6 @@ class AdapterSelectedProductPurchasing(
             binding.etProductWeight.isEnabled = isEnable
             binding.etProductPrice.isEnabled = isEnable
 
-//            binding.mcvProductName.strokeColor = context.getColor(R.color.text_hint)
             binding.mcvProductName.strokeColor = color
             binding.mcvRFIDCode.strokeColor = color
             binding.mcvWeight.strokeColor = color
@@ -335,16 +328,6 @@ class AdapterSelectedProductPurchasing(
                     binding.llSaveAndRemove.visibility = View.GONE
 
                 }
-
-//                binding.mcvCheck -> {
-//
-//                    productDataModel.productUUID = selectedProductUUIDList[position]
-//
-//                    Utils.updateProductDetails(productDataModel)
-//
-//                    Utils.T(context, context.getString(R.string.product_updated_successfully))
-//
-//                }
 
                 binding.mcvRFID -> {
                     etRFIDCode(binding.etRfIdCode)

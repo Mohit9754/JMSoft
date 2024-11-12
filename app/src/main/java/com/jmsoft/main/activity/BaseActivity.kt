@@ -5,7 +5,6 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-
 open class BaseActivity : AppCompatActivity() {
 
     //Dispatch Touch Event

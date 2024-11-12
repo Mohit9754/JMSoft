@@ -183,7 +183,8 @@
             android:layout_marginStart="@dimen/_4sdp"
             android:text="25 june 2024"
             android:textColor="@color/dark_blue"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            tools:ignore="HardcodedText" />
 
     </LinearLayout>
 
@@ -452,7 +453,8 @@
                         android:layout_height="wrap_content"
                         android:text="45"
                         android:textColor="@color/dark_blue"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 

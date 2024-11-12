@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.jmsoft.main.fragment
 
 import android.Manifest
@@ -18,19 +20,16 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
-import android.widget.ProgressBar
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.AddressDataModel
-import com.jmsoft.Utility.Database.ContactDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.ContactDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation
@@ -38,9 +37,7 @@ import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentContactBinding
 import com.jmsoft.main.activity.DashboardActivity
-import com.jmsoft.main.adapter.CartAddressAdapter
 import com.jmsoft.main.adapter.ContactAdapter
-import com.jmsoft.main.`interface`.AddressSelectionStatus
 import com.jmsoft.main.`interface`.ContactSelectionStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -119,8 +116,8 @@ class ContactFragment : Fragment(), View.OnClickListener {
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val image_uri: Uri? = result.data?.data
-                binding.ivProfile?.setImageURI(image_uri)
+                val imageUri: Uri? = result.data?.data
+                binding.ivProfile?.setImageURI(imageUri)
                 isProfileSelected = true
 
 //                updateProfile(binding.ivProfile?.drawable?.toBitmap())
@@ -132,12 +129,10 @@ class ContactFragment : Fragment(), View.OnClickListener {
     private var cameraActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result != null) {
-            if (result.resultCode == Activity.RESULT_OK) {
-                binding.ivProfile?.setImageBitmap(result.data?.extras?.get("data") as Bitmap?)
-                isProfileSelected = true
+        if (result.resultCode == Activity.RESULT_OK) {
+            binding.ivProfile?.setImageBitmap(result.data?.extras?.get("data") as Bitmap?)
+            isProfileSelected = true
 //                updateProfile(binding.ivProfile?.drawable?.toBitmap())
-            }
         }
     }
 
@@ -191,6 +186,7 @@ class ContactFragment : Fragment(), View.OnClickListener {
         dialog.show()
     }
 
+    // Set FocusChange Listener
     private fun setFocusChangeListener() {
 
         binding.etFirstName?.let {
@@ -231,6 +227,7 @@ class ContactFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // set TextChange Listener
     private fun setTextChangeListener() {
 
         binding.etFirstName?.let {
@@ -268,6 +265,7 @@ class ContactFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // Set Contact RecyclerView
     private fun setContactRecyclerView() {
 
         val contactList =
@@ -362,6 +360,7 @@ class ContactFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Add Contact
     private fun addContact() {
 
         val contactDataModel = ContactDataModel()
@@ -393,6 +392,7 @@ class ContactFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // Remove Data
     private fun removeData() {
 
         binding.etFirstName?.setText("")
@@ -638,9 +638,6 @@ class ContactFragment : Fragment(), View.OnClickListener {
 
         if (binding.mcvTypeList?.visibility == View.VISIBLE) {
 
-//            binding.ivType.let { it?.let { it1 -> Utils.rotateView(it1, 0f) } }
-//            binding.mcvTypeList.let { it?.let { it1 -> Utils.collapseView(it1) } }
-
             binding.ivType?.let { Utils.rotateView(it, 0f) }
 
             if (binding.mcvTypeList != null) {
@@ -652,45 +649,51 @@ class ContactFragment : Fragment(), View.OnClickListener {
             binding.ivType?.let { Utils.rotateView(it, 180f) }
             binding.mcvTypeList?.let { Utils.expandView(it) }
         }
-
     }
 
     override fun onClick(v: View?) {
 
         // When Back button clicked
-        if (v == binding.mcvBackBtn) {
+        when (v) {
+            binding.mcvBackBtn -> {
 
-            (requireActivity() as DashboardActivity).navController?.popBackStack()
-        } else if (v == binding.mcvSave) {
-
-            lifecycleScope.launch(Dispatchers.Main) {
-                validate()
+                (requireActivity() as DashboardActivity).navController?.popBackStack()
             }
+            binding.mcvSave -> {
 
-        } else if (v == binding.mcvEditProfile) {
+                lifecycleScope.launch(Dispatchers.Main) {
+                    validate()
+                }
 
-            showEditProfileDialog()
-        } else if (v == binding.llType) {
+            }
+            binding.mcvEditProfile -> {
 
-            showOrHideTypeDropDown()
-        } else if (v == binding.llLegalEntity) {
+                showEditProfileDialog()
+            }
+            binding.llType -> {
 
-            binding.llLegalEntity?.setBackgroundColor(requireActivity().getColor(R.color.selected_drop_down_color))
-            binding.llPhysicalPerson?.setBackgroundColor(requireActivity().getColor(R.color.white))
-            binding.tvType?.text = binding.tvLegalEntity?.text.toString()
-            binding.tvTypeError?.visibility = View.GONE
+                showOrHideTypeDropDown()
+            }
+            binding.llLegalEntity -> {
 
-            showOrHideTypeDropDown()
+                binding.llLegalEntity?.setBackgroundColor(requireActivity().getColor(R.color.selected_drop_down_color))
+                binding.llPhysicalPerson?.setBackgroundColor(requireActivity().getColor(R.color.white))
+                binding.tvType?.text = binding.tvLegalEntity?.text.toString()
+                binding.tvTypeError?.visibility = View.GONE
 
-        } else if (v == binding.llPhysicalPerson) {
+                showOrHideTypeDropDown()
 
-            binding.llLegalEntity?.setBackgroundColor(requireActivity().getColor(R.color.white))
-            binding.llPhysicalPerson?.setBackgroundColor(requireActivity().getColor(R.color.selected_drop_down_color))
-            binding.tvType?.text = binding.tvPhysicalPerson?.text.toString()
-            binding.tvTypeError?.visibility = View.GONE
+            }
+            binding.llPhysicalPerson -> {
 
-            showOrHideTypeDropDown()
+                binding.llLegalEntity?.setBackgroundColor(requireActivity().getColor(R.color.white))
+                binding.llPhysicalPerson?.setBackgroundColor(requireActivity().getColor(R.color.selected_drop_down_color))
+                binding.tvType?.text = binding.tvPhysicalPerson?.text.toString()
+                binding.tvTypeError?.visibility = View.GONE
 
+                showOrHideTypeDropDown()
+
+            }
         }
 
     }

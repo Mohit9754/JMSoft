@@ -11,13 +11,12 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CategoryDataModel
+import com.jmsoft.utility.database.CategoryDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
 import com.jmsoft.databinding.ItemMetalTypeDropdownBinding
 import com.jmsoft.main.fragment.ProductInventoryFragment
 import com.jmsoft.main.`interface`.SelectedCallback
-
 
 class CategoryDropdownAdapter(
     private val context: Context,
@@ -136,24 +135,26 @@ class CategoryDropdownAdapter(
         override fun onClick(v: View?) {
 
             // Clicked on metal type
-            if (v == binding.llMetalType) {
+            when (v) {
+                binding.llMetalType -> {
 
-                selectedPosition = position
+                    selectedPosition = position
 
-                selectedCallback.selected(categoryData)
+                    selectedCallback.selected(categoryData)
 
-                notifyDataSetChanged()
-            }
+                    notifyDataSetChanged()
+                }
 
-            // Clicked on delete button
-            else if (v == binding.mcvDelete){
-                categoryData.categoryUUID?.let { showCategoryDeleteDialog(position, it) }
-            }
+                // Clicked on delete button
+                binding.mcvDelete -> {
+                    categoryData.categoryUUID?.let { showCategoryDeleteDialog(position, it) }
+                }
 
-            // Clicked on edit button
-            else if (v == binding.mcvEdit) {
+                // Clicked on edit button
+                binding.mcvEdit -> {
 
-                productInventoryFragment.showAddOrEditCategoryDialog(position,categoryData.categoryUUID)
+                    productInventoryFragment.showAddOrEditCategoryDialog(position,categoryData.categoryUUID)
+                }
             }
 
         }

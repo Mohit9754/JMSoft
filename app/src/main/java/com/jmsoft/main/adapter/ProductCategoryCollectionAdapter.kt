@@ -12,9 +12,9 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CategoryDataModel
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.CategoryDataModel
+import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
 import com.jmsoft.basic.UtilityTools.Utils
@@ -22,7 +22,6 @@ import com.jmsoft.databinding.DialogDeleteUserBinding
 import com.jmsoft.databinding.FragmentCollectionDetailBinding
 import com.jmsoft.databinding.ItemCollectionBinding
 import com.jmsoft.main.activity.DashboardActivity
-import java.util.UUID
 
 class ProductCategoryCollectionAdapter(
     private val context: Context,
@@ -47,6 +46,7 @@ class ProductCategoryCollectionAdapter(
         holder.bind(productList[position],position)
     }
 
+    // Delete dialog
     @SuppressLint("NotifyDataSetChanged")
     private fun showCollectionDeleteDialog(
         position: Int,

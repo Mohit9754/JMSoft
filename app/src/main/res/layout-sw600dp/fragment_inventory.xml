@@ -88,7 +88,8 @@
                         android:layout_height="@dimen/_10sdp"
                         android:layout_marginHorizontal="@dimen/_3sdp"
                         android:layout_marginVertical="@dimen/_3sdp"
-                        android:src="@drawable/icon_metal_type" />
+                        android:src="@drawable/icon_metal_type"
+                        tools:ignore="ContentDescription" />
 
                 </com.google.android.material.card.MaterialCardView>
 
@@ -108,7 +109,8 @@
                     android:layout_width="@dimen/_11sdp"
                     android:layout_height="@dimen/_11sdp"
                     android:layout_marginEnd="@dimen/_4sdp"
-                    android:src="@drawable/icon_tabler_circle" />
+                    android:src="@drawable/icon_tabler_circle"
+                    tools:ignore="ContentDescription" />
 
             </LinearLayout>
 
@@ -147,7 +149,8 @@
                         android:layout_height="@dimen/_10sdp"
                         android:layout_marginHorizontal="@dimen/_3sdp"
                         android:layout_marginVertical="@dimen/_3sdp"
-                        android:src="@drawable/icon_collection" />
+                        android:src="@drawable/icon_collection"
+                        tools:ignore="ContentDescription" />
 
                 </com.google.android.material.card.MaterialCardView>
 
@@ -166,7 +169,8 @@
                     android:layout_height="@dimen/_11sdp"
 
                     android:layout_marginEnd="@dimen/_4sdp"
-                    android:src="@drawable/icon_tabler_circle" />
+                    android:src="@drawable/icon_tabler_circle"
+                    tools:ignore="ContentDescription" />
 
             </LinearLayout>
 
@@ -204,7 +208,8 @@
                         android:layout_height="@dimen/_10sdp"
                         android:layout_marginHorizontal="@dimen/_3sdp"
                         android:layout_marginVertical="@dimen/_3sdp"
-                        android:src="@drawable/icon_category" />
+                        android:src="@drawable/icon_category"
+                        tools:ignore="ContentDescription" />
 
                 </com.google.android.material.card.MaterialCardView>
 
@@ -223,7 +228,8 @@
                     android:layout_height="@dimen/_11sdp"
 
                     android:layout_marginEnd="@dimen/_4sdp"
-                    android:src="@drawable/icon_tabler_circle" />
+                    android:src="@drawable/icon_tabler_circle"
+                    tools:ignore="ContentDescription" />
 
             </LinearLayout>
 
@@ -261,7 +267,8 @@
                         android:layout_height="@dimen/_10sdp"
                         android:layout_marginHorizontal="@dimen/_3sdp"
                         android:layout_marginVertical="@dimen/_3sdp"
-                        android:src="@drawable/icon_product" />
+                        android:src="@drawable/icon_product"
+                        tools:ignore="ContentDescription" />
 
                 </com.google.android.material.card.MaterialCardView>
 
@@ -279,7 +286,8 @@
                     android:layout_width="@dimen/_11sdp"
                     android:layout_height="@dimen/_11sdp"
                     android:layout_marginEnd="@dimen/_4sdp"
-                    android:src="@drawable/icon_tabler_circle" />
+                    android:src="@drawable/icon_tabler_circle"
+                    tools:ignore="ContentDescription" />
 
             </LinearLayout>
 

@@ -15,8 +15,8 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.R.color
-import com.jmsoft.Utility.Database.AddressDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.AddressDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
 import com.jmsoft.databinding.FragmentCartBinding
@@ -226,14 +226,14 @@ class CartAddressAdapter(
             }
         }
 
-        //Setting Address
+        // Setting Address
         @SuppressLint("SetTextI18n")
         private fun setFullName() {
             binding.tvFullName.text = "${addressData.firstName} ${addressData.lastName}"
         }
 
 
-        //Select the address and change its background color and text
+        // Select the address and change its background color and text
         private fun selectAddress() {
 
             binding.mcvAddress.setCardBackgroundColor(context.getColor(color.text_color))
@@ -245,7 +245,7 @@ class CartAddressAdapter(
         }
 
 
-        //Handles All the Clicks
+        // Handles All the Clicks
         override fun onClick(v: View?) {
 
             // Click on Delete Button
@@ -255,7 +255,7 @@ class CartAddressAdapter(
                 addressData.addressUUID?.let { showDeleteDialog(position, it) }
             }
 
-            //Click on Address Section
+            // Click on Address Section
             else if (v == binding.mcvAddress) {
 
                 if (selectedAddressBinding == binding) {
@@ -264,7 +264,7 @@ class CartAddressAdapter(
                     unSelectAddress()
 
                     selectedAddressBinding = null
-//                    Utils.T(context,"Already selected")
+
                 } else {
 
                     // making the previous selected address normal

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.jmsoft.main.adapter
 
 import android.annotation.SuppressLint
@@ -33,11 +35,6 @@ class WIFIScanAdapter(
     private var connectedBSSID: String? = null
 
 ) : RecyclerView.Adapter<WIFIScanAdapter.MyViewHolder>() {
-
-    private val wifiManager =
-        context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-    private val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     private var selectedBinding: ItemDeviceListBinding? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -86,8 +83,6 @@ class WIFIScanAdapter(
 
         private fun checkConnection() {
 
-            Utils.E("checkConnection ${scanResult.SSID} == $connectedSSID || ${scanResult.BSSID} == $connectedBSSID")
-
             if (scanResult.SSID == connectedSSID?.replace(
                     "\"",
                     ""
@@ -99,54 +94,6 @@ class WIFIScanAdapter(
 
             }
         }
-
-//        @SuppressLint("MissingPermission")
-//        private fun checkAndSetConnectedStatus() {
-//
-//            val request = NetworkRequest.Builder()
-//                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-//                .build()
-//
-//            val networkCallback = object :
-//                ConnectivityManager.NetworkCallback() { // Removed FLAG_INCLUDE_LOCATION_INFO
-//
-//                override fun onCapabilitiesChanged(
-//                    network: Network,
-//                    networkCapabilities: NetworkCapabilities
-//                ) {
-//                    super.onCapabilitiesChanged(network, networkCapabilities)
-//
-//                    val wifiINFO = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                        networkCapabilities.transportInfo as WifiInfo
-//                    } else {
-//                        // For versions below Android 10 (Q)
-//                        @Suppress("DEPRECATION") // Suppress deprecation warning for older versions
-//                        wifiManager.connectionInfo // Handle older Android versions if necessary
-//                    }
-//
-//                    wifiInfo = wifiINFO
-//
-//                    if (wifiInfo?.networkId != -1) {
-//                        val ssid = wifiInfo?.ssid
-//
-//                        if (scanResult.SSID == ssid?.replace(
-//                                "\"",
-//                                ""
-//                            ) || scanResult.BSSID == wifiInfo?.bssid
-//                        ) {
-//
-//                            // Call setConnectedStatus() on the main thread
-//                            Handler(Looper.getMainLooper()).post {
-//                                setConnectedStatus()
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//
-//            // Register the callback, ensuring that it works on all Android versions
-//            connectivityManager.registerNetworkCallback(request, networkCallback)
-//        }
 
         private fun hide() {
 
@@ -210,26 +157,10 @@ class WIFIScanAdapter(
 
         private fun setConnectedStatus() {
 
-//            val cm = context.getSystemService(
-//                ConnectivityManager::class.java
-//            )
-//            val n = cm.activeNetwork
-//            val netCaps = cm.getNetworkCapabilities(n)
-//            val info = netCaps!!.transportInfo as WifiInfo?
-//            val ssid = wifiInfo!!.getSSID()
-
             selectedBinding?.llStatus?.visibility = View.GONE
             selectedBinding = binding
 
-            Utils.E("set connection status")
-
             binding.llStatus.visibility = View.VISIBLE
-
-            if (binding.llStatus.visibility == View.VISIBLE)
-                Utils.E("set connection status visible")
-            else
-                Utils.E("set connection status hide")
-
 
             binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
             binding.tvStatus.text = Constants.connected

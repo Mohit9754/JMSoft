@@ -10,12 +10,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:gravity="center_horizontal"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:ignore="ScrollViewSize">
 
         <LinearLayout
             android:layout_width="@dimen/_200sdp"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            tools:ignore="UselessParent">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -40,7 +42,8 @@
                         android:layout_width="@dimen/_9sdp"
                         android:layout_height="@dimen/_9sdp"
                         android:layout_margin="@dimen/_4sdp"
-                        android:src="@drawable/icon_back_arrow" />
+                        android:src="@drawable/icon_back_arrow"
+                        tools:ignore="ContentDescription" />
 
                 </com.google.android.material.card.MaterialCardView>
 
@@ -56,7 +59,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="2"
+                    tools:ignore="DisableBaselineAlignment">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -70,7 +74,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_arabic_medium"
                             android:text="@string/first_name"
-                            android:textSize="10sp" />
+                            android:textSize="10sp"
+                            tools:ignore="SmallSp" />
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/mcvFirstName"
@@ -93,7 +98,7 @@
                                 android:paddingHorizontal="@dimen/_5sdp"
                                 android:paddingVertical="@dimen/_5sdp"
                                 android:textSize="10sp"
-                                tools:ignore="TouchTargetSizeCheck" />
+                                tools:ignore="Autofill,SmallSp,TouchTargetSizeCheck" />
 
                         </com.google.android.material.card.MaterialCardView>
 
@@ -110,7 +115,8 @@
                                 android:fontFamily="@font/montserrat_arabic_regular"
                                 android:textColor="@color/red"
                                 android:textSize="10sp"
-                                android:visibility="gone" />
+                                android:visibility="gone"
+                                tools:ignore="SmallSp" />
 
                         </LinearLayout>
 
@@ -127,7 +133,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_arabic_medium"
                             android:text="@string/last_name"
-                            android:textSize="10sp" />
+                            android:textSize="10sp"
+                            tools:ignore="SmallSp" />
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/mcvLastName"
@@ -150,7 +157,7 @@
                                 android:paddingHorizontal="@dimen/_5sdp"
                                 android:paddingVertical="@dimen/_5sdp"
                                 android:textSize="10sp"
-                                tools:ignore="TouchTargetSizeCheck" />
+                                tools:ignore="Autofill,SmallSp,TouchTargetSizeCheck" />
 
                         </com.google.android.material.card.MaterialCardView>
 
@@ -167,7 +174,8 @@
                                 android:fontFamily="@font/montserrat_arabic_regular"
                                 android:textColor="@color/red"
                                 android:textSize="10sp"
-                                android:visibility="gone" />
+                                android:visibility="gone"
+                                tools:ignore="SmallSp" />
 
                         </LinearLayout>
 
@@ -186,7 +194,8 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_arabic_medium"
                         android:text="@string/phone_number"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/mcvPhoneNumber"
@@ -210,7 +219,7 @@
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:paddingVertical="@dimen/_5sdp"
                             android:textSize="10sp"
-                            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+                            tools:ignore="SmallSp,SpeakableTextPresentCheck,TextFields,TouchTargetSizeCheck" />
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -227,7 +236,8 @@
                             android:fontFamily="@font/montserrat_arabic_regular"
                             android:textColor="@color/red"
                             android:textSize="10sp"
-                            android:visibility="gone" />
+                            android:visibility="gone"
+                            tools:ignore="SmallSp" />
 
                     </LinearLayout>
 
@@ -242,7 +252,8 @@
                             android:fontFamily="@font/montserrat_arabic_regular"
                             android:textColor="@color/red"
                             android:textSize="8sp"
-                            android:visibility="gone" />
+                            android:visibility="gone"
+                            tools:ignore="SmallSp" />
 
                     </LinearLayout>
 
@@ -259,7 +270,8 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_arabic_medium"
                         android:text="@string/email_address"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/mcvEmailAddress"
@@ -283,7 +295,8 @@
                             android:paddingHorizontal="@dimen/_5sdp"
                             android:paddingVertical="@dimen/_5sdp"
                             android:textSize="10sp"
-                            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+                            tools:ignore="SmallSp,SpeakableTextPresentCheck,TouchTargetSizeCheck"
+                            android:importantForAutofill="no" />
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -300,7 +313,8 @@
                             android:fontFamily="@font/montserrat_arabic_regular"
                             android:textColor="@color/red"
                             android:textSize="10sp"
-                            android:visibility="gone" />
+                            android:visibility="gone"
+                            tools:ignore="SmallSp" />
 
                     </LinearLayout>
 
@@ -317,7 +331,8 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_arabic_medium"
                         android:text="@string/password"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/mcvPassword"
@@ -346,7 +361,7 @@
                                 android:paddingHorizontal="@dimen/_5sdp"
                                 android:paddingVertical="@dimen/_5sdp"
                                 android:textSize="10sp"
-                                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+                                tools:ignore="Autofill,SmallSp,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
                             <ImageView
                                 android:id="@+id/ivPasswordVisibility"
@@ -355,7 +370,8 @@
                                 android:layout_alignParentEnd="true"
                                 android:layout_centerVertical="true"
                                 android:padding="@dimen/_4sdp"
-                                android:src="@drawable/icon_show" />
+                                android:src="@drawable/icon_show"
+                                tools:ignore="ContentDescription" />
 
                         </RelativeLayout>
 
@@ -374,7 +390,8 @@
                             android:fontFamily="@font/montserrat_arabic_regular"
                             android:textColor="@color/red"
                             android:textSize="10sp"
-                            android:visibility="gone" />
+                            android:visibility="gone"
+                            tools:ignore="SmallSp" />
 
                     </LinearLayout>
 
@@ -397,7 +414,8 @@
                         android:paddingVertical="@dimen/_5sdp"
                         android:text="@string/save"
                         android:textColor="@color/white"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                 </com.google.android.material.card.MaterialCardView>
 

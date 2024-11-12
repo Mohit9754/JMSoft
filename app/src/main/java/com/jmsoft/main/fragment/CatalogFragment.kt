@@ -13,8 +13,8 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentCatalogBinding
@@ -190,7 +190,6 @@ class CatalogFragment : Fragment(), View.OnClickListener {
 
         filterProductList.addAll(result.await())
 
-        Utils.E("Size of list is ${filterProductList.size}")
 
         catalogAdapter?.addFilterList(filterProductList)
         catalogAdapter?.notifyItemRangeInserted(searchOffset,filterProductList.size)

@@ -31,7 +31,8 @@
                 android:layout_width="@dimen/_9sdp"
                 android:layout_height="@dimen/_9sdp"
                 android:layout_margin="@dimen/_4sdp"
-                android:src="@drawable/icon_back_arrow" />
+                android:src="@drawable/icon_back_arrow"
+                tools:ignore="ContentDescription" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -45,7 +46,8 @@
                 android:id="@+id/ivNoDevices"
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="@dimen/_100sdp"
-                android:src="@drawable/img_no_device" />
+                android:src="@drawable/img_no_device"
+                tools:ignore="ContentDescription" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/mcvAddFirstDevice"
@@ -61,13 +63,15 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="@dimen/_12sdp">
+                    android:paddingHorizontal="@dimen/_12sdp"
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="@dimen/_14sdp"
                         android:layout_height="@dimen/_14sdp"
                         android:layout_marginHorizontal="@dimen/_1sdp"
-                        android:src="@drawable/icon_add_device" />
+                        android:src="@drawable/icon_add_device"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -76,7 +80,8 @@
                         android:fontFamily="@font/montserrat_arabic_semibold"
                         android:text="@string/add_device"
                         android:textColor="@color/white"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
                 </LinearLayout>
 
@@ -118,7 +123,8 @@
                     android:layout_width="@dimen/_9sdp"
                     android:layout_height="@dimen/_9sdp"
                     android:layout_margin="@dimen/_4sdp"
-                    android:src="@drawable/icon_back_arrow" />
+                    android:src="@drawable/icon_back_arrow"
+                    tools:ignore="ContentDescription" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -144,14 +150,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="@dimen/_15sdp"
                         android:layout_height="@dimen/_15sdp"
                         android:layout_marginHorizontal="@dimen/_1sdp"
                         android:layout_marginVertical="@dimen/_1sdp"
-                        android:src="@drawable/icon_add_device" />
+                        android:src="@drawable/icon_add_device"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -160,7 +168,8 @@
                         android:fontFamily="@font/montserrat_arabic_semibold"
                         android:text="@string/add_device"
                         android:textColor="@color/white"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
 
 
                 </LinearLayout>

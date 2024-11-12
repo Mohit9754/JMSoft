@@ -1,7 +1,5 @@
 package com.jmsoft.main.model
 
-import android.bluetooth.BluetoothDevice
-
 class DeviceModel {
 
     var deviceUUID: String? = null

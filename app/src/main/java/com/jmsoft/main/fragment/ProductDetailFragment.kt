@@ -1,16 +1,11 @@
 package com.jmsoft.main.fragment
 
 import android.annotation.SuppressLint
-import android.app.Dialog
-import android.content.Context.WINDOW_SERVICE
 import android.graphics.Bitmap
-import android.os.Build
 import android.os.Bundle
-import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.LinearLayout
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -19,11 +14,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.CartDataModel
-import com.jmsoft.Utility.Database.OrderDataModel
-import com.jmsoft.Utility.Database.ProductDataModel
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.Utility.UtilityTools.ProductUUIDList
+import com.jmsoft.utility.database.CartDataModel
+import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.utility.UtilityTools.ProductUUIDList
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.productSectionHeight
 import com.jmsoft.basic.UtilityTools.Utils
@@ -34,12 +28,9 @@ import com.jmsoft.main.adapter.ProductCollectionAdapter
 import com.jmsoft.main.adapter.ProductImageAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@Suppress("DEPRECATION")
 class ProductDetailFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentProductDetailBinding
@@ -181,6 +172,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    // get data for may like recycler view
     private fun getMayLikeRvData() {
 
         val collectionUUIDList = productData.collectionUUID?.split(",")?.toMutableList()

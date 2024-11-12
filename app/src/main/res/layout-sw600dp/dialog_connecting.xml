@@ -25,7 +25,8 @@
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="@dimen/_100sdp"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:src="@drawable/bluetoothconnected" />
+                android:src="@drawable/bluetoothconnected"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/tvTitle"
@@ -51,7 +52,8 @@
                     android:text="Device Connection Established With"
                     android:textAlignment="center"
                     android:textColor="@color/device_text_color"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/tvDeviceName"
@@ -61,7 +63,8 @@
                     android:text="Zeb-Evolve"
                     android:textAlignment="center"
                     android:textColor="@color/text_color"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
             <LinearLayout

@@ -1,39 +1,22 @@
 package com.jmsoft.main.adapter
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.view.animation.AnimationUtils
-import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.MetalTypeDataModel
-import com.jmsoft.Utility.Database.StockLocationDataModel
+import com.jmsoft.utility.database.StockLocationDataModel
 import com.jmsoft.basic.UtilityTools.Utils
-import com.jmsoft.basic.validation.ResultReturn
-import com.jmsoft.basic.validation.Validation
-import com.jmsoft.basic.validation.ValidationModel
-import com.jmsoft.databinding.DialogDeleteUserBinding
-import com.jmsoft.databinding.FragmentInventoryBinding
 import com.jmsoft.databinding.ItemAddStockLocationBinding
-import com.jmsoft.databinding.ItemMetalTypeDropdownBinding
 import com.jmsoft.databinding.ItemStockLocationDropdownBinding
-import com.jmsoft.main.fragment.InventoryFragment
-import com.jmsoft.main.fragment.ProductInventoryFragment
-import com.jmsoft.main.fragment.StockLocationFragment
 import com.jmsoft.main.`interface`.SelectedCallback
 
 class StockLocationDropdownAdapter(
     private val context: Context,
     private var stockLocationList: ArrayList<StockLocationDataModel>,
-    private var productInventoryFragment:ProductInventoryFragment?,
-    private val isFromStockLocation:Boolean,
+    private val isFromStockLocation: Boolean,
     private val selectedCallback: SelectedCallback
 ) :
     RecyclerView.Adapter<StockLocationDropdownAdapter.MyViewHolder>() {
@@ -76,19 +59,13 @@ class StockLocationDropdownAdapter(
 
                 binding.tvName.text = stockLocationDataModel.stockLocationName
 
-//                binding.llDelAndEditSection.visibility = View.GONE
+
             }
             else {
 
                 binding.tvName.text = stockLocationDataModel.stockLocationName
 
                 setParentName()
-
-                // Set click on delete button
-//                binding.mcvDelete.setOnClickListener(this)
-//
-//                // Set click on edit button
-//                binding.mcvEdit.setOnClickListener(this)
 
             }
 

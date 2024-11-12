@@ -7,8 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.Utility.Database.ContactDataModel
-import com.jmsoft.Utility.Database.ProductDataModel
+import com.jmsoft.utility.database.ContactDataModel
 import com.jmsoft.databinding.ItemAddStockLocationBinding
 import com.jmsoft.databinding.ItemStockLocationDropdownBinding
 import com.jmsoft.main.`interface`.SelectedCallback
