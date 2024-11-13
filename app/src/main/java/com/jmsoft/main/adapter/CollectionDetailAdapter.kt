@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jmsoft.utility.database.CategoryDataModel
+import com.jmsoft.Utility.database.CategoryDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.FragmentCollectionDetailBinding
 import com.jmsoft.databinding.ItemCollectionDetailBinding

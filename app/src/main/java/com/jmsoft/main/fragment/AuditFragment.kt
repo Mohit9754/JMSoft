@@ -25,11 +25,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jmsoft.R
-import com.jmsoft.utility.database.ProductDataModel
-import com.jmsoft.utility.database.StockLocationDataModel
-import com.jmsoft.utility.UtilityTools.BluetoothUtils
-import com.jmsoft.utility.UtilityTools.GetProgressBar
-import com.jmsoft.utility.UtilityTools.RFIDSetUp
+import com.jmsoft.Utility.database.ProductDataModel
+import com.jmsoft.Utility.database.StockLocationDataModel
+import com.jmsoft.Utility.UtilityTools.BluetoothUtils
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.UtilityTools.RFIDSetUp
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.frequencyData
 import com.jmsoft.basic.UtilityTools.Constants.Companion.frequencyIndex

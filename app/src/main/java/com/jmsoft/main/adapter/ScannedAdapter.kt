@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.utility.database.ProductDataModel
-import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.databinding.ItemExpectedBinding
 import com.jmsoft.main.activity.DashboardActivity

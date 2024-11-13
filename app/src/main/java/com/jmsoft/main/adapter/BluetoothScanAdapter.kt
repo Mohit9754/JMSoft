@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.utility.database.DeviceDataModel
-import com.jmsoft.utility.UtilityTools.BluetoothUtils
+import com.jmsoft.Utility.database.DeviceDataModel
+import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.connected
 import com.jmsoft.basic.UtilityTools.Utils

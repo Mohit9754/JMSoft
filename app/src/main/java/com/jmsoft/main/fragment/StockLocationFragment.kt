@@ -18,8 +18,8 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.utility.database.StockLocationDataModel
-import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.database.StockLocationDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation

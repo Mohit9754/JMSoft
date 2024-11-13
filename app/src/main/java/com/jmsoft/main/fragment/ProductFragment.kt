@@ -43,11 +43,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.utility.database.CategoryDataModel
-import com.jmsoft.utility.database.ProductDataModel
-import com.jmsoft.utility.UtilityTools.ExcelReader
-import com.jmsoft.utility.UtilityTools.GetProgressBar
-import com.jmsoft.utility.UtilityTools.ProductUUIDList
+import com.jmsoft.Utility.database.CategoryDataModel
+import com.jmsoft.Utility.database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.ExcelReader
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.UtilityTools.ProductUUIDList
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.All
 import com.jmsoft.basic.UtilityTools.Utils

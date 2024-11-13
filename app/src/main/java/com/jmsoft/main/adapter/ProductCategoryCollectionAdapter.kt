@@ -12,9 +12,9 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.utility.database.CategoryDataModel
-import com.jmsoft.utility.database.ProductDataModel
-import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.database.CategoryDataModel
+import com.jmsoft.Utility.database.ProductDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.weightUnit
 import com.jmsoft.basic.UtilityTools.Utils

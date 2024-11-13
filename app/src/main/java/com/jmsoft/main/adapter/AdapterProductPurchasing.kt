@@ -5,7 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.Utility.database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Constants.Companion.currency
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemPurchasingProductBinding

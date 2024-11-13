@@ -62,6 +62,33 @@
             </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvPrint"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_7sdp"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/theme"
+                app:cardCornerRadius="@dimen/_4sdp"
+                app:strokeWidth="0dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/_5sdp"
+                    android:layout_marginVertical="@dimen/_5sdp"
+                    android:fontFamily="@font/montserrat_arabic_semibold"
+                    android:includeFontPadding="false"
+                    android:text="@string/print"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/mcvAddDuplicate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

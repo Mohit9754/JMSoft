@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.utility.database.StockLocationDataModel
+import com.jmsoft.Utility.database.StockLocationDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.ItemAddStockLocationBinding
 import com.jmsoft.databinding.ItemStockLocationDropdownBinding

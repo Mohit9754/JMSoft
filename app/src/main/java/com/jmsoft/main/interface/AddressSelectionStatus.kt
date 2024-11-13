@@ -1,6 +1,6 @@
 package com.jmsoft.main.`interface`
 
-import com.jmsoft.utility.database.AddressDataModel
+import com.jmsoft.Utility.database.AddressDataModel
 
 interface AddressSelectionStatus {
 

@@ -93,6 +93,10 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
 
+    //generate a QR code  library
+
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+
 
 //    implementation (files("libs/poishadow-all.jar"))
 

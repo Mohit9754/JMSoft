@@ -28,8 +28,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.utility.database.ContactDataModel
-import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.database.ContactDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.basic.validation.ResultReturn
 import com.jmsoft.basic.validation.Validation

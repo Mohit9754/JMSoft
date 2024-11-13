@@ -18,8 +18,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.utility.UtilityTools.GetProgressBar
-import com.jmsoft.utility.database.UserDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.database.UserDataModel
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.admin
 import com.jmsoft.basic.UtilityTools.Constants.Companion.updateInSession

@@ -36,8 +36,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jmsoft.R
-import com.jmsoft.utility.UtilityTools.BluetoothUtils
-import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.UtilityTools.BluetoothUtils
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_Scanner
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_tag_Printer
 import com.jmsoft.basic.UtilityTools.Constants.Companion.ticket_Printer

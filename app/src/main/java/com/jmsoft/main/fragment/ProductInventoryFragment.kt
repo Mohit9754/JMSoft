@@ -37,15 +37,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.utility.database.CategoryDataModel
-import com.jmsoft.utility.database.CollectionDataModel
-import com.jmsoft.utility.database.MetalTypeDataModel
-import com.jmsoft.utility.database.ProductDataModel
-import com.jmsoft.utility.database.StockLocationDataModel
-import com.jmsoft.utility.UtilityTools.BluetoothUtils
-import com.jmsoft.utility.UtilityTools.GetProgressBar
-import com.jmsoft.utility.UtilityTools.ProductUUIDList
-import com.jmsoft.utility.UtilityTools.RFIDSetUp
+import com.jmsoft.Utility.UtilityTools.CustomQRViewWithLabel
+import com.jmsoft.Utility.database.CategoryDataModel
+import com.jmsoft.Utility.database.CollectionDataModel
+import com.jmsoft.Utility.database.MetalTypeDataModel
+import com.jmsoft.Utility.database.ProductDataModel
+import com.jmsoft.Utility.database.StockLocationDataModel
+import com.jmsoft.Utility.UtilityTools.BluetoothUtils
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.UtilityTools.ProductUUIDList
+import com.jmsoft.Utility.UtilityTools.RFIDSetUp
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.KeyboardUtils.hideKeyboard
 import com.jmsoft.basic.UtilityTools.Utils
@@ -778,6 +779,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
         binding.mcvAddDuplicate.visibility = View.GONE
 
+        binding.mcvPrint.visibility = View.GONE
+
+
         val stockLocationUUID = arguments?.getString(Constants.stockLocationUUID)
 
         stockLocationUUID?.let { setSelectedStockLocation(it) }
@@ -842,6 +846,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                     productDataModel = productData
 
                     binding.mcvAddDuplicate.visibility = View.VISIBLE
+
+                    binding.mcvPrint.visibility = View.VISIBLE
+
 
                     binding.llPageIndicator.visibility = View.VISIBLE
 
@@ -1002,6 +1009,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         binding.mcvPrevious.setOnClickListener(this)
 
         binding.mcvNext.setOnClickListener(this)
+
+        binding.mcvPrint.setOnClickListener(this)
+
 
         binding.mcvAddDuplicate.setOnClickListener(this)
 
@@ -1955,7 +1965,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
     }
 
     //Handles All the Clicks
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "CutPasteId")
     override fun onClick(v: View?) {
 
         if (v == binding.llMetalType) {
@@ -2058,6 +2068,53 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
             validate(isSaveButtonClicked = false, isNextButtonClicked = true)
 
 
+        }
+
+        else if (v == binding.mcvPrint) {
+
+            val itemLayout =
+                LayoutInflater.from(requireContext()).inflate(R.layout.item_product_qr, null)
+
+
+            val weight = binding.etWeight.text.toString()
+            val dimension = binding.etCarat.text.toString()
+            val price = binding.etPrice.text.toString()
+
+            /*   val customLabelView = itemLayout.findViewById<CustomLabelView>(R.id.customLabelView)
+               customLabelView.updateWeightText("W: $weight")
+               customLabelView.updateDimensionText("D: $dimension")
+               customLabelView.updatePriceText("P: $price")
+   */
+            val customQRLabelView =
+                itemLayout.findViewById<CustomQRViewWithLabel>(R.id.customQRViewWithText)
+            customQRLabelView.updateWeightText("W: $weight")
+            customQRLabelView.updateDimensionText("D: $dimension")
+            customQRLabelView.updatePriceText("P: $price")
+
+
+            val qrData = binding.etBarcode.text.toString() // Get data from EditText
+
+            // Generate the QR code bitmap
+            val qrBitmap = Utils.generateQRCode(qrData) // Generate the QR code from the input data
+
+            /* // Find the CustomQRView and set the bitmap
+             val customQRView: CustomQRView =
+                 itemLayout.findViewById(R.id.customQRView) // Make sure to use the correct ID of your CustomQRView
+             qrBitmap?.let {
+                 customQRView.setQRCodeBitmap(it) // Set the generated QR code bitmap to your custom view
+             }*/
+
+            val customQRViewWithText: CustomQRViewWithLabel =
+                itemLayout.findViewById(R.id.customQRViewWithText) // Make sure to use the correct ID of your CustomQRView
+            qrBitmap?.let {
+                customQRViewWithText.setQRCodeBitmap(it) // Set the generated QR code bitmap to your custom view
+            }
+
+            // Convert layout to bitmap
+            val bitmap = Utils.getBitmapFromView(itemLayout)
+
+            // Print layout as PDF
+            Utils.printLayout(requireContext(), bitmap)
         }
     }
 

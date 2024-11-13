@@ -14,7 +14,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.utility.database.UserDataModel
+import com.jmsoft.Utility.database.UserDataModel
 import com.jmsoft.basic.UtilityTools.Constants.Companion.Default_Country_Code
 import com.jmsoft.basic.UtilityTools.Constants.Companion.userUUID
 import com.jmsoft.basic.UtilityTools.Utils

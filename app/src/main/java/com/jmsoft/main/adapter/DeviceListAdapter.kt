@@ -14,7 +14,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
-import com.jmsoft.utility.UtilityTools.BluetoothUtils
+import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rotation
 import com.jmsoft.basic.UtilityTools.Utils
 

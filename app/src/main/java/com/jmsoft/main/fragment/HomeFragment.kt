@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.jmsoft.R
-import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants.Companion.verification
 import com.jmsoft.databinding.FragmentHomeBinding
 import com.jmsoft.main.activity.DashboardActivity

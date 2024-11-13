@@ -15,8 +15,8 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.jmsoft.R
 import com.jmsoft.R.color
-import com.jmsoft.utility.database.ContactDataModel
-import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.database.ContactDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.DialogDeleteUserBinding
 import com.jmsoft.databinding.FragmentContactBinding

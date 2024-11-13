@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
-import com.jmsoft.utility.database.CartDataModel
-import com.jmsoft.utility.database.ProductDataModel
+import com.jmsoft.Utility.database.CartDataModel
+import com.jmsoft.Utility.database.ProductDataModel
 import com.jmsoft.basic.UtilityTools.Utils
 import com.jmsoft.databinding.InvoiceItemBinding
 

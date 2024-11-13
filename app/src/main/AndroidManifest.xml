@@ -34,7 +34,7 @@
         android:maxSdkVersion="32" />
 
     <application
-        android:name=".utility.UtilityTools.AppController"
+        android:name=".Utility.UtilityTools.AppController"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/app_icon"
@@ -80,7 +80,7 @@
         </activity> <!-- FileProvider definition -->
 
         <provider
-            android:name=".utility.pdf_helper.XmlToPDFFileProvider"
+            android:name=".Utility.pdf_helper.XmlToPDFFileProvider"
             android:authorities="${applicationId}.xmlToPdf.provider"
             android:exported="false"
             android:grantUriPermissions="true">

@@ -29,10 +29,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.card.MaterialCardView
 import com.jmsoft.R
-import com.jmsoft.utility.database.CategoryDataModel
-import com.jmsoft.utility.database.CollectionDataModel
-import com.jmsoft.utility.database.MetalTypeDataModel
-import com.jmsoft.utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.database.CategoryDataModel
+import com.jmsoft.Utility.database.CollectionDataModel
+import com.jmsoft.Utility.database.MetalTypeDataModel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.Constants.Companion.category
 import com.jmsoft.basic.UtilityTools.Constants.Companion.collection
