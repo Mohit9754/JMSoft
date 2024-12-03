@@ -364,6 +364,15 @@
     <string name="authentication_failed_please_check_your_password_and_try_again">Authentication failed. Please check your password and try again.</string>
     <string name="failed_to_connect_to_the_network">Failed to connect to the network.</string>
     <string name="device_is_already_connected">Device is already connected</string>
+    <string name="invalid_ip_address">Invalid IP address</string>
+    <string name="invalid_port_number">Invalid port number</string>
+    <string name="printer_connection">Printer Connection</string>
+    <string name="ip_address">IP address</string>
+    <string name="enter_ip_address_e_g_192_168_0_1">Enter IP Address (e.g., 192.168.0.1)</string>
+    <string name="port_optional_default_9100">Port (optional, default: 9100)</string>
+    <string name="enter_port_number_e_g_9100">Enter port number (e.g., 9100)</string>
+    <string name="printer_connected_successfully">Printer connected successfully.</string>
+    <string name="failed_to_connect_to_the_printer_please_check_the_ip_address_port_and_network_connection">Failed to connect to the printer. Please check the IP address, port, and network connection.</string>
 
     <string-array name="arrayFrequency">
 

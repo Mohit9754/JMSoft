@@ -741,6 +741,7 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
                     val imm =
                         requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.showSoftInput(validation?.EditTextPointer, InputMethodManager.SHOW_IMPLICIT)
+
                 }
             }
         }

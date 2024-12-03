@@ -20,11 +20,17 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.LinearLayout.LayoutParams
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -33,6 +39,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.godex.Godex
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jmsoft.R
@@ -40,12 +47,15 @@ import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_Scanner
 import com.jmsoft.basic.UtilityTools.Constants.Companion.rfid_tag_Printer
-import com.jmsoft.basic.UtilityTools.Constants.Companion.ticket_Printer
 import com.jmsoft.basic.UtilityTools.Utils
+import com.jmsoft.basic.validation.ResultReturn
+import com.jmsoft.basic.validation.Validation
+import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.BottomSheetAddDeviceBinding
 import com.jmsoft.databinding.BottomSheetBluetoothScanListBinding
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.FragmentDeviceManagementBinding
+import com.jmsoft.databinding.ItemPrinterConnectionBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.BluetoothScanAdapter
 import com.jmsoft.main.adapter.DeviceListAdapter
@@ -438,14 +448,187 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
         addDeviceBottomSheetBinding.mcvTicketPrinter.setOnClickListener {
 
-            deviceType = ticket_Printer
-            bottomSheetAddDevice.dismiss()
-            bluetoothScanBottomSheet()
+
+            showPrinterConnectionDialog()
         }
 
         bottomSheetAddDevice.setContentView(addDeviceBottomSheetBinding.root)
         bottomSheetAddDevice.show()
     }
+
+    private fun showPrinterConnectionDialog() {
+
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogBinding = ItemPrinterConnectionBinding.inflate(LayoutInflater.from(context))
+        dialog.setContentView(dialogBinding.root)
+
+        Utils.setFocusChangeListener(
+            requireActivity(),
+            dialogBinding.etIPAddress,
+            dialogBinding.mcvIPAddress
+        )
+
+        Utils.setFocusChangeListener(
+            requireActivity(),
+            dialogBinding.etPort,
+            dialogBinding.mcvPort
+        )
+
+        Utils.setTextChangeListener(dialogBinding.etIPAddress,dialogBinding.tvIPAddressError)
+        Utils.setTextChangeListener(dialogBinding.etPort,dialogBinding.tvPortError)
+
+        Utils.disableButton(dialogBinding.mcvConnect)
+
+        dialogBinding.etIPAddress.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if (s.toString().isNotEmpty()) {
+                    Utils.enableButton(dialogBinding.mcvConnect)
+                } else {
+                    Utils.disableButton(dialogBinding.mcvConnect)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        dialogBinding.mcvCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogBinding.mcvConnect.setOnClickListener {
+
+            val errorValidationModels: MutableList<ValidationModel> = ArrayList()
+
+            errorValidationModels.add(
+                ValidationModel(
+                    Validation.Type.IPAddress,
+                    dialogBinding.etIPAddress,
+                    dialogBinding.tvIPAddressError
+                )
+            )
+
+            if (dialogBinding.etPort.text.toString().trim().isNotEmpty()) {
+
+                errorValidationModels.add(
+                    ValidationModel(
+                        Validation.Type.Port,
+                        dialogBinding.etPort,
+                        dialogBinding.tvPortError
+                    )
+                )
+            }
+
+            val validation: Validation? = Validation.instance
+            val resultReturn: ResultReturn? =
+                validation?.CheckValidation(requireActivity(), errorValidationModels)
+
+            if (resultReturn?.aBoolean == true) {
+
+                GetProgressBar.getInstance(requireActivity())?.show()
+
+
+                val ipAddress = dialogBinding.etIPAddress.text.toString().trim()
+                var port = dialogBinding.etPort.text.toString().trim()
+
+                val  connectionStatus = Godex.openport(ipAddress, Godex.connectionType.WiFi)
+
+                if (connectionStatus){
+
+                    GetProgressBar.getInstance(requireActivity())?.dismiss()
+
+                    dialog.dismiss()
+
+                    Utils.E("Printer connected successfully")
+
+                    Utils.T(requireActivity(), getString(R.string.printer_connected_successfully))
+
+                }
+
+                else {
+
+                    GetProgressBar.getInstance(requireActivity())?.dismiss()
+
+                    Utils.E("Printer connected failed")
+
+                    Utils.T(requireActivity(), getString(R.string.failed_to_connect_to_the_printer_please_check_the_ip_address_port_and_network_connection))
+
+                }
+
+//                port = port.ifEmpty { Constants.defaultPrintePort.toString() }
+
+//                Utils.connectToPrinter(ipAddress, port.toInt()) { isConnected ->
+//
+//                    if (isConnected) {
+//
+//                        requireActivity().runOnUiThread {
+//
+//                            dialog.dismiss()
+//
+//                            Utils.T(requireActivity(),
+//                                getString(R.string.printer_connected_successfully))
+//                        }
+//
+//                    } else {
+//
+//                        requireActivity().runOnUiThread {
+//                            Utils.T(requireActivity(),
+//                                getString(R.string.failed_to_connect_to_the_printer_please_check_the_ip_address_port_and_network_connection))
+//                        }
+//
+//                    }
+//                }
+
+            } else {
+
+                resultReturn?.errorTextView?.visibility = View.VISIBLE
+                if (resultReturn?.type === Validation.Type.EmptyString) {
+                    resultReturn.errorTextView?.text = resultReturn.errorMessage
+                } else {
+                    resultReturn?.errorTextView?.text = validation?.errorMessage
+                    val animation =
+                        AnimationUtils.loadAnimation(context, R.anim.top_to_bottom)
+                    resultReturn?.errorTextView?.startAnimation(animation)
+                    validation?.EditTextPointer?.requestFocus()
+
+                    val imm =
+                        requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(validation?.EditTextPointer, InputMethodManager.SHOW_IMPLICIT)
+
+//            dialog.dismiss()
+                }
+            }
+
+
+        }
+
+        dialog.setCancelable(true)
+
+
+        if (activity != null) {
+
+            Handler(Looper.getMainLooper()).post {
+                if (isAdded && !requireActivity().isFinishing && !requireActivity().isDestroyed) {
+                    dialog.show()
+                }
+            }
+
+        }
+//        dialog.show()
+    }
+
 
     //Creating Scan devices Bottom Sheet Dialog
     @SuppressLint("MissingPermission")
@@ -593,8 +776,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
     }
 
-    //Handles All the Clicks
-
+    // Handles All the Clicks
     override fun onClick(v: View?) {
 
         // Handles Click on Add Device button

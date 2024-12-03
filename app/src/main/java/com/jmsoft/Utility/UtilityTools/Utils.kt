@@ -116,6 +116,8 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+import java.net.InetSocketAddress
+import java.net.Socket
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
@@ -141,8 +143,38 @@ object Utils {
         fun addAmount(amount: Double) {
             totalAmount += amount
         }
-
     }
+
+    fun connectToPrinter(ipAddress: String, port: Int = 9100, onConnectionResult: (Boolean) -> Unit) {
+
+        Thread {
+            try {
+
+                // Create a socket to connect to the printer
+                val socket = Socket()
+
+                // Timeout after 5 seconds if the connection fails
+                socket.connect(InetSocketAddress(ipAddress, port), 2000)
+
+                // If connection is successful
+                if (socket.isConnected) {
+                    // Connection successful
+                    onConnectionResult(true)
+                } else {
+                    // Connection failed
+                    onConnectionResult(false)
+                }
+
+                // Close the connection after checking
+                socket.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                // Connection failed
+                onConnectionResult(false)
+            }
+        }.start()
+    }
+
 
     // Function to generate the QR code
     fun generateQRCode(data: String): Bitmap? {

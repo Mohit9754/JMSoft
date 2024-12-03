@@ -1882,7 +1882,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         })
     }
 
-
     override fun onPause() {
         super.onPause()
         rfidSetUp?.onPause(object : PairStatusCallback {
@@ -2094,6 +2093,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
             val qrData = binding.etBarcode.text.toString() // Get data from EditText
 
+            customQRLabelView.barcodeText(binding.etBarcode.text.toString())
             // Generate the QR code bitmap
             val qrBitmap = Utils.generateQRCode(qrData) // Generate the QR code from the input data
 

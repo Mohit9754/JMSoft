@@ -262,6 +262,9 @@ interface Constants {
         const val pending = "pending"
         const val confirm = "confirm"
 
+        //
+        const val defaultPrintePort = 9100
+
         // State
         const val bluetoothUuid = "00001101-0000-1000-8000-00805F9B34FB"
         const val rotation = "rotation"

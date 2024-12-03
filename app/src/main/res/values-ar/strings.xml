@@ -376,4 +376,16 @@
     <string name="device_is_already_connected">الجهاز متصل بالفعل</string>
 
 
+    <string name="invalid_ip_address">عنوان IP غير صالح</string>
+    <string name="invalid_port_number">رقم المنفذ غير صالح</string>
+    <string name="printer_connection">اتصال الطابعة</string>
+    <string name="ip_address">عنوان IP</string>
+    <string name="enter_ip_address_e_g_192_168_0_1">أدخل عنوان IP (على سبيل المثال، 192.168.0.1)</string>
+    <string name="port_optional_default_9100">المنفذ (اختياري، الافتراضي: 9100)</string>
+    <string name="enter_port_number_e_g_9100">أدخل رقم المنفذ (على سبيل المثال، 9100)</string>
+    <string name="printer_connected_successfully">تم توصيل الطابعة بنجاح.</string>
+    <string name="failed_to_connect_to_the_printer_please_check_the_ip_address_port_and_network_connection">فشل الاتصال بالطابعة. يرجى التحقق من عنوان IP والمنفذ واتصال الشبكة.</string>
+
+
+
 </resources>

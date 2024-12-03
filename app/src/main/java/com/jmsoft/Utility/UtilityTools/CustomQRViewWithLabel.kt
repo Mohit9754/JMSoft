@@ -47,7 +47,7 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
     }
 
     // Properties for the text content
-    var logoText: String = "JM431"
+    var barcodeText: String = "JM431"
     var weightText: String = "W 102.55g"
     var dimensionText: String = "D 3.45g"
     var priceText: String = "P 50,00DH"
@@ -109,7 +109,7 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
             118f + rectHeight / 2
         ) // Rotate around the center of the main rectangle
         canvas.drawText(
-            logoText,
+            barcodeText,
             320f / 4,
             50f + rectHeight / 2,
             textPaintJM
@@ -160,8 +160,8 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
         invalidate()
     }
 
-    fun logoText(text: String) {
-        logoText = text
+    fun barcodeText(text: String) {
+        barcodeText = text
         invalidate()
     }
 

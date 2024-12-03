@@ -48,6 +48,9 @@ class Validation {
             }
             when (validationModel.type) {
 
+                Type.IPAddress -> validationCheck = isValidIPAddress(context,validationModel.editText)
+                Type.Port -> validationCheck = isValidPort(context,validationModel.editText)
+
                 Type.NoSpecialChar -> validationCheck = isNoSpecialChar(context,validationModel.editText)
 
                 Type.ImageSelect -> validationCheck = isImageSelected(context,validationModel.isImageSelected)
@@ -86,6 +89,38 @@ class Validation {
             }
         }
         return ResultReturn(type, validationCheck, errorMessage, parameter, errorTextView)
+    }
+
+    fun isValidIPAddress(context: Context,editText: EditText?): Boolean {
+
+        val regex = Regex(
+            "^((25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$"
+        )
+
+        return if (!regex.matches(editText?.text.toString())) {
+
+            errorMessage = context.getString(R.string.invalid_ip_address)
+            EditTextPointer = editText
+
+            false
+        }
+        else {
+         true
+        }
+    }
+
+    fun isValidPort(context: Context,editText: EditText?): Boolean {
+
+        return if (editText?.text.toString().toInt() !in 1..65535) {
+
+            errorMessage = context.getString(R.string.invalid_port_number)
+            EditTextPointer = editText
+
+            false
+        }
+        else {
+            true
+        }
     }
 
     private fun isImageSelected(context: Context,isImageSelected:Boolean?): Boolean {
@@ -541,7 +576,7 @@ class Validation {
      */
     enum class Type(var label: String) {
 
-         NoSpecialChar(""),ImageSelect(""),Barcode("") ,AtLeastTwo("") , Email(""),EmptyTextView(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
+        Port(""),IPAddress(""),NoSpecialChar(""),ImageSelect(""),Barcode("") ,AtLeastTwo("") , Email(""),EmptyTextView(""), Phone(""),ZipCode("") ,EmptyString(""), Amount(""), AadhaarNumber(""), PasswordMatch(""), PasswordStrong(
             ""
         ),
         PAN(""), IFSC(""), Empty(""), EmptyArrayList(""), AccountNumber(""), MPIN("");

@@ -63,6 +63,8 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     implementation("androidx.activity:activity:1.9.0")
     implementation(files("libs/poishadow-all.jar"))
+    implementation (files("libs/EZioAD.jar"))
+
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
     androidTestImplementation("androidx.test:runner:1.5.2")
