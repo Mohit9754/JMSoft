@@ -69,6 +69,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
+import com.godex.Godex
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.card.MaterialCardView
 import com.google.zxing.BarcodeFormat
@@ -77,6 +78,9 @@ import com.google.zxing.MultiFormatWriter
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.qrcode.QRCodeWriter
 import com.jmsoft.R
+import com.jmsoft.Utility.UtilityTools.AppController
+import com.jmsoft.Utility.UtilityTools.BitmapPrintAdapter
+import com.jmsoft.Utility.UtilityTools.loadingButton.LoadingButton
 import com.jmsoft.Utility.database.AddressDataModel
 import com.jmsoft.Utility.database.CartDataModel
 import com.jmsoft.Utility.database.CategoryDataModel
@@ -88,9 +92,8 @@ import com.jmsoft.Utility.database.OrderDataModel
 import com.jmsoft.Utility.database.ProductDataModel
 import com.jmsoft.Utility.database.PurchasingDataModel
 import com.jmsoft.Utility.database.StockLocationDataModel
-import com.jmsoft.Utility.UtilityTools.loadingButton.LoadingButton
-import com.jmsoft.basic.Database.DatabaseHelper
 import com.jmsoft.Utility.database.UserDataModel
+import com.jmsoft.basic.Database.DatabaseHelper
 import com.jmsoft.basic.UtilityTools.Constants.Companion.CONFIG_FILE
 import com.jmsoft.basic.UtilityTools.Constants.Companion.arabic
 import com.jmsoft.basic.UtilityTools.Constants.Companion.dimen
@@ -103,8 +106,6 @@ import com.jmsoft.databinding.AlertdialogBinding
 import com.jmsoft.databinding.FragmentPurchasingAndSalesBinding
 import com.jmsoft.databinding.ItemCustomToastBinding
 import com.jmsoft.main.model.DeviceModel
-import com.jmsoft.Utility.UtilityTools.AppController
-import com.jmsoft.Utility.UtilityTools.BitmapPrintAdapter
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
@@ -116,8 +117,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
-import java.net.InetSocketAddress
-import java.net.Socket
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
@@ -125,8 +124,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 import kotlin.random.Random
+
 
 object Utils {
 
@@ -145,34 +144,26 @@ object Utils {
         }
     }
 
-    fun connectToPrinter(ipAddress: String, port: Int = 9100, onConnectionResult: (Boolean) -> Unit) {
+    fun isPrinterReady(): Boolean {
 
-        Thread {
-            try {
+        val status = Godex.CheckStatus()
+        if (status == null) {
+            E("Failed to check printer status.")
+            return false
+        }
+        E("Printer status: $status")
 
-                // Create a socket to connect to the printer
-                val socket = Socket()
-
-                // Timeout after 5 seconds if the connection fails
-                socket.connect(InetSocketAddress(ipAddress, port), 2000)
-
-                // If connection is successful
-                if (socket.isConnected) {
-                    // Connection successful
-                    onConnectionResult(true)
-                } else {
-                    // Connection failed
-                    onConnectionResult(false)
-                }
-
-                // Close the connection after checking
-                socket.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                // Connection failed
-                onConnectionResult(false)
-            }
-        }.start()
+        // Check for specific messages. Update these conditions based on actual responses.
+        if (status.contains("Ready")) {
+            return true
+        } else if (status.contains("Paper Out")) {
+            E("Printer is out of paper.")
+        } else if (status.contains("Error")) {
+            E("Printer encountered an error.")
+        } else {
+            E("Unknown printer status: $status")
+        }
+        return false
     }
 
 

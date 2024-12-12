@@ -386,6 +386,7 @@
     <string name="printer_connected_successfully">تم توصيل الطابعة بنجاح.</string>
     <string name="failed_to_connect_to_the_printer_please_check_the_ip_address_port_and_network_connection">فشل الاتصال بالطابعة. يرجى التحقق من عنوان IP والمنفذ واتصال الشبكة.</string>
 
-
+    <string name="printed_successfully">تمت الطباعة بنجاح</string>
+    <string name="printing_failed">فشلت الطباعة</string>
 
 </resources>

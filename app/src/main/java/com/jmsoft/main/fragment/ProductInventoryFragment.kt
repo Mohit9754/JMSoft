@@ -16,8 +16,12 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
+import android.text.Editable
 import android.text.InputFilter
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,17 +40,18 @@ import androidx.navigation.NavOptions
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.godex.Godex
 import com.jmsoft.R
+import com.jmsoft.Utility.UtilityTools.BluetoothUtils
 import com.jmsoft.Utility.UtilityTools.CustomQRViewWithLabel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
+import com.jmsoft.Utility.UtilityTools.ProductUUIDList
+import com.jmsoft.Utility.UtilityTools.RFIDSetUp
 import com.jmsoft.Utility.database.CategoryDataModel
 import com.jmsoft.Utility.database.CollectionDataModel
 import com.jmsoft.Utility.database.MetalTypeDataModel
 import com.jmsoft.Utility.database.ProductDataModel
 import com.jmsoft.Utility.database.StockLocationDataModel
-import com.jmsoft.Utility.UtilityTools.BluetoothUtils
-import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.Utility.UtilityTools.ProductUUIDList
-import com.jmsoft.Utility.UtilityTools.RFIDSetUp
 import com.jmsoft.basic.UtilityTools.Constants
 import com.jmsoft.basic.UtilityTools.KeyboardUtils.hideKeyboard
 import com.jmsoft.basic.UtilityTools.Utils
@@ -58,6 +63,7 @@ import com.jmsoft.databinding.DialogAddMetalTypeBinding
 import com.jmsoft.databinding.DialogOpenSettingBinding
 import com.jmsoft.databinding.DialogProfileBinding
 import com.jmsoft.databinding.FragmentProductInventoryBinding
+import com.jmsoft.databinding.ItemPrinterConnectionBinding
 import com.jmsoft.main.activity.DashboardActivity
 import com.jmsoft.main.adapter.AddImageAdapter
 import com.jmsoft.main.adapter.CategoryDropdownAdapter
@@ -1963,17 +1969,223 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         }
     }
 
+    private fun showPrinterConnectionDialog() {
+
+        val dialog = Dialog(requireActivity())
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogBinding = ItemPrinterConnectionBinding.inflate(LayoutInflater.from(context))
+        dialog.setContentView(dialogBinding.root)
+
+        Utils.setFocusChangeListener(
+            requireActivity(),
+            dialogBinding.etIPAddress,
+            dialogBinding.mcvIPAddress
+        )
+
+        Utils.setTextChangeListener(dialogBinding.etIPAddress,dialogBinding.tvIPAddressError)
+
+        Utils.disableButton(dialogBinding.mcvConnect)
+
+        dialogBinding.etIPAddress.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if (s.toString().isNotEmpty()) {
+                    Utils.enableButton(dialogBinding.mcvConnect)
+                } else {
+                    Utils.disableButton(dialogBinding.mcvConnect)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        dialogBinding.mcvCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogBinding.mcvConnect.setOnClickListener {
+
+            val errorValidationModels: MutableList<ValidationModel> = ArrayList()
+
+            errorValidationModels.add(
+                ValidationModel(
+                    Validation.Type.IPAddress,
+                    dialogBinding.etIPAddress,
+                    dialogBinding.tvIPAddressError
+                )
+            )
+
+            val validation: Validation? = Validation.instance
+            val resultReturn: ResultReturn? =
+                validation?.CheckValidation(requireActivity(), errorValidationModels)
+
+            if (resultReturn?.aBoolean == true) {
+
+                GetProgressBar.getInstance(requireActivity())?.show()
+
+                val ipAddress = dialogBinding.etIPAddress.text.toString().trim()
+
+                val connectionStatus = Godex.openport(ipAddress, 1)
+
+                if (connectionStatus) {
+
+                    GetProgressBar.getInstance(requireActivity())?.dismiss()
+
+                    dialog.dismiss()
+
+                    Utils.E("Printer connected successfully")
+
+                    Utils.T(requireActivity(), getString(R.string.printer_connected_successfully))
+
+//                    print()
+
+                }
+
+                else {
+
+                    GetProgressBar.getInstance(requireActivity())?.dismiss()
+
+                    Utils.E("Printer connected failed")
+
+                    Utils.T(requireActivity(), getString(R.string.failed_to_connect_to_the_printer_please_check_the_ip_address_port_and_network_connection))
+
+                }
+
+            } else {
+
+                resultReturn?.errorTextView?.visibility = View.VISIBLE
+                if (resultReturn?.type === Validation.Type.EmptyString) {
+                    resultReturn.errorTextView?.text = resultReturn.errorMessage
+                } else {
+                    resultReturn?.errorTextView?.text = validation?.errorMessage
+                    val animation =
+                        AnimationUtils.loadAnimation(context, R.anim.top_to_bottom)
+                    resultReturn?.errorTextView?.startAnimation(animation)
+                    validation?.EditTextPointer?.requestFocus()
+
+                    val imm =
+                        requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(validation?.EditTextPointer, InputMethodManager.SHOW_IMPLICIT)
+
+                }
+            }
+        }
+
+        dialog.setCancelable(true)
+
+
+        if (activity != null) {
+
+            Handler(Looper.getMainLooper()).post {
+                if (isAdded && !requireActivity().isFinishing && !requireActivity().isDestroyed) {
+                    dialog.show()
+                }
+            }
+
+        }
+//        dialog.show()
+    }
+
+    @SuppressLint("CutPasteId", "InflateParams")
+    private fun print() {
+
+        val itemLayout = LayoutInflater.from(requireContext()).inflate(R.layout.item_product_qr, null)
+
+        val weight = binding.etWeight.text.toString()
+        val dimension = binding.etCarat.text.toString()
+        val price = binding.etPrice.text.toString()
+
+        val customQRLabelView =
+            itemLayout.findViewById<CustomQRViewWithLabel>(R.id.customQRViewWithText)
+        customQRLabelView.updateWeightText("W ${weight}g")
+        customQRLabelView.updateDimensionText("D ${dimension}mg")
+        customQRLabelView.updatePriceText("P $price")
+
+        val qrData = binding.etBarcode.text.toString() // Get data from EditText
+
+        customQRLabelView.barcodeDataText(qrData)
+
+        // Generate the QR code bitmap
+        val qrBitmap = Utils.generateQRCode(qrData) // Generate the QR code from the input data
+
+        val customQRViewWithText: CustomQRViewWithLabel =
+            itemLayout.findViewById(R.id.customQRViewWithText) // Make sure to use the correct ID of your CustomQRView
+        qrBitmap?.let {
+            customQRViewWithText.setQRCodeBitmap(it) // Set the generated QR code bitmap to your custom view
+        }
+
+        // Convert layout to bitmap
+        val bitmap = Utils.getBitmapFromView(itemLayout)
+
+        // Print layout as PDF
+        Utils.printLayout(requireContext(), bitmap)
+
+        printBitmap(bitmap)
+
+    }
+
+    private fun printBitmap(bitmap: Bitmap) {
+
+        // Send the Bitmap to the printer using the Godex SDK
+        Godex.sendCommand("^L") // Reset the printer
+        Godex.sendCommand("AD,30,130,1,1,0,0,Width:" + bitmap.width)
+        Godex.sendCommand("AD,30,200,1,1,0,0,Height:" + bitmap.height)
+        Godex.putImage(10, 10, bitmap) // Print the Bitmap starting from (10, 10)
+        val printingStatus = Godex.sendCommand("E") // End the print job
+
+        if (printingStatus) {
+
+            Utils.E("Printed successfully")
+            Utils.T(requireActivity(), getString(R.string.printed_successfully))
+        }
+        else {
+
+            Utils.E("Printing failed")
+            Utils.T(requireActivity(), getString(R.string.printing_failed))
+        }
+
+    }
+
+    private fun checkPrinterConnectionStatus() {
+
+        val connectionStatus = Utils.isPrinterReady()
+
+        if (connectionStatus) {
+            print()
+        }
+        else {
+            showPrinterConnectionDialog()
+        }
+    }
+
     //Handles All the Clicks
     @SuppressLint("NotifyDataSetChanged", "CutPasteId")
     override fun onClick(v: View?) {
 
         if (v == binding.llMetalType) {
             showOrHideMetalTypeDropDown()
-        } else if (v == binding.llStockLocation) {
+        }
+
+        else if (v == binding.llStockLocation) {
             showOrHideStockLocationDropDown()
-        } else if (v == binding.llCategory) {
+        }
+
+        else if (v == binding.llCategory) {
             showOrHideCategoryDropDown()
-        } else if (v == binding.mcvAddDuplicate) {
+        }
+
+        else if (v == binding.mcvAddDuplicate) {
 
             GetProgressBar.getInstance(requireActivity())?.show()
 
@@ -1989,15 +2201,23 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                 bundle
             )
 
-        } else if (v == binding.mcvRFIDCodeBtn) {
+        }
+
+        else if (v == binding.mcvRFIDCodeBtn) {
 
             checkAndroidVersionAndLaunchPermission()
 
-        } else if (v == binding.mcvCollection || v == binding.ivCollection) {
+        }
+
+        else if (v == binding.mcvCollection || v == binding.ivCollection) {
             showOrHideCollectionDropDown()
-        } else if (v == binding.mcvAddCategory) {
+        }
+
+        else if (v == binding.mcvAddCategory) {
             showAddOrEditCategoryDialog(null, null)
-        } else if (v == binding.mcvSave) {
+        }
+
+        else if (v == binding.mcvSave) {
 
             GetProgressBar.getInstance(requireActivity())?.show()
 
@@ -2011,12 +2231,18 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
             (requireActivity() as DashboardActivity).navController?.popBackStack()
 
-        } else if (v == binding.mcvAddMetalType) {
+        }
+
+        else if (v == binding.mcvAddMetalType) {
 
             showAddOrEditMetalTypeDialog(null, null)
-        } else if (v == binding.mcvAddStockLocation) {
+        }
+
+        else if (v == binding.mcvAddStockLocation) {
 //            showAddOrUpdateStockLocationDialog(null,null)
-        } else if (v == binding.mcvBarcodeBtn) {
+        }
+
+        else if (v == binding.mcvBarcodeBtn) {
 
             if (binding.etBarcode.text?.isNotEmpty() == true) {
 
@@ -2045,22 +2271,30 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                     )
                 }
             }
-        } else if (v == binding.ivCross) {
+        }
+
+        else if (v == binding.ivCross) {
 
             barcodeImage.clear()
             binding.etBarcode.setText("")
             binding.mcvBarcodeImage.visibility = View.GONE
 
-        } else if (v == binding.root) {
+        }
+
+        else if (v == binding.root) {
             hideKeyboard(requireActivity())
-        } else if (v == binding.mcvPrevious) {
+        }
+
+        else if (v == binding.mcvPrevious) {
 
             GetProgressBar.getInstance(requireActivity())?.show()
 
             validate(isSaveButtonClicked = false, isNextButtonClicked = false)
 
 
-        } else if (v == binding.mcvNext) {
+        }
+
+        else if (v == binding.mcvNext) {
 
             GetProgressBar.getInstance(requireActivity())?.show()
 
@@ -2070,52 +2304,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         }
 
         else if (v == binding.mcvPrint) {
-
-            val itemLayout =
-                LayoutInflater.from(requireContext()).inflate(R.layout.item_product_qr, null)
-
-
-            val weight = binding.etWeight.text.toString()
-            val dimension = binding.etCarat.text.toString()
-            val price = binding.etPrice.text.toString()
-
-            /*   val customLabelView = itemLayout.findViewById<CustomLabelView>(R.id.customLabelView)
-               customLabelView.updateWeightText("W: $weight")
-               customLabelView.updateDimensionText("D: $dimension")
-               customLabelView.updatePriceText("P: $price")
-   */
-            val customQRLabelView =
-                itemLayout.findViewById<CustomQRViewWithLabel>(R.id.customQRViewWithText)
-            customQRLabelView.updateWeightText("W: $weight")
-            customQRLabelView.updateDimensionText("D: $dimension")
-            customQRLabelView.updatePriceText("P: $price")
-
-
-            val qrData = binding.etBarcode.text.toString() // Get data from EditText
-
-            customQRLabelView.barcodeText(binding.etBarcode.text.toString())
-            // Generate the QR code bitmap
-            val qrBitmap = Utils.generateQRCode(qrData) // Generate the QR code from the input data
-
-            /* // Find the CustomQRView and set the bitmap
-             val customQRView: CustomQRView =
-                 itemLayout.findViewById(R.id.customQRView) // Make sure to use the correct ID of your CustomQRView
-             qrBitmap?.let {
-                 customQRView.setQRCodeBitmap(it) // Set the generated QR code bitmap to your custom view
-             }*/
-
-            val customQRViewWithText: CustomQRViewWithLabel =
-                itemLayout.findViewById(R.id.customQRViewWithText) // Make sure to use the correct ID of your CustomQRView
-            qrBitmap?.let {
-                customQRViewWithText.setQRCodeBitmap(it) // Set the generated QR code bitmap to your custom view
-            }
-
-            // Convert layout to bitmap
-            val bitmap = Utils.getBitmapFromView(itemLayout)
-
-            // Print layout as PDF
-            Utils.printLayout(requireContext(), bitmap)
+          checkPrinterConnectionStatus()
         }
+
     }
 
     override fun onTagRead(tagInfo: UHFTAGInfo) {

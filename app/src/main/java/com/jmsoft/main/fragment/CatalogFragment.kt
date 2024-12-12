@@ -132,7 +132,6 @@ class CatalogFragment : Fragment(), View.OnClickListener {
 
     }
 
-
     // Set the Clicks And initialization
     private suspend fun init() {
 

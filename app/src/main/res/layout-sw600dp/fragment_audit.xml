@@ -8,6 +8,7 @@
     android:orientation="vertical"
     android:paddingHorizontal="@dimen/_18sdp">
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -108,176 +109,184 @@
         android:orientation="horizontal"
         tools:ignore="UselessLeaf">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_20sdp"
-            android:orientation="vertical"
-            tools:ignore="UselessParent">
+            android:layout_height="wrap_content">
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="@dimen/_65sdp"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="@dimen/_7sdp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/text_color"
-                app:strokeWidth="1dp">
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:orientation="vertical"
+                tools:ignore="UselessParent">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="@dimen/_65sdp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    app:cardCornerRadius="@dimen/_7sdp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/text_color"
+                    app:strokeWidth="1dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/text_color"
-                        android:fontFamily="@font/montserrat_arabic_bold"
-                        android:gravity="center_horizontal"
-                        android:paddingVertical="@dimen/_6sdp"
-                        android:text="@string/total_"
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvTotal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/montserrat_arabic_bold"
-                        android:paddingVertical="@dimen/_4sdp"
-                        android:text="@string/_0"
-                        android:textColor="@color/text_color"
-                        android:textSize="16sp" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/text_color"
+                            android:fontFamily="@font/montserrat_arabic_bold"
+                            android:gravity="center_horizontal"
+                            android:paddingVertical="@dimen/_6sdp"
+                            android:text="@string/total_"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tvTotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/montserrat_arabic_bold"
+                            android:paddingVertical="@dimen/_4sdp"
+                            android:text="@string/_0"
+                            android:textColor="@color/text_color"
+                            android:textSize="16sp" />
 
 
-                </LinearLayout>
+                    </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+                </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="@dimen/_65sdp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_12sdp"
-                app:cardCornerRadius="@dimen/_7sdp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/moss_green"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="@dimen/_65sdp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginTop="@dimen/_12sdp"
+                    app:cardCornerRadius="@dimen/_7sdp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/moss_green"
+                    app:strokeWidth="1dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/moss_green"
-                        android:fontFamily="@font/montserrat_arabic_bold"
-                        android:gravity="center_horizontal"
-                        android:paddingVertical="@dimen/_6sdp"
-                        android:text="@string/scanned"
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvSelected"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/montserrat_arabic_bold"
-                        android:paddingVertical="@dimen/_4sdp"
-                        android:text="@string/_0"
-                        android:textColor="@color/text_color"
-                        android:textSize="16sp" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/moss_green"
+                            android:fontFamily="@font/montserrat_arabic_bold"
+                            android:gravity="center_horizontal"
+                            android:paddingVertical="@dimen/_6sdp"
+                            android:text="@string/scanned"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tvSelected"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/montserrat_arabic_bold"
+                            android:paddingVertical="@dimen/_4sdp"
+                            android:text="@string/_0"
+                            android:textColor="@color/text_color"
+                            android:textSize="16sp" />
 
 
-                </LinearLayout>
+                    </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+                </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="@dimen/_65sdp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_12sdp"
-                app:cardCornerRadius="@dimen/_7sdp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/red_orange"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="@dimen/_65sdp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginTop="@dimen/_12sdp"
+                    app:cardCornerRadius="@dimen/_7sdp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/red_orange"
+                    app:strokeWidth="1dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/red_orange"
-                        android:fontFamily="@font/montserrat_arabic_bold"
-                        android:gravity="center_horizontal"
-                        android:paddingVertical="@dimen/_6sdp"
-                        android:text="@string/missing"
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvMissing"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/montserrat_arabic_bold"
-                        android:paddingVertical="@dimen/_4sdp"
-                        android:text="@string/_0"
-                        android:textColor="@color/text_color"
-                        android:textSize="16sp" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/red_orange"
+                            android:fontFamily="@font/montserrat_arabic_bold"
+                            android:gravity="center_horizontal"
+                            android:paddingVertical="@dimen/_6sdp"
+                            android:text="@string/missing"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tvMissing"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/montserrat_arabic_bold"
+                            android:paddingVertical="@dimen/_4sdp"
+                            android:text="@string/_0"
+                            android:textColor="@color/text_color"
+                            android:textSize="16sp" />
 
 
-                </LinearLayout>
+                    </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+                </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="@dimen/_65sdp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_12sdp"
-                app:cardCornerRadius="@dimen/_7sdp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/sand_color"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="@dimen/_65sdp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginTop="@dimen/_12sdp"
+                    app:cardCornerRadius="@dimen/_7sdp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/sand_color"
+                    app:strokeWidth="1dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/sand_color"
-                        android:fontFamily="@font/montserrat_arabic_bold"
-                        android:gravity="center_horizontal"
-                        android:paddingVertical="@dimen/_6sdp"
-                        android:text="@string/unknown"
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvUnknown"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/montserrat_arabic_bold"
-                        android:paddingVertical="@dimen/_4sdp"
-                        android:text="@string/_0"
-                        android:textColor="@color/text_color"
-                        android:textSize="16sp" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/sand_color"
+                            android:fontFamily="@font/montserrat_arabic_bold"
+                            android:gravity="center_horizontal"
+                            android:paddingVertical="@dimen/_6sdp"
+                            android:text="@string/unknown"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/tvUnknown"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/montserrat_arabic_bold"
+                            android:paddingVertical="@dimen/_4sdp"
+                            android:text="@string/_0"
+                            android:textColor="@color/text_color"
+                            android:textSize="16sp" />
 
-            </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
 
-        </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -372,6 +381,7 @@
         </LinearLayout>
 
     </LinearLayout>
+
 
 
 </LinearLayout>

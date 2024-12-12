@@ -13,7 +13,8 @@ import android.view.View
 
 class CustomQRViewWithLabel @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : View(context, attrs, defStyleAttr) {
+) : View(context, attrs, defStyleAttr)
+{
 
     private var qrBitmap: Bitmap? = null
 
@@ -47,7 +48,7 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
     }
 
     // Properties for the text content
-    var barcodeText: String = "JM431"
+    var barcodeData: String = "JM431"
     var weightText: String = "W 102.55g"
     var dimensionText: String = "D 3.45g"
     var priceText: String = "P 50,00DH"
@@ -62,10 +63,9 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
         super.onDraw(canvas)
 
         // Dimensions and radius for the main rounded rectangle
-        val rectWidth = 220f  // Width of the main rectangle
-        val rectHeight = 280f // Height of the main rectangle
-        val cornerRadius = 20f // Radius for the rounded corners
-        val handleHeight = 190f  // Height of the handle area
+        val rectWidth = 620f  // Width of the main rectangle
+        val rectHeight = 265f // Height of the main rectangle
+        val cornerRadius = 0f // Radius for the rounded corners
 
         // Create a Path to draw the custom shape
         val path = Path()
@@ -81,11 +81,6 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
         path.lineTo(50f + rectWidth, 50f + rectHeight - cornerRadius)
         path.quadTo(50f + rectWidth, 50f + rectHeight, 50f + rectWidth - cornerRadius, 50f + rectHeight)
 
-        // Bottom side with the bottom handle
-        path.lineTo( rectWidth / 2 + 80f, 50f + rectHeight) // Move to the left side of the handle
-        path.lineTo( rectWidth / 2 + 80f, 50f + rectHeight + handleHeight) // Bottom of handle
-        path.lineTo(109f + rectWidth / 2 - 90f, 50f + rectHeight + handleHeight) // Left of handle
-        path.lineTo(109f + rectWidth / 2 - 90f, 50f + rectHeight) // Back to main rectangle
 
         // Continue the bottom side with bottom-left rounded corner
         path.lineTo(50f + cornerRadius, 50f + rectHeight)
@@ -109,9 +104,9 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
             118f + rectHeight / 2
         ) // Rotate around the center of the main rectangle
         canvas.drawText(
-            barcodeText,
-            320f / 4,
-            50f + rectHeight / 2,
+            barcodeData,
+            380f / 3,
+            (-180f) ,
             textPaintJM
         ) // Draw text at the center
         canvas.restore()
@@ -128,19 +123,19 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
             val scaledQRCode = Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, false)
 
             // Position of the QR code inside the rectangle
-            val qrX = 100f + rectWidth / 5 - scaledQRCode.width / 2
-            val qrY = 100f + rectHeight / 2 - scaledQRCode.height / 2
+            val qrX = 430f + rectWidth / 5 - scaledQRCode.width / 2
+            val qrY = 103f + rectHeight / 2 - scaledQRCode.height / 2
 
             // Draw the scaled QR code on canvas inside the rectangle
             canvas.drawBitmap(scaledQRCode, qrX, qrY, null)
         }
 
-        // Draw text inside the main rectangle
-        val textX = 90f
-        val textY = 110f
+        // Draw text at the *top end* of the rectangle
+        val textX = 500f // Adjusted to align horizontally near the left edge
+        val textY = 100f // Slightly inside the rectangle but close to the top
         canvas.drawText(weightText, textX, textY, textPaint)
-        canvas.drawText(priceText, textX, textY + 30f, textPaint)
-        canvas.drawText(dimensionText, textX, textY + 60f, textPaint)
+        canvas.drawText(priceText, textX, textY + 35f, textPaint)
+        canvas.drawText(dimensionText, textX, textY + 67f, textPaint)
     }
 
 
@@ -160,8 +155,8 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
         invalidate()
     }
 
-    fun barcodeText(text: String) {
-        barcodeText = text
+    fun barcodeDataText(text: String) {
+        barcodeData = text
         invalidate()
     }
 

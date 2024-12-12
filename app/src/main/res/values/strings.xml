@@ -372,7 +372,9 @@
     <string name="port_optional_default_9100">Port (optional, default: 9100)</string>
     <string name="enter_port_number_e_g_9100">Enter port number (e.g., 9100)</string>
     <string name="printer_connected_successfully">Printer connected successfully.</string>
-    <string name="failed_to_connect_to_the_printer_please_check_the_ip_address_port_and_network_connection">Failed to connect to the printer. Please check the IP address, port, and network connection.</string>
+    <string name="failed_to_connect_to_the_printer_please_check_the_ip_address_port_and_network_connection">Failed to connect to the printer. Please check the IP address and network connection.</string>
+    <string name="printed_successfully">Printed successfully</string>
+    <string name="printing_failed">Printing failed</string>
 
     <string-array name="arrayFrequency">
 

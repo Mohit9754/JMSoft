@@ -63,8 +63,8 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     implementation("androidx.activity:activity:1.9.0")
     implementation(files("libs/poishadow-all.jar"))
-    implementation (files("libs/EZioAD.jar"))
 
+    implementation (files("libs/EZioAD.jar"))
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
     androidTestImplementation("androidx.test:runner:1.5.2")
@@ -76,7 +76,7 @@ dependencies {
     implementation("com.intuit.ssp:ssp-android:1.1.0")
     implementation("com.intuit.sdp:sdp-android:1.1.0")
     //FireBase
-    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
