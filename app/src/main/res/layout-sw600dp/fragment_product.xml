@@ -66,6 +66,29 @@
             </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvPrint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_7sdp"
+                app:cardBackgroundColor="@color/theme"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:strokeWidth="0dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_4sdp"
+                        android:layout_marginVertical="@dimen/_5sdp"
+                        android:fontFamily="@font/montserrat_arabic_semibold"
+                        android:text="@string/print"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        tools:ignore="SmallSp" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/mcvExport"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

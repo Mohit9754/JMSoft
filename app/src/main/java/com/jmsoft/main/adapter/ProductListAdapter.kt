@@ -30,7 +30,6 @@ class ProductListAdapter(
     private val enableCheckBox: Boolean,
     private val fragmentProductBinding: FragmentProductBinding,
     private val selectedProductUUIDList: ArrayList<String>
-
 ) :
     RecyclerView.Adapter<ProductListAdapter.MyViewHolder>() {
 
@@ -212,10 +211,12 @@ class ProductListAdapter(
 
                 binding.cbProduct.visibility = View.VISIBLE
                 binding.mcvDelete.visibility = View.GONE
+//                binding.mcvEdit.visibility = View.GONE
 
-                if (selectedProductUUIDList.any { it == productData.productUUID  }){
+//
+                if (Utils.SelectedProductUUIDList.getProductList().any { it == productData.productUUID  }) {
                     binding.cbProduct.isChecked = true
-                    productData.productUUID?.let { Utils.SelectedProductUUIDList.addProductUUID(it) }
+//                    productData.productUUID?.let { Utils.SelectedProductUUIDList.addProductUUID(it)}
                 }
 
                 binding.cbProduct.setOnCheckedChangeListener { _, isChecked ->
@@ -265,7 +266,6 @@ class ProductListAdapter(
                         it
                     )
                 }
-
             }
         }
 

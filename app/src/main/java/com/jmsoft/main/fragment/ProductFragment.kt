@@ -103,6 +103,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
     private val channelId = "file_creation_channel"
 
+    private var enableCheckBox = false
+
     // Permission for External Storage
     private val permissionsForExternalStorage = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -151,7 +153,6 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         }
     }
-
 
     // Method to request MANAGE_EXTERNAL_STORAGE permission
     @RequiresApi(Build.VERSION_CODES.R)
@@ -469,6 +470,16 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         offset = 0
         selectedCategoryIndex = 0
         binding.etSearch?.text?.clear()
+
+        Utils.SelectedProductUUIDList.clearList()
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        Utils.SelectedProductUUIDList.clearList()
+
     }
 
     // Get Visible page no
@@ -738,6 +749,8 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         binding.ivSearch?.setOnClickListener(this)
 
+        binding.mcvPrint?.setOnClickListener(this)
+
     }
 
     // edit text change listener on search
@@ -816,7 +829,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             binding.mcvProductList?.visibility = View.VISIBLE
             binding.llEmptyProduct?.visibility = View.GONE
 
-            val enableCheckBox = collectionUUID != null || isPurchase == true
+            val enableCheckBox = collectionUUID != null || isPurchase == true || enableCheckBox
 
             productListAdapter = ProductListAdapter(
                 requireActivity(),
@@ -1251,13 +1264,104 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    private suspend fun checkPrinterConnectionStatus() {
+
+        val connectionStatus = Utils.isPrinterReady()
+
+        if (connectionStatus) {
+
+            enableCheckBox()
+
+            if (Utils.SelectedProductUUIDList.getSize() != 0 ) {
+
+                val printWork = lifecycleScope.launch(Dispatchers.Main) {
+
+                    for( productUUID in Utils.SelectedProductUUIDList.getProductList()) {
+                        val productDataModel = Utils.getProductThroughProductUUID(productUUID)
+
+//                        Utils.E("Name is ${productDataModel.productName}")
+
+                        val layoutBitmap =
+                            productDataModel.let { Utils.getLayoutBitmap(requireActivity(), it) }
+                        layoutBitmap.let { Utils.printBitmap(requireActivity(), it) }
+                    }
+                }
+
+                printWork.join()
+
+                Utils.T(requireActivity(), getString(R.string.print_completed))
+
+                removeCheckBox()
+
+            }
+
+            else {
+
+                Utils.T(requireActivity(),
+                    getString(R.string.please_select_the_products_for_printing))
+            }
+        }
+        else {
+
+            Utils.showPrinterConnectionDialog(requireActivity()) {
+
+                lifecycleScope.launch(Dispatchers.Main) {
+                    enableCheckBox()
+                }
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun removeCheckBox() {
+
+        binding.mcvExport?.visibility = View.VISIBLE
+        binding.mcvImport?.visibility = View.VISIBLE
+        binding.mcvAddProduct?.visibility = View.VISIBLE
+        enableCheckBox = false
+
+        Utils.SelectedProductUUIDList.clearList()
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            init()
+        }
+
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun enableCheckBox() {
+
+        enableCheckBox = true
+
+        val initWork = lifecycleScope.launch(Dispatchers.Main) {
+            init()
+        }
+
+        initWork.join()
+
+        binding.mcvAddProduct?.visibility = View.GONE
+        binding.tvTitle?.text = getString(R.string.choose_products_for_printing)
+        binding.mcvExport?.visibility = View.GONE
+        binding.mcvImport?.visibility = View.GONE
+    }
+
+
     // Handle all the clicks
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onClick(v: View?) {
 
         // Clicked on back button
         if (v == binding.mcvBackBtn) {
-            (requireActivity() as DashboardActivity).navController?.popBackStack()
+
+            if (enableCheckBox) {
+
+                removeCheckBox()
+            }
+            else {
+                (requireActivity() as DashboardActivity).navController?.popBackStack()
+            }
         }
 
         // Clicked on add product button
@@ -1319,7 +1423,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
             }
 
-        } else if (v == binding.mcvImport) {
+        }
+
+        else if (v == binding.mcvImport) {
 
             isImport = true
 
@@ -1332,7 +1438,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                 openDocument()
             }
 
-        } else if (v == binding.mcvExport) {
+        }
+
+        else if (v == binding.mcvExport) {
 
             isImport = false
 
@@ -1356,7 +1464,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                     requestStoragePermission()
                 }
             }
-        } else if (v == binding.mcvPrevious) {
+        }
+
+        else if (v == binding.mcvPrevious) {
 
             offset = ((offset / Constants.Limit) - 1) * Constants.Limit
 
@@ -1366,7 +1476,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                 getProductData()
             }
 
-        } else if (v == binding.mcvNext) {
+        }
+
+        else if (v == binding.mcvNext) {
 
             offset = ((offset / Constants.Limit) + 1) * Constants.Limit
 
@@ -1376,7 +1488,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                 getProductData()
             }
 
-        } else if (v == binding.ivSearch) {
+        }
+
+        else if (v == binding.ivSearch) {
 
             if (binding.etSearch?.text?.isNotEmpty() == true) {
 
@@ -1389,5 +1503,14 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                 }
             }
         }
+
+        else if (v == binding.mcvPrint) {
+
+            lifecycleScope.launch(Dispatchers.Main) {
+                checkPrinterConnectionStatus()
+            }
+
+        }
+
     }
 }

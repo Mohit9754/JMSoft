@@ -31,6 +31,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CancellationSignal
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.os.ParcelFileDescriptor
 import android.print.PageRange
 import android.print.PrintAttributes
@@ -55,6 +57,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
+import android.view.inputmethod.InputMethodManager
 import android.webkit.MimeTypeMap
 import android.webkit.WebView
 import android.widget.EditText
@@ -80,6 +83,8 @@ import com.google.zxing.qrcode.QRCodeWriter
 import com.jmsoft.R
 import com.jmsoft.Utility.UtilityTools.AppController
 import com.jmsoft.Utility.UtilityTools.BitmapPrintAdapter
+import com.jmsoft.Utility.UtilityTools.CustomQRViewWithLabel
+import com.jmsoft.Utility.UtilityTools.GetProgressBar
 import com.jmsoft.Utility.UtilityTools.loadingButton.LoadingButton
 import com.jmsoft.Utility.database.AddressDataModel
 import com.jmsoft.Utility.database.CartDataModel
@@ -102,9 +107,13 @@ import com.jmsoft.basic.UtilityTools.Constants.Companion.english
 import com.jmsoft.basic.UtilityTools.Constants.Companion.name
 import com.jmsoft.basic.UtilityTools.Constants.Companion.password
 import com.jmsoft.basic.UtilityTools.Constants.Companion.statusBarHeight
+import com.jmsoft.basic.validation.ResultReturn
+import com.jmsoft.basic.validation.Validation
+import com.jmsoft.basic.validation.ValidationModel
 import com.jmsoft.databinding.AlertdialogBinding
 import com.jmsoft.databinding.FragmentPurchasingAndSalesBinding
 import com.jmsoft.databinding.ItemCustomToastBinding
+import com.jmsoft.databinding.ItemPrinterConnectionBinding
 import com.jmsoft.main.model.DeviceModel
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import okhttp3.MediaType.Companion.toMediaType
@@ -166,6 +175,187 @@ object Utils {
         return false
     }
 
+    fun showPrinterConnectionDialog(context: Context,onConnected: () -> Unit) {
+
+        val dialog = Dialog(context)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogBinding = ItemPrinterConnectionBinding.inflate(LayoutInflater.from(context))
+        dialog.setContentView(dialogBinding.root)
+
+        setFocusChangeListener(
+            context,
+            dialogBinding.etIPAddress,
+            dialogBinding.mcvIPAddress
+        )
+
+        setTextChangeListener(dialogBinding.etIPAddress,dialogBinding.tvIPAddressError)
+
+        disableButton(dialogBinding.mcvConnect)
+
+        dialogBinding.etIPAddress.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if (s.toString().isNotEmpty()) {
+                    Utils.enableButton(dialogBinding.mcvConnect)
+                } else {
+                    disableButton(dialogBinding.mcvConnect)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        dialogBinding.mcvCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogBinding.mcvConnect.setOnClickListener {
+
+            val errorValidationModels: MutableList<ValidationModel> = ArrayList()
+
+            errorValidationModels.add(
+                ValidationModel(
+                    Validation.Type.IPAddress,
+                    dialogBinding.etIPAddress,
+                    dialogBinding.tvIPAddressError
+                )
+            )
+
+            val validation: Validation? = Validation.instance
+            val resultReturn: ResultReturn? =
+                validation?.CheckValidation(context, errorValidationModels)
+
+            if (resultReturn?.aBoolean == true) {
+
+                GetProgressBar.getInstance(context)?.show()
+
+                val ipAddress = dialogBinding.etIPAddress.text.toString().trim()
+
+                val connectionStatus = Godex.openport(ipAddress, 1)
+
+                if (connectionStatus) {
+
+                    GetProgressBar.getInstance(context)?.dismiss()
+
+                    dialog.dismiss()
+
+                    E("Printer connected successfully")
+
+                    T(context, context.getString(R.string.printer_connected_successfully))
+
+                    onConnected()
+
+                }
+
+                else {
+
+                    GetProgressBar.getInstance(context)?.dismiss()
+
+                    E("Printer connected failed")
+
+                    T(context, context.getString(R.string.failed_to_connect_to_the_printer_please_check_the_ip_address_port_and_network_connection))
+
+                }
+
+            } else {
+
+                resultReturn?.errorTextView?.visibility = View.VISIBLE
+                if (resultReturn?.type === Validation.Type.EmptyString) {
+                    resultReturn.errorTextView?.text = resultReturn.errorMessage
+                } else {
+                    resultReturn?.errorTextView?.text = validation?.errorMessage
+                    val animation =
+                        AnimationUtils.loadAnimation(context, R.anim.top_to_bottom)
+                    resultReturn?.errorTextView?.startAnimation(animation)
+                    validation?.EditTextPointer?.requestFocus()
+
+                    val imm =
+                        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(validation?.EditTextPointer, InputMethodManager.SHOW_IMPLICIT)
+
+                }
+            }
+        }
+
+        dialog.setCancelable(true)
+
+        dialog.show()
+
+    }
+
+    @SuppressLint("CutPasteId", "InflateParams")
+    fun getLayoutBitmap(context: Context,productDataModel: ProductDataModel): Bitmap {
+
+        val itemLayout = LayoutInflater.from(context).inflate(R.layout.item_product_qr, null)
+
+        val weight = productDataModel.productWeight
+        val dimension = productDataModel.productCarat
+        val price = productDataModel.productPrice
+
+        val customQRLabelView =
+            itemLayout.findViewById<CustomQRViewWithLabel>(R.id.customQRViewWithText)
+        customQRLabelView.updateWeightText("W ${weight}g")
+        customQRLabelView.updateDimensionText("D ${dimension}mg")
+        customQRLabelView.updatePriceText("P $price")
+
+        val qrData = productDataModel.productBarcodeData ?: "not given" // Get data from EditText
+
+        customQRLabelView.barcodeDataText(qrData)
+
+        // Generate the QR code bitmap
+        val qrBitmap = generateQRCode(qrData) // Generate the QR code from the input data
+
+        val customQRViewWithText: CustomQRViewWithLabel =
+            itemLayout.findViewById(R.id.customQRViewWithText) // Make sure to use the correct ID of your CustomQRView
+        qrBitmap?.let {
+            customQRViewWithText.setQRCodeBitmap(it) // Set the generated QR code bitmap to your custom view
+        }
+
+        // Convert layout to bitmap
+        val bitmap = getBitmapFromView(itemLayout)
+
+        return bitmap
+
+    }
+
+    fun printBitmap(context: Context,bitmap: Bitmap): Boolean {
+
+        // Send the Bitmap to the printer using the Godex SDK
+        Godex.sendCommand("^L") // Reset the printer
+        Godex.sendCommand("AD,30,130,1,1,0,0,Width:" + bitmap.width)
+        Godex.sendCommand("AD,30,200,1,1,0,0,Height:" + bitmap.height)
+        Godex.putImage(10, 10, bitmap) // Print the Bitmap starting from (10, 10)
+        val printingStatus = Godex.sendCommand("E") // End the print job
+
+        if (printingStatus) {
+
+            E("Printed successfully")
+//            T(context, context.getString(R.string.printed_successfully))
+
+            return true
+
+        }
+        else {
+
+            E("Printing failed")
+//            T(context, context.getString(R.string.printing_failed))
+
+            return false
+        }
+
+    }
+
 
     // Function to generate the QR code
     fun generateQRCode(data: String): Bitmap? {
@@ -211,7 +401,7 @@ object Utils {
 
 
     // Handle printing the layout
-    fun printLayout(context: Context, bitmap: Bitmap) {
+    fun showPrintingLayout(context: Context, bitmap: Bitmap) {
         val printManager = context.getSystemService(Context.PRINT_SERVICE) as PrintManager
         val printAdapter = BitmapPrintAdapter(bitmap)
         val jobName = "QR Print Job"
@@ -371,7 +561,7 @@ object Utils {
 
             } catch (e: Exception) {
 
-                Utils.T(context, "Exception $e")
+                T(context, "Exception $e")
 
             }
         } else {
@@ -716,7 +906,7 @@ object Utils {
 
         if (Flag.getFlag()) {
             setLocale(context, getLang(context))
-            Utils.E("language  is ${getLang(context)}")
+            E("language  is ${getLang(context)}")
         }
     }
 

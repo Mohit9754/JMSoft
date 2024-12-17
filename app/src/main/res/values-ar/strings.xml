@@ -389,4 +389,8 @@
     <string name="printed_successfully">تمت الطباعة بنجاح</string>
     <string name="printing_failed">فشلت الطباعة</string>
 
+    <string name="print_completed">اكتملت الطباعة</string>
+    <string name="please_select_the_products_for_printing">الرجاء تحديد المنتجات للطباعة</string>
+    <string name="choose_products_for_printing">اختر المنتجات للطباعة</string>
+
 </resources>

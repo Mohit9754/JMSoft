@@ -42,7 +42,7 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
     // Paint for drawing text
     private val textPaintJM = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.BLACK
-        textSize = 32f
+        textSize = 30f
         typeface = Typeface.DEFAULT_BOLD
         textAlign = Paint.Align.LEFT
     }
@@ -96,21 +96,54 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
         // Draw the border on top of the shape
         canvas.drawPath(path, borderPaint)
 
-        // Draw the rotated text inside the main rectangle
+
+        // Check if any of the text exceeds the rectangle boundary
+        val textXStart = 500f // Initial position for text
+        val textYStart = 100f // Initial Y position for the first line of text
+        val maxTextWidth = rectWidth - 100f // Maximum allowed text width inside the rectangle
+
+
+
+        // Add margin from the right edge for text
+        val rightMargin = 10f // Adjust this value to control the margin from the right edge
+
+
+        val weightTextWidth = textPaint.measureText(weightText)
+        val priceTextWidth = textPaint.measureText(priceText)
+        val dimensionTextWidth = textPaint.measureText(dimensionText)
+
+        // Calculate the maximum overflow among the three texts
+        val maxOverflow = maxOf(
+            (textXStart + weightTextWidth) - (50f + rectWidth - rightMargin),
+            (textXStart + priceTextWidth) - (50f + rectWidth - rightMargin),
+            (textXStart + dimensionTextWidth) - (50f + rectWidth - rightMargin),
+            0f
+        )
+
+        // Adjust the text and barcode position only if there is overflow
+        val adjustedTextX = textXStart - maxOverflow
+
+        // Draw all the text with adjusted X position
+        canvas.drawText(weightText, adjustedTextX, textYStart, textPaint)
+        canvas.drawText(priceText, adjustedTextX, textYStart + 35f, textPaint)
+        canvas.drawText(dimensionText, adjustedTextX, textYStart + 67f, textPaint)
+
+
+        // Adjust and draw the rotated logo text
         canvas.save()
         canvas.rotate(
             90f,
-            118f + rectWidth / 9,
+            118f + rectWidth / 9 - maxOverflow, // Adjust rotation anchor point
             118f + rectHeight / 2
-        ) // Rotate around the center of the main rectangle
+        )
+        val rotatedLogoTextX = (350f / 3) - maxOverflow // Adjust the logo text X position
         canvas.drawText(
             barcodeData,
-            380f / 3,
-            (-180f) ,
+            rotatedLogoTextX,
+            (-180f),
             textPaintJM
-        ) // Draw text at the center
+        )
         canvas.restore()
-
         // Draw the QR code if available
         qrBitmap?.let {
             // Scale the QR code to desired width and height
@@ -122,20 +155,14 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
             // Create the scaled bitmap
             val scaledQRCode = Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, false)
 
-            // Position of the QR code inside the rectangle
-            val qrX = 430f + rectWidth / 5 - scaledQRCode.width / 2
+            // Position of the QR code inside the rectangle, adjusted for overflow
+            val qrX = 430f + rectWidth / 5 - scaledQRCode.width / 2 - maxOverflow
             val qrY = 103f + rectHeight / 2 - scaledQRCode.height / 2
 
             // Draw the scaled QR code on canvas inside the rectangle
             canvas.drawBitmap(scaledQRCode, qrX, qrY, null)
         }
 
-        // Draw text at the *top end* of the rectangle
-        val textX = 500f // Adjusted to align horizontally near the left edge
-        val textY = 100f // Slightly inside the rectangle but close to the top
-        canvas.drawText(weightText, textX, textY, textPaint)
-        canvas.drawText(priceText, textX, textY + 35f, textPaint)
-        canvas.drawText(dimensionText, textX, textY + 67f, textPaint)
     }
 
 

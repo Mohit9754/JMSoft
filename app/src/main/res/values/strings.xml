@@ -375,6 +375,9 @@
     <string name="failed_to_connect_to_the_printer_please_check_the_ip_address_port_and_network_connection">Failed to connect to the printer. Please check the IP address and network connection.</string>
     <string name="printed_successfully">Printed successfully</string>
     <string name="printing_failed">Printing failed</string>
+    <string name="print_completed">Print completed</string>
+    <string name="please_select_the_products_for_printing">Please select the products for printing</string>
+    <string name="choose_products_for_printing">Choose products for printing</string>
 
     <string-array name="arrayFrequency">
 
