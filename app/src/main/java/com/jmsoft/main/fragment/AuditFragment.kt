@@ -367,6 +367,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
         }
     }
 
+    // change to pause
     suspend fun changeToPause() {
         withContext(Dispatchers.Main) {
             GetProgressBar.getInstance(requireContext())?.dismiss()
@@ -375,6 +376,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
         }
     }
 
+    // change to play
     suspend fun changeToPlay() {
         withContext(Dispatchers.Main) {
             GetProgressBar.getInstance(requireContext())?.dismiss()
@@ -383,6 +385,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
         }
     }
 
+    // check connected device
     private fun checkConnectedDevice() {
 
         BluetoothUtils.getConnectedDevice(requireActivity(), object : ConnectedDeviceCallback {
@@ -471,6 +474,7 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
         })
     }
 
+    // refresh
     @SuppressLint("NotifyDataSetChanged")
     suspend fun refresh() {
 
@@ -484,10 +488,6 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
             unKnownList.clear()
             scannedProductList.clear()
-
-//            lifecycleScope.launch(Dispatchers.Main) {
-//                init()
-//            }
 
             val stockLocationUUID =
                 if (selectedStockLocationIndex == 0) Constants.All else stockLocationDataList[selectedStockLocationIndex - 1].stockLocationUUID
@@ -598,8 +598,6 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
 
                     }
 
-//                adapterScanned?.notifyDataSetChanged()
-
                 }
 
             }
@@ -613,17 +611,12 @@ class AuditFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFIDCallback {
                 binding.tvUnknown?.text = unKnownList.size.toString()
                 binding.tvTotal?.text =
                     (unKnownList.size + scannedProductList.size + expectedProductList.size).toString()
-                // adapterScanned?.notifyDataSetChanged()
             }
         }
 
         binding.tvMissing?.text = expectedProductList.size.toString()
     }
 
-    override fun onError(message: String) {
-        // Handle errors
-//        Utils.T(requireContext(), message)
-
-    }
+    override fun onError(message: String) {}
 
 }

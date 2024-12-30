@@ -91,6 +91,7 @@ class Validation {
         return ResultReturn(type, validationCheck, errorMessage, parameter, errorTextView)
     }
 
+    // validate ip address
     fun isValidIPAddress(context: Context,editText: EditText?): Boolean {
 
         val regex = Regex(
@@ -109,6 +110,7 @@ class Validation {
         }
     }
 
+    // validate port
     fun isValidPort(context: Context,editText: EditText?): Boolean {
 
         return if (editText?.text.toString().toInt() !in 1..65535) {
@@ -123,6 +125,7 @@ class Validation {
         }
     }
 
+    // is image selected
     private fun isImageSelected(context: Context,isImageSelected:Boolean?): Boolean {
 
         return if(isImageSelected == false){
@@ -150,29 +153,10 @@ class Validation {
             false
         } else {
             true
-           /* val p = Pattern.compile(
-                "^" +
-                        "(?=.*[0-9])" +  //at least 1 digit
-                        "(?=.*[a-z])" +  //at least 1 lower case letter
-                        "(?=.*[A-Z])" +  //at least 1 upper case letter
-                        "(?=.*[a-zA-Z])" +  //any letter
-                        "(?=.*[@#$%^&+=!()\\-_*\\[\\]{}|\\\\;:'\",<.>/?])" + // at least 1 special character
-                        "(?=\\S+$)" +  //no white spaces
-                        ".{8,}" +  //at least 8 characters
-                        "$"
-            )
-            val s = editText.text.toString().trim { it <= ' ' }
-            val m = p.matcher(s.trim { it <= ' ' })
-            if (m.matches()) {
-                true
-            } else {
-                EditTextPointer = editText
-                errorMessage = context.getString(R.string.passwordStrong)
-                false
-            }*/
         }
     }
-    
+
+    // is barcode generated
     private fun isBarCodeGenerate(context: Context,arrayListSize: Int?,editText: EditText?): Boolean {
         
         return if(arrayListSize == 0){
@@ -212,6 +196,7 @@ class Validation {
         }
     }
 
+    // is array array list
     private fun isEmptyArrayList(context: Context,arrayListSize: Int?):Boolean{
 
         return if (arrayListSize == 0) {
@@ -223,11 +208,11 @@ class Validation {
 
     }
 
+    // is empty textview
     private fun isEmptyTextView(context: Context,textView: TextView?):Boolean{
 
         return if(textView?.text?.isEmpty() == true){
             errorMessage = context.getString(R.string.empty_error)
-//            this@Validation.textView = textView
             textViewPointer = textView
             false
 
@@ -236,6 +221,7 @@ class Validation {
         }
     }
 
+    // is two image selected
     private fun isTwoImageSelected(context: Context,arrayListSize: Int?):Boolean {
 
         if (arrayListSize != null) {
@@ -292,19 +278,6 @@ class Validation {
                 false
             }
 
-            /* if (editText.getText().toString().length() != 10) {
-                EditTextPointer = editText;
-                errorMessage = context.getString(R.string.enter_ten_digits_number);
-                return false;
-            } else {
-                if (android.util.Patterns.PHONE.matcher(editText.getText()).matches()) {
-                    return true;
-                } else {
-                    EditTextPointer = editText;
-                    errorMessage = context.getString(R.string.valid_number);
-                    return false;
-                }
-            }*/
         }
     }
 
@@ -552,23 +525,6 @@ class Validation {
     fun validateMobileNumber(phoneNo: String): Boolean {
 
         return phoneNo.length <= 10
-
-//        val phonenumber: PhoneNumber
-//        val regionalCode = getCountryRegion()
-////        E("regionalCode::$regionalCode")
-//        val NationalPhoneNumber: String
-//        try {
-//            phonenumber = phoneNumberUtil!!.parse(phoneNo, regionalCode)
-//            NationalPhoneNumber = phonenumber.nationalNumber.toString()
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            return false
-//        }
-//        return if (NationalPhoneNumber == phoneNo) {
-//            phoneNumberUtil!!.isValidNumber(phonenumber)
-//        } else {
-//            false
-//        }
     }
 
     /**

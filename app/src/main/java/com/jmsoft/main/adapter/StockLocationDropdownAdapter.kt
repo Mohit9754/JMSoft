@@ -65,6 +65,7 @@ class StockLocationDropdownAdapter(
 
                 binding.tvName.text = stockLocationDataModel.stockLocationName
 
+                // set parent name
                 setParentName()
 
             }
@@ -74,6 +75,7 @@ class StockLocationDropdownAdapter(
 
         }
 
+        // set parent name
         private fun setParentName() {
 
             val stockLocationDataModel = stockLocationDataModel.stockLocationParentUUID?.let {

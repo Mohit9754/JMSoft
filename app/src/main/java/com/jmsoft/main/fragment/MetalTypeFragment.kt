@@ -396,8 +396,6 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
 
         collectionDataModel.collectionImageUri = imageUri
 
-//        val progressBar = Utils.initProgressDialog(requireActivity())
-
         val isCollectionExitAccept = Utils.isCollectionExistAccept(collectionDataModel)
 
         if (isCollectionExitAccept == true ) {
@@ -432,7 +430,6 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
             GetProgressBar.getInstance(requireContext())?.dismiss()
 
         }
-//        progressBar.dismiss()
 
     }
 
@@ -629,7 +626,6 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
             setCollectionRecyclerView()
 
             dialogInventory?.dismiss()
-//            GetProgressBar.getInstance(requireContext())?.dismiss()
 
 
         }
@@ -688,7 +684,6 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
 
                         updateMetalType(inventoryUUID, position)
 
-//                        dialogInventory?.dismiss()
 
                     } else {
 
@@ -703,8 +698,6 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
 
                         updateCollection(inventoryUUID, position)
 
-//                        dialogInventory?.dismiss()
-
 
                     } else {
 
@@ -717,8 +710,6 @@ class MetalTypeFragment : Fragment(), View.OnClickListener {
                     if (position != null && inventoryUUID != null) {
 
                         updateCategory(inventoryUUID, position)
-
-//                        dialogInventory?.dismiss()
 
                     } else {
 

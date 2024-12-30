@@ -168,7 +168,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         0x3B
     )
 
-//    private val PERMISSIONS_REQUEST_CODE = 100
 
     // Gallery result launcher
     @SuppressLint("NotifyDataSetChanged")
@@ -221,17 +220,9 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
     ) { isGranted: Boolean? ->
         if (isGranted == true) {
 
-//            val galleryIntent =
-//                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-//            galleryActivityResultLauncher?.launch(galleryIntent)
-
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.type = "image/*"
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true) // Enable multiple selection
-
-            // Set min and max selection limits
-//            intent.putExtra(Intent.EXTRA_MIN, 2)
-//            intent.putExtra(Intent.EXTRA_MAXIMUM, 5)
 
             galleryActivityResultLauncher?.launch(intent)
 
@@ -399,12 +390,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
                 }
 
+                @SuppressLint("SetTextI18n")
                 override fun unselect() {
 
                     selectedMetalTypeUUID = null
                     binding.tvMetalType.text = ""
                     binding.tvMetalTypeError.visibility = View.GONE
-//                    binding.mcvMetalTypeList?.visibility = View.GONE
                     showOrHideMetalTypeDropDown()
 
                 }
@@ -449,12 +440,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
                 }
 
+                @SuppressLint("SetTextI18n")
                 override fun unselect() {
 
                     selectedStockLocationUUID = null
                     binding.tvStockLocation.text = ""
                     binding.tvStockLocationError.visibility = View.GONE
-//                    binding.mcvMetalTypeList?.visibility = View.GONE
                     showOrHideStockLocationDropDown()
 
                 }
@@ -495,6 +486,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
                 }
 
+                @SuppressLint("SetTextI18n")
                 override fun unselect() {
 
                     selectedCategoryUUID = null
@@ -771,6 +763,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     }
 
+    // set selected stock location
     private fun setSelectedStockLocation(stockLocationUUID: String) {
 
         val stockLocationDataModel = Utils.getStockLocation(stockLocationUUID)
@@ -781,6 +774,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         selectedStockLocationUUID = stockLocationUUID
     }
 
+    // new product
     private fun newProduct() {
 
         binding.mcvAddDuplicate.visibility = View.GONE
@@ -803,7 +797,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         productUUIDIndex = productListSize
 
         binding.llPageIndicator.visibility = View.VISIBLE
-//            binding.mcvPrevious.visibility = View.GONE
         binding.mcvNext.visibility = View.GONE
 
         if (productListSize == 0) {
@@ -898,7 +891,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                 binding.etPrice.setText(productData.productPrice.toString())
                 binding.etCost.setText(productData.productCost.toString())
 
-//            binding.mcvCategoryList?.visibility = View.VISIBLE
                 selectedCategoryUUID = productData.categoryUUID
 
                 binding.etDescription.setText(productData.productDescription)
@@ -1149,7 +1141,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
             lifecycleScope.launch(Dispatchers.IO) {
 
-//                Utils.E("Name of the thread ${Thread.currentThread().name}")
                 Utils.updateProduct(productData)
             }
 
@@ -1162,7 +1153,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         } else {
 
             lifecycleScope.launch(Dispatchers.IO) {
-//                Utils.E("Name of the thread ${Thread.currentThread().name}")
 
                 Utils.addProduct(productData)
             }
@@ -1820,9 +1810,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
                             Utils.E("Status is success ${rfidSetUp?.getScanningStatus()}")
 
-//                            lifecycleScope.launch {
-//                                changetoplay()
-//                            }
                         }
 
                         override fun pairFail() {
@@ -1837,7 +1824,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                     if (rfidSetUp?.getScanningStatus() == false) {
 
                         Utils.T(requireActivity(), "Scanning stopped")
-//                        binding.ivScan?.setImageResource(R.drawable.icon_play)
                     }
 
                 } else {
@@ -1863,17 +1849,12 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                                 GetProgressBar.getInstance(requireContext())?.dismiss()
 
 
-//                            Utils.T(requireActivity(),"Scanning started")
-
-
                             }
 
                             override fun pairFail() {
 
                                 GetProgressBar.getInstance(requireContext())?.dismiss()
 
-
-//                            binding.ivScan?.setImageResource(R.drawable.icon_play)
 
                             }
 
@@ -1919,8 +1900,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
     private fun changePage(num: Int) {
 
         if (productUUIDIndex != -1) {
-
-            //GetProgressBar.getInstance(requireActivity())?.show()
 
             val navOptions = NavOptions.Builder()
                 .setPopUpTo(R.id.productInventory, true)
@@ -1998,7 +1977,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
     }
 
     //Handles All the Clicks
-    @SuppressLint("NotifyDataSetChanged", "CutPasteId")
+    @SuppressLint("NotifyDataSetChanged", "CutPasteId", "SetTextI18n")
     override fun onClick(v: View?) {
 
         if (v == binding.llMetalType) {
@@ -2140,7 +2119,6 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
     override fun onTagRead(tagInfo: UHFTAGInfo) {
 
         // Handle RFID tag data
-        //   Utils.T(requireContext(), "Tag read: ${tagInfo.epc}")
         binding.etRFIDCode.setText(tagInfo.epc)
 
         rfidSetUp?.onPause(object : PairStatusCallback {

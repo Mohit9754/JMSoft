@@ -45,6 +45,7 @@ class ExpectedAdapter(
             // Set product name
             setProductName()
 
+            // set rfid code
             setRFIDCode()
 
             if (position == productList.size-1)
@@ -59,6 +60,7 @@ class ExpectedAdapter(
             binding.tvProductName.text = productDataModel.productName
         }
 
+        // set rfid code
         private fun setRFIDCode() {
             binding.tvRFIDCode.text = productDataModel.productRFIDCode
         }

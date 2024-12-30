@@ -76,6 +76,7 @@ class AdvanceSettingFragment : Fragment(),View.OnClickListener {
 
     private fun init() {
 
+        // set frequency spinner
         setFrequencySpinner()
 
         binding.mcvBackBtn?.setOnClickListener(this)

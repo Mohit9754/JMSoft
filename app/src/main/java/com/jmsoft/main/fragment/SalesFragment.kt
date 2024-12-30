@@ -126,9 +126,6 @@ class SalesFragment : Fragment(), View.OnClickListener {
         // Check if all permissions are granted or not
         if (allPermissionsGranted) {
 
-            // Generate pdf
-//            generatePDF()
-
         }
     }
 
@@ -280,6 +277,7 @@ class SalesFragment : Fragment(), View.OnClickListener {
 
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
         getConfirmOrder = true
@@ -305,7 +303,6 @@ class SalesFragment : Fragment(), View.OnClickListener {
 
                     for (orderData in if (isNewOrderStatus) newOrderList else confirmOrderList) {
 
-//                      Utils.E("Size of list new is ${newOrderList.size}")
                         val productUUIDList = orderData.productUUIDUri?.split(",")
 
                         val addressDataModel = orderData.addressUUID?.let {
@@ -396,7 +393,6 @@ class SalesFragment : Fragment(), View.OnClickListener {
 
                     if (searchFilterList.isNotEmpty()) {
 
-//                        binding.mcvProductList?.visibility = View.VISIBLE
                         binding.llEmptySales?.visibility = View.GONE
 
                         Utils.E("Size of list is ${searchFilterList.size}")
@@ -416,7 +412,6 @@ class SalesFragment : Fragment(), View.OnClickListener {
                         binding.llEmptySales?.visibility = View.VISIBLE
 
 
-//                        binding.llEmptyProduct?.visibility = View.VISIBLE
                     }
                 } else {
                     removeSearch()
@@ -503,6 +498,7 @@ class SalesFragment : Fragment(), View.OnClickListener {
         )
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onClick(v: View?) {
 
         if (v == bindingSalesAndPurchasing?.mcvNewOrder) {
@@ -531,13 +527,11 @@ class SalesFragment : Fragment(), View.OnClickListener {
             }
 
             binding.llEmptySales?.visibility = View.GONE
-//            binding.rvNewOrder?.visibility  = View.VISIBLE
             binding.rvConfirmOrder?.visibility = View.GONE
 
             if (newOrderList.isNotEmpty()) {
 
                 binding.rvNewOrder?.visibility = View.VISIBLE
-//                binding.rvConfirmOrder?.visibility  = View.GONE
             } else {
 
                 binding.llEmptySales?.visibility = View.VISIBLE
@@ -567,7 +561,6 @@ class SalesFragment : Fragment(), View.OnClickListener {
             }
 
             binding.llEmptySales?.visibility = View.GONE
-//            binding.rvConfirmOrder?.visibility  = View.VISIBLE
             binding.rvNewOrder?.visibility = View.GONE
 
             if (getConfirmOrder) {

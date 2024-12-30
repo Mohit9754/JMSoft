@@ -257,8 +257,6 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
                 addSupplierBinding?.ivProfile?.setImageURI(imageUri)
                 isProfileSelected = true
 
-//                updateProfile(binding.ivProfile?.drawable?.toBitmap())
-
             }
         }
 
@@ -269,7 +267,6 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         if (result.resultCode == Activity.RESULT_OK) {
             addSupplierBinding?.ivProfile?.setImageBitmap(result.data?.extras?.get("data") as Bitmap?)
             isProfileSelected = true
-//                updateProfile(binding.ivProfile?.drawable?.toBitmap())
         }
     }
 
@@ -326,6 +323,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         dialog.show()
     }
 
+    // open setting dialog
     private fun showOpenSettingDialog() {
 
         val dialog = Dialog(requireActivity())
@@ -353,6 +351,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         dialog.show()
     }
 
+    // set focus change listener
     private fun setFocusChangeListener() {
 
         binding.etOrderNo?.let {
@@ -365,6 +364,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         }
     }
 
+    // set text change listener
     private fun setTextChangeListener() {
 
         binding.etOrderNo?.let {
@@ -377,11 +377,9 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         }
     }
 
+    // set supplier drop down
     @SuppressLint("SetTextI18n")
     private suspend fun setSupplierDropDown() {
-
-//        supplierList = Utils.GetSession().userUUID?.let { Utils.getAllContactThroughUserUUID(it) }
-//            ?: ArrayList()
 
         val result = lifecycleScope.async(Dispatchers.IO) {
             return@async Utils.GetSession().userUUID?.let { Utils.getAllContactThroughUserUUID(it) }
@@ -415,6 +413,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
 
     }
 
+    // check add or edit status
     @SuppressLint("SetTextI18n")
     fun checkAddOrEditStatus() {
 
@@ -463,6 +462,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         }
     }
 
+    // set selected product recycler view
     private suspend fun setSelectedProductRecyclerView() {
 
         selectedProductUUIDList = ArrayList(Utils.SelectedProductUUIDList.getProductList())
@@ -583,6 +583,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         }
     }
 
+    // date dilog
     private fun showDateDialog() {
 
         val calendar = Calendar.getInstance()
@@ -609,13 +610,11 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
             calendar.get(Calendar.DAY_OF_MONTH)
         )
 
-        // Set the maximum selectable date to today
-//        datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
-
         datePickerDialog.show()
 
     }
 
+    // set product list
     private fun setProductList(): Boolean {
 
         productDataModelList.clear()
@@ -657,6 +656,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         return true
     }
 
+    // store image in internal storage
     private fun storeImageInInternalStorage(): Boolean {
 
         for (product in productDataModelList) {
@@ -686,6 +686,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         return true
     }
 
+    // add or edit purchase
     private suspend fun addOrEditPurchase() {
 
         val result = lifecycleScope.async(Dispatchers.IO) {
@@ -739,6 +740,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
 
     }
 
+    // validate puchase detail
     private fun validatePurchaseDetail() {
 
         val errorValidationModel: MutableList<ValidationModel> = ArrayList()
@@ -809,6 +811,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         }
     }
 
+    // add supplier
     private suspend fun addSupplier() {
 
         val contactDataModel = ContactDataModel()
@@ -840,6 +843,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
 
     }
 
+    // validate supplier detail
     private fun validateSupplierDetail() {
 
         val errorValidationModels: MutableList<ValidationModel> = ArrayList()
@@ -951,6 +955,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         }
     }
 
+    // show or hide type drip down
     private fun showOrHideTypeDropDown() {
 
         if (addSupplierBinding?.mcvTypeList?.visibility == View.VISIBLE) {
@@ -969,6 +974,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
 
     }
 
+    // show edit profile dialog
     private fun showEditProfileDialog() {
 
         editProfileDialog = Dialog(requireActivity())
@@ -996,6 +1002,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         editProfileDialog?.show()
     }
 
+    // add supplier dialog
     private fun showAddSupplierDialog() {
 
         addSupplierDialog = Dialog(requireActivity())
@@ -1065,6 +1072,7 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
         }
     }
 
+    // check connected device
     private fun checkConnectedDevice() {
 
         BluetoothUtils.getConnectedDevice(requireActivity(), object : ConnectedDeviceCallback {
@@ -1188,12 +1196,6 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
 
                 Utils.SelectedProductUUIDList.setProductList(ArrayList(selectedProductUUIDList))
 
-//                requireActivity().runOnUiThread {
-//                    if (isAdded && !requireActivity().isFinishing) {
-//                        GetProgressBar.getInstance(requireActivity())?.show()
-//                    }
-//                }
-
                 //Giving the fragment status
                 val bundle = Bundle()
                 bundle.putBoolean(Constants.addPurchase, true)
@@ -1255,10 +1257,10 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
     }
 
     override fun unselect() {}
+
     override fun onTagRead(tagInfo: UHFTAGInfo) {
 
         // Handle RFID tag data
-        //   Utils.T(requireContext(), "Tag read: ${tagInfo.epc}")
         etRFIDCode?.setText(tagInfo.epc)
 
         rfidSetUp?.onPause(object : PairStatusCallback {

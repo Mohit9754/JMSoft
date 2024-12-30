@@ -105,8 +105,10 @@ class StockLocationAdapter(
             this.position = position
             this.stockLocationDataModel = stockLocationDataModel
 
+            // set stock location name
             setStockLocationName()
 
+            // set parent of stock location
             setStockLocationParent()
 
             binding.mcvDelete.setOnClickListener(this)
@@ -121,6 +123,7 @@ class StockLocationAdapter(
 
         }
 
+        // set parent of stock location
         private fun setStockLocationParent() {
 
             val stockLocationDataModel = stockLocationDataModel.stockLocationParentUUID?.let {
@@ -132,6 +135,7 @@ class StockLocationAdapter(
             binding.tvParent.text = if (stockLocationDataModel?.stockLocationName != null) stockLocationDataModel.stockLocationName else "_"
         }
 
+        // set stock location name
         private fun setStockLocationName() {
             binding.tvName.text = stockLocationDataModel.stockLocationName
         }

@@ -44,12 +44,16 @@ class ConfirmOrderAdapter(
 
             this.orderDataModel = orderDataModel
 
+            // set order id
             setOrderId()
 
+            // set product quantity
             setProductQuantity()
 
+            // set address
             setAddress()
 
+            // set total price
             setTotalPrice()
 
             binding.mcvOpen.setOnClickListener(this)
@@ -61,10 +65,12 @@ class ConfirmOrderAdapter(
 
         }
 
+        // set order id
         private fun setOrderId(){
             binding.tvOrderId.text = orderDataModel.orderNo
         }
 
+        // set address
         @SuppressLint("SetTextI18n")
         private fun setAddress() {
 
@@ -73,6 +79,7 @@ class ConfirmOrderAdapter(
             binding.tvAddress.text = "${addressDataModel?.address} , ${addressDataModel?.zipCode}"
         }
 
+        // set product quantity
         private fun setProductQuantity() {
 
             var qty = 0
@@ -90,6 +97,7 @@ class ConfirmOrderAdapter(
             binding.tvProductQuantity.text = qty.toString()
         }
 
+        // set total price
         @SuppressLint("SetTextI18n")
         private fun setTotalPrice() {
 

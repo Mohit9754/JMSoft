@@ -23,7 +23,6 @@ class SplashActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-//        setAppLanguage()
 
         val thread: Thread = object : Thread() {
 

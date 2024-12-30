@@ -49,8 +49,6 @@ class PurchasingAndSalesFragment : Fragment(), View.OnClickListener {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-//                fragments = listOf(PurchasingFragment(), SalesFragment())
-
                 binding.llSearchSection?.visibility = if (position == 0) View.GONE else View.VISIBLE
                 binding.llAdd?.visibility = if (position == 0) View.VISIBLE else View.GONE
             }
@@ -71,6 +69,7 @@ class PurchasingAndSalesFragment : Fragment(), View.OnClickListener {
 
     private fun init() {
 
+        // Set Tab And ViewPager
         setTabAndViewPager()
 
         binding.mcvBackBtn?.setOnClickListener(this)

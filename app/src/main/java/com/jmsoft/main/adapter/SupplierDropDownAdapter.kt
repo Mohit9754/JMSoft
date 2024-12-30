@@ -49,6 +49,7 @@ class SupplierDropDownAdapter(
             // Set selected stock location
             setSelectedStockLocation()
 
+            // set supplier name
             setSupplierName()
 
             binding.tvParent.visibility = View.GONE
@@ -58,6 +59,7 @@ class SupplierDropDownAdapter(
 
         }
 
+        // set supplier name
         @SuppressLint("SetTextI18n")
         private fun setSupplierName() {
             binding.tvName.text = "${contactDataModel.firstName} ${contactDataModel.lastName}"

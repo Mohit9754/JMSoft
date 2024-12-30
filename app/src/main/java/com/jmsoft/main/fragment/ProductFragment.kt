@@ -232,6 +232,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         filePickerLauncher.launch(intent)
     }
 
+    // add extension in uri
     private fun Uri.getExtension(context: Context): String? {
 
         val extension: String? = if (this.scheme == ContentResolver.SCHEME_CONTENT) {
@@ -261,13 +262,10 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
-//                Log.e("MainActivity", "Selected file Uri: $uri")
                 val mimeTypeExtension = uri.getExtension(requireActivity())
-//                Log.e("MainActivity", "Selected file mimeTypeExtension: $mimeTypeExtension")
 
                 if (!mimeTypeExtension.isNullOrEmpty()) {
                     if (mimeTypeExtension == "xlsx" || mimeTypeExtension == "xls") {
-//                        Log.e("MainActivity", "Selected file mimeTypeExtension valid: $mimeTypeExtension")
                         copyFileAndExtract(uri)
                     } else {
                         Utils.T(requireActivity(), getString(R.string.invalid_file_selected))
@@ -277,6 +275,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         }
     }
 
+    // get file name
     private fun getContentFileName(uri: Uri): String? = runCatching {
         requireContext().contentResolver.query(uri, null, null, null, null)?.use { cursor ->
             if (cursor.moveToFirst()) {
@@ -288,11 +287,13 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         }
     }.getOrNull()
 
+    // get file name
     private fun getFileName(uri: Uri): String? = when (uri.scheme) {
         ContentResolver.SCHEME_CONTENT -> getContentFileName(uri)
         else -> uri.path?.let(::File)?.name
     }
 
+    // copy file and extract
     private fun copyFileAndExtract(uri: Uri) {
         GetProgressBar.getInstance(requireActivity())?.show()
 
@@ -446,7 +447,6 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             binding.tvTitle?.text = getString(R.string.select_products_to_add)
             binding.mcvExport?.visibility = View.GONE
             binding.mcvImport?.visibility = View.GONE
-//            binding.mcvAddProduct?.visibility = View.GONE
 
         } else {
             binding.tvTitle?.text = getString(R.string.product)
@@ -455,7 +455,6 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         if (isPurchase == true) {
 
             selectedProductUUIDList = ArrayList(Utils.SelectedProductUUIDList.getProductList())
-//            Utils.SelectedProductUUIDList.clearList()
 
             isEmptyRfidProduct = true
         }
@@ -857,7 +856,6 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             binding.mcvExport?.let { Utils.disableButton(it) }
 
             binding.mcvProductList?.visibility = View.GONE
-//            binding.mcvFilter?.visibility = View.GONE
             binding.llEmptyProduct?.visibility = View.VISIBLE
             binding.llPageIndicator?.visibility = View.GONE
 
@@ -877,8 +875,6 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
             binding.mcvExport?.let { Utils.enableButton(it) }
 
         for (product in productList) {
-
-//            Utils.E("Stock location uuid is ${product.stockLocationUUID}")
 
             lifecycleScope.launch(Dispatchers.IO) {
                 Utils.addProduct(product)
@@ -993,6 +989,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         notificationManager.notify(1, notificationBuilder.build())
     }
 
+    // create excel
     private suspend fun createExcel(productDataList: ArrayList<ProductDataModel>) {
 
         val workbook: Workbook = XSSFWorkbook()
@@ -1224,6 +1221,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
     }
 
+    // open excel file
     private fun openExcelFile(file: File) {
 
         val context = requireActivity()
@@ -1264,6 +1262,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         }
     }
 
+    // Check Printer Connection Status
     @RequiresApi(Build.VERSION_CODES.N)
     private suspend fun checkPrinterConnectionStatus() {
 
@@ -1313,6 +1312,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         }
     }
 
+    // remove check box
     @RequiresApi(Build.VERSION_CODES.N)
     private fun removeCheckBox() {
 
@@ -1330,6 +1330,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
     }
 
+    // enable check box
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun enableCheckBox() {
 

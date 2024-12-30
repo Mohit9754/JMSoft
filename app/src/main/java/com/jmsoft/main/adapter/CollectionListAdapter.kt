@@ -63,7 +63,6 @@ class CollectionListAdapter(
         dialogBinding.ivImage.setImageResource(R.drawable.img_delete_inventory)
         dialogBinding.tvMessage.text =
             context.getString(R.string.are_you_sure_you_want_to_delete_this_collection_this_action_cannot_be_undone)
-//            context.getString(R.string.are_you_sure_you_want_to_delete_this_metal_type_this_action_cannot_be_undone)
 
         dialogBinding.mcvYes.setOnClickListener {
 

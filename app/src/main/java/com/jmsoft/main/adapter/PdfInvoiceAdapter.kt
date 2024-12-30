@@ -50,6 +50,7 @@ class PdfInvoiceAdapter(
 
             }
 
+            // set data
             binding.tvPrice.text = productData.productPrice?.let { Utils.getThousandSeparate(it) }
             binding.tvWeight.text = productData.productWeight?.let { Utils.getThousandSeparate(it) }
             binding.tvCarat.text = productData.productCarat.toString()

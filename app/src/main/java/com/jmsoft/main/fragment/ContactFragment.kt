@@ -3,6 +3,7 @@
 package com.jmsoft.main.fragment
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -120,8 +121,6 @@ class ContactFragment : Fragment(), View.OnClickListener {
                 binding.ivProfile?.setImageURI(imageUri)
                 isProfileSelected = true
 
-//                updateProfile(binding.ivProfile?.drawable?.toBitmap())
-
             }
         }
 
@@ -132,7 +131,6 @@ class ContactFragment : Fragment(), View.OnClickListener {
         if (result.resultCode == Activity.RESULT_OK) {
             binding.ivProfile?.setImageBitmap(result.data?.extras?.get("data") as Bitmap?)
             isProfileSelected = true
-//                updateProfile(binding.ivProfile?.drawable?.toBitmap())
         }
     }
 
@@ -379,8 +377,6 @@ class ContactFragment : Fragment(), View.OnClickListener {
             Utils.insertContact(contactDataModel)
         }
 
-//        Utils.T(requireActivity(),"")
-
         removeData()
 
         selectedContactData = contactDataModel
@@ -393,6 +389,7 @@ class ContactFragment : Fragment(), View.OnClickListener {
     }
 
     // Remove Data
+    @SuppressLint("SetTextI18n")
     private fun removeData() {
 
         binding.etFirstName?.setText("")
@@ -527,7 +524,6 @@ class ContactFragment : Fragment(), View.OnClickListener {
     // Show phone number already exist error
     private fun showPhoneNumberAlreadyExistError() {
 
-//        binding.progressBar?.visibility  = View.GONE
         GetProgressBar.getInstance(requireActivity())?.dismiss()
 
         binding.tvPhoneNumberError?.also {

@@ -125,21 +125,6 @@ class BluetoothScanAdapter(
             }
         }
 
-        // Method to move the Connected to the first position
-//        private fun moveToFirstPosition() {
-//
-//            if (position != 0) {
-//
-//                bluetoothScanList.remove(bluetoothScanList[position])
-//                bluetoothScanList.add(
-//                    0,
-//                    bluetoothScanList[position]
-//                ) // Add item to the beginning of the list
-//                notifyItemMoved(position, 0) // Notify adapter about the move
-//
-//            }
-//        }
-
         //Setting the Status of the Connected Device
         private fun setConnectedStatus() {
             deviceModel.isConnected = true
@@ -187,9 +172,6 @@ class BluetoothScanAdapter(
 
             //setting the connected status
             setConnectedStatus()
-
-            // Move the Connected Device to First Position
-            //  moveToFirstPosition()
 
             Utils.E("Connected to device: ${deviceModel.device.name}")
 

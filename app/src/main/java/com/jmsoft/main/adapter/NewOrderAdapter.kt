@@ -47,10 +47,13 @@ class NewOrderAdapter(
             binding.mcvOpen.visibility = View.GONE
             binding.llAddress.visibility = View.GONE
 
+            // set order id
             setOrderId()
 
+            // set product quantity
             setProductQuantity()
 
+            // set total price
             setTotalPrice()
 
             binding.mcvOrder.setOnClickListener(this)
@@ -61,10 +64,12 @@ class NewOrderAdapter(
 
         }
 
+        // set order id
         private fun setOrderId() {
             binding.tvOrderId.text = orderDataModel.orderNo
         }
 
+        // set product quantity
         private fun setProductQuantity() {
 
             if (orderDataModel.productQuantityUri?.isNotEmpty() == true) {
@@ -93,6 +98,7 @@ class NewOrderAdapter(
             }
         }
 
+        // set total price
         @SuppressLint("SetTextI18n")
         private fun setTotalPrice() {
 
@@ -108,8 +114,6 @@ class NewOrderAdapter(
         override fun onClick(v: View?) {
 
             if (v == binding.mcvOrder) {
-
-//                GetProgressBar.getInstance(context)?.show()
 
                 val bundle = Bundle()
 

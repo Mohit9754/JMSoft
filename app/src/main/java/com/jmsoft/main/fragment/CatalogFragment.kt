@@ -140,7 +140,6 @@ class CatalogFragment : Fragment(), View.OnClickListener {
             if (scrollY >= v.getChildAt(v.childCount - 1)
                     .measuredHeight - v.measuredHeight && scrollY > oldScrollY
             ) {
-//                Utils.E("Api GetCourse call")
 
                 binding.progressBar?.visibility = View.VISIBLE
 
@@ -193,7 +192,6 @@ class CatalogFragment : Fragment(), View.OnClickListener {
         catalogAdapter?.addFilterList(filterProductList)
         catalogAdapter?.notifyItemRangeInserted(searchOffset,filterProductList.size)
         searchOffset+=Constants.Limit
-//        catalogAdapter?.notifyDataSetChanged()
 
         if (filterProductList.isNotEmpty()) {
 
@@ -236,6 +234,7 @@ class CatalogFragment : Fragment(), View.OnClickListener {
     }
 
     // Clear Search Edittext when destroy
+    @SuppressLint("SetTextI18n")
     override fun onDestroy() {
 
         super.onDestroy()
@@ -243,6 +242,7 @@ class CatalogFragment : Fragment(), View.OnClickListener {
     }
 
     // Clear the Search
+    @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
 

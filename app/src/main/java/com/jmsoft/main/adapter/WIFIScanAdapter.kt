@@ -58,20 +58,26 @@ class WIFIScanAdapter(
 
             this.scanResult = scanResult
 
+            // hide views
             hide()
 
+            // set device name
             setDeviceName()
 
+            // set device mac address
             setDeviceMacAddress()
 
+            // check connection
             checkConnection()
 
+            // check protected status
             checkProtectedStatus()
 
             binding.mcvDevice.setOnClickListener(this)
 
         }
 
+        // check protected status
         private fun checkProtectedStatus() {
 
             if (isWifiPasswordProtected(scanResult)) {
@@ -81,6 +87,7 @@ class WIFIScanAdapter(
             }
         }
 
+        // check connection
         private fun checkConnection() {
 
             if (scanResult.SSID == connectedSSID?.replace(
@@ -95,6 +102,7 @@ class WIFIScanAdapter(
             }
         }
 
+        // hide views
         private fun hide() {
 
             binding.tvDeviceType.visibility = View.GONE
@@ -102,14 +110,17 @@ class WIFIScanAdapter(
             binding.mcvReconnect.visibility = View.GONE
         }
 
+        // set device name
         private fun setDeviceName() {
             binding.tvDeviceName.text = scanResult.SSID
         }
 
+        // set device mac address
         private fun setDeviceMacAddress() {
             binding.tvMacAddress.text = scanResult.BSSID
         }
 
+        // get wifi security types
         private fun getWifiSecurityTypes(): String {
 
             val capabilities = scanResult.capabilities
@@ -143,6 +154,7 @@ class WIFIScanAdapter(
             }
         }
 
+        // check if wifi password protected
         private fun isWifiPasswordProtected(scanResult: ScanResult): Boolean {
             val capabilities = scanResult.capabilities
 
@@ -155,6 +167,7 @@ class WIFIScanAdapter(
                     capabilities.contains(Constants.EAP)
         }
 
+        // check connection status
         private fun setConnectedStatus() {
 
             selectedBinding?.llStatus?.visibility = View.GONE
@@ -167,6 +180,7 @@ class WIFIScanAdapter(
             binding.tvStatus.setTextColor(context.getColor(R.color.green))
         }
 
+        // connect to wifi
         private fun connectToWifi(
             ssid: String,
             password: String? = null,
@@ -241,6 +255,7 @@ class WIFIScanAdapter(
             }
         }
 
+        // password dialog
         private fun showPasswordDialog() {
 
             var isPasswordVisible = false

@@ -41,18 +41,22 @@ class ScannedAdapter(
             this.productData = productDataModel
             this.position = position
 
+            // set product name
             setProductName()
 
+            // set rfid code
             setRFIDCode()
 
             binding.mcvProduct.setOnClickListener(this)
 
         }
 
+        // set product name
         private fun setProductName() {
             binding.tvProductName.text = productData.productName
         }
 
+        // set rfid code
         private fun setRFIDCode() {
             binding.tvRFIDCode.text = productData.productRFIDCode
         }

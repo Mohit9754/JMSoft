@@ -520,6 +520,7 @@ class DatabaseHelper(cx: Context) {
 
     }
 
+    // update purchase status
     fun updatePurchaseStatus(purchasingUUID: String) {
         open()
 
@@ -1055,25 +1056,6 @@ class DatabaseHelper(cx: Context) {
         return orderDataModel
     }
 
-    // Get Order UUID
-    @SuppressLint("Range")
-    fun getOrderUUID(userUUID: String, productUUID: String): String? {
-
-        read()
-
-        val cursor: Cursor? = db?.rawQuery(
-            "SELECT ${OrderDataModel.Key_orderUUID} FROM ${OrderDataModel.TABLE_NAME_ORDER} WHERE ${OrderDataModel.Key_userUUID} == ? AND ${OrderDataModel.Key_productUUIDUri} == ? AND ${OrderDataModel.Key_status} == ?",
-            arrayOf(userUUID, productUUID, Constants.New)
-        )
-
-        cursor?.moveToFirst()
-
-        val orderUUID = cursor?.getString(cursor.getColumnIndex(OrderDataModel.Key_orderUUID))
-
-        cursor?.close()
-
-        return orderUUID
-    }
 
     // get orders of particular user
     @SuppressLint("Recycle", "Range")
@@ -1302,6 +1284,7 @@ class DatabaseHelper(cx: Context) {
         return contactList
     }
 
+    // get contact by uuid
     @SuppressLint("Range")
     fun getContactByUUID(contactUUID: String): ContactDataModel {
 
@@ -1616,83 +1599,6 @@ class DatabaseHelper(cx: Context) {
         return productList
     }
 
-
-//Get All Products of particular Collection  from the Product table
-//    @SuppressLint("Range")
-//    fun getProductsThroughCollection(
-//        collectionUUIDList: List<String>,
-//        productUUID: String
-//    ): ArrayList<ProductDataModel> {
-//
-//        read()
-//
-//        val productList = ArrayList<ProductDataModel>()
-//
-//        for (collectionUUID in collectionUUIDList) {
-//
-//            val cursor: Cursor? = db?.rawQuery(
-//                "SELECT * FROM ${ProductDataModel.TABLE_NAME_PRODUCT} WHERE ${ProductDataModel.Key_productUUID} != ? AND ${ProductDataModel.Key_collectionUUID} LIKE ?",
-//                arrayOf(productUUID,"%$collectionUUID%")
-//            )
-//
-//            if (cursor != null && cursor.count > 0) {
-//
-//                cursor.moveToLast()
-//
-//                 product@
-//                 do {
-//
-//                    val productData = ProductDataModel()
-//
-//                    productData.productUUID =
-//                        cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productUUID))
-//
-//                    productData.productName =
-//                        cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productName))
-//                    productData.metalTypeUUID =
-//                        cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_metalTypeUUID))
-//                    productData.collectionUUID =
-//                        cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_collectionUUID))
-//                    productData.productOrigin =
-//                        cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productOrigin))
-//                    productData.productWeight =
-//                        cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productWeight))
-//                    productData.productCarat =
-//                        cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCarat))
-//                    productData.productCost =
-//                        cursor.getDouble(cursor.getColumnIndex(ProductDataModel.Key_productCost))
-//                    productData.categoryUUID =
-//                        cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_categoryUUID))
-//                    productData.productDescription =
-//                        cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productDescription))
-//                    productData.productRFIDCode =
-//                        cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productRFIDCode))
-//                    productData.productBarcodeUri =
-//                        cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeUri))
-//                    productData.productBarcodeData =
-//                        cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productBarcodeData))
-//                    productData.productImageUri =
-//                        cursor.getString(cursor.getColumnIndex(ProductDataModel.Key_productImageUri))
-//
-//                    for (data in productList) {
-//                        if (data.productUUID == productData.productUUID) {
-//                            continue@product
-//                        }
-//                    }
-//
-//                    productList.add(productData)
-//
-//                } while (cursor.moveToPrevious())
-//
-//                cursor.close()
-//            }
-//            close()
-//        }
-//
-//        return productList
-//    }
-
-
     //Get All Products of particular category and collection  from the Product table
     @SuppressLint("Range")
     fun getAllProductsThroughCategoryAndCollection(
@@ -1783,7 +1689,6 @@ class DatabaseHelper(cx: Context) {
         queryArgs.add("")
         queryArgs.add(Constants.Limit.toString())
         queryArgs.add(offset.toString())
-//        queryArgs[queryArgs.size] = ""
 
         // Execute the query
         val cursor: Cursor? = db?.rawQuery(query, queryArgs.toTypedArray())
@@ -1947,9 +1852,6 @@ class DatabaseHelper(cx: Context) {
             args.add("")
 
         }
-
-
-
 
         if (categoryUUID != Constants.All) {
             queryBuilder.append(" AND LOWER(${ProductDataModel.Key_categoryUUID}) = LOWER(?)")
@@ -2119,6 +2021,7 @@ class DatabaseHelper(cx: Context) {
 
     }
 
+    // get product with detail seach accept collection
     @SuppressLint("Range")
     fun getProductsWithDetailSearchAcceptCollection(
         search: String,
@@ -3300,8 +3203,6 @@ class DatabaseHelper(cx: Context) {
 
         open()
 
-//        deleteCategoryUUIDFromProductTable(categoryUUID)
-
         db?.delete(
             CategoryDataModel.TABLE_NAME_CATEGORY, "${CategoryDataModel.Key_categoryUUID} == ?",
             arrayOf(categoryUUID)
@@ -3437,6 +3338,7 @@ class DatabaseHelper(cx: Context) {
 
     }
 
+    // update product detail
     fun updateProductDetails(productDataModel: ProductDataModel) {
 
         open()

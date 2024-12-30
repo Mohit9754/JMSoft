@@ -290,6 +290,7 @@ class CatalogAdapter(
         }
     }
 
+    // Filter the list
     @SuppressLint("NotifyDataSetChanged")
     fun addFilterList(filteredProductList: ArrayList<ProductDataModel>) {
         productList = filteredProductList

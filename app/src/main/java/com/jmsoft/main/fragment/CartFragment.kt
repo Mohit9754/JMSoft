@@ -188,7 +188,6 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         GetProgressBar.getInstance(requireActivity())?.show()
 
-//        val cardList = Utils.GetSession().userUUID?.let { getCartThroughUserUUID(it) }
 
         val pdfInvoiceBinding = PdfInvoiceBinding.inflate(LayoutInflater.from(context))
 
@@ -391,8 +390,6 @@ class CartFragment : Fragment(), View.OnClickListener {
 
             if (productUUIDList != null && productQuantityList != null) for (i in productUUIDList.indices) {
 
-//                Utils.E("Product quantity is ##${productQuantityList[i]}##")
-
                 val cartDataModel = CartDataModel()
                 cartDataModel.productUUID = productUUIDList[i]
                 cartDataModel.productQuantity =
@@ -486,7 +483,6 @@ class CartFragment : Fragment(), View.OnClickListener {
                             override fun addressUnselected() {
 
                                 selectedAddressData = null
-//                                binding?.radioButton?.isChecked = true
 
                                 // Make empty all the edittext
                                 removeData()
@@ -503,6 +499,7 @@ class CartFragment : Fragment(), View.OnClickListener {
     }
 
     // Make empty all the edittext
+    @SuppressLint("SetTextI18n")
     private fun removeData() {
 
         binding?.etFirstName?.setText("")
@@ -596,6 +593,7 @@ class CartFragment : Fragment(), View.OnClickListener {
 
     }
 
+    // set barcode edit text
     @SuppressLint("ClickableViewAccessibility")
     private fun setBarcodeEditText() {
 
@@ -626,6 +624,7 @@ class CartFragment : Fragment(), View.OnClickListener {
     //set the Clicks , initialization and setup
     private suspend fun init() {
 
+        // set barcode edit text
         setBarcodeEditText()
 
         // Set underline on Back to Home page
@@ -735,7 +734,6 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         jobAddress.join()
 
-//        GetProgressBar.getInstance(requireActivity())?.dismiss()
 
     }
 
@@ -916,11 +914,6 @@ class CartFragment : Fragment(), View.OnClickListener {
 
     // update Order
     private fun updateOrder() {
-
-//        val newOrderDataModel = if (orderUUID != null) Utils.getOrderByUUID(orderUUID!!) else Utils.getOrderUUID(requireActivity())
-//            ?.let { Utils.getOrderByUUID(it) }
-
-//        Utils.E("****************${newOrderDataModel?.orderUUID}&&&&&&&&&&&&&&&&&&&")
 
         val confirmOrderDataModel = OrderDataModel()
 

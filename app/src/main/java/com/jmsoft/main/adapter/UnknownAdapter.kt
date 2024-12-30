@@ -38,12 +38,14 @@ class UnknownAdapter(
             this.rfidCode = rfidCode
             this.position = position
 
+            // set rfid code
             setRFIDCode()
 
             binding.mcvProduct.setOnClickListener(this)
 
         }
 
+        // set rfid code
         private fun setRFIDCode() {
             binding.tvRFIDCode.text = rfidCode
         }

@@ -137,7 +137,7 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
                     setRecyclerOfDeviceList()
                 }
             } else {
-                Utils.T(requireActivity(), "Turn on Bluetooth for Scanning")
+                Utils.T(requireActivity(), getString(R.string.turn_on_bluetooth_for_scanning))
             }
         }
 
@@ -442,7 +442,6 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
 
             deviceType = rfid_tag_Printer
             bottomSheetAddDevice.dismiss()
-//            bluetoothScanBottomSheet()
 
             wifiScanBottomSheet()
         }
@@ -453,7 +452,6 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
             bottomSheetAddDevice.dismiss()
             bluetoothScanBottomSheet()
 
-//            showPrinterConnectionDialog()
         }
 
         bottomSheetAddDevice.setContentView(addDeviceBottomSheetBinding.root)
@@ -574,8 +572,6 @@ class DeviceManagementFragment : Fragment(), View.OnClickListener {
         bottomSheetWIFIScan?.behavior?.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetWIFIScan?.behavior?.maxWidth = LayoutParams.MATCH_PARENT
         bottomSheetWIFIScan?.setContentView(bottomSheetWIFIBinding.root)
-
-        // val wifiInfo = wifiManager.connectionInfo
 
         checkConnectedStatus {
 

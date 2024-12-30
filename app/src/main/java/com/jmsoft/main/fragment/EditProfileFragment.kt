@@ -1,5 +1,6 @@
 package com.jmsoft.main.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -359,6 +360,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     }
 
     //Register New User in the User Table
+    @SuppressLint("SetTextI18n")
     private fun registerNewUser() {
 
         //Check if phone Number exist

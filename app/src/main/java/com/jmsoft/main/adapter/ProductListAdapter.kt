@@ -81,20 +81,17 @@ class ProductListAdapter(
             productDataList.removeAt(position)
             Utils.deleteProduct(productUUID)
 
-//            ProductUUIDList.deleteUUID(productUUID)
 
             Utils.T(context, context.getString(R.string.deleted_successfully))
 
             notifyDataSetChanged()
 
-//            GetProgressBar.getInstance(context)?.dismiss()
 
             if (productDataList.isEmpty()) {
 
                 GetProgressBar.getInstance(context)?.dismiss()
 
                 fragmentProductBinding.mcvProductList?.visibility = View.GONE
-//                fragmentProductBinding.mcvFilter?.visibility = View.GONE
                 fragmentProductBinding.llEmptyProduct?.visibility = View.VISIBLE
 
             }
@@ -124,8 +121,6 @@ class ProductListAdapter(
 
             this.productData = productData
             this.position = position
-
-//            createProductUUIDList()
 
             // Checks state of the product list if it is for showing or adding in the collection
             checkState()
@@ -172,14 +167,6 @@ class ProductListAdapter(
 
         }
 
-//        private fun createProductUUIDList() {
-//
-//            if (position == 0) {
-//                ProductUUIDList.clearList()
-//            }
-//            productData.productUUID?.let { ProductUUIDList.addUUID(it) }
-//
-//        }
 
         // Dismiss progress bar
         private fun dismissProgressBar() {
@@ -211,23 +198,18 @@ class ProductListAdapter(
 
                 binding.cbProduct.visibility = View.VISIBLE
                 binding.mcvDelete.visibility = View.GONE
-//                binding.mcvEdit.visibility = View.GONE
 
-//
                 if (Utils.SelectedProductUUIDList.getProductList().any { it == productData.productUUID  }) {
                     binding.cbProduct.isChecked = true
-//                    productData.productUUID?.let { Utils.SelectedProductUUIDList.addProductUUID(it)}
                 }
 
                 binding.cbProduct.setOnCheckedChangeListener { _, isChecked ->
 
                     if (isChecked) {
-                       // productData.productUUID?.let { selectedProductUUIDList.add(it) }
                         productData.productUUID?.let { Utils.SelectedProductUUIDList.addProductUUID(it) }
 
                     } else {
                         productData.productUUID?.let { Utils.SelectedProductUUIDList.removeProductUUID(it) }
-//                        selectedProductUUIDList.remove(productData.productUUID)
                     }
                 }
             }
@@ -238,6 +220,7 @@ class ProductListAdapter(
             }
         }
 
+        // set product name
         private fun setProductName() {
             binding.tvProductName.text = productData.productName
         }

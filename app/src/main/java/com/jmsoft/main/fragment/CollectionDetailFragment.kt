@@ -48,8 +48,6 @@ class CollectionDetailFragment : Fragment(),View.OnClickListener {
 
             binding.llEmptyInventory?.visibility = View.GONE
 
-//            Utils.E("${categoryDataList.size} ${categoryDataList[0].categoryName} ${collectionUUID}")
-
             val adapter =
                 collectionUUID?.let {
                     CollectionDetailAdapter(requireActivity(), categoryDataList,

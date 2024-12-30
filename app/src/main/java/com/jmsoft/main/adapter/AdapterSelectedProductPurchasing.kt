@@ -95,6 +95,7 @@ class AdapterSelectedProductPurchasing(
 
     }
 
+    // Remove item
     @SuppressLint("NotifyDataSetChanged")
     private fun removeItem(position: Int) {
 

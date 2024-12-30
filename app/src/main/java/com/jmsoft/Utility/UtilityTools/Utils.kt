@@ -138,6 +138,7 @@ import kotlin.random.Random
 
 object Utils {
 
+    // calculate total amount
     object TotalAmount {
 
         private var totalAmount = 0.0
@@ -153,6 +154,7 @@ object Utils {
         }
     }
 
+    // is printer ready
     fun isPrinterReady(): Boolean {
 
         val status = Godex.CheckStatus()
@@ -175,6 +177,7 @@ object Utils {
         return false
     }
 
+    // printer connection dialog
     fun showPrinterConnectionDialog(context: Context,onConnected: () -> Unit) {
 
         val dialog = Dialog(context)
@@ -294,6 +297,7 @@ object Utils {
 
     }
 
+    // get layout bitmap
     @SuppressLint("CutPasteId", "InflateParams")
     fun getLayoutBitmap(context: Context,productDataModel: ProductDataModel): Bitmap {
 
@@ -329,6 +333,7 @@ object Utils {
 
     }
 
+    // print bitmap
     fun printBitmap(context: Context,bitmap: Bitmap): Boolean {
 
         // Send the Bitmap to the printer using the Godex SDK
@@ -341,7 +346,6 @@ object Utils {
         if (printingStatus) {
 
             E("Printed successfully")
-//            T(context, context.getString(R.string.printed_successfully))
 
             return true
 
@@ -349,7 +353,6 @@ object Utils {
         else {
 
             E("Printing failed")
-//            T(context, context.getString(R.string.printing_failed))
 
             return false
         }
@@ -434,6 +437,7 @@ object Utils {
         }
     }
 
+    // selected product uuid list
     object SelectedProductUUIDList {
 
         private var productUUIDList = ArrayList<String>()
@@ -518,22 +522,24 @@ object Utils {
         return data.trim().lowercase(Locale.getDefault()).capitalize(Locale.ROOT)
     }
 
+    // open wifi settings
     fun openWifiSettings(context: Context) {
         val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
         context.startActivity(intent)
     }
 
+    // open location setting
     fun openLocationSettings(context: Context) {
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         context.startActivity(intent)
     }
 
+    // is location enabled
     fun isLocationEnabled(context: Context): Boolean {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
-
 
     // Convert data to barcode
     fun genBarcodeBitmap(context: Context, data: String): Bitmap? {
@@ -570,6 +576,7 @@ object Utils {
         return null
     }
 
+    // show error
     fun showError(context: Context, textView: TextView, msg: String) {
 
         textView.visibility = View.VISIBLE
@@ -596,6 +603,7 @@ object Utils {
         })
     }
 
+    // show or hide password
     fun passwordVisibility(isPasswordVisible:Boolean,etPassword: EditText,imageVisibility: ImageView) {
 
         if (!isPasswordVisible) {
@@ -614,6 +622,7 @@ object Utils {
         }
     }
 
+    // set Focus And TextChange Listener
     fun setFocusAndTextChangeListener(
         context: Context,
         editText: EditText,
@@ -641,22 +650,7 @@ object Utils {
         }
     }
 
-    fun formatArabicToTwoDecimalPoints(arabicValue: String): Double {
-        // Replace Arabic numerals with their Latin counterparts
-        val latinValue = convertToLatinNumerals(arabicValue)
-
-        // Replace Arabic decimal separator with a dot (if present)
-        val latinValueWithDot = latinValue.replace('٫', '.')
-
-        try {
-            // Parse the Latin numeral string to a Double value
-            return latinValueWithDot.toDouble()
-        } catch (e: NumberFormatException) {
-            // Handle parsing errors here (e.g., return a default value)
-            return 0.0
-        }
-    }
-
+    // convert latin to numbers
     fun convertToLatinNumerals(input: String): String {
         val arabicNumerals = listOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
         val latinNumerals = (0..9).map { (it + '0'.toInt()).toChar() }
@@ -705,41 +699,9 @@ object Utils {
         return numberFormat.format(price)
     }
 
+    // remove thousand separator
     fun removeThousandSeparators(formattedNumber: String): String {
         return formattedNumber.replace(",", "")
-    }
-
-    fun thousandSeparatorEditText(editText: EditText) {
-
-        val currencyFormat = NumberFormat.getNumberInstance(Locale.getDefault())
-
-        // Set up TextWatcher to format input with thousand separators
-        editText.addTextChangedListener(object : TextWatcher {
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                editText.removeTextChangedListener(this)
-
-                // Remove previous formatting
-                val cleanString = s.toString().replace("[,.]".toRegex(), "")
-
-                // Format the clean input with thousand separators
-                val formatted = currencyFormat.format(cleanString.toDoubleOrNull() ?: 0.0)
-                editText.setText(formatted)
-                editText.setSelection(formatted.length) // Move cursor to the end of text
-
-                editText.addTextChangedListener(this)
-            }
-        })
-
-    }
-
-    fun formatNumberWithoutScientificNotation(number: Double): String {
-        val decimalFormat = DecimalFormat("#,###.##")
-        return decimalFormat.format(number)
     }
 
     // Get Status bar height
@@ -798,22 +760,6 @@ object Utils {
         }
     }
 
-    //setting the selector on material card view
-    fun setFocusChangeLisWhite(
-        context: Context,
-        editText: EditText,
-        materialCardView: MaterialCardView
-    ) {
-
-        editText.setOnFocusChangeListener { _, hasFocus ->
-
-            if (hasFocus) {
-                materialCardView.strokeColor = context.getColor(R.color.theme)
-            } else {
-                materialCardView.strokeColor = context.getColor(R.color.white)
-            }
-        }
-    }
 
     //Getting Email of the Admin from the config.properties file
     fun getEmail(context: Context): String? {
@@ -829,24 +775,24 @@ object Utils {
         }
     }
 
-    //    generate UUIDs (Universally Unique Identifiers) using the UUID
+    // generate UUIDs (Universally Unique Identifiers) using the UUID
     fun generateUUId(): String {
         return UUID.randomUUID().toString().trim()
     }
 
-    //encode the text
+    // encode the text
     fun encodeText(text: String): String {
         val bytes = text.toByteArray(Charsets.UTF_8)
         return Base64.encodeToString(bytes, Base64.DEFAULT)
     }
 
-    //decode the text
+    // decode the text
     fun decodeText(encodedText: String): String {
         val bytes = Base64.decode(encodedText, Base64.DEFAULT)
         return String(bytes, Charsets.UTF_8)
     }
 
-    //the function opens the setting
+    // the function opens the setting
     fun openAppSettings(context: Context) {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri = Uri.fromParts("package", context.packageName, null)
@@ -873,13 +819,7 @@ object Utils {
         return context.filesDir.absolutePath
     }
 
-    //get the image from the internal storage
-//    fun getImageFromInternalStorage(context: Context, imageFileName: String): Bitmap? {
-//        val directory = context.filesDir
-//        val file = File(directory, imageFileName)
-//        return BitmapFactory.decodeStream(FileInputStream(file))
-//    }
-
+    // get Image From Internal Storage
     @SuppressLint("UseCompatLoadingForDrawables")
     fun getImageFromInternalStorage(context: Context, imageFileName: String): Bitmap? {
         val directory = context.filesDir
@@ -895,13 +835,14 @@ object Utils {
     }
 
 
-    //delete image from the internal storage
+    // delete image from the internal storage
     fun deleteImageFromInternalStorage(context: Context, imageFileName: String): Boolean {
         val dir = context.filesDir
         val file = File(dir, imageFileName)
         return file.delete()
     }
 
+    // set app language
     fun setAppLanguage(context: Context) {
 
         if (Flag.getFlag()) {
@@ -910,13 +851,14 @@ object Utils {
         }
     }
 
+    // set language
+    @SuppressLint("ObsoleteSdkInt")
     fun setLocale(context: Context, languageCode: String) {
         val locale = Locale(languageCode)
         Locale.setDefault(locale)
         val configuration = context.resources.configuration
         configuration.setLocale(locale)
         context.resources.updateConfiguration(configuration, context.resources.displayMetrics)
-//        context.createConfigurationContext(configuration)
 
         // store the language
         storeLang(context, languageCode)
@@ -957,6 +899,8 @@ object Utils {
         }
     }
 
+    // format To six digit number
+    @SuppressLint("DefaultLocale")
     fun formatToSixDigitNumber(number: Int): String {
         return String.format("%06d", number)
     }
@@ -968,20 +912,18 @@ object Utils {
         return locale.language
     }
 
+    // get session
     @JvmStatic
     fun GetSession(): UserDataModel {
         return DatabaseHelper.instance.list[0]
     }
 
+    // is user loged in
     @JvmStatic
     fun IS_LOGIN(): Boolean {
         return DatabaseHelper.instance.list.size > 0
     }
 
-    // Checks if User Table is Empty
-    fun isUserTableEmpty(): Boolean {
-        return DatabaseHelper.instance.isUserTableEmpty()
-    }
 
     // Checks if Email Already Exist in the User Table
     fun isEmailExist(email: String): Boolean {
@@ -1187,11 +1129,6 @@ object Utils {
         return DatabaseHelper.instance.isCollectionExistAccept(collectionDataModel)
     }
 
-    // Check if Collection exist in the product section
-    fun isCollectionExistInTheProduct(productUUID: String, collectionUUID: String): Boolean? {
-        return DatabaseHelper.instance.isCollectionExistInTheProduct(productUUID, collectionUUID)
-    }
-
     // add Category in the Category table
     fun addCategory(categoryDataModel: CategoryDataModel) {
         DatabaseHelper.instance.addCategory(categoryDataModel)
@@ -1379,18 +1316,6 @@ object Utils {
         return DatabaseHelper.instance.getAllProducts(offset, categoryUUID, isEmptyRfidProduct)
     }
 
-    // get all product name that does not have rfid code
-    suspend fun getAllProductName(limit: Int, offset: Int): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getProductName(limit, offset)
-    }
-
-    suspend fun getProductNameWithSearch(
-        search: String,
-        limit: Int,
-        offset: Int
-    ): ArrayList<ProductDataModel> {
-        return DatabaseHelper.instance.getProductNameWithSearch(search, limit, offset)
-    }
 
     //Get All Products from the Product table without limit and offset
     suspend fun getAllProductsWithOutLimit(): ArrayList<ProductDataModel> {
@@ -1823,6 +1748,7 @@ object Utils {
         DatabaseHelper.instance.addPurchase(purchasingDataModel)
     }
 
+    // update purchase status
     fun updatePurchaseStatus(purchasingUUID: String) {
         DatabaseHelper.instance.updatePurchaseStatus(purchasingUUID)
     }
@@ -1862,11 +1788,6 @@ object Utils {
         return DatabaseHelper.instance.getAllAddressThroughUserUUID(userUUID)
     }
 
-    // is this address uuid exist
-    fun isAddressUUIDExist(addressUUID: String): Boolean? {
-        return DatabaseHelper.instance.isAddressUUIDExist(addressUUID)
-    }
-
     // get address through address uuid
     fun getAddressThroughAddressUUID(addressUUID: String): AddressDataModel {
         return DatabaseHelper.instance.getAddressThroughAddressUUID(addressUUID)
@@ -1887,6 +1808,7 @@ object Utils {
         return DatabaseHelper.instance.getAllContactThroughUserUUID(userUUID)
     }
 
+    // get contact by uuid
     fun getContactByUUID(contactUUID: String): ContactDataModel {
         return DatabaseHelper.instance.getContactByUUID(contactUUID)
     }
@@ -1901,15 +1823,18 @@ object Utils {
         DatabaseHelper.instance.updateProduct(productDataModel)
     }
 
+    // update product detail
     fun updateProductDetails(productDataModel: ProductDataModel) {
         DatabaseHelper.instance.updateProductDetails(productDataModel)
     }
 
+    // log out
     @JvmStatic
     fun LOGOUT() {
         DatabaseHelper.instance.deleteSession()
     }
 
+    // intent
     @JvmStatic
     fun I(cx: Context, startActivity: Class<*>?, data: Bundle?) {
         val i = Intent(cx, startActivity)
@@ -1917,215 +1842,19 @@ object Utils {
         cx.startActivity(i)
     }
 
-
-    @JvmStatic
-    val deviceName: String
-        get() {
-            val manufacturer = Build.MANUFACTURER
-            val model = Build.MODEL
-            return if (model.startsWith(manufacturer)) {
-                capitalize(model)
-            } else {
-                capitalize(manufacturer) + " " + model
-            }
-        }
-
-    fun disableButton(loader: LoadingButton) {
-        loader.alpha = 0.4f
-        loader.isEnabled = false
-    }
-
+    // Enable button
     fun enableButton(loader: View) {
         loader.alpha = 1.0f
         loader.isEnabled = true
     }
 
+    // disable button
     fun disableButton(loader: View) {
         loader.alpha = 0.5f
         loader.isEnabled = false
     }
 
-    fun hashMapTORequestBody(hm: HashMap<*, *>): RequestBody {
-        val json = (hm as Map<*, *>?)?.let { JSONObject(it).toString() }
-        return json.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
-    }
-
-    fun generateUniqueCodes(input: String): List<String> {
-        val parts = input.split(" ")
-
-        val codes = mutableListOf<String>()
-
-        for (part in parts) {
-            if (part.length >= 4) {
-                val prefix = part.substring(0, 4)
-                val suffix = part.takeLast(4)
-
-                val random1 = (1..9999).random()
-                val random2 = (1..9999).random()
-
-                val code = "$prefix$random1$random2$suffix"
-                codes.add(code)
-            } else {
-                val random1 = (1..9999).random()
-                val code = "$part$random1"
-                codes.add(code)
-            }
-        }
-
-        return codes
-    }
-
-    fun getAddressFromLatLng(context: Context, latLng: LatLng): String {
-        val geocoder = Geocoder(context)
-        val addresses: List<Address> =
-            geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1) as List<Address>
-
-        if (addresses.isNotEmpty()) {
-            val address = addresses[0]
-            val addressParts = mutableListOf<String>()
-
-            // Get various address components (if available)
-            if (address.featureName != null) {
-                addressParts.add(address.featureName)
-            }
-            if (address.thoroughfare != null) {
-                addressParts.add(address.thoroughfare)
-            }
-            if (address.subLocality != null) {
-                addressParts.add(address.subLocality)
-            }
-            if (address.locality != null) {
-                addressParts.add(address.locality)
-            }
-            if (address.adminArea != null) {
-                addressParts.add(address.adminArea)
-            }
-            if (address.countryName != null) {
-                addressParts.add(address.countryName)
-            }
-
-            return addressParts.joinToString(", ")
-        } else {
-            return "Address not found"
-        }
-    }
-
-    fun isAlphanumeric7To11Characters(input: String): Boolean {
-        val alphanumericPattern = "^[a-zA-Z0-9]{7,11}$".toRegex()
-        return alphanumericPattern.matches(input)
-    }
-
-
-    fun applyAnimation(view: View, context: Context, animationID: Int) {
-        view.visibility = View.VISIBLE
-        val animation =
-            AnimationUtils.loadAnimation(context, animationID)
-        view.startAnimation(animation)
-    }
-
-    @Throws(IOException::class)
-    fun createImageFile(c: Context): File {
-        // Create an image file name
-        val timeStamp: String =
-            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val imageFileName = "JPEG_" + timeStamp + "_"
-        val storageDir: File? = c.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            imageFileName,  /* prefix */
-            ".jpg",  /* suffix */
-            storageDir /* directory */
-        )
-    }
-
-    @Throws(IOException::class)
-    fun createVideoFile(c: Context): File {
-        // Create an image file name
-        val timeStamp: String =
-            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val imageFileName = "MP4_" + timeStamp + "_"
-        val storageDir: File? = c.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            imageFileName,  /* prefix */
-            ".mp4",  /* suffix */
-            storageDir /* directory */
-        )
-    }
-
-    @Throws(IOException::class)
-    fun createAudioFile(c: Context): File {
-        // Create an image file name
-        val timeStamp: String =
-            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val audioFileName = "mp3_" + timeStamp + "_"
-
-        // Get the external storage directory where audio files can be shared
-        val storageDir: File? = c.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-
-        if (storageDir != null && storageDir.exists()) {
-            return File.createTempFile(
-                audioFileName,  /* prefix */
-                ".mp3",  /* suffix */
-                storageDir /* directory */
-            )
-        } else {
-            throw IOException("External storage directory is not available")
-        }
-    }
-
-    fun getVideoDuration(context: Context, uri: Uri): String {
-        E("uri::" + uri)
-        val retriever = MediaMetadataRetriever()
-
-        try {
-            retriever.setDataSource(context, uri)
-            val durationString =
-                retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-            val durationMillis = durationString?.toLong() ?: 0
-            val seconds = (durationMillis / 1000) % 60
-            val minutes = (durationMillis / (1000 * 60))
-            return String.format("%02d:%02d", minutes, seconds)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return "00:00"
-        } finally {
-            retriever.release()
-        }
-    }
-
-    fun getFilePathFromUri(context: Context, uri: Uri): String? {
-        val cursor = context.contentResolver.query(uri, null, null, null, null)
-        cursor?.use {
-            if (it.moveToFirst()) {
-                val columnIndex = it.getColumnIndex(MediaStore.Images.Media.DATA)
-                if (columnIndex != -1) {
-                    return it.getString(columnIndex)
-                }
-            }
-        }
-        return null
-    }
-
-    fun getAudioDuration(filePath: String): Long {
-        E("filePath::$filePath")
-        val retriever = MediaMetadataRetriever()
-        retriever.setDataSource(filePath)
-        val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-        retriever.release()
-        E("getAudioDuration::$duration")
-        return duration?.toLong() ?: 0
-    }
-
-
-    fun getVideoDuration(filePath: String): Long {
-        val retriever = MediaMetadataRetriever()
-        retriever.setDataSource(filePath)
-        val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-        retriever.release()
-        E("getVideoDuration::$duration")
-        return duration?.toLong() ?: 0
-    }
-
-
+    // add text changed listener
     fun addTextChangedListener(editText: EditText, errorTextView: TextView) {
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -2143,6 +1872,7 @@ object Utils {
         })
     }
 
+    // Check if the file exists and is a file (not a directory)
     fun isImageFileEmpty(imageFile: File): Boolean {
         // Check if the file exists and is a file (not a directory)
         if (!imageFile.exists() || !imageFile.isFile) {
@@ -2153,7 +1883,7 @@ object Utils {
         return imageFile.length() == 0L
     }
 
-
+    // is internet available
     fun isInternetAvailable(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -2166,11 +1896,13 @@ object Utils {
                 )
     }
 
+    // get country code
     fun getCountryCode(context: Context): String {
         val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
         return "+" + phoneNumberUtil.getCountryCodeForRegion(SavedData.getCountryRegion())
     }
 
+    // capitalize the string
     private fun capitalize(s: String?): String {
         if (s == null || s.length == 0) {
             return ""
@@ -2184,6 +1916,7 @@ object Utils {
     }
 
 
+    // set web view
     @SuppressLint("SetJavaScriptEnabled")
     fun setWebView(webView: WebView, data: String?) {
         webView.settings.javaScriptEnabled = true
@@ -2191,9 +1924,9 @@ object Utils {
         webView.loadData(data!!, "text/html; charset=utf-8", "UTF-8")
     }
 
+    // Un Authorization Token
     fun UnAuthorizationToken(cx: Context) {
         DatabaseHelper.instance.deleteSession()
-        //  I_clear(cx, LoginActivity::class.java, null)
     }
 
 
@@ -2231,30 +1964,6 @@ object Utils {
         dialog.show()
         return dialog
     }
-
-
-//    fun expandView(view: View) {
-//        view.visibility = View.VISIBLE
-//        view.measure(
-//            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-//            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-//        )
-//        val targetHeight = view.measuredHeight
-//        view.layoutParams.height = 1
-//        view.requestLayout()
-//
-//        view.animate()
-//            .setDuration(100) // Adjust the duration as needed
-//            .setInterpolator(AccelerateDecelerateInterpolator())
-//            .translationY(0f)
-//            .alpha(1f)
-//            .setListener(null)
-//            .setUpdateListener {
-//                val params = view.layoutParams
-//                params.height = (targetHeight * it.animatedFraction).toInt()
-//                view.layoutParams = params
-//            }
-//    }
 
     fun expandView(view: View) {
         view.visibility = View.VISIBLE
@@ -2302,27 +2011,6 @@ object Utils {
                 view.requestLayout()
             }
     }
-
-
-//    fun collapseView(view: View) {
-//        val initialHeight = view.height
-//        view.animate()
-//            .setDuration(100) // Adjust the duration as needed
-//            .setInterpolator(AccelerateDecelerateInterpolator())
-//            .translationY(-initialHeight.toFloat())
-//            .alpha(0f)
-//            .setListener(object : AnimatorListenerAdapter() {
-//                override fun onAnimationEnd(animation: Animator) {
-//                    super.onAnimationEnd(animation)
-//                    view.visibility = View.GONE
-//                }
-//            })
-//            .setUpdateListener {
-//                val params = view.layoutParams
-//                params.height = (initialHeight * (1 - it.animatedFraction)).toInt()
-//                view.layoutParams = params
-//            }
-//    }
 
     fun rotateView90Degrees(view: View) {
         // Create an ObjectAnimator to animate the rotation property
@@ -2421,10 +2109,6 @@ object Utils {
         return Uri.parse(path)
     }
 
-    //    val currentDate: String
-//        get() {
-//
-//        }
     fun currentDate(): String {
         val c = Calendar.getInstance().time
         E("Current time => $c")
@@ -2489,35 +2173,6 @@ object Utils {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor = ContextCompat.getColor(activity, color)
     }
-
-//    fun printKeyHash(context: Activity): String? {
-//        val packageInfo: PackageInfo
-//        var key: String? = null
-//        try {
-////getting application package name, as defined in manifest
-//            val packageName = context.applicationContext.packageName
-//
-////Retriving package info
-//            packageInfo = context.packageManager.getPackageInfo(
-//                packageName,
-//                PackageManager.GET_SIGNATURES
-//            )
-//            E("Package Name=" + context.packageName)
-//            for (signature in packageInfo.signatures) {
-//                val md = MessageDigest.getInstance("SHA")
-//                md.update(signature.toByteArray())
-//                key = String(Base64.encode(md.digest(), 0))
-//                E("Key Hash=$key")
-//            }
-//        } catch (e1: PackageManager.NameNotFoundException) {
-//            E("Name not found$e1")
-//        } catch (e: NoSuchAlgorithmException) {
-//            E("No such an algorithm$e")
-//        } catch (e: Exception) {
-//            E("Exception$e")
-//        }
-//        return key
-//    }
 
     @JvmStatic
     fun I_finish(cx: Context, startActivity: Class<*>?, data: Bundle?) {
@@ -2673,7 +2328,6 @@ object Utils {
             e.printStackTrace()
             // Handle any exceptions here
         }
-//        CustomeToast(context, "Saved Successfully")
 
     }
 
@@ -2788,16 +2442,7 @@ object Utils {
         Toast.makeText(c, msg, Toast.LENGTH_LONG).show()
     }
 
-    /*public static void setLanguage(String language, @NonNull Context context) {
-        SavedData.saveLanguage(language);
-        Locale locale = new Locale(language);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        context.getResources().updateConfiguration(config,
-                context.getResources().getDisplayMetrics());
-        LocaleHelper.setLocale(context, language);
-    }*/
+
     fun alert(activity: Context, message: String?) {
         val builder = AlertDialog.Builder(activity)
         builder.setTitle(activity.getString(R.string.app_name))

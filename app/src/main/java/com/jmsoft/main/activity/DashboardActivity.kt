@@ -107,17 +107,14 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
 
             if (lang == english) {
                 Utils.setLocale(activity, arabic)
-//                activity.recreate()
             } else {
                 Utils.setLocale(activity, english)
-//                Utils.storeLang(activity,english)
-//                activity.recreate()
+
             }
 
         // navigate to Setting fragment
         } else if (v == binding?.ivSetting) {
 
-            // navController?.navigate(R.id.addToCard)
             if (navController?.currentDestination?.id != R.id.setting) {
 
                 navController?.navigate(R.id.setting)

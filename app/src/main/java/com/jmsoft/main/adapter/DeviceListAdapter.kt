@@ -78,7 +78,6 @@ class DeviceListAdapter(
 
             //Getting device through MAC Address so that we can reconnect it.
             device = bluetoothManager.adapter.getRemoteDevice(deviceModel.deviceAddress)
-//            device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceModel.deviceAddress)
 
             //Setting Device Icon And Device Type
             setDeviceIcon()
@@ -262,11 +261,6 @@ class DeviceListAdapter(
             deviceList[position].isConnected = true
 
             rotateAnimator.cancel()
-
-//            binding.mcvIndicator.setCardBackgroundColor(context.getColor(R.color.green))
-//            binding.tvStatus.text = context.getString(R.string.active)
-//            binding.tvStatus.setTextColor(context.getColor(R.color.green))
-//            binding.mcvReconnect.visibility = View.GONE
 
             notifyDataSetChanged()
         }

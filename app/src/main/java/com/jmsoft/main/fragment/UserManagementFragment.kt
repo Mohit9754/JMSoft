@@ -61,7 +61,7 @@ class UserManagementFragment : Fragment(),View.OnClickListener {
     }
 
     // set the Clicks , initialization And Setup
-    private suspend fun init(){
+    private suspend fun init() {
 
         // set the Recycler View of User List
         val job = lifecycleScope.launch(Dispatchers.Main) {

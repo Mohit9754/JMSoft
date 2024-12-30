@@ -378,6 +378,7 @@
     <string name="print_completed">Print completed</string>
     <string name="please_select_the_products_for_printing">Please select the products for printing</string>
     <string name="choose_products_for_printing">Choose products for printing</string>
+    <string name="turn_on_bluetooth_for_scanning">Turn on Bluetooth for Scanning</string>
 
     <string-array name="arrayFrequency">
 

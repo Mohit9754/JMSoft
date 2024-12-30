@@ -187,10 +187,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
         if (profile != null) {
 
-//            val instance = UserDataHelper.instance
-
             //get the Random Image File Name
-
             val imageFileName = Utils.getImageFileName()
 
             //Save it to internal Storage
@@ -371,8 +368,6 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
             }
             binding.mcvAdvanceSetting -> {
-
-                //            GetProgressBar.getInstance(requireActivity())?.show()
 
                 (context as DashboardActivity).navController?.navigate(R.id.advanceSetting)
 
