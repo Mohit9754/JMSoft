@@ -105,6 +105,9 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
     private var enableCheckBox = false
 
+    private var isPrinterConnected = false
+
+
     // Permission for External Storage
     private val permissionsForExternalStorage = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -1268,7 +1271,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
         val connectionStatus = Utils.isPrinterReady()
 
-        if (connectionStatus) {
+        if (isPrinterConnected) {
 
             enableCheckBox()
 
@@ -1308,6 +1311,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
                 lifecycleScope.launch(Dispatchers.Main) {
                     enableCheckBox()
                 }
+                isPrinterConnected = it
             }
         }
     }

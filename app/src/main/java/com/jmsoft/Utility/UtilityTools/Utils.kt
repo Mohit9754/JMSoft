@@ -177,8 +177,8 @@ object Utils {
         return false
     }
 
-    // printer connection dialog
-    fun showPrinterConnectionDialog(context: Context,onConnected: () -> Unit) {
+    // printer connection dialog and return a callback if connected
+    fun showPrinterConnectionDialog(context: Context,onConnected: ( Boolean) -> Unit) {
 
         val dialog = Dialog(context)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -257,7 +257,7 @@ object Utils {
 
                     T(context, context.getString(R.string.printer_connected_successfully))
 
-                    onConnected()
+                    onConnected(true)
 
                 }
 
@@ -297,7 +297,7 @@ object Utils {
 
     }
 
-    // get layout bitmap
+    // get bitmap from the layout on the base of product data
     @SuppressLint("CutPasteId", "InflateParams")
     fun getLayoutBitmap(context: Context,productDataModel: ProductDataModel): Bitmap {
 
@@ -333,13 +333,14 @@ object Utils {
 
     }
 
-    // print bitmap
+    // print bitmap through the godex sdk
     fun printBitmap(context: Context,bitmap: Bitmap): Boolean {
 
         // Send the Bitmap to the printer using the Godex SDK
         Godex.sendCommand("^L") // Reset the printer
         Godex.sendCommand("AD,30,130,1,1,0,0,Width:" + bitmap.width)
         Godex.sendCommand("AD,30,200,1,1,0,0,Height:" + bitmap.height)
+        //val data = context.getDrawable(R.drawable.default_image)?.toBitmap()
         Godex.putImage(10, 10, bitmap) // Print the Bitmap starting from (10, 10)
         val printingStatus = Godex.sendCommand("E") // End the print job
 

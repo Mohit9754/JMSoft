@@ -152,6 +152,10 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     private var addDuplicate = false
 
+    private var isPrinterConnected = false
+
+
+
     private val fValues = intArrayOf(
         0x01,
         0x02,
@@ -1788,6 +1792,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         }
     }
 
+    // check bluetooth connected device
     private fun checkConnectedDevice() {
 
         BluetoothUtils.getConnectedDevice(requireActivity(), object : ConnectedDeviceCallback {
@@ -1869,6 +1874,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         })
     }
 
+    // disconnect the rfid scanner when fragment is in pause state
     override fun onPause() {
         super.onPause()
         rfidSetUp?.onPause(object : PairStatusCallback {
@@ -1882,6 +1888,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         })
     }
 
+    // disconnect the rfid scanner when fragment is destroy
     override fun onDestroy() {
         super.onDestroy()
 
@@ -1897,6 +1904,7 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
 
     }
 
+    // Change the current product page
     private fun changePage(num: Int) {
 
         if (productUUIDIndex != -1) {
@@ -1948,14 +1956,19 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
         }
     }
 
+    // Check printer connection Status , do printer connecting functionality and print the layout
     private fun checkPrinterConnectionStatus() {
 
         val connectionStatus = Utils.isPrinterReady()
 
-        if (connectionStatus) {
+        if (isPrinterConnected) {
 
+            // get bitmap of the layout
             val layoutBitmap = productDataModel?.let { Utils.getLayoutBitmap(requireActivity(), it) }
 
+            Utils.E("layout is not ${layoutBitmap != null}")
+
+            // print bitmap through sdk
             val printCompleted = layoutBitmap?.let { Utils.printBitmap(requireActivity(), it) }
 
             if (printCompleted == true) {
@@ -1966,12 +1979,15 @@ class ProductInventoryFragment : Fragment(), View.OnClickListener, RFIDSetUp.RFI
                Utils.T(requireActivity(), getString(R.string.printing_failed))
             }
 
-            layoutBitmap?.let { Utils.showPrintingLayout(requireActivity(), it) }
+            //layoutBitmap?.let { Utils.showPrintingLayout(requireActivity(), it) }
 
         }
         else {
 
-            Utils.showPrinterConnectionDialog(requireActivity()) {}
+            // printer connection dialog
+            Utils.showPrinterConnectionDialog(requireActivity()) {
+                isPrinterConnected = it
+            }
 
         }
     }

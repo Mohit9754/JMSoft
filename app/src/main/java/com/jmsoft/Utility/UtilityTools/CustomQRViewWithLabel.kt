@@ -63,32 +63,34 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
         super.onDraw(canvas)
 
         // Dimensions and radius for the main rounded rectangle
-        val rectWidth = 620f  // Width of the main rectangle
-        val rectHeight = 265f // Height of the main rectangle
+        val rectWidth = 300f  // Width of the main rectangle
+        //val rectWidth = 620f  // Width of the main rectangle
+        //val rectHeight = 265f // Height of the main rectangle
+        val rectHeight = 200f // Height of the main rectangle
         val cornerRadius = 0f // Radius for the rounded corners
 
         // Create a Path to draw the custom shape
         val path = Path()
 
         // Start from the top-left corner of the main rectangle
-        path.moveTo(50f + cornerRadius, 50f)
+        path.moveTo(25f + cornerRadius, 25f)
 
         // Top side with top-right rounded corner
-        path.lineTo(50f + rectWidth - cornerRadius, 50f)
-        path.quadTo(50f + rectWidth, 50f, 50f + rectWidth, 50f + cornerRadius)
+        path.lineTo(25f + rectWidth - cornerRadius, 25f)
+        path.quadTo(25f + rectWidth, 25f, 25f + rectWidth, 25f + cornerRadius)
 
         // Right side of the main rectangle
-        path.lineTo(50f + rectWidth, 50f + rectHeight - cornerRadius)
-        path.quadTo(50f + rectWidth, 50f + rectHeight, 50f + rectWidth - cornerRadius, 50f + rectHeight)
+        path.lineTo(25f + rectWidth, 25f + rectHeight - cornerRadius)
+        path.quadTo(25f + rectWidth, 25f + rectHeight, 25f + rectWidth - cornerRadius, 25f + rectHeight)
 
 
         // Continue the bottom side with bottom-left rounded corner
-        path.lineTo(50f + cornerRadius, 50f + rectHeight)
-        path.quadTo(50f, 50f + rectHeight, 50f, 50f + rectHeight - cornerRadius)
+        path.lineTo(25f + cornerRadius, 25f + rectHeight)
+        path.quadTo(25f, 25f + rectHeight, 25f, 25f + rectHeight - cornerRadius)
 
         // Left side of the main rectangle
-        path.lineTo(50f, 50f + cornerRadius)
-        path.quadTo(50f, 50f, 50f + cornerRadius, 50f)
+        path.lineTo(25f, 25f + cornerRadius)
+        path.quadTo(25f, 25f, 25f + cornerRadius, 25f)
 
         // Draw the shape background
         canvas.drawPath(path, paint)
@@ -98,14 +100,14 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
 
 
         // Check if any of the text exceeds the rectangle boundary
-        val textXStart = 500f // Initial position for text
-        val textYStart = 100f // Initial Y position for the first line of text
-        val maxTextWidth = rectWidth - 100f // Maximum allowed text width inside the rectangle
+        val textXStart = 250f // Initial position for text
+        val textYStart = 50f // Initial Y position for the first line of text
+        val maxTextWidth = rectWidth - 50f // Maximum allowed text width inside the rectangle
 
 
 
         // Add margin from the right edge for text
-        val rightMargin = 10f // Adjust this value to control the margin from the right edge
+        val rightMargin = 5f // Adjust this value to control the margin from the right edge
 
 
         val weightTextWidth = textPaint.measureText(weightText)
@@ -114,9 +116,9 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
 
         // Calculate the maximum overflow among the three texts
         val maxOverflow = maxOf(
-            (textXStart + weightTextWidth) - (50f + rectWidth - rightMargin),
-            (textXStart + priceTextWidth) - (50f + rectWidth - rightMargin),
-            (textXStart + dimensionTextWidth) - (50f + rectWidth - rightMargin),
+            (textXStart + weightTextWidth) - (25f + rectWidth - rightMargin),
+            (textXStart + priceTextWidth) - (25f + rectWidth - rightMargin),
+            (textXStart + dimensionTextWidth) - (25f + rectWidth - rightMargin),
             0f
         )
 
@@ -125,8 +127,8 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
 
         // Draw all the text with adjusted X position
         canvas.drawText(weightText, adjustedTextX, textYStart, textPaint)
-        canvas.drawText(priceText, adjustedTextX, textYStart + 35f, textPaint)
-        canvas.drawText(dimensionText, adjustedTextX, textYStart + 67f, textPaint)
+        canvas.drawText(priceText, adjustedTextX, textYStart + 17f, textPaint)
+        canvas.drawText(dimensionText, adjustedTextX, textYStart + 33f, textPaint)
 
 
         // Adjust and draw the rotated logo text
@@ -136,7 +138,7 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
             118f + rectWidth / 9 - maxOverflow, // Adjust rotation anchor point
             118f + rectHeight / 2
         )
-        val rotatedLogoTextX = (350f / 3) - maxOverflow // Adjust the logo text X position
+        val rotatedLogoTextX = (325f / 3) - maxOverflow // Adjust the logo text X position
         canvas.drawText(
             barcodeData,
             rotatedLogoTextX,
@@ -147,8 +149,8 @@ class CustomQRViewWithLabel @JvmOverloads constructor(
         // Draw the QR code if available
         qrBitmap?.let {
             // Scale the QR code to desired width and height
-            val scaleWidth = 110f // Set the desired width for the QR code
-            val scaleHeight = 120f // Set the desired height for the QR code
+            val scaleWidth = 60f // Set the desired width for the QR code
+            val scaleHeight = 60f // Set the desired height for the QR code
             val matrix = Matrix()
             matrix.postScale(scaleWidth / it.width, scaleHeight / it.height)
 

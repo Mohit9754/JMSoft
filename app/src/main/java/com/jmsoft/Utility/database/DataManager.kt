@@ -115,7 +115,7 @@ class DataManager
 
     companion object {
 
-        const val DATABASE_VERSION = 0
+        const val DATABASE_VERSION = 1
         const val DATABASE_NAME = "jm_soft"
 
     }
