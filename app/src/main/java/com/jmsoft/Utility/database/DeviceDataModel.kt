@@ -18,7 +18,7 @@ class DeviceDataModel {
         // Table name
         const val TABLE_NAME_DEVICE = "Device"
 
-        //All keys of Device table
+        // All keys of Device table
 
         const val Key_deviceUUID = "deviceUUID"
         const val Key_deviceName = "deviceName"

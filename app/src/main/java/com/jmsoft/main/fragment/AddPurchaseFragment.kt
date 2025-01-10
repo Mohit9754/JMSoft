@@ -467,6 +467,8 @@ class AddPurchaseFragment : Fragment(), View.OnClickListener, SelectedCallback,
 
         selectedProductUUIDList = ArrayList(Utils.SelectedProductUUIDList.getProductList())
 
+        Utils.E("List size is purchasing ${Utils.SelectedProductUUIDList.getSize()}")
+
         Utils.SelectedProductUUIDList.clearList()
 
         val result = lifecycleScope.async(Dispatchers.IO) {

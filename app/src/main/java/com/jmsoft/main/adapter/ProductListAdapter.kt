@@ -206,6 +206,7 @@ class ProductListAdapter(
                 binding.cbProduct.setOnCheckedChangeListener { _, isChecked ->
 
                     if (isChecked) {
+
                         productData.productUUID?.let { Utils.SelectedProductUUIDList.addProductUUID(it) }
 
                     } else {
@@ -350,7 +351,7 @@ class ProductListAdapter(
                     GetProgressBar.getInstance(context)?.show()
 
                     val bundle = Bundle()
-                    //Giving the product UUID
+                    // Giving the product UUID
                     bundle.putString(Constants.productUUID, productData.productUUID)
 
                     (context as DashboardActivity).navController?.navigate(R.id.productDetail, bundle)

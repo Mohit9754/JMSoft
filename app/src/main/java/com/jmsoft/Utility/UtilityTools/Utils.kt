@@ -85,7 +85,6 @@ import com.jmsoft.Utility.UtilityTools.AppController
 import com.jmsoft.Utility.UtilityTools.BitmapPrintAdapter
 import com.jmsoft.Utility.UtilityTools.CustomQRViewWithLabel
 import com.jmsoft.Utility.UtilityTools.GetProgressBar
-import com.jmsoft.Utility.UtilityTools.loadingButton.LoadingButton
 import com.jmsoft.Utility.database.AddressDataModel
 import com.jmsoft.Utility.database.CartDataModel
 import com.jmsoft.Utility.database.CategoryDataModel
@@ -116,10 +115,6 @@ import com.jmsoft.databinding.ItemCustomToastBinding
 import com.jmsoft.databinding.ItemPrinterConnectionBinding
 import com.jmsoft.main.model.DeviceModel
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream

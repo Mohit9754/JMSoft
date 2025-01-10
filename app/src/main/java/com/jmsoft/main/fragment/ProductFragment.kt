@@ -473,14 +473,14 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         selectedCategoryIndex = 0
         binding.etSearch?.text?.clear()
 
-        Utils.SelectedProductUUIDList.clearList()
+//        Utils.SelectedProductUUIDList.clearList()
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        Utils.SelectedProductUUIDList.clearList()
+//        Utils.SelectedProductUUIDList.clearList()
 
     }
 
@@ -823,6 +823,7 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
         }
 
         if (productDataList.isNotEmpty()) {
+
 
             binding.mcvAdd?.let { Utils.enableButton(it) }
 
@@ -1383,9 +1384,11 @@ class ProductFragment : Fragment(), View.OnClickListener, ExcelReadSuccess {
 
             if (isPurchase == true) {
 
+                Utils.E("List size is ${Utils.SelectedProductUUIDList.getSize()}")
+
                 GetProgressBar.getInstance(requireActivity())?.show()
 
-                //  Utils.SelectedProductUUIDList.setProductList(selectedProductUUIDList)
+//                  Utils.SelectedProductUUIDList.setProductList(selectedProductUUIDList)
                 (requireActivity() as DashboardActivity).navController?.popBackStack()
 
             }
